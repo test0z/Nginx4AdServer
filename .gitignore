@@ -1,0 +1,7 @@
+.idea
+logs/error.txt
+logs/2016*
+logs/2017*
+error.txt
+objs
+nginx

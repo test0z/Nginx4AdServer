@@ -1,0 +1,71 @@
+ngx_addon_name=modAdservice
+HTTP_MODULES="$HTTP_MODULES modAdservice"
+CORE_INCS="$CORE_INCS $ngx_addon_dir
+$ngx_addon_dir/service"
+NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/main.cpp
+$ngx_addon_dir/logging.cpp
+$ngx_addon_dir/service/core/adselectv2/ad_select_client.cpp
+$ngx_addon_dir/service/core/adselectv2/addata.cpp
+$ngx_addon_dir/service/core/adselectv2/addatamanager.cpp
+$ngx_addon_dir/service/core/logic/abstract_query_task.cpp
+$ngx_addon_dir/service/core/logic/bid_query_task.cpp
+$ngx_addon_dir/service/core/logic/click_query_task.cpp
+$ngx_addon_dir/service/core/logic/show_query_task.cpp
+$ngx_addon_dir/service/core/logic/trace_task.cpp
+$ngx_addon_dir/service/core/logpusher/kafka_log_producer.cpp
+$ngx_addon_dir/service/core/logpusher/log_pusher.cpp
+$ngx_addon_dir/service/core/model/source_record.cpp
+$ngx_addon_dir/service/core/config_types.cpp
+$ngx_addon_dir/service/core/core_executor.cpp
+$ngx_addon_dir/service/core/core_ip_manager.cpp
+$ngx_addon_dir/service/core/core_threadlocal_manager.cpp
+$ngx_addon_dir/service/core/core_typetable.cpp
+$ngx_addon_dir/service/libutil/AdAcbm.cpp
+$ngx_addon_dir/service/libutil/AdIpc.cpp
+$ngx_addon_dir/service/libutil/AdMd5.cpp
+$ngx_addon_dir/service/protocol/baidu/baidu_bidding_handler.cpp
+$ngx_addon_dir/service/protocol/baidu/baidu_price.cpp
+$ngx_addon_dir/service/protocol/baidu/baidu_bidding.pb.cpp
+$ngx_addon_dir/service/protocol/base/abstract_bidding_handler.cpp
+$ngx_addon_dir/service/protocol/guangyin/guangyin_bidding_handler.cpp
+$ngx_addon_dir/service/protocol/guangyin/guangyin_price.cpp
+$ngx_addon_dir/service/protocol/guangyin/guangyin_bidding.pb.cpp
+$ngx_addon_dir/service/protocol/netease/netease_bidding_handlerv2.cpp
+$ngx_addon_dir/service/protocol/sohu/sohu_bidding_handler.cpp
+$ngx_addon_dir/service/protocol/sohu/sohu_price.cpp
+$ngx_addon_dir/service/protocol/sohu/sohuRTB.pb.cpp
+$ngx_addon_dir/service/protocol/tanx/tanx_bidding_handler.cpp
+$ngx_addon_dir/service/protocol/tanx/tanx_price.cpp
+$ngx_addon_dir/service/protocol/tanx/tanx_bidding.pb.cpp
+$ngx_addon_dir/service/protocol/tencent_gdt/gdt_bidding_handler.cpp
+$ngx_addon_dir/service/protocol/tencent_gdt/tencent_gdt_price.cpp
+$ngx_addon_dir/service/protocol/tencent_gdt/gdt.pb.cpp
+$ngx_addon_dir/service/protocol/youku/youku_bidding_handlerv2.cpp
+$ngx_addon_dir/service/protocol/youku/youku_price.cpp
+$ngx_addon_dir/service/utility/aero_spike.cpp
+$ngx_addon_dir/service/utility/cypher.cpp
+$ngx_addon_dir/service/utility/escape.cpp
+$ngx_addon_dir/service/utility/file.cpp
+$ngx_addon_dir/service/utility/hash.cpp
+$ngx_addon_dir/service/utility/json.cpp
+$ngx_addon_dir/service/utility/memory.cpp
+$ngx_addon_dir/service/utility/mttytime.cpp
+$ngx_addon_dir/service/utility/random.cpp
+$ngx_addon_dir/service/utility/url.cpp
+$ngx_addon_dir/service/utility/userclient.cpp"
+
+CFLAGS="$CFLAGS -Wno-error=type-limits -Wno-error=narrowing -Wno-error=int-to-pointer-cast -DMUDUO_STD_STRING"
+
+CORE_LIBS="$CORE_LIBS /usr/local/lib/libcppcms.a
+/usr/local/lib/libbooster.a
+/usr/local/lib/libavrocpp_s.a
+/usr/local/lib/libonsclient4cpp.a
+/usr/local/lib/librdkafka++.a
+/usr/local/lib/librdkafka.a
+/usr/local/lib/libmuduo_base_cpp11.a
+/usr/local/lib/libmuduo_net_cpp11.a
+/usr/lib/libaerospike.a
+/usr/local/lib/libboost_serialization.a
+-lstdc++ -lcrypt -lpcre -lcrypto -lcryptopp -lz -lsasl2 -lssl -ltbb -lprotobuf -lcurl -licuuc -licui18n -ldl -lpthread
+-Wl,-rpath,/usr/local/lib "
+
