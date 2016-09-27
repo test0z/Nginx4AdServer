@@ -13,4 +13,4 @@ adservice nginx 模块
 运行服务的命令 nginx -p $(pwd) -c conf/nginx.conf
 也可以直接运行./run.sh
 
-
+当构建成功,运行./dist.sh打包

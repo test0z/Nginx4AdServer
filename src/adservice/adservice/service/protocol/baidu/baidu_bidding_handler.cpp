@@ -85,6 +85,8 @@ namespace bidding {
                                                      logItem.geoInfo.province, logItem.geoInfo.city);
             logItem.adInfo.bidSize = adInfo.bidSize;
             logItem.referer = bidRequest.has_referer() ? bidRequest.referer() : "";
+        }else{
+            logItem.adInfo.pid = adInfo.pid;
         }
         return true;
     }

@@ -225,7 +225,6 @@ namespace corelogic {
             if (!log.userId.empty()) {
                 result += "&u=" + log.userId;
             }
-
             LOG_DEBUG<<"阿里云日志记录URL：" <<result;
 
             return result;

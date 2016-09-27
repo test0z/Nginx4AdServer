@@ -116,7 +116,7 @@ namespace bidding {
             logItem.adInfo.bidSize = adInfo.bidSize;
             logItem.referer = bidRequest_.has_site() ? bidRequest_.site().page() : "";
         } else {
-            logItem.adInfo.pid = "0";
+            logItem.adInfo.pid = adInfo.pid;
         }
 
         return true;
@@ -152,10 +152,22 @@ namespace bidding {
             strncpy(biddingFlowInfo.deviceIdBuf, deviceId.c_str(), deviceId.size());
 
             queryCondition.mobileNetwork = getNetWork(device.connectiontype());
+            if (bidRequest_.has_app()) {
+                const App & app = bidRequest_.app();
+                if (app.has_publisher()) {
+                    queryCondition.adxpid = app.publisher().slot();
+                }
+            }
         } else {
             queryCondition.pcOS = adservice::utility::userclient::getOSTypeFromUA(device.ua());
             queryCondition.pcBrowserStr = adservice::utility::userclient::getBrowserTypeFromUA(device.ua());
             queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
+            if (bidRequest_.has_site()) {
+                const Site & site = bidRequest_.site();
+                if (site.has_publisher()) {
+                    queryCondition.adxpid = site.publisher().slot();
+                }
+            }
         }
 
         if (!filterCb(this, queryCondition)) {
