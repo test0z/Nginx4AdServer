@@ -54,9 +54,9 @@ $ngx_addon_dir/service/utility/random.cpp
 $ngx_addon_dir/service/utility/url.cpp
 $ngx_addon_dir/service/utility/userclient.cpp"
 
-CFLAGS="$CFLAGS -Wno-error=type-limits -Wno-error=narrowing -Wno-error=int-to-pointer-cast -DMUDUO_STD_STRING"
+CFLAGS="$CFLAGS -march=native -Wno-error=type-limits -Wno-error=narrowing -Wno-error=int-to-pointer-cast -DMUDUO_STD_STRING "
 
-CORE_LIBS="$CORE_LIBS /usr/local/lib/libcppcms.a
+CORE_LIBS="-L/usr/lib -L/usr/lib64 -L/usr/local/lib -L/usr/local/lib64 $CORE_LIBS /usr/local/lib/libcppcms.a
 /usr/local/lib/libbooster.a
 /usr/local/lib/libavrocpp_s.a
 /usr/local/lib/libonsclient4cpp.a
@@ -64,7 +64,7 @@ CORE_LIBS="$CORE_LIBS /usr/local/lib/libcppcms.a
 /usr/local/lib/librdkafka.a
 /usr/local/lib/libmuduo_base_cpp11.a
 /usr/local/lib/libmuduo_net_cpp11.a
-/usr/lib/libaerospike.a
+/usr/local/lib/libaerospike.a
 /usr/local/lib/libboost_serialization.a
 -lstdc++ -lcrypt -lpcre -lcrypto -lcryptopp -lz -lsasl2 -lssl -ltbb -lprotobuf -lcurl -licuuc -licui18n -ldl -lpthread
 -Wl,-rpath,/usr/local/lib "

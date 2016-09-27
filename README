@@ -1,3 +1,16 @@
 
-Documentation is available at http://nginx.org
+adservice nginx 模块
+
+模块源文件在src/adservice/adservice
+第一次build 运行./reconfigure && ./build.sh
+如果修改了模块的config文件,也重新运行./reconfigure && ./build.sh
+正常情况下./build.sh可以满足构建需要
+
+构建成功会在本目录生成nginx二进制文件
+
+线上服务因该运行在本目录下，nginx.conf中配置location的workdir选项。
+
+运行服务的命令 nginx -p $(pwd) -c conf/nginx.conf
+也可以直接运行./run.sh
+
 
