@@ -5,15 +5,17 @@
 #ifndef ADCORE_ABSTRACT_BIDDING_HANDLER_H
 #define ADCORE_ABSTRACT_BIDDING_HANDLER_H
 
+#include <functional>
+#include <string>
+
+#include <mtty/types.h>
+
 #include "common/constants.h"
 #include "common/functions.h"
 #include "common/types.h"
 #include "core/adselectv2/ad_select_interface.h"
 #include "protocol/log/log.h"
 #include "utility/utility.h"
-#include <cppcms/http_response.h>
-#include <functional>
-#include <string>
 
 namespace protocol {
 namespace bidding {
@@ -73,7 +75,8 @@ namespace bidding {
         /**
          * 将匹配结果转换为具体平台的格式的结果
          */
-        virtual void buildBidResult(const AdSelectCondition & selectCondition, const AdSelectResult & result) = 0;
+		virtual void buildBidResult(const AdSelectCondition & selectCondition, const MT::common::SelectResult & result)
+			= 0;
 
         /**
          * 当接受流量时装配合适的输出

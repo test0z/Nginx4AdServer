@@ -40,7 +40,7 @@ namespace bidding {
         /**
          * 将匹配结果转换为具体平台的格式的结果
          */
-        void buildBidResult(const AdSelectCondition & queryCondition, const AdSelectResult & result);
+		void buildBidResult(const AdSelectCondition & queryCondition, const MT::common::SelectResult & result);
 
         /**
          * 当接受流量时装配合适的输出

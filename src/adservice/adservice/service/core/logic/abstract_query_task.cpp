@@ -4,19 +4,18 @@
 
 #include "abstract_query_task.h"
 #include "common/spinlock.h"
+#include "logging.h"
 #include "protocol/baidu/baidu_price.h"
 #include "protocol/guangyin/guangyin_price.h"
 #include "protocol/tanx/tanx_price.h"
 #include "protocol/tencent_gdt/tencent_gdt_price.h"
 #include "protocol/youku/youku_price.h"
 #include "utility/mttytime.h"
-#include "logging.h"
 
 namespace adservice {
 namespace corelogic {
 
-    using namespace utility;
-    using namespace Logging;
+	using namespace utility;
 
     static int threadSeqId = 0;
     struct spinlock slock = { 0 };
@@ -29,7 +28,7 @@ namespace corelogic {
         spinlock_lock(&slock);
         seqId = threadSeqId++;
         spinlock_unlock(&slock);
-        LOG_INFO<<"seqId:"<<seqId;
+		LOG_INFO << "seqId:" << seqId;
     }
 
     /**
@@ -89,7 +88,7 @@ namespace corelogic {
                 return std::stoi(result);
             }
         } catch (std::exception & e) {
-            LOG_ERROR<<"in decodeOfferPrice,"<< e.what()<<","<<input;
+			LOG_ERROR << "in decodeOfferPrice," << e.what() << "," << input;
         }
         return 0;
     }
@@ -213,11 +212,11 @@ namespace corelogic {
                 protocol::log::LogItem parseLog;
                 getAvroObject(parseLog, (uint8_t *)decode_string.c_str(), decode_string.length());
             } else {
-                LOG_WARN<<"decoded string not equal origin,escape4ali not safe";
+				LOG_WARN << "decoded string not equal origin,escape4ali not safe";
             }
         } else {
-            LOG_WARN<<"decoded string length not equal origin,escape4ali not safe,"<<input.length()<<" "<<
-                         decode_string.length();
+			LOG_WARN << "decoded string length not equal origin,escape4ali not safe," << input.length() << " "
+					 << decode_string.length();
         }
     }
 
@@ -277,7 +276,8 @@ namespace corelogic {
             }
             if (needNewCookies) { //传入的cookies中没有userId,cookies 传出
                 char cookiesString[64];
-                sprintf(cookiesString, "%s=%s;Domain=.%s;Max-Age=2617488000;", COOKIES_MTTY_ID,log.userId.c_str(),COOKIES_MTTY_DOMAIN);
+				sprintf(cookiesString, "%s=%s;Domain=.%s;Max-Age=2617488000;", COOKIES_MTTY_ID, log.userId.c_str(),
+						COOKIES_MTTY_DOMAIN);
                 resp.set("Set-Cookie", cookiesString);
             }
         } else { //对于POST方法传送过来的Query

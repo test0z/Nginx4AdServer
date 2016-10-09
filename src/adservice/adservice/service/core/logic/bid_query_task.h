@@ -5,10 +5,11 @@
 #ifndef ADCORE_BID_QUERY_TASK_H
 #define ADCORE_BID_QUERY_TASK_H
 
+#include <initializer_list>
+
 #include "abstract_query_task.h"
 #include "core/core_ip_manager.h"
 #include "protocol/base/abstract_bidding_handler.h"
-#include <initializer_list>
 
 namespace adservice {
 namespace corelogic {
@@ -18,21 +19,15 @@ namespace corelogic {
     static const int BID_MAX_MODULES = 10;
 
     struct ModuleIndex {
-        int64_t moduleHash;
+		uint64_t moduleHash;
         int64_t adxId;
-        ModuleIndex()
-        {
-        }
-        ModuleIndex(int64_t h, int64_t id)
-        {
-            moduleHash = h;
-            adxId = id;
-        }
-        ModuleIndex(const std::initializer_list<int64_t> & list)
-        {
-            const int64_t * b = list.begin();
-            moduleHash = b[0];
-            adxId = b[1];
+
+		ModuleIndex() = default;
+
+		ModuleIndex(uint64_t h, int64_t id)
+			: moduleHash(h)
+			, adxId(id)
+		{
         }
     };
 
@@ -50,7 +45,8 @@ namespace corelogic {
         static AbstractBiddingHandler * getBiddingHandler(int adxId);
 
     public:
-        explicit HandleBidQueryTask(adservice::utility::HttpRequest & request, adservice::utility::HttpResponse & response)
+		explicit HandleBidQueryTask(adservice::utility::HttpRequest & request,
+									adservice::utility::HttpResponse & response)
             : AbstractQueryTask(request, response)
         {
             adxId = getAdxId(request.path_info());
@@ -72,7 +68,8 @@ namespace corelogic {
 
         void getPostParam(ParamMap & paramMap);
 
-        void customLogic(ParamMap & paramMap, protocol::log::LogItem & log, adservice::utility::HttpResponse & response);
+		void customLogic(ParamMap & paramMap, protocol::log::LogItem & log,
+						 adservice::utility::HttpResponse & response);
 
         virtual void onError(std::exception & e, adservice::utility::HttpResponse & resp) override;
 

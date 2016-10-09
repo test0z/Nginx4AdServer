@@ -4,16 +4,15 @@
 
 #include "baidu_bidding_handler.h"
 #include "core/core_ip_manager.h"
-#include "utility/utility.h"
 #include "logging.h"
+#include "utility/utility.h"
 
 namespace protocol {
 namespace bidding {
 
     using namespace protocol::Baidu;
     using namespace adservice::utility::serialize;
-    using namespace adservice::server;
-    using namespace Logging;
+	using namespace adservice::server;
 
 #define AD_BD_CLICK_MACRO "%%CLICK_URL_ESC%%"
 #define AD_BD_PRICE_MACRO "%%PRICE%%"
@@ -40,8 +39,7 @@ namespace bidding {
         size_t len
             = (size_t)snprintf(extShowBuf, sizeof(extShowBuf), "p=%s&l=%s&", AD_BD_PRICE_MACRO, AD_BD_CLICK_MACRO);
         if (len >= sizeof(extShowBuf)) {
-            LOG_WARN<<"BaiduBiddingHandler::baiduHtmlSnippet,extShowBuf buffer size not enough,needed:"<<
-                                 len;
+			LOG_WARN << "BaiduBiddingHandler::baiduHtmlSnippet,extShowBuf buffer size not enough,needed:" << len;
         }
         return generateHtmlSnippet(bid, width, height, extShowBuf);
     }
@@ -85,7 +83,7 @@ namespace bidding {
                                                      logItem.geoInfo.province, logItem.geoInfo.city);
             logItem.adInfo.bidSize = adInfo.bidSize;
             logItem.referer = bidRequest.has_referer() ? bidRequest.referer() : "";
-        }else{
+		} else {
             logItem.adInfo.pid = adInfo.pid;
         }
         return true;
@@ -109,34 +107,35 @@ namespace bidding {
         return isBidAccepted = true;
     }
 
-    void BaiduBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition, const AdSelectResult & result)
+	void BaiduBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
+											 const MT::common::SelectResult & result)
     {
         bidResponse.Clear();
         bidResponse.set_id(bidRequest.id());
         bidResponse.clear_ad();
         BidResponse_Ad * adResult = bidResponse.add_ad();
-        const AdSolution & finalSolution = result.solution;
-        const AdAdplace & adplace = result.adplace;
-        const AdBanner & banner = result.banner;
+		const MT::common::Solution & finalSolution = result.solution;
+		const MT::common::ADPlace & adplace = result.adplace;
+		const MT::common::Banner & banner = result.banner;
         int advId = finalSolution.advId;
         const BidRequest_AdSlot & adSlot = bidRequest.adslot(0);
         int maxCpmPrice = max(result.bidPrice, adSlot.minimum_cpm());
         adResult->set_max_cpm(maxCpmPrice);
         adResult->set_advertiser_id(advId);
-        adResult->set_creative_id(banner.bannerId);
+		adResult->set_creative_id(banner.bId);
         adResult->set_height(banner.height);
         adResult->set_width(banner.width);
         adResult->set_sequence_id(adSlot.sequence_id());
         //缓存最终广告结果
-        adInfo.pid = adplace.adplaceId;
+		adInfo.pid = adplace.pId;
         adInfo.advId = advId;
-        adInfo.sid = finalSolution.solutionId;
+		adInfo.sid = finalSolution.sId;
         adInfo.adxid = ADX_BAIDU;
-        adInfo.adxpid = adplace.adxPid;
+		adInfo.adxpid = adplace.adxPId;
         adInfo.adxuid = bidRequest.baidu_user_id();
-        adInfo.bannerId = banner.bannerId;
-        adInfo.cid = adplace.cid;
-        adInfo.mid = adplace.mid;
+		adInfo.bannerId = banner.bId;
+		adInfo.cid = adplace.cId;
+		adInfo.mid = adplace.mId;
         adInfo.cpid = adInfo.advId;
         adInfo.offerPrice = maxCpmPrice;
         adInfo.priceType = finalSolution.priceType;
@@ -152,7 +151,7 @@ namespace bidding {
     {
         std::string result;
         if (!writeProtoBufObject(bidResponse, &result)) {
-            LOG_WARN<<"failed to write protobuf object in BaiduBiddingHandler::match";
+			LOG_WARN << "failed to write protobuf object in BaiduBiddingHandler::match";
             reject(response);
             return;
         }
@@ -166,7 +165,7 @@ namespace bidding {
         bidResponse.set_id(bidRequest.id());
         std::string result;
         if (!writeProtoBufObject(bidResponse, &result)) {
-            LOG_WARN<<"failed to write protobuf object in BaiduBiddingHandler::reject";
+			LOG_WARN << "failed to write protobuf object in BaiduBiddingHandler::reject";
             return;
         }
         response.status(200);
