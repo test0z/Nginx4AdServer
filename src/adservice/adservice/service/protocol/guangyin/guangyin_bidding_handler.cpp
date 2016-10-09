@@ -152,7 +152,9 @@ namespace bidding {
             queryCondition.mobileNetwork = getNetWork(device.connectiontype());
             if (bidRequest_.has_app()) {
                 const App & app = bidRequest_.app();
-                if (app.has_publisher()) {
+				if (app.has_name()) {
+                    queryCondition.adxpid = app.name();
+				} else if (app.has_publisher()) {
                     queryCondition.adxpid = app.publisher().slot();
                 }
             }
@@ -211,6 +213,7 @@ namespace bidding {
         adInfo.areaId = adservice::server::IpManager::getInstance().getAreaCodeStrByIp(userIp.c_str());
 
         SeatBid * seatBid = bidResponse_.add_seatbid();
+		seatBid->set_seat("");
         Bid * adResult = seatBid->add_bid();
 
         adResult->set_id(bidRequest_.id());
