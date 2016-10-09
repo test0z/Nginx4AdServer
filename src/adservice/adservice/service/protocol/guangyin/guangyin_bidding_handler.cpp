@@ -154,7 +154,9 @@ namespace bidding {
             queryCondition.mobileNetwork = getNetWork(device.connectiontype());
             if (bidRequest_.has_app()) {
                 const App & app = bidRequest_.app();
-                if (app.has_publisher()) {
+                if(app.has_name()){
+                    queryCondition.adxpid = app.name();
+                }else if (app.has_publisher()) {
                     queryCondition.adxpid = app.publisher().slot();
                 }
             }
@@ -191,7 +193,7 @@ namespace bidding {
 
         //缓存最终广告结果
         adInfo.pid = std::to_string(adplace.adplaceId);
-        adInfo.adxpid = adplace.adxPid;
+        adInfo.adxpid = queryCondition.adxpid;
         adInfo.sid = finalSolution.solutionId;
 
         int advId = finalSolution.advId;
