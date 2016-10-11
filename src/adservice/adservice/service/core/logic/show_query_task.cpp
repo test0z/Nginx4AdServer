@@ -340,7 +340,13 @@ void HandleShowQueryTask::customLogic(ParamMap & paramMap, protocol::log::LogIte
         log.adInfo.sid = finalSolution.solutionId;
         log.adInfo.mid = adplace.mid;
         log.adInfo.cid = adplace.cid;
-        log.adInfo.bidPrice = selectResult.bidPrice;
+        log.adInfo.priceType = finalSolution.priceType;
+        log.adInfo.ppid = selectResult.ppid;
+        if (finalSolution.priceType == PRICETYPE_RRTB_CPC) {
+            log.adInfo.bidPrice = 0;
+        } else {
+            log.adInfo.bidPrice = selectResult.bidPrice; // offerprice
+        }
         log.adInfo.cost = adplace.costPrice;
         ipManager.getAreaCodeByIp(condition.ip.data(),log.geoInfo.country,log.geoInfo.province,log.geoInfo.city);
         const char* tmp = banner.json.data();

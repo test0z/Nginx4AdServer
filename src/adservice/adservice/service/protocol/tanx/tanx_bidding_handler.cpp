@@ -77,6 +77,9 @@ namespace bidding {
         getShowPara(bid, showBuf, sizeof(showBuf));
         size_t len = (size_t)snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s%s&of=3", SNIPPET_SHOW_URL,
                                       "p=" AD_TX_PRICE_MACRO "&", showBuf);
+        if(len>=sizeof(feedbackUrl)){
+            LOG_WARN<<"feedbackUrl buffer size not enough,needed:"<<len;
+        }
         strncat(showBuf, "&of=2", 5);
         len = (size_t)snprintf(html, sizeof(html), SNIPPET_IFRAME, width, height, SNIPPET_SHOW_URL,
                                "l=" AD_TX_CLICK_MACRO "&", showBuf, cookieMappingUrl);
@@ -148,10 +151,14 @@ namespace bidding {
         queryCondition.basePrice = adzInfo.min_cpm_price();
         extractSize(adzInfo.size(), queryCondition.width, queryCondition.height);
         if (bidRequest.has_mobile()) {
-            const BidRequest_Mobile_Device & device = bidRequest.mobile().device();
+            const BidRequest_Mobile& mobile = bidRequest.mobile();
+            const BidRequest_Mobile_Device & device = mobile.device();
             queryCondition.mobileDevice = getDeviceType(device.platform());
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.adxid = ADX_TANX_MOBILE;
+            if(mobile.has_is_app()&&mobile.is_app()&&mobile.has_package_name()) {
+                queryCondition.adxpid = mobile.package_name();
+            }
             std::string deviceId = device.idfa().empty() ? device.android_id() : device.idfa();
             strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), deviceId.size());
             if (device.has_network()) {
@@ -202,7 +209,7 @@ namespace bidding {
         adResult->add_category(adxIndustryType);
         //缓存最终广告结果
         adInfo.pid = std::to_string(adplace.adplaceId);
-        adInfo.adxpid = adplace.adxPid;
+        adInfo.adxpid = queryCondition.adxpid;
         adInfo.sid = finalSolution.solutionId;
         adInfo.advId = advId;
         adInfo.adxid = queryCondition.adxid;
@@ -227,7 +234,9 @@ namespace bidding {
         parseJson(pjson, bannerJson);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string destUrl = mtlsArray[0].get("p1", "");
-
+        if(destUrl.empty()){
+            LOG_WARN<<"destUrl should not be empty!!";
+        }
         adResult->add_destination_url(destUrl);
         adResult->add_click_through_url(destUrl);
         adResult->set_creative_id(std::to_string(adInfo.bannerId));

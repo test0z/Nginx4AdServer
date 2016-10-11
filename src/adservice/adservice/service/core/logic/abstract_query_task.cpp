@@ -74,6 +74,7 @@ namespace corelogic {
                 bidPrice = 0;
             } else {
                 cost = 0;
+                bidPrice = offerPrice * 1000; // 华哥那边对cpc计费按照cpm公式来算，但cpc是按个数结算的，为了兼容要乘以1000
             }
         }
     }
