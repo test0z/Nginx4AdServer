@@ -66,6 +66,7 @@ namespace adselectv2 {
 		request.mttyPid = selectCondition.mttyPid;
 		request.adxId = selectCondition.adxid;
 		request.adxPid = selectCondition.adxpid;
+		request.baseEcpm = selectCondition.basePrice;
     }
 
 	std::string serialize(MT::common::SelectRequest & request)

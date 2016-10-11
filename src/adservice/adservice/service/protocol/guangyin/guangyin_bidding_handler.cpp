@@ -115,6 +115,7 @@ namespace bidding {
             logItem.referer = bidRequest_.has_site() ? bidRequest_.site().page() : "";
         } else {
             logItem.adInfo.pid = adInfo.pid;
+            logItem.adInfo.bidSize = adInfo.bidSize;
         }
 
         return true;
@@ -172,6 +173,8 @@ namespace bidding {
 
         if (!filterCb(this, queryCondition)) {
             adInfo.adxpid = queryCondition.adxpid;
+            adInfo.adxid = queryCondition.adxid;
+            adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
             return bidFailedReturn();
         }
 
@@ -192,7 +195,7 @@ namespace bidding {
 
         //缓存最终广告结果
 		adInfo.pid = std::to_string(adplace.pId);
-		adInfo.adxpid = adplace.adxPId;
+		adInfo.adxpid = queryCondition.adxpid;
 		adInfo.sid = finalSolution.sId;
 
 		auto advId = finalSolution.advId;
@@ -204,16 +207,22 @@ namespace bidding {
 		adInfo.mid = adplace.mId;
 		adInfo.cpid = adInfo.advId;
 		adInfo.bidSize = makeBidSize(banner.width, banner.height);
+        adInfo.priceType = finalSolution.priceType;
+        adInfo.ppid = result.ppid;
 
         const Imp & imp = bidRequest_.imp(0);
 		float maxCpmPrice = std::max((float)result.bidPrice, imp.bidfloor());
-        adInfo.offerPrice = maxCpmPrice;
+        if (adInfo.priceType != PRICETYPE_RRTB_CPC) {
+            adInfo.offerPrice = maxCpmPrice;
+        } else {
+            adInfo.offerPrice = result.bidPrice;
+        }
 
         const std::string & userIp = bidRequest_.device().ip();
         adInfo.areaId = adservice::server::IpManager::getInstance().getAreaCodeStrByIp(userIp.c_str());
 
         SeatBid * seatBid = bidResponse_.add_seatbid();
-		seatBid->set_seat("");
+		seatBid->set_seat("5761460d3ada7515003d3589");
         Bid * adResult = seatBid->add_bid();
 
         adResult->set_id(bidRequest_.id());

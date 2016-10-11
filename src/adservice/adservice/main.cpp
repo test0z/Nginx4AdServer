@@ -292,28 +292,19 @@ void read_header(ngx_http_request_t * r, adservice::utility::HttpRequest & httpR
 	httpRequest.set(COOKIE, cookiesstream.str());
 }
 
-ngx_int_t build_response(ngx_http_request_t * r, adservice::utility::HttpResponse & httpResponse)
-{
-    ngx_buf_t * b = (ngx_buf_t *)ngx_palloc(r->pool, sizeof(ngx_buf_t));
-    if (b == nullptr) {
-        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "Failed to allocate response buffer");
-        return NGX_HTTP_INTERNAL_SERVER_ERROR;
-    }
 
-    ngx_chain_t out;
-    out.buf = b;
-    out.next = nullptr;
-
+ngx_int_t build_response(ngx_http_request_t* r,adservice::utility::HttpResponse& httpResponse){
     r->headers_out.status = (ngx_uint_t)httpResponse.status();
 	const std::string & strResp = httpResponse.get_body();
 	if (!strResp.empty()) {
         r->headers_out.content_length_n = strResp.length();
+        ngx_str_t content_type;
+        INIT_NGX_STR(content_type,httpResponse.content_header().data());
+        r->headers_out.content_type = content_type;
     }
-    ngx_str_t content_type;
-	INIT_NGX_STR(content_type, httpResponse.content_header().data());
-    r->headers_out.content_type = content_type;
-	if (!httpResponse.cookies().empty()) {
-		ngx_table_elt_t * h = (ngx_table_elt_t *)ngx_list_push(&r->headers_out.headers);
+
+    if(!httpResponse.cookies().empty()) {
+        ngx_table_elt_t *h = (ngx_table_elt_t *) ngx_list_push(&r->headers_out.headers);
         if (h != nullptr) {
             h->hash = 1;
 			ngx_str_set(&h->key, "Set-Cookie");
@@ -326,8 +317,19 @@ ngx_int_t build_response(ngx_http_request_t * r, adservice::utility::HttpRespons
     if (rc != NGX_OK) {
         return rc;
     }
-	b->pos = (u_char *)strResp.c_str();
-	b->last = (u_char *)strResp.c_str() + strResp.length();
+
+    ngx_buf_t * b = (ngx_buf_t *)ngx_palloc(r->pool, sizeof(ngx_buf_t));
+    if (b == nullptr) {
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "Failed to allocate response buffer");
+        return NGX_HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    ngx_chain_t out;
+    out.buf = b;
+    out.next = nullptr;
+
+    b->pos = (u_char *) strResp.c_str();
+    b->last = (u_char *) strResp.c_str() + strResp.length();
     b->memory = 1;
     b->last_buf = 1;
     b->in_file = 0;
@@ -400,8 +402,8 @@ static ngx_int_t adservice_handler(ngx_http_request_t * r)
 		adservice::corelogic::HandleTraceTask task(httpRequest, httpResponse);
         task.setLogger(serviceLogger);
         task();
-	} else {
-        httpResponse.status(200);
+    }else{
+        httpResponse.status(204);
         httpResponse.set_content_header("text/html");
     }
 	return build_response(r, httpResponse);

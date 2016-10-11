@@ -102,6 +102,7 @@ namespace bidding {
         queryCondition.adxpid = std::to_string(pid);
         queryCondition.ip = bidRequest.ip();
         if (!filterCb(this, queryCondition)) {
+            adInfo.bidSize = makeBidSize(adSlot.width(),adSlot.height());
             return bidFailedReturn();
         }
         return isBidAccepted = true;
