@@ -4,6 +4,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 FIND_PATH(MTTY_INCLUDE_DIR mtty/types.h)
 
 INCLUDE_DIRECTORIES(
+    .
     ./service
     ../../core
     ../../http
