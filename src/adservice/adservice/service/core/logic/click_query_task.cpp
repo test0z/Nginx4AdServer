@@ -11,14 +11,12 @@
 #include <aerospike/as_record.h>
 
 #include "core/model/source_record.h"
+#include "logging.h"
 #include "utility/aero_spike.h"
 #include "utility/url.h"
-#include "logging.h"
 
 namespace adservice {
 namespace corelogic {
-
-    using namespace Logging;
 
     namespace {
 
@@ -221,12 +219,12 @@ namespace corelogic {
         }
         *p = '\0';
         logItem.adInfo.landingUrl = std::string(result, p);
-        replace(logItem.adInfo.landingUrl,"%7badvid%7d",paramMap["advid"]);
-        replace(logItem.adInfo.landingUrl,"%7Badvid%7D",paramMap["advid"]);
-        replace(logItem.adInfo.landingUrl,"%7bidfa%7d",paramMap["idfa"]);
-        replace(logItem.adInfo.landingUrl,"%7Bidfa%7D",paramMap["idfa"]);
-        replace(logItem.adInfo.landingUrl,"%7bsource_id%7d",paramMap["source_id"]);
-        replace(logItem.adInfo.landingUrl,"%7Bsource_id%7D",paramMap["source_id"]);
+		replace(logItem.adInfo.landingUrl, "%7badvid%7d", paramMap["advid"]);
+		replace(logItem.adInfo.landingUrl, "%7Badvid%7D", paramMap["advid"]);
+		replace(logItem.adInfo.landingUrl, "%7bidfa%7d", paramMap["idfa"]);
+		replace(logItem.adInfo.landingUrl, "%7Bidfa%7D", paramMap["idfa"]);
+		replace(logItem.adInfo.landingUrl, "%7bsource_id%7d", paramMap["source_id"]);
+		replace(logItem.adInfo.landingUrl, "%7Bsource_id%7D", paramMap["source_id"]);
     }
 
     void HandleClickQueryTask::customLogic(ParamMap & paramMap, protocol::log::LogItem & log,

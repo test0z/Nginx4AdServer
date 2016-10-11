@@ -1,5 +1,6 @@
 #!/bin/bash
 
+rm -rf build
 make -j2
 if [ $? = 0 ];
 then

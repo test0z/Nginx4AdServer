@@ -25,8 +25,7 @@ namespace corelogic {
     using namespace adservice::utility;
     using namespace adservice::utility::time;
     using namespace adservice::server;
-    using namespace adservice::adselectv2;
-    using namespace Logging;
+	using namespace adservice::adselectv2;
 
     int HandleBidQueryTask::initialized = 0;
     int HandleBidQueryTask::moduleCnt = 0;
@@ -75,7 +74,7 @@ namespace corelogic {
              */
     int HandleBidQueryTask::getAdxId(const std::string & path)
     {
-        int64_t key = fnv_hash(path.c_str(), path.length());
+		auto key = fnv_hash(path.c_str(), path.length());
         int l = 0, h = moduleCnt - 1;
         while (l <= h) {
             int mid = l + ((h - l) >> 1);
@@ -130,11 +129,11 @@ namespace corelogic {
     {
         updateBiddingHandler();
         if (biddingHandler == NULL) {
-            LOG_WARN<<"Bidding Handler Not Found,adxId:"<<adxId;
+			LOG_WARN << "Bidding Handler Not Found,adxId:" << adxId;
             return;
         }
         if (!biddingHandler->parseRequestData(data)) {
-            LOG_WARN<<"Parse Bidding Request Failed,adxId"<< adxId;
+			LOG_WARN << "Parse Bidding Request Failed,adxId" << adxId;
         }
     }
 
@@ -155,11 +154,11 @@ namespace corelogic {
                     IpManager & ipManager = IpManager::getInstance();
                     condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
                     condition.dHour = adSelectTimeCodeUtc();
-                    AdSelectResponse resp;
+					MT::common::SelectResult resp;
                     if (!adSelectClient->doRequest(seqId, false, condition, resp)) {
                         return false;
                     }
-                    adapter->buildBidResult(condition, resp.result);
+					adapter->buildBidResult(condition, resp);
                     return true;
                 });
             if (bidResult) {
@@ -178,7 +177,7 @@ namespace corelogic {
                 handleBidRequests = 1;
                 updateBidRequestsTime = todayStartTime;
             } else {
-                LOG_INFO<<"handleBidRequests:"<<handleBidRequests;
+				LOG_INFO << "handleBidRequests:" << handleBidRequests;
             }
         }
     }

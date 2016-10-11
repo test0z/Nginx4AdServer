@@ -1,12 +1,22 @@
 #include "logging.h"
 
-namespace Logging{
+LoggingLevel AdServiceLog::globalLoggingLevel = LoggingLevel::INFO_;
 
-    LoggingLevel AdServiceLog::globalLoggingLevel = LoggingLevel::INFO_;
+AdServiceLog::AdServiceLog(LoggingLevel lv)
+{
+	currentLevel = lv;
+	ss << adservice::utility::time::getCurrentTimeUtcString() << " ";
+	appendFormatLogLevel();
+}
 
-    AdServiceLog::~AdServiceLog() {
-        ss<<'\n';
-        ngx_log_error(NGX_LOG_EMERG, globalLog, 0, ss.str().data());
-    }
+AdServiceLog::~AdServiceLog()
+{
+	ss << '\n';
+	ngx_log_error(NGX_LOG_EMERG, globalLog, 0, ss.str().data());
+}
 
+void AdServiceLog::appendFormatLogLevel()
+{
+	const char * logLevelStr[] = { "[TRACE] ", "[DEBUG] ", "[INFO] ", "[WARNING] ", "[ERROR] ", "[FATAL] " };
+	ss << logLevelStr[currentLevel];
 }

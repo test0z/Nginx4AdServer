@@ -2,11 +2,10 @@ ngx_addon_name=modAdservice
 HTTP_MODULES="$HTTP_MODULES modAdservice"
 CORE_INCS="$CORE_INCS $ngx_addon_dir
 $ngx_addon_dir/service"
-NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/main.cpp
+NGX_ADDON_SRCS="$NGX_ADDON_SRCS
+$ngx_addon_dir/main.cpp
 $ngx_addon_dir/logging.cpp
 $ngx_addon_dir/service/core/adselectv2/ad_select_client.cpp
-$ngx_addon_dir/service/core/adselectv2/addata.cpp
-$ngx_addon_dir/service/core/adselectv2/addatamanager.cpp
 $ngx_addon_dir/service/core/logic/abstract_query_task.cpp
 $ngx_addon_dir/service/core/logic/bid_query_task.cpp
 $ngx_addon_dir/service/core/logic/click_query_task.cpp
@@ -111,7 +110,7 @@ $ngx_addon_dir/service/utility/userclient.cpp"
 #$ngx_addon_dir/service/protocol/youku/youku_price.h
 #"
 
-CFLAGS="$CFLAGS -march=native -Wno-error=type-limits -Wno-error=narrowing -Wno-error=int-to-pointer-cast -DMUDUO_STD_STRING "
+CFLAGS="$CFLAGS -march=native -Wno-error=narrowing -Wno-error=int-to-pointer-cast -DMUDUO_STD_STRING"
 
 CORE_LIBS="-L/usr/lib -L/usr/lib64 -L/usr/local/lib -L/usr/local/lib64 $CORE_LIBS /usr/local/lib/libcppcms.a
 /usr/local/lib/libbooster.a
@@ -123,6 +122,6 @@ CORE_LIBS="-L/usr/lib -L/usr/lib64 -L/usr/local/lib -L/usr/local/lib64 $CORE_LIB
 /usr/local/lib/libmuduo_net_cpp11.a
 /usr/local/lib/libaerospike.a
 /usr/local/lib/libboost_serialization.a
--lstdc++ -lcrypt -lpcre -lcrypto -lcryptopp -lz -lsasl2 -lssl -ltbb -lprotobuf -lcurl -licuuc -licui18n -ldl -lpthread
+-lstdc++ -lcrypt -lpcre -lcrypto -lcryptopp -lz -lsasl2 -lssl -ltbb -lprotobuf -lcurl -licuuc -licui18n -ldl -lpthread -lzmq -lmtty
 -Wl,-rpath,/usr/local/lib "
 

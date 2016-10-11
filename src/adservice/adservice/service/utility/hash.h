@@ -7,21 +7,20 @@
 
 #include "common/types.h"
 
-namespace adservice{
-    namespace utility{
+namespace adservice {
+namespace utility {
 
-        namespace hash{
+	namespace hash {
 
-            /** hash functions **/
+		/** hash functions **/
 
-            uint64_t sax_hash(const void *key, int32_t len);
+		uint64_t sax_hash(const void * key, int32_t len);
 
-            uint64_t fnv_hash(const void *key, int32_t len);
+		uint64_t fnv_hash(const void * key, int32_t len);
 
-            uint64_t oat_hash(const void *key, int32_t len);
-        }
-
+		uint64_t oat_hash(const void * key, int32_t len);
     }
 }
+}
 
-#endif //ADCORE_HASH_H
+#endif // ADCORE_HASH_H

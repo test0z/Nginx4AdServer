@@ -3,15 +3,14 @@
 //
 
 #include "abstract_bidding_handler.h"
-#include "utility/utility.h"
 #include "logging.h"
+#include "utility/utility.h"
 
 namespace protocol {
 namespace bidding {
 
     using namespace adservice::utility::url;
-    using namespace adservice::utility::cypher;
-    using namespace Logging;
+	using namespace adservice::utility::cypher;
 
     void extractSize(const std::string & size, int & width, int & height)
     {
@@ -68,7 +67,7 @@ namespace bidding {
                            adInfo.sid, adInfo.adxpid.c_str(), adInfo.pid.c_str(), adInfo.adxid, bid.c_str(),
                            biddingFlowInfo.deviceIdBuf, time(NULL), adInfo.priceType, adInfo.ppid);
             if (len >= showBufSize) {
-                LOG_WARN<<"In AbstractBiddingHandler::httpsnippet,showBufSize too small,actual:"<<len;
+				LOG_WARN << "In AbstractBiddingHandler::httpsnippet,showBufSize too small,actual:" << len;
             }
         }
     }
@@ -90,7 +89,7 @@ namespace bidding {
                                adInfo.bannerId, encodedReferer.c_str(), adInfo.areaId.c_str(),
                                biddingFlowInfo.deviceIdBuf, adInfo.priceType, encodedLandingUrl.c_str());
             if (len >= clickBufSize) {
-                LOG_WARN<<"in AbstractBiddingHandler::getClickPara,clickBufSize too small,actual:"<<len;
+				LOG_WARN << "in AbstractBiddingHandler::getClickPara,clickBufSize too small,actual:" << len;
             }
         }
     }
@@ -104,7 +103,7 @@ namespace bidding {
         size_t len = (size_t)snprintf(html, sizeof(html), SNIPPET_IFRAME, width, height, SNIPPET_SHOW_URL, extShowBuf,
                                       showBuf, cookieMappingUrl);
         if (len >= sizeof(html)) {
-            LOG_WARN<<"generateHtmlSnippet buffer size not enough,needed:"<<len;
+			LOG_WARN << "generateHtmlSnippet buffer size not enough,needed:" << len;
         }
         return std::string(html, html + len);
     }
@@ -121,7 +120,7 @@ namespace bidding {
         int len = snprintf(script, sizeof(script), SNIPPET_SCRIPT, width, height, scriptUrl, showBuf, clickBuf,
                            clickBuf, extParam, clickMacro);
         if (len >= (int)sizeof(script)) {
-            LOG_WARN<<"generateScript buffer size not enough,needed:"<<len;
+			LOG_WARN << "generateScript buffer size not enough,needed:" << len;
         }
         return std::string(script, script + len);
     }

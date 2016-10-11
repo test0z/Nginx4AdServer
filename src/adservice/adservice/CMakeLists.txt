@@ -1,0 +1,69 @@
+PROJECT(adservice)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+
+FIND_PATH(MTTY_INCLUDE_DIR mtty/types.h)
+
+INCLUDE_DIRECTORIES(
+    ./service
+    ../../core
+    ../../http
+    ${MTTY_INCLUDE_DIR}
+    )
+
+SET(SRC_LIST
+    ./main.cpp
+    ./logging.cpp
+    ./service/core/adselectv2/ad_select_client.cpp
+    ./service/core/adselectv2/ad_select_interface.cpp
+    ./service/core/config_types.cpp
+    ./service/core/core_executor.cpp
+    ./service/core/core_ip_manager.cpp
+    ./service/core/core_threadlocal_manager.cpp
+    ./service/core/core_typetable.cpp
+    ./service/core/logic/abstract_query_task.cpp
+    ./service/core/logic/bid_query_task.cpp
+    ./service/core/logic/click_query_task.cpp
+    ./service/core/logic/show_query_task.cpp
+    ./service/core/logic/trace_task.cpp
+    ./service/core/logpusher/kafka_log_producer.cpp
+    ./service/core/logpusher/log_pusher.cpp
+    ./service/core/model/source_record.cpp
+    ./service/kafka_checker.cpp
+    ./service/libutil/AdAcbm.cpp
+    ./service/libutil/AdIpc.cpp
+    ./service/libutil/AdMd5.cpp
+    ./service/libutil/test/AESPro2.cpp
+    ./service/libutil/test/md5test.cpp
+    ./service/protocol/baidu/baidu_bidding.pb.cpp
+    ./service/protocol/baidu/baidu_bidding_handler.cpp
+    ./service/protocol/baidu/baidu_price.cpp
+    ./service/protocol/base/abstract_bidding_handler.cpp
+    ./service/protocol/guangyin/guangyin_bidding.pb.cpp
+    ./service/protocol/guangyin/guangyin_bidding_handler.cpp
+    ./service/protocol/guangyin/guangyin_price.cpp
+    ./service/protocol/log/logstring.cpp
+    ./service/protocol/netease/netease_bidding_handlerv2.cpp
+    ./service/protocol/sohu/sohu_bidding_handler.cpp
+    ./service/protocol/sohu/sohu_price.cpp
+    ./service/protocol/sohu/sohuRTB.pb.cpp
+    ./service/protocol/tanx/tanx_bidding.pb.cpp
+    ./service/protocol/tanx/tanx_bidding_handler.cpp
+    ./service/protocol/tanx/tanx_price.cpp
+    ./service/protocol/tencent_gdt/gdt.pb.cpp
+    ./service/protocol/tencent_gdt/gdt_bidding_handler.cpp
+    ./service/protocol/tencent_gdt/tencent_gdt_price.cpp
+    ./service/protocol/youku/youku_bidding_handlerv2.cpp
+    ./service/protocol/youku/youku_price.cpp
+    ./service/utility/aero_spike.cpp
+    ./service/utility/cypher.cpp
+    ./service/utility/escape.cpp
+    ./service/utility/file.cpp
+    ./service/utility/hash.cpp
+    ./service/utility/json.cpp
+    ./service/utility/memory.cpp
+    ./service/utility/mttytime.cpp
+    ./service/utility/random.cpp
+    ./service/utility/url.cpp
+    ./service/utility/userclient.cpp)
+
+ADD_EXECUTABLE(${PROJECT_NAME} ${SRC_LIST})

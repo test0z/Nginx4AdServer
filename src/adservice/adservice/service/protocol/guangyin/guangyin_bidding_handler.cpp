@@ -1,14 +1,12 @@
 #include "guangyin_bidding_handler.h"
 
 #include "core/core_ip_manager.h"
-#include "utility/utility.h"
 #include "logging.h"
+#include "utility/utility.h"
 #include <boost/algorithm/string.hpp>
 
 namespace protocol {
 namespace bidding {
-
-    using namespace Logging;
 
     namespace {
 
@@ -65,7 +63,7 @@ namespace bidding {
             return true;
         }
 
-        void nativeiframe(const AdBanner & banner, protocol::log::AdInfo & adInfo, std::string & htmlTemplate)
+		void nativeiframe(const MT::common::Banner & banner, protocol::log::AdInfo & adInfo, std::string & htmlTemplate)
         {
 
             std::map<std::string, std::string> replaces;
@@ -154,9 +152,9 @@ namespace bidding {
             queryCondition.mobileNetwork = getNetWork(device.connectiontype());
             if (bidRequest_.has_app()) {
                 const App & app = bidRequest_.app();
-                if(app.has_name()){
+				if (app.has_name()) {
                     queryCondition.adxpid = app.name();
-                }else if (app.has_publisher()) {
+				} else if (app.has_publisher()) {
                     queryCondition.adxpid = app.publisher().slot();
                 }
             }
@@ -180,41 +178,42 @@ namespace bidding {
         return isBidAccepted = true;
     }
 
-    void GuangyinBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition, const AdSelectResult & result)
+	void GuangyinBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
+												const MT::common::SelectResult & result)
     {
         bidResponse_.Clear();
         bidResponse_.set_id(bidRequest_.id());
         bidResponse_.set_bidid(adservice::utility::cypher::randomId(3));
         bidResponse_.clear_seatbid();
 
-        const AdSolution & finalSolution = result.solution;
-        const AdAdplace & adplace = result.adplace;
-        const AdBanner & banner = result.banner;
+		const MT::common::Solution & finalSolution = result.solution;
+		const MT::common::ADPlace & adplace = result.adplace;
+		const MT::common::Banner & banner = result.banner;
 
         //缓存最终广告结果
-        adInfo.pid = std::to_string(adplace.adplaceId);
-        adInfo.adxpid = queryCondition.adxpid;
-        adInfo.sid = finalSolution.solutionId;
+		adInfo.pid = std::to_string(adplace.pId);
+		adInfo.adxpid = queryCondition.adxpid;
+		adInfo.sid = finalSolution.sId;
 
-        int advId = finalSolution.advId;
+		auto advId = finalSolution.advId;
         adInfo.advId = advId;
         adInfo.adxid = queryCondition.adxid;
         adInfo.adxuid = bidRequest_.user().id();
-        adInfo.bannerId = banner.bannerId;
-        adInfo.cid = adplace.cid;
-        adInfo.mid = adplace.mid;
-        adInfo.cpid = adInfo.advId;
-        adInfo.bidSize = makeBidSize(banner.width, banner.height);
+		adInfo.bannerId = banner.bId;
+		adInfo.cid = adplace.cId;
+		adInfo.mid = adplace.mId;
+		adInfo.cpid = adInfo.advId;
+		adInfo.bidSize = makeBidSize(banner.width, banner.height);
 
         const Imp & imp = bidRequest_.imp(0);
-        float maxCpmPrice = std::max((float)result.bidPrice, imp.bidfloor());
+		float maxCpmPrice = std::max((float)result.bidPrice, imp.bidfloor());
         adInfo.offerPrice = maxCpmPrice;
 
         const std::string & userIp = bidRequest_.device().ip();
         adInfo.areaId = adservice::server::IpManager::getInstance().getAreaCodeStrByIp(userIp.c_str());
 
         SeatBid * seatBid = bidResponse_.add_seatbid();
-        seatBid->set_seat("5761460d3ada7515003d3589");
+		seatBid->set_seat("5761460d3ada7515003d3589");
         Bid * adResult = seatBid->add_bid();
 
         adResult->set_id(bidRequest_.id());
@@ -263,7 +262,7 @@ namespace bidding {
     {
         std::string result;
         if (!adservice::utility::serialize::writeProtoBufObject(bidResponse_, &result)) {
-            LOG_ERROR<<"failed to write protobuf object in GuangyinBiddingHandler::match";
+			LOG_ERROR << "failed to write protobuf object in GuangyinBiddingHandler::match";
             reject(response);
             return;
         }
@@ -279,7 +278,7 @@ namespace bidding {
         bidResponse_.set_nbr(NoBidReasonCodes::TECHNICAL_ERROR);
         std::string result;
         if (!adservice::utility::serialize::writeProtoBufObject(bidResponse_, &result)) {
-            LOG_ERROR<<"failed to write protobuf object in GuangyinBiddingHandler::reject";
+			LOG_ERROR << "failed to write protobuf object in GuangyinBiddingHandler::reject";
             return;
         }
         response.status(200);

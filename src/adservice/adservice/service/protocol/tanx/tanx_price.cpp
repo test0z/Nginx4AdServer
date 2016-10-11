@@ -6,36 +6,32 @@
  * It uses the Base64 decoder and the MD5 in the OpenSSL library.
  */
 
+#include "tanx_price.h"
+#include "logging.h"
+#include "utility/utility.h"
+#include <arpa/inet.h>
 #include <iostream>
 #include <openssl/bio.h>
 #include <openssl/evp.h>
 #include <openssl/md5.h>
-#include <arpa/inet.h>
-#include "tanx_price.h"
-#include "utility/utility.h"
-#include "logging.h"
-
 
 using std::string;
 using std::cout;
 using std::endl;
 using std::cerr;
-using namespace Logging;
 
 // Calc the length of the decoded
-#define base64DecodedLength(len)  (((len + 3) / 4) * 3)
+#define base64DecodedLength(len) (((len + 3) / 4) * 3)
 
 // Check the endian of the machine
 static int32_t __endianCheck = 1;
-#define IS_BIG_ENDIAN (*(char*)&__endianCheck == 0)
+#define IS_BIG_ENDIAN (*(char *)&__endianCheck == 0)
 
 // Reverse by byte
-#define SWAB32(x) \
-    ((uint32_t)( \
-        (((uint32_t)(x) & (uint32_t)0x000000ffUL) << 24) | \
-        (((uint32_t)(x) & (uint32_t)0x0000ff00UL) <<  8) | \
-        (((uint32_t)(x) & (uint32_t)0x00ff0000UL) >>  8) | \
-        (((uint32_t)(x) & (uint32_t)0xff000000UL) >> 24) ))
+#define SWAB32(x)                                                                                                  \
+	((uint32_t)((((uint32_t)(x) & (uint32_t)0x000000ffUL) << 24) | (((uint32_t)(x) & (uint32_t)0x0000ff00UL) << 8) \
+				| (((uint32_t)(x) & (uint32_t)0x00ff0000UL) >> 8)                                                  \
+				| (((uint32_t)(x) & (uint32_t)0xff000000UL) >> 24)))
 
 #define VERSION_LENGTH 1
 #define BIDID_LENGTH 16
@@ -54,14 +50,12 @@ typedef unsigned char uchar;
 // Key just for test
 // Get it from tanx, format like:
 // f7dbeb735b7a07f1cfca79cc1dfe4fa4
-static uchar g_key[] = {
-        0x01,0xd5,0xba,0xaf,0x00,0x9c,0x4d,0xd6,
-        0xbb,0x01,0xb7,0x11,0xfc,0x74,0x92,0x92
-};
+static uchar g_key[]
+	= { 0x01, 0xd5, 0xba, 0xaf, 0x00, 0x9c, 0x4d, 0xd6, 0xbb, 0x01, 0xb7, 0x11, 0xfc, 0x74, 0x92, 0x92 };
 
 // Hex string to integer
 // For example: 'ac' to 0xac
-//static int htoi(char *s)
+// static int htoi(char *s)
 //{
 //    int value;
 //    int c;
@@ -84,7 +78,7 @@ static uchar g_key[] = {
 //}
 
 // Standard url decoder
-//static int urlDecode(char *str, int len)
+// static int urlDecode(char *str, int len)
 //{
 //    char *dest = str;
 //    char *data = str;
@@ -115,9 +109,9 @@ static uchar g_key[] = {
 //}
 
 // Standard base64 decoder
-static int base64Decode(char* src, int srcLen, char* dst, int dstLen)
+static int base64Decode(char * src, int srcLen, char * dst, int dstLen)
 {
-    BIO *bio, *b64 ;
+	BIO *bio, *b64;
     b64 = BIO_new(BIO_f_base64());
     BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
     bio = BIO_new_mem_buf(src, srcLen);
@@ -132,12 +126,11 @@ static int base64Decode(char* src, int srcLen, char* dst, int dstLen)
 // variable and bidding time will return to time variable
 // If this function returns false, it means format error or checksum
 // error, realPrice variable and time variable are invalid
-static bool decodePrice(uchar* src, int32_t& realPrice, time_t& time)
+static bool decodePrice(uchar * src, int32_t & realPrice, time_t & time)
 {
     // Get version and check
     int v = *src;
-    if (v != 1)
-    {
+	if (v != 1) {
         cerr << "version:" << v << "!=1, error" << endl;
         return false;
     }
@@ -153,21 +146,17 @@ static bool decodePrice(uchar* src, int32_t& realPrice, time_t& time)
 
     // Get settle price
     int32_t price = 0;
-    uchar* p1 = (uchar*)&price;
-    uchar* p2 = src + ENCODEPRICE_OFFSITE;
-    uchar* p3 = ctxBuf;
-    for (int i = 0; i < 4; ++i)
-    {
+	uchar * p1 = (uchar *)&price;
+	uchar * p2 = src + ENCODEPRICE_OFFSITE;
+	uchar * p3 = ctxBuf;
+	for (int i = 0; i < 4; ++i) {
         *p1++ = *p2++ ^ *p3++;
     }
 
     // Big endian needs reverse price by byte
-    if (IS_BIG_ENDIAN)
-    {
+	if (IS_BIG_ENDIAN) {
         realPrice = SWAB32(price);
-    }
-    else
-    {
+	} else {
         realPrice = price;
     }
 
@@ -176,26 +165,25 @@ static bool decodePrice(uchar* src, int32_t& realPrice, time_t& time)
 
     // copy(version+bidid+settlePrice+key)
     const int vb = VERSION_LENGTH + BIDID_LENGTH;
-    uchar* pbuf = buf;
-    memcpy(pbuf, src, vb);// copy version+bidid
+	uchar * pbuf = buf;
+	memcpy(pbuf, src, vb); // copy version+bidid
     pbuf += vb;
 
     // Notice: here is price not realPrice
     // More important for big endian !
-    memcpy(pbuf, &price, 4);// copy settlePrice
+	memcpy(pbuf, &price, 4); // copy settlePrice
     pbuf += 4;
-    memcpy(pbuf, g_key, KEY_LENGTH);// copy key
+	memcpy(pbuf, g_key, KEY_LENGTH); // copy key
 
     // MD5(version+bidid+settlePrice+key)
     MD5(buf, VERSION_LENGTH + BIDID_LENGTH + 4 + KEY_LENGTH, ctxBuf);
 
-    if (0 != memcmp(ctxBuf, src + CRC_OFFSITE, CRC_LENGTH))
-    {
+	if (0 != memcmp(ctxBuf, src + CRC_OFFSITE, CRC_LENGTH)) {
         cerr << "checksum error!" << endl;
         return false;
     }
 
-    time = ntohl(*(uint32_t*)(src + MAGICTIME_OFFSET));
+	time = ntohl(*(uint32_t *)(src + MAGICTIME_OFFSET));
     return true;
 }
 
@@ -218,7 +206,7 @@ static bool decodePrice(uchar* src, int32_t& realPrice, time_t& time)
  *           Decode price ok, price = 87
  *           Bid time is 2012-10-09 02:24:57
  */
-//int main(int argc, char* argv[])
+// int main(int argc, char* argv[])
 //{
 //    // The sample string for encoded price
 //    // result:
@@ -262,58 +250,58 @@ static bool decodePrice(uchar* src, int32_t& realPrice, time_t& time)
 //    return 0;
 //}
 
-
 using namespace adservice::utility::url;
 
-std::string noescape(const std::string& input,char oc='-',char nc='%'){
+std::string noescape(const std::string & input, char oc = '-', char nc = '%')
+{
     char buf[2048];
-    const char* p = input.c_str();
-    char* dest=buf;
-    while(*p!='\0'){
-        if(*p==oc){
-            *dest=nc;
-        }else{
-            *dest=*p;
+	const char * p = input.c_str();
+	char * dest = buf;
+	while (*p != '\0') {
+		if (*p == oc) {
+			*dest = nc;
+		} else {
+			*dest = *p;
         }
         p++;
         dest++;
     }
-    *dest='\0';
+	*dest = '\0';
     return std::string(buf);
 }
 
-void noescape(char* buf,char oc = '-',char nc = '%'){
-    char* p = buf;
-    while(*p!='\0'){
-        if(*p==oc){
-            *p=nc;
+void noescape(char * buf, char oc = '-', char nc = '%')
+{
+	char * p = buf;
+	while (*p != '\0') {
+		if (*p == oc) {
+			*p = nc;
         }
         p++;
     }
-    *p='\0';
+	*p = '\0';
 }
 
-
-int64_t tanx_price_decode(const std::string& ori_input){
+int64_t tanx_price_decode(const std::string & ori_input)
+{
     char buffer[2048];
     std::string input;
-    urlDecode_f(ori_input,input,buffer);
-    input = noescape(noescape(input),' ','+');
+	urlDecode_f(ori_input, input, buffer);
+	input = noescape(noescape(input), ' ', '+');
     std::string output;
-    urlDecode_f(input,output,buffer);
+	urlDecode_f(input, output, buffer);
     int originLen = base64DecodedLength(output.length());
-    originLen=base64Decode((char*)output.data(),output.length(),buffer,originLen);
-    buffer[originLen]='\0';
+	originLen = base64Decode((char *)output.data(), output.length(), buffer, originLen);
+	buffer[originLen] = '\0';
     noescape(buffer);
-    if(originLen != VERSION_LENGTH + BIDID_LENGTH
-                    + ENCODEPRICE_LENGTH + CRC_LENGTH){
-        LOG_ERROR<<"error occured in tanx_price_decode,detail:length,input:"<<ori_input;
+	if (originLen != VERSION_LENGTH + BIDID_LENGTH + ENCODEPRICE_LENGTH + CRC_LENGTH) {
+		LOG_ERROR << "error occured in tanx_price_decode,detail:length,input:" << ori_input;
         return 0;
     }
     int32_t price;
     time_t time;
-    if(!decodePrice((uchar*)buffer,price,time)){
-        LOG_ERROR<<"error occured in tanx_price_decode,input:"<<ori_input;
+	if (!decodePrice((uchar *)buffer, price, time)) {
+		LOG_ERROR << "error occured in tanx_price_decode,input:" << ori_input;
         return 0;
     }
     return price;

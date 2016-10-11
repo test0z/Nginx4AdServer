@@ -4,8 +4,9 @@
 
 #include "netease_bidding_handlerv2.h"
 #include "core/core_ip_manager.h"
-#include "utility/utility.h"
 #include "logging.h"
+#include "utility/utility.h"
+
 #include <muduo/base/Logging.h>
 
 namespace protocol {
@@ -14,8 +15,7 @@ namespace bidding {
     using namespace adservice::utility;
     using namespace adservice::utility::serialize;
     using namespace adservice::utility::json;
-    using namespace adservice::server;
-    using namespace Logging;
+	using namespace adservice::server;
 
 #define AD_NETEASE_SHOW_URL "http://show.mtty.com/v?of=3&p=1500&%s"
 #define AD_NETEASE_CLICK_URL "http://click.mtty.com/c?%s"
@@ -122,7 +122,7 @@ namespace bidding {
         adplaceInfo.flowType = SOLUTION_FLOWTYPE_MOBILE;
         if (adplaceStyleMap.find(style)) {
             NetEaseAdplaceStyle & adplaceStyle = adplaceStyleMap.get(style);
-            adplaceInfo.sizeArray.push_back(std::make_tuple(adplaceStyle.width, adplaceStyle.height));
+			adplaceInfo.sizeArray.push_back(std::make_pair(adplaceStyle.width, adplaceStyle.height));
             queryCondition.width = adplaceStyle.width;
             queryCondition.height = adplaceStyle.height;
         }
@@ -135,17 +135,18 @@ namespace bidding {
         return isBidAccepted = true;
     }
 
-    static const char * BIDRESPONSE_TEMPLATE
-        = "{\"mainTitle\":\"\","
-          "\"subTitle\":\"\","
-          "\"monitor\":\"\","
-          "\"showMonitorUrl\":\"\","
-          "\"clickMonitorUrl\":\"\","
-          "\"valid_time\":0,"
-          "\"content\":\"\","
-          "\"resource_url\":[],"
-          "\"linkUrl\":\"\""
-          "}";
+	static const char * BIDRESPONSE_TEMPLATE = R"(
+{
+	"mainTitle":"",
+	"subTitle":"",
+	"monitor":"",
+	"showMonitorUrl":"",
+	"clickMonitorUrl":"",
+	"valid_time":0,
+	"content":"",
+	"resource_url":[],
+	"linkUrl":""
+})";
 
     static bool replace(std::string & str, const std::string & from, const std::string & to)
     {
@@ -156,34 +157,35 @@ namespace bidding {
         return true;
     }
 
-    void NetEaseBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition, const AdSelectResult & result)
+	void NetEaseBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
+											   const MT::common::SelectResult & result)
     {
         cppcms::json::value & adzInfo = bidRequest["adunit"];
-        const AdSolution & finalSolution = result.solution;
-        const AdAdplace & adplace = result.adplace;
-        const AdBanner & banner = result.banner;
-        int advId = finalSolution.advId;
+		const MT::common::Solution & finalSolution = result.solution;
+		const MT::common::ADPlace & adplace = result.adplace;
+		const MT::common::Banner & banner = result.banner;
+		auto advId = finalSolution.advId;
         if (!parseJson(BIDRESPONSE_TEMPLATE, bidResponse)) {
-            LOG_ERROR<<"in NetEaseBiddingHandler::buildBidResult parseJson failed";
+			LOG_ERROR << "in NetEaseBiddingHandler::buildBidResult parseJson failed";
             isBidAccepted = false;
             return;
         }
 
         //缓存最终广告结果
-        adInfo.pid = std::to_string(adplace.adplaceId);
-        adInfo.sid = finalSolution.solutionId;
+		adInfo.pid = std::to_string(adplace.pId);
+		adInfo.sid = finalSolution.sId;
         adInfo.advId = advId;
         adInfo.adxid = ADX_NETEASE_MOBILE;
         adInfo.adxpid = queryCondition.adxpid;
-        adInfo.bannerId = banner.bannerId;
+		adInfo.bannerId = banner.bId;
         adInfo.cid = 0;
         adInfo.mid = 0;
         adInfo.cpid = adInfo.advId;
-        adInfo.offerPrice = result.bidPrice;
+		adInfo.offerPrice = result.bidPrice;
         adInfo.areaId = IpManager::getInstance().getAreaCodeStrByIp(queryCondition.ip.c_str());
         adInfo.imp_id = "";
-        adInfo.priceType = finalSolution.priceType;
-        adInfo.ppid = result.ppid;
+		adInfo.priceType = finalSolution.priceType;
+		adInfo.ppid = result.ppid;
         adInfo.bidSize = makeBidSize(banner.width, banner.height);
 
         // html snippet相关
@@ -192,9 +194,9 @@ namespace bidding {
         char showParam[2048];
         char buffer[2048];
 
-        int bannerType = banner.bannerType;
+		int bannerType = banner.bannerType;
         char pjson[2048] = { '\0' };
-        std::string strBannerJson = banner.json;
+		std::string strBannerJson = banner.json;
         strncat(pjson, strBannerJson.data(), sizeof(pjson));
         tripslash2(pjson);
         cppcms::json::value bannerJson;
@@ -248,7 +250,7 @@ namespace bidding {
     {
         std::string result = toJson(bidResponse);
         if (result.empty()) {
-            LOG_ERROR<<"NetEaseBiddingHandler::match failed to parse obj to json";
+			LOG_ERROR << "NetEaseBiddingHandler::match failed to parse obj to json";
             reject(response);
         } else {
             response.status(200);
