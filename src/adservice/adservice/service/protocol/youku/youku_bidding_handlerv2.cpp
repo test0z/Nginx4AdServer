@@ -215,7 +215,7 @@ namespace bidding {
         return isBidAccepted = true;
     }
 
-	static const char * BIDRESPONSE_TEMPLATE = R"("
+	static const char * BIDRESPONSE_TEMPLATE = R"(
 {
 	"id":"",
 	"bidid":"",
@@ -234,7 +234,7 @@ namespace bidding {
 						"pm":[],
 						"cm":[],
 						"type":""
-					}"
+					}
 				}
 			]
 		}
@@ -336,7 +336,7 @@ namespace bidding {
 
     void YoukuBiddingHandler::match(adservice::utility::HttpResponse & response)
     {
-        std::string result = toJson(bidResponse);
+		std::string result = toJson(bidResponse);
         if (result.empty()) {
 			LOG_ERROR << "YoukuBiddingHandler::match failed to parse obj to json";
             reject(response);
