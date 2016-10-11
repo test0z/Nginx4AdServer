@@ -112,6 +112,8 @@ namespace bidding {
             adservice::utility::url::extractAreaInfo(adInfo.areaId.data(), logItem.geoInfo.country,
                                                      logItem.geoInfo.province, logItem.geoInfo.city);
             logItem.adInfo.bidSize = adInfo.bidSize;
+            logItem.adInfo.priceType = adInfo.priceType;
+            logItem.adInfo.ppid = adInfo.ppid;
             logItem.referer = bidRequest_.has_site() ? bidRequest_.site().page() : "";
         } else {
             logItem.adInfo.pid = adInfo.pid;
