@@ -76,8 +76,8 @@ namespace bidding {
         getShowPara(bid, showBuf, sizeof(showBuf));
         size_t len = (size_t)snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s%s&of=3", SNIPPET_SHOW_URL,
                                       "p=" AD_TX_PRICE_MACRO "&", showBuf);
-        if(len>=sizeof(feedbackUrl)){
-            LOG_WARN<<"feedbackUrl buffer size not enough,needed:"<<len;
+		if (len >= sizeof(feedbackUrl)) {
+			LOG_WARN << "feedbackUrl buffer size not enough,needed:" << len;
         }
         strncat(showBuf, "&of=2", 5);
         len = (size_t)snprintf(html, sizeof(html), SNIPPET_IFRAME, width, height, SNIPPET_SHOW_URL,
@@ -128,7 +128,7 @@ namespace bidding {
             logItem.adInfo.bidSize = adInfo.bidSize;
             logItem.referer = bidRequest.has_url() ? bidRequest.url() : "";
         } else {
-            logItem.adInfo.pid = adInfo.pid;
+			logItem.adInfo.pid = "0";
             logItem.adInfo.bidSize = adInfo.bidSize;
         }
         return true;
@@ -196,11 +196,11 @@ namespace bidding {
 		std::string adxIndustryTypeStr = banner.adxIndustryType;
         int adxIndustryType = extractRealValue(adxIndustryTypeStr.data(), ADX_TANX);
         const BidRequest_AdzInfo & adzInfo = bidRequest.adzinfo(0);
-        int maxCpmPrice = max(result.bidPrice, adzInfo.min_cpm_price()+1);
+		int maxCpmPrice = max(result.bidPrice, adzInfo.min_cpm_price() + 1);
         auto buyerRules = adzInfo.buyer_rules();
         for (auto iter = buyerRules.begin(); iter != buyerRules.end(); iter++) {
             if ((uint32_t)advId == iter->advertiser_ids()) {
-                maxCpmPrice = max(maxCpmPrice, iter->min_cpm_price()+1);
+				maxCpmPrice = max(maxCpmPrice, iter->min_cpm_price() + 1);
                 break;
             }
         }
@@ -238,8 +238,8 @@ namespace bidding {
         parseJson(pjson, bannerJson);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string destUrl = mtlsArray[0].get("p1", "");
-        if(destUrl.empty()){
-            LOG_WARN<<"destUrl should not be empty!!";
+		if (destUrl.empty()) {
+			LOG_WARN << "destUrl should not be empty!!";
         }
         adResult->add_destination_url(destUrl);
         adResult->add_click_through_url(destUrl);

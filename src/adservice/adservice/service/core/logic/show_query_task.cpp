@@ -317,7 +317,7 @@ namespace corelogic {
 				condition.adxid = ADX_SSP_PC;
 			}
 			MT::common::SelectResult selectResult;
-			if (!adSelectClient->doRequest(seqId, true, condition, selectResult)) {
+			if (!adSelectClient->search(seqId, true, condition, selectResult)) {
 				LOG_DEBUG << "ssp module:adselect failed";
 				const MT::common::ADPlace & tmpadplace = selectResult.adplace;
 				log.adInfo.adxid = condition.adxid;
@@ -354,24 +354,21 @@ namespace corelogic {
 										  referer);
             respBody = std::string(buffer, buffer + len);
 		} else { // DSP of=0,of=2,of=3
-				 //			adselectv2::AdDataManager::AdDataManagerPtr & dataManager =
-				 //AdDataManager::getInstance();
-				 //			bool showCreative = true;
-				 //			dspSetParam(paramMap, showCreative, needLog);
-				 //			MT::common::Banner adBanner;
-				 //			int bId = std::stoi(paramMap[URL_CREATIVE_ID]);
-				 //			if (!dataManager->getBanner(bId, adBanner)) {
-				 //				log.adInfo.bId = 0;
-				 //				log.reqStatus = 500;
-				 //				return;
-				 //			}
-				 //			if (showCreative) { //需要显示创意
-				 //				const char * tmp = adBanner.json.data();
-				 //				char buffer[8192];
-				 //				int len = buildResponseForDsp(adBanner, paramMap, tmp, templateFmt, buffer,
-				 //sizeof(buffer));
-				 //				respBody = std::string(buffer, buffer + len);
-				 //			}
+			bool showCreative = true;
+			dspSetParam(paramMap, showCreative, needLog);
+			MT::common::Banner adBanner;
+			int64_t bId = std::stoll(paramMap[URL_CREATIVE_ID]);
+			if (!adSelectClient->getBannerById(bId, adBanner)) {
+				log.adInfo.bannerId = 0;
+				log.reqStatus = 500;
+				return;
+			}
+			if (showCreative) { //需要显示创意
+				const char * tmp = adBanner.json.data();
+				char buffer[8192];
+				int len = buildResponseForDsp(adBanner, paramMap, tmp, templateFmt, buffer, sizeof(buffer));
+				respBody = std::string(buffer, buffer + len);
+			}
 		}
 
 #ifdef USE_ENCODING_GZIP

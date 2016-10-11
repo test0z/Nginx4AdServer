@@ -82,7 +82,7 @@ namespace bidding {
                                  logItem.geoInfo.city);
             logItem.adInfo.bidSize = adInfo.bidSize;
 		} else {
-            logItem.adInfo.pid = adInfo.pid;
+			logItem.adInfo.pid = "0";
             logItem.adInfo.bidSize = adInfo.bidSize;
         }
         return true;

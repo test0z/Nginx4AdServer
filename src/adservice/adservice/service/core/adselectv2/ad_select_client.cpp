@@ -92,22 +92,27 @@ namespace adselectv2 {
 		return;
     }
 
-    bool AdSelectClient::doRequest(int seqId, bool isSSP, AdSelectCondition & selectCondition,
-								   MT::common::SelectResult & result)
+	bool AdSelectClient::search(int seqId, bool isSSP, AdSelectCondition & selectCondition,
+								MT::common::SelectResult & result)
 	{
 		MT::common::SelectRequest request;
 
 		makeRequest(isSSP, selectCondition, request);
 		std::string requestBin = serialize(request);
 
+		zmq::message_t message(requestBin.length() + 1);
+		uint8_t flag = (uint8_t)MT::common::MessageType::ADSELECT_REQUEST;
+		memcpy(static_cast<char *>(message.data()), &flag, 1);
+		memcpy(static_cast<char *>(message.data()) + 1, requestBin.c_str(), requestBin.length());
+
 		try {
-			socket_.send(requestBin.data(), requestBin.length());
+			socket_.send(message);
 		} catch (zmq::error_t & e) {
 			LOG_ERROR << "";
 			return false;
 		}
 
-		if (zmq::poll(pollitems_, 1, selectTimeout_.count()) < 1) {
+		if (zmq::poll(pollitems_, 1, isSSP ? selectTimeout_.count() * 10 : selectTimeout_.count()) < 1) {
 			LOG_WARN << "adselect timeout";
 			return false;
 		} else {
@@ -119,12 +124,40 @@ namespace adselectv2 {
 					LOG_ERROR << "";
 					return false;
 				}
-				std::string response((char *)reply.data(), reply.size());
+				std::string response((char *)reply.data() + 1, reply.size() - 1);
 				deserialize(response, result);
 			}
 		}
 
 		return true;
+	}
+
+	bool AdSelectClient::getBannerById(int64_t bannerId, MT::common::Banner & banner)
+	{
+		try {
+			zmq::message_t message(sizeof(bannerId) + 1);
+
+			uint8_t flag = (uint8_t)MT::common::MessageType::GET_BANNER_REQUEST;
+			memcpy(static_cast<char *>(message.data()), &flag, 1);
+			memcpy(static_cast<char *>(message.data()) + 1, &bannerId, sizeof(bannerId));
+			socket_.send(message);
+
+			zmq::message_t reply;
+			socket_.recv(&reply);
+
+			std::string response((char *)reply.data() + 1, reply.size() - 1);
+
+			std::stringstream ss;
+			ss << response;
+
+			boost::archive::text_iarchive archive(ss);
+			archive >> banner;
+
+			return true;
+		} catch (zmq::error_t & e) {
+			LOG_ERROR << "";
+			return false;
+		}
 	}
 }
 }

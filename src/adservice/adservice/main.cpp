@@ -49,13 +49,6 @@ struct LocationConf {
     ngx_str_t adselectentry;
 	// adselect 服务超时时间
 	ngx_uint_t adselecttimeout;
-	// addata 配置
-	// addata namespace
-    ngx_str_t addatanamespace;
-	// addata adplace set
-    ngx_str_t addataadplaceset;
-	// addata banner set
-    ngx_str_t addatabannerset;
 	// aerospike config
 	// aerospike 节点
     ngx_str_t asnode;
@@ -95,9 +88,6 @@ static ngx_command_t commands[] = { COMMAND_ITEM("logging_level", LocationConf, 
 									COMMAND_ITEM("local_logger_thread", LocationConf, localloggerthreads, parseConfNum),
 									COMMAND_ITEM("adselect_entry", LocationConf, adselectentry, parseConfStr),
 									COMMAND_ITEM("adselect_timeout", LocationConf, adselecttimeout, parseConfNum),
-									COMMAND_ITEM("addata_namespace", LocationConf, addatanamespace, parseConfStr),
-									COMMAND_ITEM("addata_adplaceset", LocationConf, addataadplaceset, parseConfStr),
-									COMMAND_ITEM("addata_bannerset", LocationConf, addatabannerset, parseConfStr),
 									COMMAND_ITEM("as_node", LocationConf, asnode, parseConfStr),
 									COMMAND_ITEM("as_namespace", LocationConf, asnamespace, parseConfStr),
 									COMMAND_ITEM("workdir", LocationConf, workdir, parseConfStr),
@@ -125,9 +115,6 @@ static void * createLocationConf(ngx_conf_t * cf)
     conf->localloggerthreads = NGX_CONF_UNSET_UINT;
     ngx_str_null(&conf->adselectentry);
 	conf->adselecttimeout = NGX_CONF_UNSET_UINT;
-    ngx_str_null(&conf->addatanamespace);
-    ngx_str_null(&conf->addataadplaceset);
-    ngx_str_null(&conf->addatabannerset);
     ngx_str_null(&conf->asnode);
     ngx_str_null(&conf->asnamespace);
     ngx_str_null(&conf->workdir);
@@ -148,9 +135,6 @@ static char * mergeLocationConf(ngx_conf_t * cf, void * parent, void * child)
 	ngx_conf_merge_uint_value(conf->localloggerthreads, prev->localloggerthreads, 3);
 	ngx_conf_merge_str_value(conf->adselectentry, prev->adselectentry, "");
 	ngx_conf_merge_uint_value(conf->adselecttimeout, prev->adselecttimeout, 10);
-	ngx_conf_merge_str_value(conf->addatanamespace, prev->addatanamespace, "mt-solutions");
-	ngx_conf_merge_str_value(conf->addataadplaceset, prev->addataadplaceset, "adplace");
-	ngx_conf_merge_str_value(conf->addatabannerset, prev->addatabannerset, "banner");
 	ngx_conf_merge_str_value(conf->asnode, prev->asnode, "");
 	ngx_conf_merge_str_value(conf->asnamespace, prev->asnamespace, "mtty");
 	ngx_conf_merge_str_value(conf->workdir, prev->workdir, "/usr/local/nginx/sbin/");
@@ -248,9 +232,6 @@ static void global_init(LocationConf * conf)
     globalConfig.logConfig.localLoggerThreads = conf->localloggerthreads;
     globalConfig.adselectConfig.adselectNode = NGX_STR_2_STD_STR(conf->adselectentry);
 	globalConfig.adselectConfig.adselectTimeout = conf->adselecttimeout;
-    globalConfig.addataConfig.addataNamespace = NGX_STR_2_STD_STR(conf->addatanamespace);
-    globalConfig.addataConfig.adplaceSet = NGX_STR_2_STD_STR(conf->addataadplaceset);
-    globalConfig.addataConfig.bannerSet = NGX_STR_2_STD_STR(conf->addatabannerset);
     globalConfig.aerospikeConfig.nameSpace = NGX_STR_2_STD_STR(conf->asnamespace);
     std::string asNode = NGX_STR_2_STD_STR(conf->asnode);
 	parseConfigAeroSpikeNode(asNode, globalConfig.aerospikeConfig);
