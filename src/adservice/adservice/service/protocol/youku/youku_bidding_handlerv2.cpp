@@ -115,7 +115,7 @@ namespace bidding {
             logItem.adInfo.bidSize = adInfo.bidSize;
             logItem.referer = bidRequest.get("site.ref", "");
 		} else {
-            logItem.adInfo.pid = adInfo.pid;
+			logItem.adInfo.pid = "0";
             logItem.adInfo.bidSize = adInfo.bidSize;
         }
         return true;
