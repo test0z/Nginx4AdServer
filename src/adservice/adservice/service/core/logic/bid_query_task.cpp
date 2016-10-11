@@ -16,7 +16,7 @@
 #include "core/adselectv2/ad_select_client.h"
 #include "logging.h"
 
-extern adservice::adselectv2::AdSelectClient * adSelectClient;
+extern adservice::adselectv2::AdSelectClientPtr adSelectClient;
 
 namespace adservice {
 namespace corelogic {
@@ -155,7 +155,7 @@ namespace corelogic {
                     condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
                     condition.dHour = adSelectTimeCodeUtc();
 					MT::common::SelectResult resp;
-                    if (!adSelectClient->doRequest(seqId, false, condition, resp)) {
+					if (!adSelectClient->search(seqId, false, condition, resp)) {
                         return false;
                     }
 					adapter->buildBidResult(condition, resp);

@@ -20,9 +20,12 @@ namespace adselectv2 {
 			, selectTimeout_(timeout)
 		{
 			socket_.connect(url);
+			pollitems_[0] = { socket_, 0, ZMQ_POLLIN, 0 };
 		}
 
-		bool doRequest(int seqId, bool isSSP, AdSelectCondition & selectCondition, MT::common::SelectResult & result);
+		bool search(int seqId, bool isSSP, AdSelectCondition & selectCondition, MT::common::SelectResult & result);
+
+		bool getBannerById(int64_t bannerId, MT::common::Banner & banner);
 
 	private:
 		std::string serverUrl_;
@@ -30,7 +33,7 @@ namespace adselectv2 {
 
 		zmq::context_t context_{ 1 };
 		zmq::socket_t socket_{ context_, ZMQ_DEALER };
-		zmq::pollitem_t pollitems_[1]{ { socket_, 0, ZMQ_POLLIN, 0 } };
+		zmq::pollitem_t pollitems_[1];
     };
 
     typedef std::shared_ptr<AdSelectClient> AdSelectClientPtr;
