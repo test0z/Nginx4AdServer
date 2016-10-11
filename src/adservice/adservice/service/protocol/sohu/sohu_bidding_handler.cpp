@@ -89,6 +89,7 @@ namespace bidding {
                 = bidRequest.has_site() ? (bidRequest.site().has_page() ? bidRequest.site().page() : "") : "";
 		} else {
             logItem.adInfo.pid = adInfo.pid;
+            logItem.adInfo.bidSize = adInfo.bidSize;
         }
         return true;
     }
@@ -125,6 +126,8 @@ namespace bidding {
             queryCondition.height = video.height();
         }
         if (!filterCb(this, queryCondition)) {
+            adInfo.adxid = queryCondition.adxid;
+            adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
             return bidFailedReturn();
         }
         return isBidAccepted = true;

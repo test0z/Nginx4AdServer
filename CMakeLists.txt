@@ -12,11 +12,8 @@ set(SOURCE_FILES
     src/adservice/adservice/service/common/types.h
     src/adservice/adservice/service/core/adselectv2/ad_select_client.cpp
     src/adservice/adservice/service/core/adselectv2/ad_select_client.h
+    src/adservice/adservice/service/core/adselectv2/ad_select_interface.cpp
     src/adservice/adservice/service/core/adselectv2/ad_select_interface.h
-    src/adservice/adservice/service/core/adselectv2/addata.cpp
-    src/adservice/adservice/service/core/adselectv2/addata.h
-    src/adservice/adservice/service/core/adselectv2/addatamanager.cpp
-    src/adservice/adservice/service/core/adselectv2/addatamanager.h
     src/adservice/adservice/service/core/logic/abstract_query_task.cpp
     src/adservice/adservice/service/core/logic/abstract_query_task.h
     src/adservice/adservice/service/core/logic/abstract_service.h

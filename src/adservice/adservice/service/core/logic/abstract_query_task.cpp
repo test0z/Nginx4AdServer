@@ -173,15 +173,16 @@ namespace corelogic {
                 std::string & pricetype = iter->second;
                 log.adInfo.priceType = std::stoi(pricetype);
             }
+            int offerPrice
+                    = paramMap.find(URL_BID_PRICE) != paramMap.end() ? decodeOfferPrice(paramMap[URL_BID_PRICE]) : 0;
             if ((iter = paramMap.find(URL_EXCHANGE_PRICE)) != paramMap.end()) { //成交价格
                 std::string & price = iter->second;                             // paramMap[URL_EXCHANGE_PRICE];
-                // log.adInfo.cost = decodeAdxExchangePrice(log.adInfo.adxid,price);
-                // log.adInfo.bidPrice = (int)(log.adInfo.cost * AD_OWNER_COST_FACTOR);
                 int decodePrice = decodeAdxExchangePrice(log.adInfo.adxid, price);
                 bool isYoukuDeal = paramMap.find(URL_YOUKU_DEAL) != paramMap.end() && !paramMap[URL_YOUKU_DEAL].empty();
-                int offerPrice
-                    = paramMap.find(URL_BID_PRICE) != paramMap.end() ? decodeOfferPrice(paramMap[URL_BID_PRICE]) : 0;
                 calcPrice(log.adInfo.adxid, isYoukuDeal, decodePrice, offerPrice, log.adInfo.cost, log.adInfo.bidPrice,
+                          log.logType, log.adInfo.priceType);
+            } else {
+                calcPrice(log.adInfo.adxid, false, offerPrice, offerPrice, log.adInfo.cost, log.adInfo.bidPrice,
                           log.logType, log.adInfo.priceType);
             }
             if ((iter = paramMap.find(URL_PRODUCTPACKAGE_ID)) != paramMap.end()) { //产品包id

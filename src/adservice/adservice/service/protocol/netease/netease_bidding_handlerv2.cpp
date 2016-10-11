@@ -76,6 +76,7 @@ namespace bidding {
             logItem.adInfo.bidSize = adInfo.bidSize;
         } else {
             logItem.adInfo.pid = adInfo.pid;
+            logItem.adInfo.bidSize = adInfo.bidSize;
         }
         return true;
     }
@@ -130,6 +131,8 @@ namespace bidding {
 
         if (!filterCb(this, queryCondition)) {
             adInfo.adxpid = queryCondition.adxpid;
+            adInfo.adxid = queryCondition.adxid;
+            adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
             return bidFailedReturn();
         }
         return isBidAccepted = true;

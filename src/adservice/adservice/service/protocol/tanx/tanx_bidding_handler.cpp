@@ -129,6 +129,7 @@ namespace bidding {
             logItem.referer = bidRequest.has_url() ? bidRequest.url() : "";
         } else {
             logItem.adInfo.pid = adInfo.pid;
+            logItem.adInfo.bidSize = adInfo.bidSize;
         }
         return true;
     }
@@ -171,6 +172,8 @@ namespace bidding {
         }
         if (!filterCb(this, queryCondition)) {
             adInfo.adxpid = queryCondition.adxpid;
+            adInfo.adxid = queryCondition.adxid;
+            adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
             return bidFailedReturn();
         }
         return isBidAccepted = true;
@@ -193,11 +196,11 @@ namespace bidding {
 		std::string adxIndustryTypeStr = banner.adxIndustryType;
         int adxIndustryType = extractRealValue(adxIndustryTypeStr.data(), ADX_TANX);
         const BidRequest_AdzInfo & adzInfo = bidRequest.adzinfo(0);
-        int maxCpmPrice = max(result.bidPrice, adzInfo.min_cpm_price());
+        int maxCpmPrice = max(result.bidPrice, adzInfo.min_cpm_price()+1);
         auto buyerRules = adzInfo.buyer_rules();
         for (auto iter = buyerRules.begin(); iter != buyerRules.end(); iter++) {
             if ((uint32_t)advId == iter->advertiser_ids()) {
-                maxCpmPrice = max(maxCpmPrice, iter->min_cpm_price());
+                maxCpmPrice = max(maxCpmPrice, iter->min_cpm_price()+1);
                 break;
             }
         }
