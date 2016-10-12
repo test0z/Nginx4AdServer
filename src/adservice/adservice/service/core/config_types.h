@@ -9,6 +9,7 @@
 #include <cppcms/json.h>
 #include <string>
 #include <vector>
+#include <map>
 
 
 //全局服务配置类型
@@ -28,7 +29,7 @@ struct LogConfig {
 
 struct ADSelectConfig {
     std::string adselectNode;
-    int adselectTimeout;
+    std::map<int,int> adselectTimeout;
     bool useUnixSocket;
     std::string unixSocketFile;
 };

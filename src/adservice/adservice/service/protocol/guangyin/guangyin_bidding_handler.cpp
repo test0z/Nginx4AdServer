@@ -256,7 +256,7 @@ namespace bidding {
                                           + std::string(SNIPPET_SHOW_URL)
                                           + "?"
                                           + buffer
-                                          + "&of=2\"></iframe><!--<img src=\"&\"/>-->"));
+                                          + "&of=2\"></iframe><img src=\"##IURL##\" width=\"1\" height=\"1\" style=\"display:none;\"/>"));
         }
         std::string landingUrl = mtlsArray[0].get("p1", "");
         getClickPara(bidRequest_.id(), buffer, sizeof(buffer), "", landingUrl);

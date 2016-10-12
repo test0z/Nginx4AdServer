@@ -112,7 +112,10 @@ namespace adselectv2 {
 			return false;
 		}
 
-		if (zmq::poll(pollitems_, 1, isSSP||selectCondition.adxid==ADX_NETEASE_MOBILE ? -1 : selectTimeout_.count()) < 1) {
+		int timeoutTime = selectTimeouts_.find(selectCondition.adxid)==selectTimeouts_.end()?selectTimeouts_[ADX_OTHER].count():
+						  selectTimeouts_[selectCondition.adxid].count();
+
+		if (zmq::poll(pollitems_, 1, timeoutTime) < 1) {
 			LOG_WARN << "adselect timeout";
 			return false;
 		} else {
