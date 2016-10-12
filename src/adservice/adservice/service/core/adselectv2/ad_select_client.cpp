@@ -108,7 +108,7 @@ namespace adselectv2 {
 		try {
 			socket_.send(message);
 		} catch (zmq::error_t & e) {
-			LOG_ERROR << "";
+			LOG_ERROR << "search请求发送失败：" << e.what();
 			return false;
 		}
 
@@ -121,15 +121,16 @@ namespace adselectv2 {
 				try {
 					socket_.recv(&reply);
 				} catch (zmq::error_t & e) {
-					LOG_ERROR << "";
+					LOG_ERROR << "接收search响应失败：" << e.what();
 					return false;
 				}
 				std::string response((char *)reply.data() + 1, reply.size() - 1);
 				deserialize(response, result);
+				return (result.banner.bId > 0 && result.solution.sId > 0);
 			}
 		}
 
-		return true;
+		return false;
 	}
 
 	bool AdSelectClient::getBannerById(int64_t bannerId, MT::common::Banner & banner)
@@ -155,7 +156,7 @@ namespace adselectv2 {
 
 			return true;
 		} catch (zmq::error_t & e) {
-			LOG_ERROR << "";
+			LOG_ERROR << "查询banner失败：" << e.what();
 			return false;
 		}
 	}

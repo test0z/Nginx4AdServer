@@ -73,7 +73,8 @@ namespace corelogic {
                 bidPrice = 0;
             } else {
                 cost = 0;
-                bidPrice = offerPrice * 1000; // 华哥那边对cpc计费按照cpm公式来算，但cpc是按个数结算的，为了兼容要乘以1000
+				bidPrice
+					= offerPrice * 1000; // 华哥那边对cpc计费按照cpm公式来算，但cpc是按个数结算的，为了兼容要乘以1000
             }
         }
     }
@@ -174,7 +175,7 @@ namespace corelogic {
                 log.adInfo.priceType = std::stoi(pricetype);
             }
             int offerPrice
-                    = paramMap.find(URL_BID_PRICE) != paramMap.end() ? decodeOfferPrice(paramMap[URL_BID_PRICE]) : 0;
+				= paramMap.find(URL_BID_PRICE) != paramMap.end() ? decodeOfferPrice(paramMap[URL_BID_PRICE]) : 0;
             if ((iter = paramMap.find(URL_EXCHANGE_PRICE)) != paramMap.end()) { //成交价格
                 std::string & price = iter->second;                             // paramMap[URL_EXCHANGE_PRICE];
                 int decodePrice = decodeAdxExchangePrice(log.adInfo.adxid, price);
@@ -305,26 +306,28 @@ namespace corelogic {
             std::string loggerName = usedLoggerName();
             std::string logConfigKey = usedLoggerConfig();
             adservice::log::LogPusherPtr logPusher = adservice::log::LogPusher::getLogger(loggerName, logConfigKey);
-            if (logPusher.use_count() > 0)
+			if (logPusher.use_count() > 0) {
                 logPusher->push(logString);
+			}
         }
     }
 
     void AbstractQueryTask::operator()()
     {
-        try {
-            ParamMap paramMap;
-            protocol::log::LogItem log;
-            resp.status(expectedReqStatus());
-            commonLogic(paramMap, log, resp);
-            customLogic(paramMap, log, resp);
-            if (needLog)
-                doLog(log);
-        } catch (std::exception & e) {
+		try {
+			ParamMap paramMap;
+			protocol::log::LogItem log;
+			resp.status(expectedReqStatus());
+			commonLogic(paramMap, log, resp);
+			customLogic(paramMap, log, resp);
+			if (needLog) {
+				doLog(log);
+			}
+		} catch (std::exception & e) {
             resp.status(500, "error");
             resp.set_content_header("text/html");
             onError(e, resp);
-        }
+		}
     }
 }
 }
