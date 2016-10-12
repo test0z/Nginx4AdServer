@@ -222,7 +222,8 @@ void parseConfigAeroSpikeNode(const std::string & asNode, AerospikeConfig & conf
 void parseConfigAdselectTimeout(const std::string & timeoutStr,std::map<int,int>& timeoutMap){
     std::vector<std::string> results;
     boost::algorithm::split(results,timeoutStr,boost::algorithm::is_any_of("|:"));
-    for(int i=0;i<results.size();i+=2){
+    int len = (int)results.size();
+    for(int i=0;i<len;i+=2){
         int adx = std::stoi(results[i]);
         int timeout = std::stoi(results[i+1]);
         timeoutMap.insert(std::make_pair(adx,timeout));
