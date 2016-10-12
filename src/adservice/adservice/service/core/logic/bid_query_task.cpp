@@ -146,21 +146,21 @@ namespace corelogic {
             resp.status(200);
         } else {
             TaskThreadLocal * localData = threadData;
-            bool bidResult = biddingHandler->filter(
-                [localData](AbstractBiddingHandler * adapter, adselectv2::AdSelectCondition & condition) -> bool {
-                    int seqId = 0;
-                    seqId = localData->seqId;
-                    //地域定向接入
-                    IpManager & ipManager = IpManager::getInstance();
-                    condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
-                    condition.dHour = adSelectTimeCodeUtc();
+			bool bidResult = biddingHandler->filter(
+				[localData](AbstractBiddingHandler * adapter, adselectv2::AdSelectCondition & condition) -> bool {
+					int seqId = 0;
+					seqId = localData->seqId;
+					//地域定向接入
+					IpManager & ipManager = IpManager::getInstance();
+					condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
+					condition.dHour = adSelectTimeCodeUtc();
 					MT::common::SelectResult resp;
 					if (!adSelectClient->search(seqId, false, condition, resp)) {
-                        return false;
-                    }
+						return false;
+					}
 					adapter->buildBidResult(condition, resp);
-                    return true;
-                });
+					return true;
+				});
             if (bidResult) {
                 biddingHandler->match(resp);
             } else {
