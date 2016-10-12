@@ -48,8 +48,10 @@ namespace corelogic {
         case ADX_BAIDU:
             return baidu_price_decode(input);
         case ADX_GUANGYIN:
+        case ADX_GUANGYIN_MOBILE:
             return guangyin_price_decode(input);
         case ADX_TENCENT_GDT:
+        case ADX_GDT_MOBILE:
             return gdt_price_decode(input);
         case ADX_NETEASE_MOBILE:
             return std::stoi(input);
