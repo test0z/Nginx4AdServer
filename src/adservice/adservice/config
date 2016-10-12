@@ -115,13 +115,11 @@ CFLAGS="$CFLAGS -march=native -Wno-error=narrowing -Wno-error=int-to-pointer-cas
 CORE_LIBS="-L/usr/lib -L/usr/lib64 -L/usr/local/lib -L/usr/local/lib64 $CORE_LIBS /usr/local/lib/libcppcms.a
 /usr/local/lib/libbooster.a
 /usr/local/lib/libavrocpp_s.a
-/usr/local/lib/libonsclient4cpp.a
 /usr/local/lib/librdkafka++.a
 /usr/local/lib/librdkafka.a
-/usr/local/lib/libmuduo_base_cpp11.a
-/usr/local/lib/libmuduo_net_cpp11.a
-/usr/local/lib/libaerospike.a
+/usr/lib/libaerospike.a
 /usr/local/lib/libboost_serialization.a
--lstdc++ -lcrypt -lpcre -lcrypto -lcryptopp -lz -lsasl2 -lssl -ltbb -lprotobuf -lcurl -licuuc -licui18n -ldl -lpthread -lzmq -lmtty
+-lmuduo_base_cpp11 -ltbb -pthread
+-lstdc++ -lcrypt -lpcre -lcrypto -lcryptopp -lz -lssl -lprotobuf -lcurl -licuuc -licui18n -ldl -lzmq -lmtty
 -Wl,-rpath,/usr/local/lib "
 
