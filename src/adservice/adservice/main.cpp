@@ -27,6 +27,7 @@ extern "C" {
 #include "logging.h"
 #include "utility/aero_spike.h"
 #include "utility/utility.h"
+#include <boost/algorithm/string.hpp>
 
 struct LocationConf {
     //运行日志级别
@@ -48,7 +49,7 @@ struct LocationConf {
 	// adselect 服务url
     ngx_str_t adselectentry;
 	// adselect 服务超时时间
-	ngx_uint_t adselecttimeout;
+	ngx_str_t adselecttimeout;
 	// aerospike config
 	// aerospike 节点
     ngx_str_t asnode;
@@ -87,7 +88,7 @@ static ngx_command_t commands[] = { COMMAND_ITEM("logging_level", LocationConf, 
 									COMMAND_ITEM("kafka_logger_enable", LocationConf, kafkaloggerenable, parseConfNum),
 									COMMAND_ITEM("local_logger_thread", LocationConf, localloggerthreads, parseConfNum),
 									COMMAND_ITEM("adselect_entry", LocationConf, adselectentry, parseConfStr),
-									COMMAND_ITEM("adselect_timeout", LocationConf, adselecttimeout, parseConfNum),
+									COMMAND_ITEM("adselect_timeout", LocationConf, adselecttimeout, parseConfStr),
 									COMMAND_ITEM("as_node", LocationConf, asnode, parseConfStr),
 									COMMAND_ITEM("as_namespace", LocationConf, asnamespace, parseConfStr),
 									COMMAND_ITEM("workdir", LocationConf, workdir, parseConfStr),
@@ -114,7 +115,7 @@ static void * createLocationConf(ngx_conf_t * cf)
     conf->kafkaloggerenable = NGX_CONF_UNSET_UINT;
     conf->localloggerthreads = NGX_CONF_UNSET_UINT;
     ngx_str_null(&conf->adselectentry);
-	conf->adselecttimeout = NGX_CONF_UNSET_UINT;
+    ngx_str_null(&conf->adselecttimeout);
     ngx_str_null(&conf->asnode);
     ngx_str_null(&conf->asnamespace);
     ngx_str_null(&conf->workdir);
@@ -134,7 +135,7 @@ static char * mergeLocationConf(ngx_conf_t * cf, void * parent, void * child)
 	ngx_conf_merge_uint_value(conf->kafkaloggerenable, prev->kafkaloggerenable, TRUE);
 	ngx_conf_merge_uint_value(conf->localloggerthreads, prev->localloggerthreads, 3);
 	ngx_conf_merge_str_value(conf->adselectentry, prev->adselectentry, "");
-	ngx_conf_merge_uint_value(conf->adselecttimeout, prev->adselecttimeout, 10);
+	ngx_conf_merge_str_value(conf->adselecttimeout, prev->adselecttimeout, "0:15|21:-1|98:-1|99:-1");
 	ngx_conf_merge_str_value(conf->asnode, prev->asnode, "");
 	ngx_conf_merge_str_value(conf->asnamespace, prev->asnamespace, "mtty");
 	ngx_conf_merge_str_value(conf->workdir, prev->workdir, "/usr/local/nginx/sbin/");
@@ -218,6 +219,17 @@ void parseConfigAeroSpikeNode(const std::string & asNode, AerospikeConfig & conf
     }
 }
 
+void parseConfigAdselectTimeout(const std::string & timeoutStr,std::map<int,int>& timeoutMap){
+    std::vector<std::string> results;
+    boost::algorithm::split(results,timeoutStr,boost::algorithm::is_any_of("|:"));
+    int len = (int)results.size();
+    for(int i=0;i<len;i+=2){
+        int adx = std::stoi(results[i]);
+        int timeout = std::stoi(results[i+1]);
+        timeoutMap.insert(std::make_pair(adx,timeout));
+    }
+}
+
 static void global_init(LocationConf * conf)
 {
     globalMutex.lock();
@@ -231,7 +243,7 @@ static void global_init(LocationConf * conf)
     globalConfig.logConfig.kafkaLogEnable = NGX_BOOL(conf->kafkaloggerenable);
     globalConfig.logConfig.localLoggerThreads = conf->localloggerthreads;
     globalConfig.adselectConfig.adselectNode = NGX_STR_2_STD_STR(conf->adselectentry);
-	globalConfig.adselectConfig.adselectTimeout = conf->adselecttimeout;
+    parseConfigAdselectTimeout(NGX_STR_2_STD_STR(conf->adselecttimeout),globalConfig.adselectConfig.adselectTimeout);
     globalConfig.aerospikeConfig.nameSpace = NGX_STR_2_STD_STR(conf->asnamespace);
     std::string asNode = NGX_STR_2_STD_STR(conf->asnode);
 	parseConfigAeroSpikeNode(asNode, globalConfig.aerospikeConfig);
@@ -248,7 +260,7 @@ static void global_init(LocationConf * conf)
 
 	adSelectClient = std::make_shared<adservice::adselectv2::AdSelectClient>(
 		globalConfig.adselectConfig.adselectNode,
-		std::chrono::milliseconds(globalConfig.adselectConfig.adselectTimeout));
+		globalConfig.adselectConfig.adselectTimeout);
 
     adservice::server::IpManager::init();
     adservice::corelogic::HandleBidQueryTask::init();

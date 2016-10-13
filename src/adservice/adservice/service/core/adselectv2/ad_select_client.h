@@ -12,15 +12,23 @@
 namespace adservice {
 namespace adselectv2 {
 
+#define ADX_OTHER		0
+#define ADSELECT_DEFAULT_TIMEOUT 15
+
 	class AdSelectClient {
 	public:
-		template <class Rep, class Period>
-		AdSelectClient(const std::string & url, const std::chrono::duration<Rep, Period> & timeout)
+
+		AdSelectClient(const std::string & url, std::map<int,int>& timeoutMap)
 			: serverUrl_(url)
-			, selectTimeout_(timeout)
 		{
 			socket_.connect(url);
 			pollitems_[0] = { socket_, 0, ZMQ_POLLIN, 0 };
+			for(auto item : timeoutMap){
+				selectTimeouts_.insert(std::make_pair(item.first,std::chrono::milliseconds(item.second)));
+			}
+			if(selectTimeouts_.find(ADX_OTHER)==selectTimeouts_.end()){
+				selectTimeouts_.insert(std::make_pair(ADX_OTHER,std::chrono::milliseconds(ADSELECT_DEFAULT_TIMEOUT)));
+			}
 		}
 
 		bool search(int seqId, bool isSSP, AdSelectCondition & selectCondition, MT::common::SelectResult & result);
@@ -29,7 +37,7 @@ namespace adselectv2 {
 
 	private:
 		std::string serverUrl_;
-		std::chrono::milliseconds selectTimeout_;
+		std::map<int,std::chrono::milliseconds> selectTimeouts_;
 
 		zmq::context_t context_{ 1 };
 		zmq::socket_t socket_{ context_, ZMQ_DEALER };
