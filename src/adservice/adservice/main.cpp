@@ -309,6 +309,7 @@ ngx_int_t build_response(ngx_http_request_t* r,adservice::utility::HttpResponse&
     r->headers_out.status = (ngx_uint_t)httpResponse.status();
 	const std::string & strResp = httpResponse.get_body();
 	if (!strResp.empty()) {
+	r->headers_out.status = 204;
         r->headers_out.content_length_n = strResp.length();
         ngx_str_t content_type;
         INIT_NGX_STR(content_type,httpResponse.content_header().data());
