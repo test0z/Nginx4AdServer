@@ -57,8 +57,17 @@ namespace bidding {
                 mobileDev = SOLUTION_DEVICE_OTHER;
         } else if (devType == YOUKU_DEVICE_PC) {
             flowType = SOLUTION_FLOWTYPE_PC;
-            pcOs = getOSTypeFromUA(ua);
-            pcBrowser = getBrowserTypeFromUA(ua);
+            if(osType.empty()) {
+                pcOs = getOSTypeFromUA(ua);
+            }else{
+                if(!strcasecmp(osType.data(),YOUKU_OS_WINDOWS)){
+                    pcOs = SOLUTION_OS_WINDOWS;
+                }else if(!strcasecmp(osType.data(),YOUKU_OS_MAC)){
+                    pcOs = SOLUTION_OS_MAC;
+                } else
+                    pcOs = SOLUTION_OS_OTHER;
+            }
+	    pcBrowser = getBrowserTypeFromUA(ua);
         }
     }
 

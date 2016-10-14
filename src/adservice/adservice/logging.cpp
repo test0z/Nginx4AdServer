@@ -1,4 +1,5 @@
 #include "logging.h"
+#include <iostream>
 
 LoggingLevel AdServiceLog::globalLoggingLevel = LoggingLevel::INFO_;
 
@@ -12,7 +13,8 @@ AdServiceLog::AdServiceLog(LoggingLevel lv)
 AdServiceLog::~AdServiceLog()
 {
 	ss << '\n';
-	ngx_log_error(NGX_LOG_EMERG, globalLog, 0, ss.str().data());
+	//ngx_log_error(NGX_LOG_EMERG, globalLog, 0, ss.str().data());
+	std::cerr<<ss.str();
 }
 
 void AdServiceLog::appendFormatLogLevel()
