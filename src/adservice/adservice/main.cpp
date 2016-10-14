@@ -308,7 +308,7 @@ void read_header(ngx_http_request_t * r, adservice::utility::HttpRequest & httpR
 ngx_int_t build_response(ngx_http_request_t* r,adservice::utility::HttpResponse& httpResponse){
     r->headers_out.status = (ngx_uint_t)httpResponse.status();
 	const std::string & strResp = httpResponse.get_body();
-	if (!strResp.empty()) {
+	if (strResp.empty()) {
 	r->headers_out.status = 204;
         r->headers_out.content_length_n = strResp.length();
         ngx_str_t content_type;
