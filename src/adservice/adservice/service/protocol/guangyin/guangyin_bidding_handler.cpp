@@ -4,6 +4,7 @@
 #include "logging.h"
 #include "utility/utility.h"
 #include <boost/algorithm/string.hpp>
+#include <service/core/logic/show_query_task.h>
 
 namespace protocol {
 namespace bidding {
@@ -247,13 +248,20 @@ namespace bidding {
             nativeiframe(banner, adInfo, html);
             adResult->set_adm(html);
         } else {
-            adResult->set_adm(std::string("<iframe width=\"" + std::to_string(reqBanner.w()) + "\" height=\""
-                                          + std::to_string(reqBanner.h())
-                                          + "\" frameborder=\"0\" scrolling=\"no\" src=\""
-                                          + std::string(SNIPPET_SHOW_URL)
-                                          + "?"
-                                          + buffer
-                                          + "&of=2\"></iframe><img src=\"##IURL##\" width=\"1\" height=\"1\" style=\"display:none;\"/>"));
+            bannerJson["advid"]=finalSolution.advId;
+            bannerJson["adxpid"]=adInfo.adxpid;
+            bannerJson["arid"]=adInfo.areaId;
+            bannerJson["gpid"]=finalSolution.sId;
+            bannerJson["pid"]=adInfo.pid;
+            bannerJson["ppid"]=adInfo.ppid;
+            bannerJson["price"]=adInfo.offerPrice;
+            bannerJson["pricetype"]=adInfo.priceType;
+            bannerJson["unid"]=adInfo.adxid;
+            bannerJson["of"]="0";
+            std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
+            char admBuffer[4096];
+            snprintf(admBuffer,sizeof(admBuffer),adservice::corelogic::HandleShowQueryTask::showAdxTemplate,mtadInfoStr.data());
+            adResult->set_adm(std::string(admBuffer));
         }
         std::string landingUrl = mtlsArray[0].get("p1", "");
         getClickPara(bidRequest_.id(), buffer, sizeof(buffer), "", landingUrl);
@@ -261,8 +269,7 @@ namespace bidding {
 
         adResult->set_w(banner.width);
         adResult->set_h(banner.height);
-
-        adResult->set_type(AdType::IFRAME);
+        adResult->set_type(AdType::JS);
         adResult->set_admtype(AdmType::HTML);
     }
 

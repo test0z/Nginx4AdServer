@@ -238,6 +238,7 @@ namespace bidding {
             landingUrl = mtlsArray[0]["p1"].str();
         }
         bidResponse["mainTitle"] = mainTitle;
+        bidResponse["valid_time"] = 86400000;
         getClickPara(requestId, clickParam, sizeof(clickParam), "", landingUrl);
         snprintf(buffer, sizeof(buffer), AD_NETEASE_CLICK_URL, clickParam);
         bidResponse["linkUrl"] = buffer;
