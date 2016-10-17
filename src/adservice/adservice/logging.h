@@ -1,14 +1,13 @@
 #ifndef MTCORENGINX_LOGGING_H
 #define MTCORENGINX_LOGGING_H
 
-extern "C" {
-#include <ngx_core.h>
-}
 
 #include "utility/utility.h"
 #include <string>
+#include <memory>
+#include <boost/log/common.hpp>
+#include <boost/log/sinks/text_file_backend.hpp>
 
-extern ngx_log_t * globalLog;
 
 enum LoggingLevel {
 	TRACE_,
@@ -22,44 +21,28 @@ enum LoggingLevel {
 
 class AdServiceLog {
 public:
-	explicit AdServiceLog(LoggingLevel lv);
+	explicit AdServiceLog(LoggingLevel lv,const std::string& logDirectory = "logs/");
 
 	~AdServiceLog();
 
-	template <typename T>
-	AdServiceLog & operator<<(const T & v)
-	{
-		ss << v;
-		return *this;
-	}
-
-	void appendFormatLogLevel();
-
+	BOOST_LOG_GLOBAL_LOGGER(ServiceLog, boost::log::sources::severity_logger_mt<LoggingLevel>)
 public:
 	static LoggingLevel globalLoggingLevel;
 
 private:
-	std::stringstream ss;
 	LoggingLevel currentLevel;
 };
 
-#define LOG_TRACE                                                 \
-	if (AdServiceLog::globalLoggingLevel <= LoggingLevel::TRACE_) \
-	AdServiceLog(LoggingLevel::TRACE_)
-#define LOG_DEBUG                                                 \
-	if (AdServiceLog::globalLoggingLevel <= LoggingLevel::DEBUG_) \
-	AdServiceLog(LoggingLevel::DEBUG_)
-#define LOG_INFO                                                 \
-	if (AdServiceLog::globalLoggingLevel <= LoggingLevel::INFO_) \
-	AdServiceLog(LoggingLevel::INFO_)
-#define LOG_WARN                                                    \
-	if (AdServiceLog::globalLoggingLevel <= LoggingLevel::WARNING_) \
-	AdServiceLog(LoggingLevel::WARNING_)
-#define LOG_ERROR                                                 \
-	if (AdServiceLog::globalLoggingLevel <= LoggingLevel::ERROR_) \
-	AdServiceLog(LoggingLevel::ERROR_)
-#define LOG_FATAL                                                 \
-	if (AdServiceLog::globalLoggingLevel <= LoggingLevel::FATAL_) \
-	AdServiceLog(LoggingLevel::FATAL_)
+typedef std::shared_ptr<AdServiceLog> AdServiceLogPtr;
+inline AdServiceLog::ServiceLog::logger_type AdServiceLog::ServiceLog::construct_logger(){
+	return AdServiceLog::ServiceLog::logger_type();
+}
+
+#define LOG_TRACE BOOST_LOG_SEV(AdServiceLog::ServiceLog::get(),LoggingLevel::TRACE_)
+#define LOG_DEBUG BOOST_LOG_SEV(AdServiceLog::ServiceLog::get(), LoggingLevel::DEBUG_)
+#define LOG_INFO BOOST_LOG_SEV(AdServiceLog::ServiceLog::get(), LoggingLevel::INFO_)
+#define LOG_WARN BOOST_LOG_SEV(AdServiceLog::ServiceLog::get(), LoggingLevel::WARNING_)
+#define LOG_ERROR BOOST_LOG_SEV(AdServiceLog::ServiceLog::get(), LoggingLevel::ERROR_)
+#define LOG_FATAL BOOST_LOG_SEV(AdServiceLog::ServiceLog::get(), LoggingLevel::FATAL_)
 
 #endif // __MT_LOG_H__

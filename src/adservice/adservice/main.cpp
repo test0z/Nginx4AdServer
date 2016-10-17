@@ -198,6 +198,7 @@ static bool serviceInitialized = false;
 static std::mutex globalMutex;
 GlobalConfig globalConfig;
 adservice::log::LogPusherPtr serviceLogger = nullptr;
+AdServiceLogPtr serviceLogPtr = nullptr;
 adservice::adselectv2::AdSelectClientPtr adSelectClient;
 ngx_log_t * globalLog;
 
@@ -263,6 +264,8 @@ static void global_init(LocationConf * conf)
 														 globalConfig.logConfig.localLoggerThreads,
 														 !globalConfig.logConfig.kafkaLogEnable);
     serviceLogger->start();
+
+    serviceLogPtr = std::make_shared<AdServiceLog>(AdServiceLog::globalLoggingLevel);
 
 	adSelectClient = std::make_shared<adservice::adselectv2::AdSelectClient>(
 		globalConfig.adselectConfig.adselectNode,
