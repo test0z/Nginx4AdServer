@@ -12,6 +12,7 @@
 
 #include <tbb/concurrent_hash_map.h>
 
+
 extern adservice::adselectv2::AdSelectClientPtr adSelectClient;
 
 namespace adservice {
@@ -21,7 +22,6 @@ namespace corelogic {
 	using namespace adservice::utility;
 	using namespace adservice::utility::time;
 	using namespace adservice::adselectv2;
-	using namespace muduo;
 
 	static long handleShowRequests = 0;
 	static long updateShowRequestsTime = 0;
@@ -204,7 +204,7 @@ namespace corelogic {
 		mtAdInfo["height"] = height;
 		std::string priceType = to_string(solution.priceType);
 		mtAdInfo["pricetype"] = priceType;
-		std::string price = encodePrice(selectResult.bidPrice);
+		std::string price = encodePrice(selectResult.feePrice);
 		mtAdInfo["price"] = price;
 		std::string ppid = to_string(selectResult.ppid);
 		mtAdInfo["ppid"] = ppid;
@@ -215,7 +215,7 @@ namespace corelogic {
 		if (paramMap[URL_IMP_OF] == OF_SSP_MOBILE || pid == "3381") {
 			//替换点击宏
 			cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
-			cppcms::json::array mtls = mtlsArray.array();
+			cppcms::json::array & mtls = mtlsArray.array();
 			std::string clickMacro = mtls[0].get("p5", "");
 			char clickMacroBuffer[2048];
 			char landingPageBuffer[1024];
@@ -231,7 +231,7 @@ namespace corelogic {
 				LOG_WARN << "in buildResponseForSsp,clickMacroLen greater than sizeof clickMacroBuffer,len:"
 						 << clickMacroLen;
 			}
-			mtls[0]["p5"] = clickMacroBuffer;
+			mtls[0].set("p5",std::string(clickMacroBuffer));
 			//只输出标准json
 			std::string jsonResult = utility::json::toJson(mtAdInfo);
 			if (pid != "3381") {
@@ -343,7 +343,7 @@ namespace corelogic {
 			if (finalSolution.priceType == PRICETYPE_RRTB_CPC) {
 				log.adInfo.bidPrice = 0;
 			} else {
-				log.adInfo.bidPrice = selectResult.bidPrice; // offerprice
+				log.adInfo.bidPrice = selectResult.feePrice; // offerprice
 			}
 			log.adInfo.cost = adplace.costPrice;
 			ipManager.getAreaCodeByIp(condition.ip.data(), log.geoInfo.country, log.geoInfo.province, log.geoInfo.city);

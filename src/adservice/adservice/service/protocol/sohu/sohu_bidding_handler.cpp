@@ -108,6 +108,7 @@ namespace bidding {
         queryCondition.adxid = ADX_SOHU_PC;
         queryCondition.adxpid = pid;
         queryCondition.ip = bidRequest.device().ip();
+        queryCondition.basePrice = adzInfo.has_bidfloor()?adzInfo.bidfloor():0;
         if (bidRequest.device().type() == "PC") {
             queryCondition.pcOS = getOSTypeFromUA(bidRequest.device().ua());
             queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
@@ -126,6 +127,8 @@ namespace bidding {
             queryCondition.height = video.height();
         }
         if (!filterCb(this, queryCondition)) {
+            adInfo.pid = std::to_string(queryCondition.mttyPid);
+            adInfo.adxpid = queryCondition.adxpid;
             adInfo.adxid = queryCondition.adxid;
             adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
             return bidFailedReturn();
@@ -162,7 +165,7 @@ namespace bidding {
 		adInfo.cid = adplace.cId;
 		adInfo.mid = adplace.mId;
         adInfo.cpid = adInfo.advId;
-        adInfo.offerPrice = maxCpmPrice;
+        adInfo.offerPrice = result.feePrice;
         adInfo.priceType = finalSolution.priceType;
         adInfo.ppid = result.ppid;
         adInfo.bidSize = makeBidSize(banner.width, banner.height);

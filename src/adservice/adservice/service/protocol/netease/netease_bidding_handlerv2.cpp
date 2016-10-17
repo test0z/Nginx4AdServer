@@ -128,6 +128,7 @@ namespace bidding {
         queryCondition.pAdplaceInfo = &adplaceInfo;
 
         if (!filterCb(this, queryCondition)) {
+            adInfo.pid = std::to_string(queryCondition.mttyPid);
             adInfo.adxpid = queryCondition.adxpid;
             adInfo.adxid = queryCondition.adxid;
             adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
@@ -182,7 +183,7 @@ namespace bidding {
         adInfo.cid = 0;
         adInfo.mid = 0;
         adInfo.cpid = adInfo.advId;
-		adInfo.offerPrice = result.bidPrice;
+		adInfo.offerPrice = result.feePrice;
         adInfo.areaId = IpManager::getInstance().getAreaCodeStrByIp(queryCondition.ip.c_str());
         adInfo.imp_id = "";
 		adInfo.priceType = finalSolution.priceType;

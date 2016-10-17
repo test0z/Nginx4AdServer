@@ -174,6 +174,7 @@ namespace bidding {
         }
 
         if (!filterCb(this, queryCondition)) {
+            adInfo.pid = std::to_string(queryCondition.mttyPid);
             adInfo.adxpid = queryCondition.adxpid;
             adInfo.adxid = queryCondition.adxid;
             adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
@@ -213,12 +214,8 @@ namespace bidding {
         adInfo.ppid = result.ppid;
 
         const Imp & imp = bidRequest_.imp(0);
-		float maxCpmPrice = std::max((float)result.bidPrice, imp.bidfloor());
-        if (adInfo.priceType != PRICETYPE_RRTB_CPC) {
-            adInfo.offerPrice = maxCpmPrice;
-        } else {
-            adInfo.offerPrice = result.bidPrice;
-        }
+		float maxCpmPrice = (float)result.bidPrice;
+        adInfo.offerPrice = result.feePrice;
 
         const std::string & userIp = bidRequest_.device().ip();
         adInfo.areaId = adservice::server::IpManager::getInstance().getAreaCodeStrByIp(userIp.c_str());
