@@ -28,6 +28,7 @@ extern "C" {
 #include "utility/aero_spike.h"
 #include "utility/utility.h"
 #include <boost/algorithm/string.hpp>
+#include <ngx_http_request.h>
 
 struct LocationConf {
     //运行日志级别
@@ -230,12 +231,17 @@ void parseConfigAdselectTimeout(const std::string & timeoutStr,std::map<int,int>
     }
 }
 
+void setGlobalLoggingLevel(int loggingLevel){
+    AdServiceLog::globalLoggingLevel = (LoggingLevel) globalConfig.serverConfig.loggingLevel;
+}
+
 static void global_init(LocationConf * conf)
 {
     globalMutex.lock();
 	if (serviceInitialized)
         return;
     globalConfig.serverConfig.loggingLevel = (int)conf->logginglevel;
+    setGlobalLoggingLevel(globalConfig.serverConfig.loggingLevel);
     globalConfig.logConfig.kafkaBroker = NGX_STR_2_STD_STR(conf->kafkabroker);
     globalConfig.logConfig.kafkaKey = NGX_STR_2_STD_STR(conf->kafkakey);
     globalConfig.logConfig.kafkaTopic = NGX_STR_2_STD_STR(conf->kafkatopic);
@@ -294,8 +300,10 @@ void read_header(ngx_http_request_t * r, adservice::utility::HttpRequest & httpR
         if (header[i].hash == 0) {
             continue;
         }
+        std::cerr<<"header:"<<parseKey(header[i])<<":"<<parseValue(header[i])<<std::endl;
 		httpRequest.set(parseKey(header[i]), parseValue(header[i]));
     }
+    std::cerr<<"ip:"<<httpRequest.remote_addr()<<std::endl;
     std::stringstream cookiesstream;
     ngx_table_elt_t ** cookies = (ngx_table_elt_t **)r->headers_in.cookies.elts;
 	for (ngx_uint_t i = 0; i < r->headers_in.cookies.nelts; ++i) {
@@ -308,7 +316,8 @@ void read_header(ngx_http_request_t * r, adservice::utility::HttpRequest & httpR
 ngx_int_t build_response(ngx_http_request_t* r,adservice::utility::HttpResponse& httpResponse){
     r->headers_out.status = (ngx_uint_t)httpResponse.status();
 	const std::string & strResp = httpResponse.get_body();
-	if (!strResp.empty()) {
+	if (strResp.empty()) {
+        r->headers_out.status = 204;
         r->headers_out.content_length_n = strResp.length();
         ngx_str_t content_type;
         INIT_NGX_STR(content_type,httpResponse.content_header().data());

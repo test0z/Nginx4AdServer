@@ -18,7 +18,7 @@ namespace adservice {
 #define COOKIE          "Cookie"
 #define QUERYMETHOD     "Method"
 #define USERAGENT       "User-Agent"
-#define REMOTEADDR      "REMOTE_ADDR"
+#define REMOTEADDR      "X-Forwarded-For"
 #define REFERER         "Referer"
 #define CONTENTTYPE     "Content-Type"
 #define CONTENTLENGTH   "Content-Length"

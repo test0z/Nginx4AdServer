@@ -100,6 +100,7 @@ namespace bidding {
         queryCondition.adxid = ADX_TENCENT_GDT;
         queryCondition.adxpid = std::to_string(pid);
         queryCondition.ip = bidRequest.ip();
+        queryCondition.basePrice = adzInfo.has_bid_floor()?adzInfo.bid_floor():0;
         IpManager & ipManager = IpManager::getInstance();
         queryCondition.dGeo = ipManager.getAreaByIp(queryCondition.ip.data());
         PreSetAdplaceInfo adplaceInfo;
@@ -144,6 +145,7 @@ namespace bidding {
         }
         queryCondition.pAdplaceInfo = &adplaceInfo;
         if (!filterCb(this, queryCondition)) {
+            adInfo.pid = std::to_string(queryCondition.mttyPid);
             adInfo.adxid = queryCondition.adxid;
             adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
             return bidFailedReturn();
@@ -166,7 +168,7 @@ namespace bidding {
         const BidRequest_Impression & adzInfo = bidRequest.impressions(0);
         seatBid->set_impression_id(adzInfo.id());
         BidResponse_Bid * adResult = seatBid->add_bids();
-        int maxCpmPrice = max(result.bidPrice, adzInfo.bid_floor());
+        int maxCpmPrice = result.bidPrice;
         adResult->set_bid_price(maxCpmPrice);
 		adResult->set_creative_id(std::to_string(banner.bId));
         //缓存最终广告结果
@@ -178,7 +180,7 @@ namespace bidding {
         adInfo.adxuid = bidRequest.user().id();
 		adInfo.bannerId = banner.bId;
         adInfo.cpid = adInfo.advId;
-        adInfo.offerPrice = maxCpmPrice;
+        adInfo.offerPrice = result.feePrice;
         adInfo.priceType = finalSolution.priceType;
         adInfo.ppid = result.ppid;
         adInfo.bidSize = makeBidSize(banner.width, banner.height);

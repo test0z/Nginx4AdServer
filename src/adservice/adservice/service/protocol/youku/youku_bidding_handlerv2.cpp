@@ -57,7 +57,16 @@ namespace bidding {
                 mobileDev = SOLUTION_DEVICE_OTHER;
         } else if (devType == YOUKU_DEVICE_PC) {
             flowType = SOLUTION_FLOWTYPE_PC;
-            pcOs = getOSTypeFromUA(ua);
+            if(osType.empty()) {
+                pcOs = getOSTypeFromUA(ua);
+            }else{
+                if(!strcasecmp(osType.data(),YOUKU_OS_WINDOWS)){
+                    pcOs = SOLUTION_OS_WINDOWS;
+                }else if(!strcasecmp(osType.data(),YOUKU_OS_MAC)){
+                    pcOs = SOLUTION_OS_MAC;
+                } else
+                    pcOs = SOLUTION_OS_OTHER;
+            }
             pcBrowser = getBrowserTypeFromUA(ua);
         }
     }
@@ -207,6 +216,7 @@ namespace bidding {
             }
         }
         if (!filterCb(this, queryCondition)) {
+            adInfo.pid = std::to_string(queryCondition.mttyPid);
             adInfo.adxpid = queryCondition.adxpid;
             adInfo.adxid = queryCondition.adxid;
             adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
@@ -249,7 +259,6 @@ namespace bidding {
 		const MT::common::ADPlace & adplace = result.adplace;
 		const MT::common::Banner & banner = result.banner;
         int advId = finalSolution.advId;
-		int64_t bidFloor = adzInfo.get("bidfloor", 0);
         if (!parseJson(BIDRESPONSE_TEMPLATE, bidResponse)) {
 			LOG_ERROR << "in YoukuBiddingHandler::buildBidResult parseJson failed";
             isBidAccepted = false;
@@ -274,7 +283,7 @@ namespace bidding {
 		adInfo.cid = adplace.cId;
 		adInfo.mid = adplace.mId;
         adInfo.cpid = adInfo.advId;
-        adInfo.offerPrice = result.bidPrice;
+        adInfo.offerPrice = result.feePrice;
         adInfo.priceType = finalSolution.priceType;
         adInfo.ppid = result.ppid;
         adInfo.bidSize = makeBidSize(banner.width, banner.height);
@@ -321,7 +330,6 @@ namespace bidding {
                 cppcms::json::array & extPmArray = extValue["pm"].array();
                 extPmArray.push_back(cppcms::json::value(tview));
             }
-            bidFloor = 0;
         } else { //动态创意流量 adm为iframe 设置type
             int w = banner.width;
             int h = banner.height;
@@ -329,9 +337,8 @@ namespace bidding {
             bidValue["adm"] = html;
             extValue["type"] = "c";
         }
-        int maxCpmPrice = std::max(result.bidPrice, bidFloor);
+        int maxCpmPrice = result.bidPrice;
         bidValue["price"] = maxCpmPrice;
-        adInfo.offerPrice = maxCpmPrice;
     }
 
     void YoukuBiddingHandler::match(adservice::utility::HttpResponse & response)

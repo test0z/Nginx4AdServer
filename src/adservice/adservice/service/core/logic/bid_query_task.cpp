@@ -156,6 +156,7 @@ namespace corelogic {
 					condition.dHour = adSelectTimeCodeUtc();
 					MT::common::SelectResult resp;
 					if (!adSelectClient->search(seqId, false, condition, resp)) {
+                        condition.mttyPid = resp.adplace.pId;
 						return false;
 					}
 					adapter->buildBidResult(condition, resp);

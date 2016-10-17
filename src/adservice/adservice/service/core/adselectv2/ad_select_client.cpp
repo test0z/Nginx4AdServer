@@ -116,7 +116,7 @@ namespace adselectv2 {
 						  selectTimeouts_[selectCondition.adxid].count();
 
 		if (zmq::poll(pollitems_, 1, timeoutTime) < 1) {
-			LOG_WARN << "adselect timeout";
+			LOG_WARN << "adselect timeout ,adxid:"<<selectCondition.adxid;
 			return false;
 		} else {
 			if (pollitems_[0].revents & ZMQ_POLLIN) {
@@ -129,6 +129,9 @@ namespace adselectv2 {
 				}
 				std::string response((char *)reply.data() + 1, reply.size() - 1);
 				deserialize(response, result);
+				if(selectCondition.adxid==15 && result.solution.dADExchange=="20|0.0|0.0"){
+					LOG_ERROR<<"adxId:"<<selectCondition.adxid<<",soltutionId:"<<result.solution.sId<<",d_exchange:"<<result.solution.dADExchange;
+				}
 				return (result.banner.bId > 0 && result.solution.sId > 0);
 			}
 		}

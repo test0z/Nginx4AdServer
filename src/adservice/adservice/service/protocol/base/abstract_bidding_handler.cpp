@@ -116,7 +116,6 @@ namespace bidding {
         char clickBuf[2048] = { "\0" };
         char script[4096];
         getShowPara(bid, showBuf, sizeof(showBuf));
-        //            getClickPara(bid,clickBuf,sizeof(clickBuf),)
         int len = snprintf(script, sizeof(script), SNIPPET_SCRIPT, width, height, scriptUrl, showBuf, clickBuf,
                            clickBuf, extParam, clickMacro);
         if (len >= (int)sizeof(script)) {

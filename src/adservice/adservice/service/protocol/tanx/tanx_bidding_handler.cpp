@@ -149,7 +149,7 @@ namespace bidding {
         queryCondition.adxid = ADX_TANX;
         queryCondition.adxpid = pid;
         queryCondition.ip = bidRequest.ip();
-        queryCondition.basePrice = adzInfo.min_cpm_price();
+        queryCondition.basePrice = adzInfo.has_min_cpm_price()?adzInfo.min_cpm_price():0;
         extractSize(adzInfo.size(), queryCondition.width, queryCondition.height);
         if (bidRequest.has_mobile()) {
 			const BidRequest_Mobile & mobile = bidRequest.mobile();
@@ -171,6 +171,7 @@ namespace bidding {
             queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
         }
         if (!filterCb(this, queryCondition)) {
+            adInfo.pid = std::to_string(queryCondition.mttyPid);
             adInfo.adxpid = queryCondition.adxpid;
             adInfo.adxid = queryCondition.adxid;
             adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
@@ -196,19 +197,11 @@ namespace bidding {
 		std::string adxIndustryTypeStr = banner.adxIndustryType;
         int adxIndustryType = extractRealValue(adxIndustryTypeStr.data(), ADX_TANX);
         const BidRequest_AdzInfo & adzInfo = bidRequest.adzinfo(0);
-		int maxCpmPrice = max(result.bidPrice, adzInfo.min_cpm_price() + 1);
-        auto buyerRules = adzInfo.buyer_rules();
-        for (auto iter = buyerRules.begin(); iter != buyerRules.end(); iter++) {
-            if ((uint32_t)advId == iter->advertiser_ids()) {
-				maxCpmPrice = max(maxCpmPrice, iter->min_cpm_price() + 1);
-                break;
-            }
-        }
+		int maxCpmPrice = (int)result.bidPrice;
 
         adResult->set_max_cpm_price(maxCpmPrice);
         adResult->set_adzinfo_id(adzInfo.id());
         adResult->set_ad_bid_count_idx(0);
-        //            adResult->add_category();
         adResult->add_creative_type(banner.bannerType);
         adResult->add_category(adxIndustryType);
         //缓存最终广告结果
@@ -222,7 +215,7 @@ namespace bidding {
 		adInfo.cid = adplace.cId;
 		adInfo.mid = adplace.mId;
         adInfo.cpid = adInfo.advId;
-        adInfo.offerPrice = maxCpmPrice;
+        adInfo.offerPrice = result.feePrice;
         adInfo.priceType = finalSolution.priceType;
         adInfo.ppid = result.ppid;
         adInfo.bidSize = makeBidSize(banner.width, banner.height);

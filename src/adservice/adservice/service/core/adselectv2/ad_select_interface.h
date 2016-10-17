@@ -35,7 +35,7 @@ namespace adselectv2 {
 		// adx平台广告位ID
 		std::string adxpid;
 		// mtty内部广告位ID
-		int64_t mttyPid;
+		int64_t mttyPid{0};
 		//需要匹配的ip地址
 		std::string ip;
 		//需要匹配的分时编码
@@ -47,29 +47,29 @@ namespace adselectv2 {
 		//需要匹配的deal,比如优酷的dealid
 		std::string dealId;
 		//流量底价
-		int basePrice;
+		int basePrice{0};
 		//需要匹配的adxid
-		int adxid;
+		int adxid{0};
 		//需要匹配的地域编码
-		int dGeo;
+		int dGeo{0};
 		//需要匹配的banner的宽
-		int width;
+		int width{0};
 		//需要匹配的banner的高
-		int height;
+		int height{0};
 		//需要匹配的媒体类型,编码为mtty定义的媒体类型
-		int mediaType;
+		int mediaType{0};
 		//需要匹配的广告位类型,编码为mtty定义的广告位类型
-		int adplaceType;
+		int adplaceType{0};
 		//需要匹配的流量类型,编码为mtty定义的流量类型
-		int flowType;
+		int flowType{0};
 		//需要匹配的屏数
-		int displayNumber;
+		int displayNumber{0};
 		//需要匹配的pc端操作系统类型
-		int pcOS;
+		int pcOS{0};
 		//需要匹配的移动端设备类型
-		int mobileDevice;
+		int mobileDevice{0};
 		//需要匹配的网络类型
-		int mobileNetwork;
+		int mobileNetwork{0};
 		//需要匹配的运营商类型
 		int mobileNetWorkProvider{ 0 };
 		//需要匹配的内容类型
