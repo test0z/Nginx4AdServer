@@ -166,6 +166,12 @@ namespace bidding {
 		const MT::common::Solution & finalSolution = result.solution;
 		const MT::common::ADPlace & adplace = result.adplace;
 		const MT::common::Banner & banner = result.banner;
+        if(queryCondition.adxid!=adplace.adxId||queryCondition.adxpid!=adplace.adxPId){
+            LOG_ERROR<<"in NetEaseBiddingHandler,query adxid:"<<queryCondition.adxid<<",result adxid:"<<adplace.adxId
+                     <<",query adxpid:"<<queryCondition.adxpid<<",result adxpid:"<<adplace.adxPId;
+            isBidAccepted = false;
+            return;
+        }
 		auto advId = finalSolution.advId;
         if (!parseJson(BIDRESPONSE_TEMPLATE, bidResponse)) {
 			LOG_ERROR << "in NetEaseBiddingHandler::buildBidResult parseJson failed";

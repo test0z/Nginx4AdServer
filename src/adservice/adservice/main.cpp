@@ -303,10 +303,10 @@ void read_header(ngx_http_request_t * r, adservice::utility::HttpRequest & httpR
         if (header[i].hash == 0) {
             continue;
         }
-        std::cerr<<"header:"<<parseKey(header[i])<<":"<<parseValue(header[i])<<std::endl;
+        //std::cerr<<"header:"<<parseKey(header[i])<<":"<<parseValue(header[i])<<std::endl;
 		httpRequest.set(parseKey(header[i]), parseValue(header[i]));
     }
-    std::cerr<<"ip:"<<httpRequest.remote_addr()<<std::endl;
+    //std::cerr<<"ip:"<<httpRequest.remote_addr()<<std::endl;
     std::stringstream cookiesstream;
     ngx_table_elt_t ** cookies = (ngx_table_elt_t **)r->headers_in.cookies.elts;
 	for (ngx_uint_t i = 0; i < r->headers_in.cookies.nelts; ++i) {
