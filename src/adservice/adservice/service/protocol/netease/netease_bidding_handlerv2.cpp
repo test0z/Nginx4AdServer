@@ -7,8 +7,6 @@
 #include "logging.h"
 #include "utility/utility.h"
 
-#include <muduo/base/Logging.h>
-
 namespace protocol {
 namespace bidding {
 

@@ -119,7 +119,8 @@ CORE_LIBS="-L/usr/lib -L/usr/lib64 -L/usr/local/lib -L/usr/local/lib64 $CORE_LIB
 /usr/local/lib/librdkafka.a
 /usr/lib/libaerospike.a
 /usr/local/lib/libboost_serialization.a
+/usr/lib64/libprotobuf.a
 -lmuduo_base_cpp11 -ltbb -pthread
--lstdc++ -lcrypt -lpcre -lcrypto -lcryptopp -lz -lssl -lprotobuf -lcurl -licuuc -licui18n -ldl -lzmq -lmtty
+-lstdc++ -lcrypt -lpcre -lcrypto -lcryptopp -lz -lssl -lcurl -licuuc -licui18n -ldl -lzmq -lmtty
 -Wl,-rpath,/usr/local/lib "
 

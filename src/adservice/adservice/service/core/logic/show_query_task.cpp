@@ -7,9 +7,11 @@
 #include "core/adselectv2/ad_select_client.h"
 #include "core/adselectv2/ad_select_interface.h"
 #include "core/core_ip_manager.h"
-#include "utility/utility.h"
-#include <tbb/concurrent_hash_map.h>
 #include "logging.h"
+#include "utility/utility.h"
+
+#include <tbb/concurrent_hash_map.h>
+
 
 extern adservice::adselectv2::AdSelectClientPtr adSelectClient;
 
@@ -392,11 +394,11 @@ namespace corelogic {
 			} else {
 				LOG_INFO << "handleShowRequests:" << handleShowRequests;
 			}
-        }
+		}
 		if (log.adInfo.cost != 0) { //更新花费表状态
 		}
 		if (log.adInfo.bidPrice != 0) { //更新BidPrice表状态
-		}
+        }
 	}
 }
 }
