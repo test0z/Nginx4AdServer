@@ -222,19 +222,21 @@ void parseConfigAeroSpikeNode(const std::string & asNode, AerospikeConfig & conf
     }
 }
 
-void parseConfigAdselectTimeout(const std::string & timeoutStr,std::map<int,int>& timeoutMap){
+void parseConfigAdselectTimeout(const std::string & timeoutStr, std::map<int, int> & timeoutMap)
+{
     std::vector<std::string> results;
-    boost::algorithm::split(results,timeoutStr,boost::algorithm::is_any_of("|:"));
+	boost::algorithm::split(results, timeoutStr, boost::algorithm::is_any_of("|:"));
     int len = (int)results.size();
-    for(int i=0;i<len;i+=2){
+	for (int i = 0; i < len; i += 2) {
         int adx = std::stoi(results[i]);
-        int timeout = std::stoi(results[i+1]);
-        timeoutMap.insert(std::make_pair(adx,timeout));
+		int timeout = std::stoi(results[i + 1]);
+		timeoutMap.insert(std::make_pair(adx, timeout));
     }
 }
 
-void setGlobalLoggingLevel(int loggingLevel){
-    AdServiceLog::globalLoggingLevel = (LoggingLevel) globalConfig.serverConfig.loggingLevel;
+void setGlobalLoggingLevel(int loggingLevel)
+{
+	AdServiceLog::globalLoggingLevel = (LoggingLevel)globalConfig.serverConfig.loggingLevel;
 }
 
 static void global_init(LocationConf * conf)
@@ -251,7 +253,7 @@ static void global_init(LocationConf * conf)
     globalConfig.logConfig.kafkaLogEnable = NGX_BOOL(conf->kafkaloggerenable);
     globalConfig.logConfig.localLoggerThreads = conf->localloggerthreads;
     globalConfig.adselectConfig.adselectNode = NGX_STR_2_STD_STR(conf->adselectentry);
-    parseConfigAdselectTimeout(NGX_STR_2_STD_STR(conf->adselecttimeout),globalConfig.adselectConfig.adselectTimeout);
+	parseConfigAdselectTimeout(NGX_STR_2_STD_STR(conf->adselecttimeout), globalConfig.adselectConfig.adselectTimeout);
     globalConfig.aerospikeConfig.nameSpace = NGX_STR_2_STD_STR(conf->asnamespace);
     std::string asNode = NGX_STR_2_STD_STR(conf->asnode);
 	parseConfigAeroSpikeNode(asNode, globalConfig.aerospikeConfig);
@@ -270,9 +272,7 @@ static void global_init(LocationConf * conf)
 
     serviceLogPtr = std::make_shared<AdServiceLog>(AdServiceLog::globalLoggingLevel);
 
-	adSelectClient = std::make_shared<adservice::adselectv2::AdSelectClient>(
-		globalConfig.adselectConfig.adselectNode,
-		globalConfig.adselectConfig.adselectTimeout);
+	adSelectClient = std::make_shared<adservice::adselectv2::AdSelectClient>(globalConfig.adselectConfig.adselectNode);
 
     adservice::server::IpManager::init();
     adservice::corelogic::HandleBidQueryTask::init();
@@ -281,7 +281,6 @@ static void global_init(LocationConf * conf)
     char cwd[256];
 	getcwd(cwd, sizeof(cwd));
 	std::cerr << "current working directory:" << cwd << std::endl;
-	std::cerr << "unix socket file:" << globalConfig.adselectConfig.unixSocketFile << std::endl;
 
     serviceInitialized = true;
     globalMutex.unlock();
@@ -306,10 +305,10 @@ void read_header(ngx_http_request_t * r, adservice::utility::HttpRequest & httpR
         if (header[i].hash == 0) {
             continue;
         }
-        //std::cerr<<"header:"<<parseKey(header[i])<<":"<<parseValue(header[i])<<std::endl;
+		// std::cerr<<"header:"<<parseKey(header[i])<<":"<<parseValue(header[i])<<std::endl;
 		httpRequest.set(parseKey(header[i]), parseValue(header[i]));
     }
-    //std::cerr<<"ip:"<<httpRequest.remote_addr()<<std::endl;
+	// std::cerr<<"ip:"<<httpRequest.remote_addr()<<std::endl;
     std::stringstream cookiesstream;
     ngx_table_elt_t ** cookies = (ngx_table_elt_t **)r->headers_in.cookies.elts;
 	for (ngx_uint_t i = 0; i < r->headers_in.cookies.nelts; ++i) {
@@ -318,20 +317,20 @@ void read_header(ngx_http_request_t * r, adservice::utility::HttpRequest & httpR
 	httpRequest.set(COOKIE, cookiesstream.str());
 }
 
-
-ngx_int_t build_response(ngx_http_request_t* r,adservice::utility::HttpResponse& httpResponse){
+ngx_int_t build_response(ngx_http_request_t * r, adservice::utility::HttpResponse & httpResponse)
+{
     r->headers_out.status = (ngx_uint_t)httpResponse.status();
 	const std::string & strResp = httpResponse.get_body();
 	if (strResp.empty()) {
         r->headers_out.status = 204;
         r->headers_out.content_length_n = strResp.length();
         ngx_str_t content_type;
-        INIT_NGX_STR(content_type,httpResponse.content_header().data());
+		INIT_NGX_STR(content_type, httpResponse.content_header().data());
         r->headers_out.content_type = content_type;
     }
 
-    if(!httpResponse.cookies().empty()) {
-        ngx_table_elt_t *h = (ngx_table_elt_t *) ngx_list_push(&r->headers_out.headers);
+	if (!httpResponse.cookies().empty()) {
+		ngx_table_elt_t * h = (ngx_table_elt_t *)ngx_list_push(&r->headers_out.headers);
         if (h != nullptr) {
             h->hash = 1;
 			ngx_str_set(&h->key, "Set-Cookie");
@@ -355,8 +354,8 @@ ngx_int_t build_response(ngx_http_request_t* r,adservice::utility::HttpResponse&
     out.buf = b;
     out.next = nullptr;
 
-    b->pos = (u_char *) strResp.c_str();
-    b->last = (u_char *) strResp.c_str() + strResp.length();
+	b->pos = (u_char *)strResp.c_str();
+	b->last = (u_char *)strResp.c_str() + strResp.length();
     b->memory = 1;
     b->last_buf = 1;
     b->in_file = 0;
@@ -429,7 +428,7 @@ static ngx_int_t adservice_handler(ngx_http_request_t * r)
 		adservice::corelogic::HandleTraceTask task(httpRequest, httpResponse);
         task.setLogger(serviceLogger);
         task();
-    }else{
+	} else {
         httpResponse.status(204);
         httpResponse.set_content_header("text/html");
     }

@@ -262,7 +262,8 @@ namespace bidding {
             bannerJson["height"]=banner.height;
             std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
             char admBuffer[4096];
-            snprintf(admBuffer,sizeof(admBuffer),adservice::corelogic::HandleShowQueryTask::showAdxTemplate,mtadInfoStr.data());
+			snprintf(admBuffer, sizeof(admBuffer), adservice::corelogic::HandleShowQueryTask::showAdxTemplate,
+					 mtadInfoStr.data());
             adResult->set_adm(std::string(admBuffer));
         }
         std::string landingUrl = mtlsArray[0].get("p1", "");

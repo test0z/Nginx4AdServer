@@ -112,33 +112,22 @@ namespace adselectv2 {
 			return false;
 		}
 
-		int timeoutTime = selectTimeouts_.find(selectCondition.adxid)==selectTimeouts_.end()?selectTimeouts_[ADX_OTHER].count():
-						  selectTimeouts_[selectCondition.adxid].count();
-
-		if (zmq::poll(pollitems_, 1, timeoutTime) < 1) {
-			LOG_WARN << "adselect timeout ,adxid:"<<selectCondition.adxid;
+		zmq::message_t reply;
+		try {
+			socket_.recv(&reply);
+		} catch (zmq::error_t & e) {
+			LOG_ERROR << "接收search响应失败：" << e.what();
 			return false;
-		} else {
-			if (pollitems_[0].revents & ZMQ_POLLIN) {
-				zmq::message_t reply;
-				try {
-					socket_.recv(&reply);
-				} catch (zmq::error_t & e) {
-					LOG_ERROR << "接收search响应失败：" << e.what();
-					return false;
-				}
-				std::string response((char *)reply.data() + 1, reply.size() - 1);
-				deserialize(response, result);
-				if(selectCondition.adxid!=result.adplace.adxId||selectCondition.adxpid!=result.adplace.adxPId){
-					LOG_ERROR<<"query adxid:"<<selectCondition.adxid<<",result adxid:"<<result.adplace.adxId
-							 <<",query adxpid:"<<selectCondition.adxpid<<",result adxpid:"<<result.adplace.adxPId;
-					return false;
-				}
-				return (result.banner.bId > 0 && result.solution.sId > 0);
-			}
+		}
+		std::string response((char *)reply.data() + 1, reply.size() - 1);
+		deserialize(response, result);
+		if ((result.adplace.adxId != 0 && !result.adplace.adxPId.empty())
+			&& (selectCondition.adxid != result.adplace.adxId || selectCondition.adxpid != result.adplace.adxPId)) {
+			LOG_ERROR << "query adxid:" << selectCondition.adxid << ",result adxid:" << result.adplace.adxId
+					  << ",query adxpid:" << selectCondition.adxpid << ",result adxpid:" << result.adplace.adxPId;
 		}
 
-		return false;
+		return (result.banner.bId > 0 && result.solution.sId > 0);
 	}
 
 	bool AdSelectClient::getBannerById(int64_t bannerId, MT::common::Banner & banner)
