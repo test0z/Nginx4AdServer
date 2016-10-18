@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <cstdlib>
 #include <memory>
+#include <exception>
 #include "protocol/log/log.h"
 
 #ifdef NO_COW_STRING           //如果定义了禁止string的COW,那么使用vstring或者请在Makefile中定义_GLIBCXX_USE_CXX11_ABI=1
@@ -63,10 +64,16 @@ typedef u_int64_t uint64_t;
 #define OUT
 #define INOUT
 
-namespace adservice {
-	namespace types {
-
+class MtException:public std::exception{
+public:
+	MtException(const std::string& message) _GLIBCXX_USE_NOEXCEPT :msg(message){
 	}
-}
+	virtual ~MtException() _GLIBCXX_USE_NOEXCEPT{}
+	virtual const char* what() const _GLIBCXX_USE_NOEXCEPT{
+		return msg.data();
+	}
+protected:
+	std::string msg;
+};
 
 #endif
