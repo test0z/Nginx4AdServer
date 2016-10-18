@@ -22,8 +22,7 @@ namespace adselectv2 {
 		AdSelectClient(const std::string & url, std::map<int, int> & timeoutMap)
 			: serverUrl_(url)
 		{
-			identity = std::to_string(getpid());
-			LOG_INFO<<"identity:"<<identity;
+			std::string identity = std::to_string(getpid());
 			socket_.setsockopt(ZMQ_IDENTITY, identity.c_str(), identity.length());
 			socket_.connect(url);
 			pollitems_[0] = { socket_, 0, ZMQ_POLLIN, 0 };
@@ -41,7 +40,6 @@ namespace adselectv2 {
 
 	private:
 		std::string serverUrl_;
-		std::string identity;
 		std::map<int, std::chrono::milliseconds> selectTimeouts_;
 
 		zmq::context_t context_{ 1 };

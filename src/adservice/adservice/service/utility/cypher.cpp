@@ -362,8 +362,7 @@ namespace utility {
 				else
 					l = mid + 1;
             }
-			assert(l >= 0 && l < size && array[l] == key);
-			if (array[l] != key) {
+			if (!(l >= 0 && l < size && array[l] == key)||array[l] != key) {
 				l = -1;
 			}
 			return l;
@@ -377,7 +376,9 @@ namespace utility {
 		*/
 		void cookiesEncode(const uchar_t * input, const int32_t size, INOUT CypherResult128 & result)
 		{
-			assert(size <= 8);
+			if(size>8){
+				throw MtException("cookiesEncode size > 8");
+			}
 			uchar_t * output = result.bytes;
 			for (int i = 0, j = 0; i < size; i++) {
 				output[j] = cypherMap[j & 0x03][input[i] & 0x0F];
@@ -396,7 +397,9 @@ namespace utility {
 		*/
 		bool cookiesDecode(const CypherResult128 & input, INOUT uchar_t * output, INOUT int32_t & size)
 		{
-			assert(size >= 8);
+			if(size < 8){
+				return false;
+			}
 			static uchar_t mask[2] = { 0x0F, 0xF0 };
 			const uchar_t * bytes = input.bytes;
 			memset(output, 0, 8);

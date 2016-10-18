@@ -95,10 +95,6 @@ namespace adselectv2 {
 	bool AdSelectClient::search(int seqId, bool isSSP, AdSelectCondition & selectCondition,
 								MT::common::SelectResult & result)
 	{
-		pid_t currentPid = getpid();
-		if(identity!=std::to_string((int64_t)pid_t)){
-			LOG_ERROR<<"pid != identity";
-		}
 		MT::common::SelectRequest request;
 
 		makeRequest(isSSP, selectCondition, request);

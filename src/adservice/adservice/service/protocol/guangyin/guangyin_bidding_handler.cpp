@@ -229,7 +229,7 @@ namespace bidding {
         adResult->set_impid(imp.id());
         adResult->set_price(maxCpmPrice);
 
-        const Banner & reqBanner = imp.banner();
+        //const Banner & reqBanner = imp.banner();
         adResult->set_adomain("show.mtty.com");
 
         char buffer[2048];
@@ -266,6 +266,7 @@ namespace bidding {
         std::string landingUrl = mtlsArray[0].get("p1", "");
         getClickPara(bidRequest_.id(), buffer, sizeof(buffer), "", landingUrl);
         adResult->set_curl(std::string("http://click.mtty.com/c?") + buffer);
+        adResult->set_nurl(adResult->iurl());
 
         adResult->set_w(banner.width);
         adResult->set_h(banner.height);
