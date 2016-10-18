@@ -30,6 +30,7 @@ extern "C" {
 #include <boost/algorithm/string.hpp>
 #include <ngx_http_request.h>
 #include <unistd.h>
+#include <ngx_string.h>
 
 struct LocationConf {
     //运行日志级别
@@ -324,18 +325,17 @@ ngx_int_t build_response(ngx_http_request_t * r, adservice::utility::HttpRespons
 	if (strResp.empty()) {
         r->headers_out.status = 204;
         r->headers_out.content_length_n = strResp.length();
-        ngx_str_t content_type;
-		INIT_NGX_STR(content_type, httpResponse.content_header().data());
-        r->headers_out.content_type = content_type;
     }
 
-	if (!httpResponse.cookies().empty()) {
-		ngx_table_elt_t * h = (ngx_table_elt_t *)ngx_list_push(&r->headers_out.headers);
+    const std::map<std::string,std::string> headers = httpResponse.get_headers();
+    for(auto& iter : headers) {
+        ngx_table_elt_t *h = (ngx_table_elt_t *) ngx_list_push(&r->headers_out.headers);
         if (h != nullptr) {
             h->hash = 1;
-			ngx_str_set(&h->key, "Set-Cookie");
-			h->value.data = (uchar_t *)httpResponse.cookies().data();
-            h->value.len = httpResponse.cookies().length();
+            h->key.data = (uchar_t *)iter.first.data();
+            h->key.len = iter.first.length();
+            h->value.data = (uchar_t *) iter.second.data();
+            h->value.len = iter.second.length();
         }
     }
 

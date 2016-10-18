@@ -87,6 +87,7 @@ namespace adservice {
                 return ss.str();
             }
 
+
         private:
             std::map<std::string,std::string> headers;
             std::string postdata;
@@ -145,7 +146,7 @@ namespace adservice {
                 if(bodyMessage.length()==0)
                     return;
                 body = bodyMessage;
-                headers[CONTENTLENGTH] = body.length();
+                headers[CONTENTLENGTH] = std::to_string(body.length());
             }
 
             const std::string& get_body() const{
@@ -165,6 +166,11 @@ namespace adservice {
                 }
                 return ss.str();
             }
+
+            const std::map<std::string,std::string>& get_headers() const{
+                return headers;
+            };
+
         private:
             int respStatus;
             std::string statusMsg;
