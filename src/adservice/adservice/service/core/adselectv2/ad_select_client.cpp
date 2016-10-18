@@ -95,6 +95,10 @@ namespace adselectv2 {
 	bool AdSelectClient::search(int seqId, bool isSSP, AdSelectCondition & selectCondition,
 								MT::common::SelectResult & result)
 	{
+		pid_t currentPid = getpid();
+		if(identity!=std::to_string((int64_t)pid_t)){
+			LOG_ERROR<<"pid != identity";
+		}
 		MT::common::SelectRequest request;
 
 		makeRequest(isSSP, selectCondition, request);
@@ -129,8 +133,10 @@ namespace adselectv2 {
 				}
 				std::string response((char *)reply.data() + 1, reply.size() - 1);
 				deserialize(response, result);
-				if(selectCondition.adxid==15 && result.solution.dADExchange=="20|0.0|0.0"){
-					LOG_ERROR<<"adxId:"<<selectCondition.adxid<<",soltutionId:"<<result.solution.sId<<",d_exchange:"<<result.solution.dADExchange;
+				if(selectCondition.adxid!=result.adplace.adxId||selectCondition.adxpid!=result.adplace.adxPId){
+					LOG_ERROR<<"query adxid:"<<selectCondition.adxid<<",result adxid:"<<result.adplace.adxId
+							 <<",query adxpid:"<<selectCondition.adxpid<<",result adxpid:"<<result.adplace.adxPId;
+					return false;
 				}
 				return (result.banner.bId > 0 && result.solution.sId > 0);
 			}

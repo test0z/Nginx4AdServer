@@ -29,6 +29,7 @@ extern "C" {
 #include "utility/utility.h"
 #include <boost/algorithm/string.hpp>
 #include <ngx_http_request.h>
+#include <unistd.h>
 
 struct LocationConf {
     //运行日志级别
@@ -256,6 +257,8 @@ static void global_init(LocationConf * conf)
 	parseConfigAeroSpikeNode(asNode, globalConfig.aerospikeConfig);
     std::string workdir = NGX_STR_2_STD_STR(conf->workdir);
     chdir(workdir.c_str());
+    pid_t currentPid = getpid();
+    std::cerr<<"current pid:"<<(int64_t)currentPid<<std::endl;
 	if (serviceLogger.use_count() != 0) {
         serviceLogger->stop();
     }
