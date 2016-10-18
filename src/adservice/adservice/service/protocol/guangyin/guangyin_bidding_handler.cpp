@@ -258,6 +258,8 @@ namespace bidding {
             bannerJson["pricetype"]=adInfo.priceType;
             bannerJson["unid"]=adInfo.adxid;
             bannerJson["of"]="0";
+            bannerJson["width"]=banner.width;
+            bannerJson["height"]=banner.height;
             std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
             char admBuffer[4096];
             snprintf(admBuffer,sizeof(admBuffer),adservice::corelogic::HandleShowQueryTask::showAdxTemplate,mtadInfoStr.data());
