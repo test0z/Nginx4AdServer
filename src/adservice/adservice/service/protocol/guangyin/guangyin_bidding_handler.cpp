@@ -229,7 +229,6 @@ namespace bidding {
         adResult->set_impid(imp.id());
         adResult->set_price(maxCpmPrice);
 
-        const Banner & reqBanner = imp.banner();
         adResult->set_adomain("show.mtty.com");
 
         char buffer[2048];
@@ -248,19 +247,20 @@ namespace bidding {
             nativeiframe(banner, adInfo, html);
             adResult->set_adm(html);
         } else {
-            bannerJson["advid"]=finalSolution.advId;
-            bannerJson["adxpid"]=adInfo.adxpid;
-            bannerJson["arid"]=adInfo.areaId;
-            bannerJson["gpid"]=finalSolution.sId;
-            bannerJson["pid"]=adInfo.pid;
-            bannerJson["ppid"]=adInfo.ppid;
-            bannerJson["price"]=adInfo.offerPrice;
-            bannerJson["pricetype"]=adInfo.priceType;
-            bannerJson["unid"]=adInfo.adxid;
-            bannerJson["of"]="0";
+			bannerJson["advid"] = finalSolution.advId;
+			bannerJson["adxpid"] = adInfo.adxpid;
+			bannerJson["arid"] = adInfo.areaId;
+			bannerJson["gpid"] = finalSolution.sId;
+			bannerJson["pid"] = adInfo.pid;
+			bannerJson["ppid"] = adInfo.ppid;
+			bannerJson["price"] = adInfo.offerPrice;
+			bannerJson["pricetype"] = adInfo.priceType;
+			bannerJson["unid"] = adInfo.adxid;
+			bannerJson["of"] = "0";
             std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
             char admBuffer[4096];
-            snprintf(admBuffer,sizeof(admBuffer),adservice::corelogic::HandleShowQueryTask::showAdxTemplate,mtadInfoStr.data());
+			snprintf(admBuffer, sizeof(admBuffer), adservice::corelogic::HandleShowQueryTask::showAdxTemplate,
+					 mtadInfoStr.data());
             adResult->set_adm(std::string(admBuffer));
         }
         std::string landingUrl = mtlsArray[0].get("p1", "");
