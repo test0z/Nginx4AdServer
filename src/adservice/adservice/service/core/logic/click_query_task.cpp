@@ -237,6 +237,7 @@ namespace corelogic {
             handleLandingUrl(log, paramMap);
             resp.status(302, "OK");
             resp.set_header("Location", log.adInfo.landingUrl);
+            resp.set_body("m");
         } else {
             resp.status(400, "Error,empty landing url");
         }

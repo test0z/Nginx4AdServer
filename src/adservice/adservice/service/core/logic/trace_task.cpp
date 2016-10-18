@@ -275,6 +275,7 @@ namespace corelogic {
         // 跳转至阿里云日志服务
         resp.status(302, "OK");
         resp.set_header("Location", aliLogUrl);
+        resp.set_body("m");
     }
 
     void HandleTraceTask::onError(std::exception & e, adservice::utility::HttpResponse & resp)
