@@ -64,7 +64,7 @@ namespace bidding {
             return true;
         }
 
-		void nativeiframe(const MT::common::Banner & banner, protocol::log::AdInfo & adInfo, std::string & htmlTemplate)
+        void nativeiframe(const MT::common::Banner & banner, protocol::log::AdInfo & adInfo, std::string & htmlTemplate)
         {
 
             std::map<std::string, std::string> replaces;
@@ -81,6 +81,13 @@ namespace bidding {
         }
 
     } // namespace anonyous
+
+    char GuangyinBiddingHandler::adm_template[1024];
+
+    void GuangyinBiddingHandler::loadStaticAdmTemplate()
+    {
+        adservice::utility::file::loadFile(adm_template, TEMPLATE_SHOW_ADX_GUANGYIN_PATH);
+    }
 
     bool GuangyinBiddingHandler::parseRequestData(const std::string & data)
     {
@@ -117,7 +124,7 @@ namespace bidding {
             logItem.adInfo.ppid = adInfo.ppid;
             logItem.referer = bidRequest_.has_site() ? bidRequest_.site().page() : "";
         } else {
-			logItem.adInfo.pid = adInfo.pid;
+            logItem.adInfo.pid = adInfo.pid;
             logItem.adInfo.bidSize = adInfo.bidSize;
         }
 
@@ -156,9 +163,9 @@ namespace bidding {
             queryCondition.mobileNetwork = getNetWork(device.connectiontype());
             if (bidRequest_.has_app()) {
                 const App & app = bidRequest_.app();
-				if (app.has_name()) {
+                if (app.has_name()) {
                     queryCondition.adxpid = app.name();
-				} else if (app.has_publisher()) {
+                } else if (app.has_publisher()) {
                     queryCondition.adxpid = app.publisher().slot();
                 }
             }
@@ -185,51 +192,51 @@ namespace bidding {
         return isBidAccepted = true;
     }
 
-	void GuangyinBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-												const MT::common::SelectResult & result)
+    void GuangyinBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
+                                                const MT::common::SelectResult & result)
     {
         bidResponse_.Clear();
         bidResponse_.set_id(bidRequest_.id());
         bidResponse_.set_bidid(adservice::utility::cypher::randomId(3));
         bidResponse_.clear_seatbid();
 
-		const MT::common::Solution & finalSolution = result.solution;
-		const MT::common::ADPlace & adplace = result.adplace;
-		const MT::common::Banner & banner = result.banner;
+        const MT::common::Solution & finalSolution = result.solution;
+        const MT::common::ADPlace & adplace = result.adplace;
+        const MT::common::Banner & banner = result.banner;
 
         //缓存最终广告结果
-		adInfo.pid = std::to_string(adplace.pId);
-		adInfo.adxpid = queryCondition.adxpid;
-		adInfo.sid = finalSolution.sId;
+        adInfo.pid = std::to_string(adplace.pId);
+        adInfo.adxpid = queryCondition.adxpid;
+        adInfo.sid = finalSolution.sId;
 
-		auto advId = finalSolution.advId;
+        auto advId = finalSolution.advId;
         adInfo.advId = advId;
         adInfo.adxid = queryCondition.adxid;
         adInfo.adxuid = bidRequest_.user().id();
-		adInfo.bannerId = banner.bId;
-		adInfo.cid = adplace.cId;
-		adInfo.mid = adplace.mId;
-		adInfo.cpid = adInfo.advId;
-		adInfo.bidSize = makeBidSize(banner.width, banner.height);
+        adInfo.bannerId = banner.bId;
+        adInfo.cid = adplace.cId;
+        adInfo.mid = adplace.mId;
+        adInfo.cpid = adInfo.advId;
+        adInfo.bidSize = makeBidSize(banner.width, banner.height);
         adInfo.priceType = finalSolution.priceType;
         adInfo.ppid = result.ppid;
 
         const Imp & imp = bidRequest_.imp(0);
-		float maxCpmPrice = (float)result.bidPrice;
+        float maxCpmPrice = (float)result.bidPrice;
         adInfo.offerPrice = result.feePrice;
 
         const std::string & userIp = bidRequest_.device().ip();
         adInfo.areaId = adservice::server::IpManager::getInstance().getAreaCodeStrByIp(userIp.c_str());
 
         SeatBid * seatBid = bidResponse_.add_seatbid();
-		seatBid->set_seat("5761460d3ada7515003d3589");
+        seatBid->set_seat("5761460d3ada7515003d3589");
         Bid * adResult = seatBid->add_bid();
 
         adResult->set_id(bidRequest_.id());
         adResult->set_impid(imp.id());
         adResult->set_price(maxCpmPrice);
 
-        //const Banner & reqBanner = imp.banner();
+        // const Banner & reqBanner = imp.banner();
         adResult->set_adomain("show.mtty.com");
 
         char buffer[2048];
@@ -248,22 +255,21 @@ namespace bidding {
             nativeiframe(banner, adInfo, html);
             adResult->set_adm(html);
         } else {
-            bannerJson["advid"]=finalSolution.advId;
-            bannerJson["adxpid"]=adInfo.adxpid;
-            bannerJson["arid"]=adInfo.areaId;
-            bannerJson["gpid"]=finalSolution.sId;
-            bannerJson["pid"]=adInfo.pid;
-            bannerJson["ppid"]=adInfo.ppid;
-            bannerJson["price"]=adInfo.offerPrice;
-            bannerJson["pricetype"]=adInfo.priceType;
-            bannerJson["unid"]=adInfo.adxid;
-            bannerJson["of"]="0";
-            bannerJson["width"]=banner.width;
-            bannerJson["height"]=banner.height;
+            bannerJson["advid"] = finalSolution.advId;
+            bannerJson["adxpid"] = adInfo.adxpid;
+            bannerJson["arid"] = adInfo.areaId;
+            bannerJson["gpid"] = finalSolution.sId;
+            bannerJson["pid"] = adInfo.pid;
+            bannerJson["ppid"] = adInfo.ppid;
+            bannerJson["price"] = adInfo.offerPrice;
+            bannerJson["pricetype"] = adInfo.priceType;
+            bannerJson["unid"] = adInfo.adxid;
+            bannerJson["of"] = "0";
+            bannerJson["width"] = banner.width;
+            bannerJson["height"] = banner.height;
             std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
             char admBuffer[4096];
-			snprintf(admBuffer, sizeof(admBuffer), adservice::corelogic::HandleShowQueryTask::showAdxTemplate,
-					 mtadInfoStr.data());
+            snprintf(admBuffer, sizeof(admBuffer), adm_template, mtadInfoStr.data());
             adResult->set_adm(std::string(admBuffer));
         }
         std::string landingUrl = mtlsArray[0].get("p1", "");
@@ -281,7 +287,7 @@ namespace bidding {
     {
         std::string result;
         if (!adservice::utility::serialize::writeProtoBufObject(bidResponse_, &result)) {
-			LOG_ERROR << "failed to write protobuf object in GuangyinBiddingHandler::match";
+            LOG_ERROR << "failed to write protobuf object in GuangyinBiddingHandler::match";
             reject(response);
             return;
         }
@@ -297,7 +303,7 @@ namespace bidding {
         bidResponse_.set_nbr(NoBidReasonCodes::TECHNICAL_ERROR);
         std::string result;
         if (!adservice::utility::serialize::writeProtoBufObject(bidResponse_, &result)) {
-			LOG_ERROR << "failed to write protobuf object in GuangyinBiddingHandler::reject";
+            LOG_ERROR << "failed to write protobuf object in GuangyinBiddingHandler::reject";
             return;
         }
         response.status(200);

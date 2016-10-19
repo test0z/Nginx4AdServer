@@ -173,6 +173,8 @@
 #define TEMPLATE_SHOW_ADX_PATH                      "res/html/show_adx.html"
 // 曝光模块返回SSP html模块
 #define TEMPLATE_SHOW_SSP_PATH                      "res/html/show_ssp.html"
+// 光阴adx adm模版
+#define TEMPLATE_SHOW_ADX_GUANGYIN_PATH             "res/html/show_adx_guangyin.html"
 
 // SSP返回点击宏中的点击链接
 #define SSP_CLICK_URL                               "http://click.mtty.com/c"
