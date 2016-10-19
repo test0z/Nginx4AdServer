@@ -323,11 +323,10 @@ void read_header(ngx_http_request_t * r, adservice::utility::HttpRequest & httpR
 ngx_int_t build_response(ngx_http_request_t * r, adservice::utility::HttpResponse & httpResponse)
 {
     r->headers_out.status = (ngx_uint_t)httpResponse.status();
-    const std::string & strResp = httpResponse.get_body();
-    if (r->headers_out.status == 200 && strResp.empty()) {
-        r->headers_out.status = 204;
-        r->headers_out.content_length_n = strResp.length();
+    if (r->headers_out.status != 204 && strResp.empty()) { // http standard comprise to bussiness<-->
+        httpResponse.set_body("\r");
     }
+    const std::string & strResp = httpResponse.get_body();
 
     const std::map<std::string, std::string> headers = httpResponse.get_headers();
     for (auto & iter : headers) {
