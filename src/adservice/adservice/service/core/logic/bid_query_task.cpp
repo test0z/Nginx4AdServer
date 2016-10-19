@@ -25,7 +25,7 @@ namespace corelogic {
     using namespace adservice::utility;
     using namespace adservice::utility::time;
     using namespace adservice::server;
-	using namespace adservice::adselectv2;
+    using namespace adservice::adselectv2;
 
     int HandleBidQueryTask::initialized = 0;
     int HandleBidQueryTask::moduleCnt = 0;
@@ -74,7 +74,7 @@ namespace corelogic {
              */
     int HandleBidQueryTask::getAdxId(const std::string & path)
     {
-		auto key = fnv_hash(path.c_str(), path.length());
+        auto key = fnv_hash(path.c_str(), path.length());
         int l = 0, h = moduleCnt - 1;
         while (l <= h) {
             int mid = l + ((h - l) >> 1);
@@ -129,11 +129,11 @@ namespace corelogic {
     {
         updateBiddingHandler();
         if (biddingHandler == NULL) {
-			LOG_WARN << "Bidding Handler Not Found,adxId:" << adxId;
+            LOG_WARN << "Bidding Handler Not Found,adxId:" << adxId;
             return;
         }
         if (!biddingHandler->parseRequestData(data)) {
-			LOG_WARN << "Parse Bidding Request Failed,adxId" << adxId;
+            LOG_WARN << "Parse Bidding Request Failed,adxId" << adxId;
         }
     }
 
@@ -146,22 +146,24 @@ namespace corelogic {
             resp.status(200);
         } else {
             TaskThreadLocal * localData = threadData;
-			bool bidResult = biddingHandler->filter(
-				[localData](AbstractBiddingHandler * adapter, adselectv2::AdSelectCondition & condition) -> bool {
-					int seqId = 0;
-					seqId = localData->seqId;
-					//地域定向接入
-					IpManager & ipManager = IpManager::getInstance();
-					condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
-					condition.dHour = adSelectTimeCodeUtc();
-					MT::common::SelectResult resp;
-					if (!adSelectClient->search(seqId, false, condition, resp)) {
+            bool bidResult = biddingHandler->filter(
+                [localData, &log](AbstractBiddingHandler * adapter, adselectv2::AdSelectCondition & condition) -> bool {
+                    int seqId = 0;
+                    seqId = localData->seqId;
+                    //地域定向接入
+                    IpManager & ipManager = IpManager::getInstance();
+                    condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
+                    condition.dHour = adSelectTimeCodeUtc();
+                    MT::common::SelectResult resp;
+                    if (!adSelectClient->search(seqId, false, condition, resp)) {
                         condition.mttyPid = resp.adplace.pId;
-						return false;
-					}
-					adapter->buildBidResult(condition, resp);
-					return true;
-				});
+                        log.adInfo.mid = resp.adplace.mId;
+                        return false;
+                    }
+                    adapter->buildBidResult(condition, resp);
+                    log.adInfo.mid = resp.adplace.mId;
+                    return true;
+                });
             if (bidResult) {
                 biddingHandler->match(resp);
             } else {
@@ -178,7 +180,7 @@ namespace corelogic {
                 handleBidRequests = 1;
                 updateBidRequestsTime = todayStartTime;
             } else {
-				LOG_INFO << "handleBidRequests:" << handleBidRequests;
+                LOG_INFO << "handleBidRequests:" << handleBidRequests;
             }
         }
     }

@@ -11,7 +11,6 @@ extern "C" {
 #include <ngx_http.h>
 #include <ngx_http_request.h>
 #include <ngx_string.h>
-#include <ngx_string.h>
 }
 
 #include "common/constants.h"
@@ -29,8 +28,6 @@ extern "C" {
 #include "utility/aero_spike.h"
 #include "utility/utility.h"
 #include <boost/algorithm/string.hpp>
-#include <ngx_http_request.h>
-#include <ngx_string.h>
 #include <unistd.h>
 
 struct LocationConf {
@@ -323,11 +320,15 @@ void read_header(ngx_http_request_t * r, adservice::utility::HttpRequest & httpR
 ngx_int_t build_response(ngx_http_request_t * r, adservice::utility::HttpResponse & httpResponse)
 {
     r->headers_out.status = (ngx_uint_t)httpResponse.status();
-    if (r->headers_out.status != 204 && strResp.empty()) { // http standard compromised to bussiness<-->
+    if (r->headers_out.status != 204 && httpResponse.get_body().empty()) { // http standard compromised to bussiness<-->
         httpResponse.set_body("\r");
     }
     const std::string & strResp = httpResponse.get_body();
-
+    //    if (r->headers_out.status == 200) {
+    //        r->headers_out.content_type.data = (uchar_t *)httpResponse.content_header().data();
+    //        r->headers_out.content_type.len = httpResponse.content_header().length();
+    //        r->headers_out.content_length_n = strResp.length();
+    //    }
     const std::map<std::string, std::string> headers = httpResponse.get_headers();
     for (auto & iter : headers) {
         ngx_table_elt_t * h = (ngx_table_elt_t *)ngx_list_push(&r->headers_out.headers);
