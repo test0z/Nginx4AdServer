@@ -214,13 +214,13 @@ namespace corelogic {
                 result += "&r=" + sourceRecord.requestId();
             }
             if (!sourceRecord.pid().empty()) {
-                result += "&s=" + sourceRecord.pid();
+				result += "&s=" + sourceRecord.adxPid();
             }
             if (!sourceRecord.adxId().empty()) {
                 result += "&x=" + sourceRecord.adxId();
             }
 			if (!log.adInfo.pid.empty()) {
-                result += "&o=" + log.adInfo.pid;
+				result += "&o=" + sourceRecord.pid();
             }
             if (!log.userId.empty()) {
                 result += "&u=" + log.userId;
@@ -263,8 +263,7 @@ namespace corelogic {
             // 判断是否是一次到达，如果是pv，即y=6，限时10秒，否则请求类型保持原样
             if (getRecord(sourceId, sourceRecord)) {
                 if (requestTypeStr == "6" && log.timeStamp - sourceRecord.time() <= 10) {
-                    log.traceId = TRACE_ID_ARRIVE;
-					log.adInfo.pid = sourceRecord.pid();
+					log.traceId = TRACE_ID_ARRIVE;
                 }
             }
         }
