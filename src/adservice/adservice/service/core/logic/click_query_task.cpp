@@ -180,9 +180,9 @@ namespace corelogic {
 
     void HandleClickQueryTask::handleLandingUrl(protocol::log::LogItem & logItem, ParamMap & paramMap)
     {
-		paramMap["advid"] = paramMap[URL_ADOWNER_ID];
-		paramMap["pid"] = paramMap[URL_MTTYADPLACE_ID];
-		paramMap["adxpid"] = paramMap[URL_ADPLACE_ID];
+        paramMap["advid"] = paramMap[URL_ADOWNER_ID];
+        paramMap["pid"] = paramMap[URL_MTTYADPLACE_ID];
+        paramMap["adxpid"] = paramMap[URL_ADPLACE_ID];
         paramMap["bid"] = paramMap[URL_CREATIVE_ID];
         paramMap["sid"] = paramMap[URL_EXEC_ID];
         paramMap["idfa"] = paramMap[URL_DEVICE_UID];
@@ -220,12 +220,12 @@ namespace corelogic {
         }
         *p = '\0';
         logItem.adInfo.landingUrl = std::string(result, p);
-		replace(logItem.adInfo.landingUrl, "%7badvid%7d", paramMap["advid"]);
-		replace(logItem.adInfo.landingUrl, "%7Badvid%7D", paramMap["advid"]);
-		replace(logItem.adInfo.landingUrl, "%7bidfa%7d", paramMap["idfa"]);
-		replace(logItem.adInfo.landingUrl, "%7Bidfa%7D", paramMap["idfa"]);
-		replace(logItem.adInfo.landingUrl, "%7bsource_id%7d", paramMap["source_id"]);
-		replace(logItem.adInfo.landingUrl, "%7Bsource_id%7D", paramMap["source_id"]);
+        replace(logItem.adInfo.landingUrl, "%7badvid%7d", paramMap["advid"]);
+        replace(logItem.adInfo.landingUrl, "%7Badvid%7D", paramMap["advid"]);
+        replace(logItem.adInfo.landingUrl, "%7bidfa%7d", paramMap["idfa"]);
+        replace(logItem.adInfo.landingUrl, "%7Bidfa%7D", paramMap["idfa"]);
+        replace(logItem.adInfo.landingUrl, "%7bsource_id%7d", paramMap["source_id"]);
+        replace(logItem.adInfo.landingUrl, "%7Bsource_id%7D", paramMap["source_id"]);
     }
 
     void HandleClickQueryTask::customLogic(ParamMap & paramMap, protocol::log::LogItem & log,
