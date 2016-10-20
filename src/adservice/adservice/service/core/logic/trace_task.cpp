@@ -213,13 +213,13 @@ namespace corelogic {
             if (!sourceRecord.requestId().empty()) {
                 result += "&r=" + sourceRecord.requestId();
             }
-            if (!sourceRecord.pid().empty()) {
+			if (!sourceRecord.adxPid().empty()) {
 				result += "&s=" + sourceRecord.adxPid();
             }
             if (!sourceRecord.adxId().empty()) {
                 result += "&x=" + sourceRecord.adxId();
             }
-			if (!log.adInfo.pid.empty()) {
+			if (!sourceRecord.pid().empty()) {
 				result += "&o=" + sourceRecord.pid();
             }
             if (!log.userId.empty()) {

@@ -180,8 +180,9 @@ namespace corelogic {
 
     void HandleClickQueryTask::handleLandingUrl(protocol::log::LogItem & logItem, ParamMap & paramMap)
     {
-        paramMap["advid"] = paramMap[URL_ADOWNER_ID];
-        paramMap["pid"] = paramMap[URL_ADPLACE_ID];
+		paramMap["advid"] = paramMap[URL_ADOWNER_ID];
+		paramMap["pid"] = paramMap[URL_MTTYADPLACE_ID];
+		paramMap["adxpid"] = paramMap[URL_ADPLACE_ID];
         paramMap["bid"] = paramMap[URL_CREATIVE_ID];
         paramMap["sid"] = paramMap[URL_EXEC_ID];
         paramMap["idfa"] = paramMap[URL_DEVICE_UID];

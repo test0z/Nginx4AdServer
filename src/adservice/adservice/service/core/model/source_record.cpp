@@ -6,6 +6,19 @@ namespace adservice {
 namespace core {
 	namespace model {
 
+		namespace {
+
+			std::string getStr(const as_record * record, const char * name)
+			{
+				char * value = as_record_get_str(record, name);
+				if (value == nullptr) {
+					return "";
+				}
+
+				return value;
+			}
+		}
+
 		SourceRecord::SourceRecord(utility::url::ParamMap & paramMap, protocol::log::LogItem & log)
 			: time_(log.timeStamp)
 			, advId_(paramMap[URL_ADOWNER_ID])
@@ -43,6 +56,22 @@ namespace core {
 			geoId_ = as_record_get_str(&record, "geo_id");
 			refererUrl_ = as_record_get_str(&record, "referer_url");
 			bidPrice_ = as_record_get_str(&record, "bid_price");
+		}
+
+		void SourceRecord::record(const as_record & record)
+		{
+			time_ = as_record_get_int64(&record, "latest_time", -1);
+			advId_ = getStr(&record, "adv_id");
+			sid_ = getStr(&record, "sid");
+			adxId_ = getStr(&record, "adx_id");
+			mtUid_ = getStr(&record, "mt_uid");
+			pid_ = getStr(&record, "pid");
+			adxPid_ = getStr(&record, "adxpid");
+			requestId_ = getStr(&record, "request_id");
+			createId_ = getStr(&record, "create_id");
+			geoId_ = getStr(&record, "geo_id");
+			refererUrl_ = getStr(&record, "referer_url");
+			bidPrice_ = getStr(&record, "bid_price");
 		}
 
 		as_record * SourceRecord::record()
