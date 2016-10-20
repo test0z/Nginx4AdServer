@@ -4,6 +4,7 @@
 
 #include "tanx_bidding_handler.h"
 #include "core/core_ip_manager.h"
+#include "core/logic/show_query_task.h"
 #include "logging.h"
 #include "utility/utility.h"
 
@@ -15,7 +16,7 @@ namespace bidding {
     using namespace adservice::utility::serialize;
     using namespace adservice::utility::json;
     using namespace adservice::utility::userclient;
-	using namespace adservice::server;
+    using namespace adservice::server;
 
 #define AD_TX_CLICK_MACRO "%%CLICK_URL_PRE_ENC%%"
 #define AD_TX_PRICE_MACRO "%%SETTLE_PRICE%%"
@@ -76,14 +77,14 @@ namespace bidding {
         getShowPara(bid, showBuf, sizeof(showBuf));
         size_t len = (size_t)snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s%s&of=3", SNIPPET_SHOW_URL,
                                       "p=" AD_TX_PRICE_MACRO "&", showBuf);
-		if (len >= sizeof(feedbackUrl)) {
-			LOG_WARN << "feedbackUrl buffer size not enough,needed:" << len;
+        if (len >= sizeof(feedbackUrl)) {
+            LOG_WARN << "feedbackUrl buffer size not enough,needed:" << len;
         }
         strncat(showBuf, "&of=2", 5);
         len = (size_t)snprintf(html, sizeof(html), SNIPPET_IFRAME, width, height, SNIPPET_SHOW_URL,
                                "l=" AD_TX_CLICK_MACRO "&", showBuf, cookieMappingUrl);
         if (len >= sizeof(html)) {
-			LOG_WARN << "generateHtmlSnippet buffer size not enough,needed:" << len;
+            LOG_WARN << "generateHtmlSnippet buffer size not enough,needed:" << len;
         }
         return std::string(html, html + len);
     }
@@ -128,7 +129,7 @@ namespace bidding {
             logItem.adInfo.bidSize = adInfo.bidSize;
             logItem.referer = bidRequest.has_url() ? bidRequest.url() : "";
         } else {
-			logItem.adInfo.pid = adInfo.pid;
+            logItem.adInfo.pid = adInfo.pid;
             logItem.adInfo.bidSize = adInfo.bidSize;
         }
         return true;
@@ -149,15 +150,15 @@ namespace bidding {
         queryCondition.adxid = ADX_TANX;
         queryCondition.adxpid = pid;
         queryCondition.ip = bidRequest.ip();
-        queryCondition.basePrice = adzInfo.has_min_cpm_price()?adzInfo.min_cpm_price():0;
+        queryCondition.basePrice = adzInfo.has_min_cpm_price() ? adzInfo.min_cpm_price() : 0;
         extractSize(adzInfo.size(), queryCondition.width, queryCondition.height);
         if (bidRequest.has_mobile()) {
-			const BidRequest_Mobile & mobile = bidRequest.mobile();
+            const BidRequest_Mobile & mobile = bidRequest.mobile();
             const BidRequest_Mobile_Device & device = mobile.device();
             queryCondition.mobileDevice = getDeviceType(device.platform());
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.adxid = ADX_TANX_MOBILE;
-			if (mobile.has_is_app() && mobile.is_app() && mobile.has_package_name()) {
+            if (mobile.has_is_app() && mobile.is_app() && mobile.has_package_name()) {
                 queryCondition.adxpid = mobile.package_name();
             }
             std::string deviceId = device.idfa().empty() ? device.android_id() : device.idfa();
@@ -180,24 +181,24 @@ namespace bidding {
         return isBidAccepted = true;
     }
 
-	void TanxBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-											const MT::common::SelectResult & result)
+    void TanxBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
+                                            const MT::common::SelectResult & result)
     {
         bidResponse.Clear();
         bidResponse.set_version(bidRequest.version());
         bidResponse.set_bid(bidRequest.bid());
         bidResponse.clear_ads();
         BidResponse_Ads * adResult = bidResponse.add_ads();
-		const MT::common::Solution & finalSolution = result.solution;
-		const MT::common::ADPlace & adplace = result.adplace;
-		const MT::common::Banner & banner = result.banner;
-		int advId = finalSolution.advId;
-		std::string adxAdvIdStr = banner.adxAdvId;
+        const MT::common::Solution & finalSolution = result.solution;
+        const MT::common::ADPlace & adplace = result.adplace;
+        const MT::common::Banner & banner = result.banner;
+        int advId = finalSolution.advId;
+        std::string adxAdvIdStr = banner.adxAdvId;
         int adxAdvId = extractRealValue(adxAdvIdStr.data(), ADX_TANX);
-		std::string adxIndustryTypeStr = banner.adxIndustryType;
+        std::string adxIndustryTypeStr = banner.adxIndustryType;
         int adxIndustryType = extractRealValue(adxIndustryTypeStr.data(), ADX_TANX);
         const BidRequest_AdzInfo & adzInfo = bidRequest.adzinfo(0);
-		int maxCpmPrice = (int)result.bidPrice;
+        int maxCpmPrice = (int)result.bidPrice;
 
         adResult->set_max_cpm_price(maxCpmPrice);
         adResult->set_adzinfo_id(adzInfo.id());
@@ -205,15 +206,15 @@ namespace bidding {
         adResult->add_creative_type(banner.bannerType);
         adResult->add_category(adxIndustryType);
         //缓存最终广告结果
-		adInfo.pid = std::to_string(adplace.pId);
-		adInfo.adxpid = queryCondition.adxpid;
-		adInfo.sid = finalSolution.sId;
+        adInfo.pid = std::to_string(adplace.pId);
+        adInfo.adxpid = queryCondition.adxpid;
+        adInfo.sid = finalSolution.sId;
         adInfo.advId = advId;
         adInfo.adxid = queryCondition.adxid;
         adInfo.adxuid = bidRequest.tid();
-		adInfo.bannerId = banner.bId;
-		adInfo.cid = adplace.cId;
-		adInfo.mid = adplace.mId;
+        adInfo.bannerId = banner.bId;
+        adInfo.cid = adplace.cId;
+        adInfo.mid = adplace.mId;
         adInfo.cpid = adInfo.advId;
         adInfo.offerPrice = result.feePrice;
         adInfo.priceType = finalSolution.priceType;
@@ -231,22 +232,47 @@ namespace bidding {
         parseJson(pjson, bannerJson);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string destUrl = mtlsArray[0].get("p1", "");
-		if (destUrl.empty()) {
-			LOG_WARN << "destUrl should not be empty!!";
+        if (destUrl.empty()) {
+            LOG_WARN << "destUrl should not be empty!!";
         }
         adResult->add_destination_url(destUrl);
         adResult->add_click_through_url(destUrl);
         adResult->set_creative_id(std::to_string(adInfo.bannerId));
         adResult->add_advertiser_ids(adxAdvId); // adx_advid
-        adResult->set_html_snippet(tanxHtmlSnippet());
-        adResult->set_feedback_address(feedbackUrl);
+        if (adInfo.adxid == ADX_TANX_MOBILE) {
+            adResult->set_html_snippet(tanxHtmlSnippet());
+            adResult->set_feedback_address(feedbackUrl);
+        } else {
+            bannerJson["advid"] = finalSolution.advId;
+            bannerJson["adxpid"] = adInfo.adxpid;
+            bannerJson["arid"] = adInfo.areaId;
+            bannerJson["gpid"] = finalSolution.sId;
+            bannerJson["pid"] = adInfo.pid;
+            bannerJson["ppid"] = adInfo.ppid;
+            bannerJson["price"] = adInfo.offerPrice;
+            bannerJson["pricetype"] = adInfo.priceType;
+            bannerJson["unid"] = adInfo.adxid;
+            bannerJson["of"] = "0";
+            bannerJson["width"] = banner.width;
+            bannerJson["height"] = banner.height;
+            std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
+            char admBuffer[4096];
+            snprintf(admBuffer, sizeof(admBuffer), adservice::corelogic::HandleShowQueryTask::showAdxTemplate,
+                     mtadInfoStr.data());
+            adResult->set_html_snippet(admBuffer);
+            char showBuf[2048];
+            getShowPara(bid, showBuf, sizeof(showBuf));
+            snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s%s&of=3", SNIPPET_SHOW_URL, "p=" AD_TX_PRICE_MACRO "&",
+                     showBuf);
+            adResult->set_feedback_address(feedbackUrl);
+        }
     }
 
     void TanxBiddingHandler::match(adservice::utility::HttpResponse & response)
     {
         std::string result;
         if (!writeProtoBufObject(bidResponse, &result)) {
-			LOG_ERROR << "failed to write protobuf object in TanxBiddingHandler::match";
+            LOG_ERROR << "failed to write protobuf object in TanxBiddingHandler::match";
             reject(response);
             return;
         }
@@ -262,7 +288,7 @@ namespace bidding {
         bidResponse.set_bid(bidRequest.bid());
         std::string result;
         if (!writeProtoBufObject(bidResponse, &result)) {
-			LOG_ERROR << "failed to write protobuf object in TanxBiddingHandler::reject";
+            LOG_ERROR << "failed to write protobuf object in TanxBiddingHandler::reject";
             return;
         }
         response.status(200);
