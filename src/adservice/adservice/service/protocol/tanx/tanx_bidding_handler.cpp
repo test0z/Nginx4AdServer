@@ -261,7 +261,7 @@ namespace bidding {
                      mtadInfoStr.data());
             adResult->set_html_snippet(admBuffer);
             char showBuf[2048];
-            getShowPara(bid, showBuf, sizeof(showBuf));
+            getShowPara(bidRequest.bid(), showBuf, sizeof(showBuf));
             snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s%s&of=3", SNIPPET_SHOW_URL, "p=" AD_TX_PRICE_MACRO "&",
                      showBuf);
             adResult->set_feedback_address(feedbackUrl);
