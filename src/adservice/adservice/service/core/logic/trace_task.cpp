@@ -213,19 +213,19 @@ namespace corelogic {
             if (!sourceRecord.requestId().empty()) {
                 result += "&r=" + sourceRecord.requestId();
             }
-            if (!sourceRecord.pid().empty()) {
-                result += "&s=" + sourceRecord.pid();
+			if (!sourceRecord.adxPid().empty()) {
+				result += "&s=" + sourceRecord.adxPid();
             }
             if (!sourceRecord.adxId().empty()) {
                 result += "&x=" + sourceRecord.adxId();
             }
-            if (!log.adInfo.pid.empty()){
-                result += "&o=" + log.adInfo.pid;
+			if (!sourceRecord.pid().empty()) {
+				result += "&o=" + sourceRecord.pid();
             }
             if (!log.userId.empty()) {
                 result += "&u=" + log.userId;
             }
-            LOG_DEBUG<<"阿里云日志记录URL：" <<result;
+			LOG_DEBUG << "阿里云日志记录URL：" << result;
 
             return result;
         }
@@ -242,7 +242,9 @@ namespace corelogic {
         return 302;
     }
 
-    void HandleTraceTask::customLogic(ParamMap & paramMap, protocol::log::LogItem & log, adservice::utility::HttpResponse & resp)
+	void HandleTraceTask::customLogic(ParamMap & paramMap,
+									  protocol::log::LogItem & log,
+									  adservice::utility::HttpResponse & resp)
     {
         needLog = false;
         std::string userId = log.userId, ownerId = paramMap[URL_ADOWNER_ID],
@@ -261,7 +263,7 @@ namespace corelogic {
             // 判断是否是一次到达，如果是pv，即y=6，限时10秒，否则请求类型保持原样
             if (getRecord(sourceId, sourceRecord)) {
                 if (requestTypeStr == "6" && log.timeStamp - sourceRecord.time() <= 10) {
-                    log.traceId = TRACE_ID_ARRIVE;
+					log.traceId = TRACE_ID_ARRIVE;
                 }
             }
         }

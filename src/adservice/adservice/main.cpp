@@ -394,9 +394,9 @@ static ngx_int_t adservice_handler(ngx_http_request_t * r)
     globalLog = r->connection->log;
     if (!r->method & (NGX_HTTP_HEAD | NGX_HTTP_GET | NGX_HTTP_POST)) {
         return NGX_HTTP_NOT_ALLOWED;
-    }
+	}
 
-    if (!serviceInitialized) {
+	if (!serviceInitialized) {
         LocationConf * conf = (LocationConf *)ngx_http_get_module_loc_conf(r, modAdservice);
         global_init(conf);
     }
