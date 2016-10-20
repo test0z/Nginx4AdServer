@@ -219,13 +219,13 @@ namespace corelogic {
             if (!sourceRecord.adxId().empty()) {
                 result += "&x=" + sourceRecord.adxId();
             }
-            if (!log.adInfo.pid.empty()){
+			if (!log.adInfo.pid.empty()) {
                 result += "&o=" + log.adInfo.pid;
             }
             if (!log.userId.empty()) {
                 result += "&u=" + log.userId;
             }
-            LOG_DEBUG<<"阿里云日志记录URL：" <<result;
+			LOG_DEBUG << "阿里云日志记录URL：" << result;
 
             return result;
         }
@@ -242,7 +242,9 @@ namespace corelogic {
         return 302;
     }
 
-    void HandleTraceTask::customLogic(ParamMap & paramMap, protocol::log::LogItem & log, adservice::utility::HttpResponse & resp)
+	void HandleTraceTask::customLogic(ParamMap & paramMap,
+									  protocol::log::LogItem & log,
+									  adservice::utility::HttpResponse & resp)
     {
         needLog = false;
         std::string userId = log.userId, ownerId = paramMap[URL_ADOWNER_ID],
@@ -262,6 +264,7 @@ namespace corelogic {
             if (getRecord(sourceId, sourceRecord)) {
                 if (requestTypeStr == "6" && log.timeStamp - sourceRecord.time() <= 10) {
                     log.traceId = TRACE_ID_ARRIVE;
+					log.adInfo.pid = sourceRecord.pid();
                 }
             }
         }

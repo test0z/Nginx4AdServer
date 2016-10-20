@@ -323,12 +323,12 @@ void read_header(ngx_http_request_t * r, adservice::utility::HttpRequest & httpR
 ngx_int_t build_response(ngx_http_request_t * r, adservice::utility::HttpResponse & httpResponse)
 {
     r->headers_out.status = (ngx_uint_t)httpResponse.status();
-    if (r->headers_out.status != 204 && strResp.empty()) { // http standard compromised to bussiness<-->
+	if (r->headers_out.status != 204 && httpResponse.get_body().empty()) { // http standard compromised to bussiness<-->
         httpResponse.set_body("\r");
     }
     const std::string & strResp = httpResponse.get_body();
 
-    const std::map<std::string, std::string> headers = httpResponse.get_headers();
+	const std::map<std::string, std::string> headers = httpResponse.get_headers();
     for (auto & iter : headers) {
         ngx_table_elt_t * h = (ngx_table_elt_t *)ngx_list_push(&r->headers_out.headers);
         if (h != nullptr) {
@@ -393,9 +393,9 @@ static ngx_int_t adservice_handler(ngx_http_request_t * r)
     globalLog = r->connection->log;
     if (!r->method & (NGX_HTTP_HEAD | NGX_HTTP_GET | NGX_HTTP_POST)) {
         return NGX_HTTP_NOT_ALLOWED;
-    }
+	}
 
-    if (!serviceInitialized) {
+	if (!serviceInitialized) {
         LocationConf * conf = (LocationConf *)ngx_http_get_module_loc_conf(r, modAdservice);
         global_init(conf);
     }
