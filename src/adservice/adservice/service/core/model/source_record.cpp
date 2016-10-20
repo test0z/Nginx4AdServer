@@ -45,22 +45,6 @@ namespace core {
 		void SourceRecord::record(const as_record & record)
 		{
 			time_ = as_record_get_int64(&record, "latest_time", -1);
-			advId_ = as_record_get_str(&record, "adv_id");
-			sid_ = as_record_get_str(&record, "sid");
-			adxId_ = as_record_get_str(&record, "adx_id");
-			mtUid_ = as_record_get_str(&record, "mt_uid");
-			pid_ = as_record_get_str(&record, "pid");
-			adxPid_ = as_record_get_str(&record, "adxpid");
-			requestId_ = as_record_get_str(&record, "request_id");
-			createId_ = as_record_get_str(&record, "create_id");
-			geoId_ = as_record_get_str(&record, "geo_id");
-			refererUrl_ = as_record_get_str(&record, "referer_url");
-			bidPrice_ = as_record_get_str(&record, "bid_price");
-		}
-
-		void SourceRecord::record(const as_record & record)
-		{
-			time_ = as_record_get_int64(&record, "latest_time", -1);
 			advId_ = getStr(&record, "adv_id");
 			sid_ = getStr(&record, "sid");
 			adxId_ = getStr(&record, "adx_id");

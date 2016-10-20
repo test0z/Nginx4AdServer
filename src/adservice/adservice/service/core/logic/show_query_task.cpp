@@ -12,7 +12,6 @@
 
 #include <tbb/concurrent_hash_map.h>
 
-
 extern adservice::adselectv2::AdSelectClientPtr adSelectClient;
 
 namespace adservice {
@@ -231,7 +230,7 @@ namespace corelogic {
 				LOG_WARN << "in buildResponseForSsp,clickMacroLen greater than sizeof clickMacroBuffer,len:"
 						 << clickMacroLen;
 			}
-			mtls[0].set("p5",std::string(clickMacroBuffer));
+			mtls[0].set("p5", std::string(clickMacroBuffer));
 			//只输出标准json
 			std::string jsonResult = utility::json::toJson(mtAdInfo);
 			if (pid != "3381") {
@@ -380,7 +379,7 @@ namespace corelogic {
 #else
 		response.set_body(respBody);
 #endif
-		response.set_content_header("text/html; charset=utf-8");
+		response.set_content_header("text/html");
 		response.set_header("Pragma", "no-cache");
 		response.set_header("Cache-Control", "no-cache,no-store;must-revalidate");
 		response.set_header("P3p",

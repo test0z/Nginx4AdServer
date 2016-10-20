@@ -324,11 +324,12 @@ ngx_int_t build_response(ngx_http_request_t * r, adservice::utility::HttpRespons
         httpResponse.set_body("\r");
     }
     const std::string & strResp = httpResponse.get_body();
-    //    if (r->headers_out.status == 200) {
-    //        r->headers_out.content_type.data = (uchar_t *)httpResponse.content_header().data();
-    //        r->headers_out.content_type.len = httpResponse.content_header().length();
-    //        r->headers_out.content_length_n = strResp.length();
-    //    }
+	if (r->headers_out.status == 200) {
+		r->headers_out.content_type.data = (uchar_t *)httpResponse.content_header().data();
+		r->headers_out.content_type.len = httpResponse.content_header().length();
+		r->headers_out.content_type_len = r->headers_out.content_type.len;
+		r->headers_out.content_length_n = strResp.length();
+	}
     const std::map<std::string, std::string> headers = httpResponse.get_headers();
     for (auto & iter : headers) {
         ngx_table_elt_t * h = (ngx_table_elt_t *)ngx_list_push(&r->headers_out.headers);
