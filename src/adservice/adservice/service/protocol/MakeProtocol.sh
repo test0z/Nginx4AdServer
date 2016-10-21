@@ -26,6 +26,7 @@ do
 		then
 			echo "error occured processing ${src_dir}:${error_msg}"
 		fi
+				
 	fi
 	if [ -e "$src_dir"/avro ];
 	then
@@ -40,4 +41,10 @@ do
 			fi
 		done
 	fi
+done
+
+for ccfile in `ls */*.cc`
+do
+	prefix=`echo ${ccfile}|grep -oP "(.+)(?=.cc)"`
+	mv $ccfile ${prefix}.cpp
 done
