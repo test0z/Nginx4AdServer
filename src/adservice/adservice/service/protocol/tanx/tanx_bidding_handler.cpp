@@ -255,6 +255,7 @@ namespace bidding {
             bannerJson["of"] = "0";
             bannerJson["width"] = banner.width;
             bannerJson["height"] = banner.height;
+            bannerJson["xcurl"] = AD_TX_CLICK_MACRO;
             std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
             char admBuffer[4096];
             snprintf(admBuffer, sizeof(admBuffer), adservice::corelogic::HandleShowQueryTask::showAdxTemplate,
