@@ -324,14 +324,16 @@ ngx_int_t build_response(ngx_http_request_t * r, adservice::utility::HttpRespons
         httpResponse.set_body("\r");
     }
     const std::string & strResp = httpResponse.get_body();
-	if (r->headers_out.status == 200) {
-		r->headers_out.content_type.data = (uchar_t *)httpResponse.content_header().data();
-		r->headers_out.content_type.len = httpResponse.content_header().length();
-		r->headers_out.content_type_len = r->headers_out.content_type.len;
-		r->headers_out.content_length_n = strResp.length();
-	}
+    if (r->headers_out.status == 200) {
+        r->headers_out.content_type.data = (uchar_t *)httpResponse.content_header().data();
+        r->headers_out.content_type.len = httpResponse.content_header().length();
+        r->headers_out.content_type_len = r->headers_out.content_type.len;
+    }
     const std::map<std::string, std::string> headers = httpResponse.get_headers();
     for (auto & iter : headers) {
+        if (iter.first == CONTENTTYPE) {
+            continue;
+        }
         ngx_table_elt_t * h = (ngx_table_elt_t *)ngx_list_push(&r->headers_out.headers);
         if (h != nullptr) {
             h->hash = 1;
@@ -395,9 +397,9 @@ static ngx_int_t adservice_handler(ngx_http_request_t * r)
     globalLog = r->connection->log;
     if (!r->method & (NGX_HTTP_HEAD | NGX_HTTP_GET | NGX_HTTP_POST)) {
         return NGX_HTTP_NOT_ALLOWED;
-	}
+    }
 
-	if (!serviceInitialized) {
+    if (!serviceInitialized) {
         LocationConf * conf = (LocationConf *)ngx_http_get_module_loc_conf(r, modAdservice);
         global_init(conf);
     }
