@@ -239,33 +239,36 @@ namespace bidding {
         adResult->add_click_through_url(destUrl);
         adResult->set_creative_id(std::to_string(adInfo.bannerId));
         adResult->add_advertiser_ids(adxAdvId); // adx_advid
-        if (adInfo.adxid == ADX_TANX_MOBILE) {
-            adResult->set_html_snippet(tanxHtmlSnippet());
-            adResult->set_feedback_address(feedbackUrl);
-        } else {
-            bannerJson["advid"] = finalSolution.advId;
-            bannerJson["adxpid"] = adInfo.adxpid;
-            bannerJson["arid"] = adInfo.areaId;
-            bannerJson["gpid"] = finalSolution.sId;
-            bannerJson["pid"] = adInfo.pid;
-            bannerJson["ppid"] = adInfo.ppid;
-            bannerJson["price"] = adInfo.offerPrice;
-            bannerJson["pricetype"] = adInfo.priceType;
-            bannerJson["unid"] = adInfo.adxid;
-            bannerJson["of"] = "0";
-            bannerJson["width"] = banner.width;
-            bannerJson["height"] = banner.height;
-            std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
-            char admBuffer[4096];
-            snprintf(admBuffer, sizeof(admBuffer), adservice::corelogic::HandleShowQueryTask::showAdxTemplate,
-                     mtadInfoStr.data());
-            adResult->set_html_snippet(admBuffer);
-            char showBuf[2048];
-            getShowPara(bidRequest.bid(), showBuf, sizeof(showBuf));
-            snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s%s&of=3", SNIPPET_SHOW_URL, "p=" AD_TX_PRICE_MACRO "&",
-                     showBuf);
-            adResult->set_feedback_address(feedbackUrl);
-        }
+        adResult->set_html_snippet(tanxHtmlSnippet());
+        adResult->set_feedback_address(feedbackUrl);
+        //        if (adInfo.adxid == ADX_TANX_MOBILE) {
+        //            adResult->set_html_snippet(tanxHtmlSnippet());
+        //            adResult->set_feedback_address(feedbackUrl);
+        //        } else {
+        //            bannerJson["advid"] = finalSolution.advId;
+        //            bannerJson["adxpid"] = adInfo.adxpid;
+        //            bannerJson["arid"] = adInfo.areaId;
+        //            bannerJson["gpid"] = finalSolution.sId;
+        //            bannerJson["pid"] = adInfo.pid;
+        //            bannerJson["ppid"] = adInfo.ppid;
+        //            bannerJson["price"] = adInfo.offerPrice;
+        //            bannerJson["pricetype"] = adInfo.priceType;
+        //            bannerJson["unid"] = adInfo.adxid;
+        //            bannerJson["of"] = "0";
+        //            bannerJson["width"] = banner.width;
+        //            bannerJson["height"] = banner.height;
+        //            std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
+        //            char admBuffer[4096];
+        //            snprintf(admBuffer, sizeof(admBuffer), adservice::corelogic::HandleShowQueryTask::showAdxTemplate,
+        //                     mtadInfoStr.data());
+        //            adResult->set_html_snippet(admBuffer);
+        //            char showBuf[2048];
+        //            getShowPara(bidRequest.bid(), showBuf, sizeof(showBuf));
+        //            snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s%s&of=3", SNIPPET_SHOW_URL, "p="
+        //            AD_TX_PRICE_MACRO "&",
+        //                     showBuf);
+        //            adResult->set_feedback_address(feedbackUrl);
+        //        }
     }
 
     void TanxBiddingHandler::match(adservice::utility::HttpResponse & response)
