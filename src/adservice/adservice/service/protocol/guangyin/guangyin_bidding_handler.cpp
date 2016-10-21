@@ -267,6 +267,7 @@ namespace bidding {
             bannerJson["of"] = "0";
             bannerJson["width"] = banner.width;
             bannerJson["height"] = banner.height;
+            bannerJson["xcurl"] = CURL_PLACEHOLDER;
             std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
             char admBuffer[4096];
             snprintf(admBuffer, sizeof(admBuffer), adm_template, mtadInfoStr.data());
@@ -275,7 +276,6 @@ namespace bidding {
         std::string landingUrl = mtlsArray[0].get("p1", "");
         getClickPara(bidRequest_.id(), buffer, sizeof(buffer), "", landingUrl);
         adResult->set_curl(std::string("http://click.mtty.com/c?") + buffer);
-        adResult->set_nurl(adResult->iurl());
 
         adResult->set_w(banner.width);
         adResult->set_h(banner.height);
