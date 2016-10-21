@@ -15,7 +15,7 @@ namespace bidding {
     using namespace adservice::utility::serialize;
     using namespace adservice::utility::json;
     using namespace adservice::utility::userclient;
-	using namespace adservice::server;
+    using namespace adservice::server;
 
     int getSohuDeviceType(const std::string & mobile)
     {
@@ -87,7 +87,7 @@ namespace bidding {
             logItem.adInfo.bidSize = adInfo.bidSize;
             logItem.referer
                 = bidRequest.has_site() ? (bidRequest.site().has_page() ? bidRequest.site().page() : "") : "";
-		} else {
+        } else {
             logItem.adInfo.pid = adInfo.pid;
             logItem.adInfo.bidSize = adInfo.bidSize;
         }
@@ -108,7 +108,7 @@ namespace bidding {
         queryCondition.adxid = ADX_SOHU_PC;
         queryCondition.adxpid = pid;
         queryCondition.ip = bidRequest.device().ip();
-        queryCondition.basePrice = adzInfo.has_bidfloor()?adzInfo.bidfloor():0;
+        queryCondition.basePrice = adzInfo.has_bidfloor() ? adzInfo.bidfloor() : 0;
         if (bidRequest.device().type() == "PC") {
             queryCondition.pcOS = getOSTypeFromUA(bidRequest.device().ua());
             queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
@@ -136,8 +136,8 @@ namespace bidding {
         return isBidAccepted = true;
     }
 
-	void SohuBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-											const MT::common::SelectResult & result)
+    void SohuBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
+                                            const MT::common::SelectResult & result)
     {
         bidResponse.Clear();
         bidResponse.set_version(bidRequest.version());
@@ -146,32 +146,12 @@ namespace bidding {
         Response_SeatBid * seatBid = bidResponse.add_seatbid();
         seatBid->set_idx(0);
         Response_Bid * adResult = seatBid->add_bid();
-		const MT::common::Solution & finalSolution = result.solution;
-		const MT::common::ADPlace & adplace = result.adplace;
-		const MT::common::Banner & banner = result.banner;
-        int advId = finalSolution.advId;
-        // const Request_Impression& adzInfo = bidRequest.impression(0);
+        const MT::common::Banner & banner = result.banner;
         int maxCpmPrice = result.bidPrice;
         adResult->set_price(maxCpmPrice);
 
         //缓存最终广告结果
-        adInfo.pid = queryCondition.mttyPid;
-        adInfo.adxpid = queryCondition.adxpid;
-		adInfo.sid = finalSolution.sId;
-        adInfo.advId = advId;
-        adInfo.adxid = queryCondition.adxid;
-        adInfo.adxuid = bidRequest.has_user() ? bidRequest.user().suid() : "";
-		adInfo.bannerId = banner.bId;
-		adInfo.cid = adplace.cId;
-		adInfo.mid = adplace.mId;
-        adInfo.cpid = adInfo.advId;
-        adInfo.offerPrice = result.feePrice;
-        adInfo.priceType = finalSolution.priceType;
-        adInfo.ppid = result.ppid;
-        adInfo.bidSize = makeBidSize(banner.width, banner.height);
-        const std::string & userIp = bidRequest.device().ip();
-        IpManager & ipManager = IpManager::getInstance();
-        adInfo.areaId = ipManager.getAreaCodeStrByIp(userIp.data());
+        fillAdInfo(selectCondition, result, bidRequest.has_user() ? bidRequest.user().suid() : "");
 
         char pjson[2048] = { '\0' };
         std::string strBannerJson = banner.json;
@@ -183,18 +163,15 @@ namespace bidding {
         std::string materialUrl = mtlsArray[0].get("p0", "");
         std::string landingUrl = mtlsArray[0].get("p1", "");
         adResult->set_adurl(materialUrl);
-        //            adResult->set_adpara()
-        //            adResult->set_ext()
         adResult->set_displaypara(getDisplayPara());
         adResult->set_clickpara(getSohuClickPara(landingUrl));
-        //            adResult->set_adm_url()
     }
 
     void SohuBiddingHandler::match(adservice::utility::HttpResponse & response)
     {
         std::string result;
         if (!writeProtoBufObject(bidResponse, &result)) {
-			LOG_ERROR << "failed to write protobuf object in TanxBiddingHandler::match";
+            LOG_ERROR << "failed to write protobuf object in TanxBiddingHandler::match";
             reject(response);
             return;
         }
@@ -210,7 +187,7 @@ namespace bidding {
         bidResponse.set_bidid(bidRequest.bidid());
         std::string result;
         if (!writeProtoBufObject(bidResponse, &result)) {
-			LOG_ERROR << "failed to write protobuf object in TanxBiddingHandler::reject";
+            LOG_ERROR << "failed to write protobuf object in TanxBiddingHandler::reject";
             return;
         }
         response.status(200);

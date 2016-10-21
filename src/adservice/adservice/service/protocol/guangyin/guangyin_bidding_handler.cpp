@@ -201,32 +201,13 @@ namespace bidding {
         bidResponse_.clear_seatbid();
 
         const MT::common::Solution & finalSolution = result.solution;
-        const MT::common::ADPlace & adplace = result.adplace;
         const MT::common::Banner & banner = result.banner;
 
         //缓存最终广告结果
-        adInfo.pid = std::to_string(adplace.pId);
-        adInfo.adxpid = queryCondition.adxpid;
-        adInfo.sid = finalSolution.sId;
-
-        auto advId = finalSolution.advId;
-        adInfo.advId = advId;
-        adInfo.adxid = queryCondition.adxid;
-        adInfo.adxuid = bidRequest_.user().id();
-        adInfo.bannerId = banner.bId;
-        adInfo.cid = adplace.cId;
-        adInfo.mid = adplace.mId;
-        adInfo.cpid = adInfo.advId;
-        adInfo.bidSize = makeBidSize(banner.width, banner.height);
-        adInfo.priceType = finalSolution.priceType;
-        adInfo.ppid = result.ppid;
+        fillAdInfo(queryCondition, result, bidRequest_.user().id(), bidRequest_.device().ip());
 
         const Imp & imp = bidRequest_.imp(0);
         float maxCpmPrice = (float)result.bidPrice;
-        adInfo.offerPrice = result.feePrice;
-
-        const std::string & userIp = bidRequest_.device().ip();
-        adInfo.areaId = adservice::server::IpManager::getInstance().getAreaCodeStrByIp(userIp.c_str());
 
         SeatBid * seatBid = bidResponse_.add_seatbid();
         seatBid->set_seat("5761460d3ada7515003d3589");
@@ -267,6 +248,7 @@ namespace bidding {
             bannerJson["of"] = "0";
             bannerJson["width"] = banner.width;
             bannerJson["height"] = banner.height;
+            bannerJson["xcurl"] = CURL_PLACEHOLDER;
             std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
             char admBuffer[4096];
             snprintf(admBuffer, sizeof(admBuffer), adm_template, mtadInfoStr.data());
@@ -275,7 +257,6 @@ namespace bidding {
         std::string landingUrl = mtlsArray[0].get("p1", "");
         getClickPara(bidRequest_.id(), buffer, sizeof(buffer), "", landingUrl);
         adResult->set_curl(std::string("http://click.mtty.com/c?") + buffer);
-        adResult->set_nurl(adResult->iurl());
 
         adResult->set_w(banner.width);
         adResult->set_h(banner.height);

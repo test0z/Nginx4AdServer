@@ -189,10 +189,7 @@ namespace bidding {
         bidResponse.set_bid(bidRequest.bid());
         bidResponse.clear_ads();
         BidResponse_Ads * adResult = bidResponse.add_ads();
-        const MT::common::Solution & finalSolution = result.solution;
-        const MT::common::ADPlace & adplace = result.adplace;
         const MT::common::Banner & banner = result.banner;
-        int advId = finalSolution.advId;
         std::string adxAdvIdStr = banner.adxAdvId;
         int adxAdvId = extractRealValue(adxAdvIdStr.data(), ADX_TANX);
         std::string adxIndustryTypeStr = banner.adxIndustryType;
@@ -206,23 +203,7 @@ namespace bidding {
         adResult->add_creative_type(banner.bannerType);
         adResult->add_category(adxIndustryType);
         //缓存最终广告结果
-        adInfo.pid = std::to_string(adplace.pId);
-        adInfo.adxpid = queryCondition.adxpid;
-        adInfo.sid = finalSolution.sId;
-        adInfo.advId = advId;
-        adInfo.adxid = queryCondition.adxid;
-        adInfo.adxuid = bidRequest.tid();
-        adInfo.bannerId = banner.bId;
-        adInfo.cid = adplace.cId;
-        adInfo.mid = adplace.mId;
-        adInfo.cpid = adInfo.advId;
-        adInfo.offerPrice = result.feePrice;
-        adInfo.priceType = finalSolution.priceType;
-        adInfo.ppid = result.ppid;
-        adInfo.bidSize = makeBidSize(banner.width, banner.height);
-        const std::string & userIp = bidRequest.ip();
-        IpManager & ipManager = IpManager::getInstance();
-        adInfo.areaId = ipManager.getAreaCodeStrByIp(userIp.data());
+        fillAdInfo(selectCondition, result, bidRequest.tid());
 
         char pjson[2048] = { '\0' };
         std::string strBannerJson = banner.json;

@@ -16,7 +16,7 @@ namespace bidding {
     using namespace adservice::utility::serialize;
     using namespace adservice::utility::json;
     using namespace adservice::utility::userclient;
-	using namespace adservice::server;
+    using namespace adservice::server;
 
 #define AD_YOUKU_CM_URL ""
 #define AD_YOUKU_FEED "http://show.mtty.com/v?of=3&p=%s&%s"
@@ -57,12 +57,12 @@ namespace bidding {
                 mobileDev = SOLUTION_DEVICE_OTHER;
         } else if (devType == YOUKU_DEVICE_PC) {
             flowType = SOLUTION_FLOWTYPE_PC;
-            if(osType.empty()) {
+            if (osType.empty()) {
                 pcOs = getOSTypeFromUA(ua);
-            }else{
-                if(!strcasecmp(osType.data(),YOUKU_OS_WINDOWS)){
+            } else {
+                if (!strcasecmp(osType.data(), YOUKU_OS_WINDOWS)) {
                     pcOs = SOLUTION_OS_WINDOWS;
-                }else if(!strcasecmp(osType.data(),YOUKU_OS_MAC)){
+                } else if (!strcasecmp(osType.data(), YOUKU_OS_MAC)) {
                     pcOs = SOLUTION_OS_MAC;
                 } else
                     pcOs = SOLUTION_OS_OTHER;
@@ -123,8 +123,8 @@ namespace bidding {
                 adInfo.areaId.data(), logItem.geoInfo.country, logItem.geoInfo.province, logItem.geoInfo.city);
             logItem.adInfo.bidSize = adInfo.bidSize;
             logItem.referer = bidRequest.get("site.ref", "");
-		} else {
-			logItem.adInfo.pid = adInfo.pid;
+        } else {
+            logItem.adInfo.pid = adInfo.pid;
             logItem.adInfo.bidSize = adInfo.bidSize;
         }
         return true;
@@ -225,7 +225,7 @@ namespace bidding {
         return isBidAccepted = true;
     }
 
-	static const char * BIDRESPONSE_TEMPLATE = R"(
+    static const char * BIDRESPONSE_TEMPLATE = R"(
 {
 	"id":"",
 	"bidid":"",
@@ -251,16 +251,14 @@ namespace bidding {
 	]
 })";
 
-	void YoukuBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-											 const MT::common::SelectResult & result)
+    void YoukuBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
+                                             const MT::common::SelectResult & result)
     {
         const cppcms::json::value & adzInfo = bidRequest["imp"].array()[0];
-		const MT::common::Solution & finalSolution = result.solution;
-		const MT::common::ADPlace & adplace = result.adplace;
-		const MT::common::Banner & banner = result.banner;
-        int advId = finalSolution.advId;
+        const MT::common::Solution & finalSolution = result.solution;
+        const MT::common::Banner & banner = result.banner;
         if (!parseJson(BIDRESPONSE_TEMPLATE, bidResponse)) {
-			LOG_ERROR << "in YoukuBiddingHandler::buildBidResult parseJson failed";
+            LOG_ERROR << "in YoukuBiddingHandler::buildBidResult parseJson failed";
             isBidAccepted = false;
             return;
         }
@@ -273,23 +271,7 @@ namespace bidding {
         bidValue["impid"] = impId;
 
         //缓存最终广告结果
-		adInfo.pid = std::to_string(adplace.pId);
-		adInfo.adxpid = adplace.adxPId;
-		adInfo.sid = finalSolution.sId;
-        adInfo.advId = advId;
-		adInfo.adxid = queryCondition.adxid;
-        adInfo.adxuid = bidRequest.get("user.id", "");
-		adInfo.bannerId = banner.bId;
-		adInfo.cid = adplace.cId;
-		adInfo.mid = adplace.mId;
-        adInfo.cpid = adInfo.advId;
-        adInfo.offerPrice = result.feePrice;
-        adInfo.priceType = finalSolution.priceType;
-        adInfo.ppid = result.ppid;
-        adInfo.bidSize = makeBidSize(banner.width, banner.height);
-        const std::string & userIp = bidRequest.get("device.ip", "127.0.0.1");
-        IpManager & ipManager = IpManager::getInstance();
-        adInfo.areaId = ipManager.getAreaCodeStrByIp(userIp.data());
+        fillAdInfo(selectCondition, result, bidRequest.get("user.id", ""));
 
         // html snippet相关
         char pjson[2048] = { '\0' };
@@ -307,12 +289,12 @@ namespace bidding {
         char showParam[2048];
         char clickParam[2048];
         getShowPara(requestId, showParam, sizeof(showParam));
-		if (isDeal && finalSolution.dDealId != "0") { // deal 加特殊参数w
+        if (isDeal && finalSolution.dDealId != "0") { // deal 加特殊参数w
             char dealParam[256];
             int dealParamLen
-				= snprintf(dealParam, sizeof(dealParam), "&" URL_YOUKU_DEAL "=%s", finalSolution.dDealId.data());
+                = snprintf(dealParam, sizeof(dealParam), "&" URL_YOUKU_DEAL "=%s", finalSolution.dDealId.data());
             strncat(showParam, dealParam, dealParamLen);
-			bidValue["dealid"] = finalSolution.dDealId;
+            bidValue["dealid"] = finalSolution.dDealId;
         }
         char buffer[2048];
         snprintf(buffer, sizeof(buffer), AD_YOUKU_FEED, AD_YOUKU_PRICE, showParam); //包含of=3
@@ -343,9 +325,9 @@ namespace bidding {
 
     void YoukuBiddingHandler::match(adservice::utility::HttpResponse & response)
     {
-		std::string result = toJson(bidResponse);
+        std::string result = toJson(bidResponse);
         if (result.empty()) {
-			LOG_ERROR << "YoukuBiddingHandler::match failed to parse obj to json";
+            LOG_ERROR << "YoukuBiddingHandler::match failed to parse obj to json";
             reject(response);
         } else {
             response.status(200);

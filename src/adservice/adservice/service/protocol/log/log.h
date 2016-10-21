@@ -17,8 +17,8 @@
  */
 
 
-#ifndef LOG_AVRO_LOG_H_1610040647__H_
-#define LOG_AVRO_LOG_H_1610040647__H_
+#ifndef LOG_AVRO_LOG_H_1312058860__H_
+#define LOG_AVRO_LOG_H_1312058860__H_
 
 
 #include <sstream>
@@ -69,8 +69,8 @@ struct AdInfo {
     std::string bidSize;
     int32_t priceType;
     int32_t ppid;
-    int32_t orderId;
-    std::vector<int32_t > ppids;
+    int64_t orderId;
+    std::vector<int64_t > ppids;
     AdInfo() :
         areaId(std::string()),
         advId(int64_t()),
@@ -92,8 +92,8 @@ struct AdInfo {
         bidSize(std::string()),
         priceType(int32_t()),
         ppid(int32_t()),
-        orderId(int32_t()),
-        ppids(std::vector<int32_t >())
+        orderId(int64_t()),
+        ppids(std::vector<int64_t >())
         { }
 };
 
