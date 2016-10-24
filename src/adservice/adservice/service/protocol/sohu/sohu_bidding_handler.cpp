@@ -15,17 +15,17 @@ namespace bidding {
     using namespace adservice::utility::serialize;
     using namespace adservice::utility::json;
     using namespace adservice::utility::userclient;
-	using namespace adservice::server;
+    using namespace adservice::server;
 
     int getSohuDeviceType(const std::string & mobile)
     {
-        if (mobile.find("iPhone") != std::string::npos) {
+        if (!strcasecmp(mobile.data(), "iPhone")) {
             return SOLUTION_DEVICE_IPHONE;
-        } else if (mobile.find("AndroidPhone") != std::string::npos) {
+        } else if (!strcasecmp(mobile.data(), "AndroidPhone")) {
             return SOLUTION_DEVICE_ANDROID;
-        } else if (mobile.find("iPad") != std::string::npos) {
+        } else if (!strcasecmp(mobile.data(), "iPad")) {
             return SOLUTION_DEVICE_IPAD;
-        } else if (mobile.find("AndroidPad") != std::string::npos) {
+        } else if (!strcasecmp(mobile.data(), "AndroidPad")) {
             return SOLUTION_DEVICE_ANDROIDPAD;
         } else
             return SOLUTION_DEVICE_OTHER;
@@ -87,7 +87,7 @@ namespace bidding {
             logItem.adInfo.bidSize = adInfo.bidSize;
             logItem.referer
                 = bidRequest.has_site() ? (bidRequest.site().has_page() ? bidRequest.site().page() : "") : "";
-		} else {
+        } else {
             logItem.adInfo.pid = adInfo.pid;
             logItem.adInfo.bidSize = adInfo.bidSize;
         }
@@ -107,15 +107,18 @@ namespace bidding {
         AdSelectCondition queryCondition;
         queryCondition.adxid = ADX_SOHU_PC;
         queryCondition.adxpid = pid;
-        queryCondition.ip = bidRequest.device().ip();
-        queryCondition.basePrice = adzInfo.has_bidfloor()?adzInfo.bidfloor():0;
-        if (bidRequest.device().type() == "PC") {
-            queryCondition.pcOS = getOSTypeFromUA(bidRequest.device().ua());
-            queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
-        } else {
-            queryCondition.mobileDevice = getSohuDeviceType(bidRequest.device().mobiletype());
-            queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
-            queryCondition.adxid = ADX_SOHU_MOBILE;
+        queryCondition.basePrice = adzInfo.has_bidfloor() ? adzInfo.bidfloor() : 0;
+        if (bidRequest.has_device()) {
+            auto & device = bidRequest.device();
+            queryCondition.ip = device.has_ip() ? device.ip() : "";
+            if (strcasecmp(device.type().data(), "PC")) { // mobile
+                queryCondition.mobileDevice = getSohuDeviceType(device.mobiletype());
+                queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
+                queryCondition.adxid = ADX_SOHU_MOBILE;
+            } else { // pc
+                queryCondition.pcOS = getOSTypeFromUA(device.ua());
+                queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
+            }
         }
         if (adzInfo.has_banner()) {
             const Request_Impression_Banner & banner = adzInfo.banner();
@@ -136,8 +139,8 @@ namespace bidding {
         return isBidAccepted = true;
     }
 
-	void SohuBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-											const MT::common::SelectResult & result)
+    void SohuBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
+                                            const MT::common::SelectResult & result)
     {
         bidResponse.Clear();
         bidResponse.set_version(bidRequest.version());
@@ -146,9 +149,9 @@ namespace bidding {
         Response_SeatBid * seatBid = bidResponse.add_seatbid();
         seatBid->set_idx(0);
         Response_Bid * adResult = seatBid->add_bid();
-		const MT::common::Solution & finalSolution = result.solution;
-		const MT::common::ADPlace & adplace = result.adplace;
-		const MT::common::Banner & banner = result.banner;
+        const MT::common::Solution & finalSolution = result.solution;
+        const MT::common::ADPlace & adplace = result.adplace;
+        const MT::common::Banner & banner = result.banner;
         int advId = finalSolution.advId;
         // const Request_Impression& adzInfo = bidRequest.impression(0);
         int maxCpmPrice = result.bidPrice;
@@ -157,13 +160,13 @@ namespace bidding {
         //缓存最终广告结果
         adInfo.pid = queryCondition.mttyPid;
         adInfo.adxpid = queryCondition.adxpid;
-		adInfo.sid = finalSolution.sId;
+        adInfo.sid = finalSolution.sId;
         adInfo.advId = advId;
         adInfo.adxid = queryCondition.adxid;
         adInfo.adxuid = bidRequest.has_user() ? bidRequest.user().suid() : "";
-		adInfo.bannerId = banner.bId;
-		adInfo.cid = adplace.cId;
-		adInfo.mid = adplace.mId;
+        adInfo.bannerId = banner.bId;
+        adInfo.cid = adplace.cId;
+        adInfo.mid = adplace.mId;
         adInfo.cpid = adInfo.advId;
         adInfo.offerPrice = result.feePrice;
         adInfo.priceType = finalSolution.priceType;
@@ -194,7 +197,7 @@ namespace bidding {
     {
         std::string result;
         if (!writeProtoBufObject(bidResponse, &result)) {
-			LOG_ERROR << "failed to write protobuf object in TanxBiddingHandler::match";
+            LOG_ERROR << "failed to write protobuf object in TanxBiddingHandler::match";
             reject(response);
             return;
         }
@@ -210,7 +213,7 @@ namespace bidding {
         bidResponse.set_bidid(bidRequest.bidid());
         std::string result;
         if (!writeProtoBufObject(bidResponse, &result)) {
-			LOG_ERROR << "failed to write protobuf object in TanxBiddingHandler::reject";
+            LOG_ERROR << "failed to write protobuf object in TanxBiddingHandler::reject";
             return;
         }
         response.status(200);
