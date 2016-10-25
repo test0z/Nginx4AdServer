@@ -17,25 +17,42 @@ namespace bidding {
     using namespace adservice::utility::userclient;
     using namespace adservice::server;
 
-    int getSohuDeviceType(const std::string & mobile)
-    {
-        if (!strcasecmp(mobile.data(), "iPhone")) {
-            return SOLUTION_DEVICE_IPHONE;
-        } else if (!strcasecmp(mobile.data(), "AndroidPhone")) {
-            return SOLUTION_DEVICE_ANDROID;
-        } else if (!strcasecmp(mobile.data(), "iPad")) {
-            return SOLUTION_DEVICE_IPAD;
-        } else if (!strcasecmp(mobile.data(), "AndroidPad")) {
-            return SOLUTION_DEVICE_ANDROIDPAD;
-        } else
-            return SOLUTION_DEVICE_OTHER;
+    namespace {
+
+        int getSohuDeviceType(const std::string & mobile)
+        {
+            if (!strcasecmp(mobile.data(), "iPhone")) {
+                return SOLUTION_DEVICE_IPHONE;
+            } else if (!strcasecmp(mobile.data(), "AndroidPhone")) {
+                return SOLUTION_DEVICE_ANDROID;
+            } else if (!strcasecmp(mobile.data(), "iPad")) {
+                return SOLUTION_DEVICE_IPAD;
+            } else if (!strcasecmp(mobile.data(), "AndroidPad")) {
+                return SOLUTION_DEVICE_ANDROIDPAD;
+            } else
+                return SOLUTION_DEVICE_OTHER;
+        }
+
+        int getSohuNeworkType(const std::string & netType)
+        {
+            if (!strcasecmp(netType.data(), "WIFI")) {
+                return SOLUTION_NETWORK_WIFI;
+            } else if (!strcasecmp(netType.data(), "4G")) {
+                return SOLUTION_NETWORK_4G;
+            } else if (!strcasecmp(netType.data(), "3G")) {
+                return SOLUTION_NETWORK_3G;
+            } else if (!strcasecmp(netType.data(), "2G")) {
+                return SOLUTION_NETWORK_2G;
+            } else
+                return SOLUTION_NETWORK_OTHER;
+        }
     }
 
     std::string SohuBiddingHandler::getDisplayPara()
     {
         char showBuf[1024];
         getShowPara(bidRequest.bidid(), showBuf, sizeof(showBuf));
-        const char * extShowBuf = "&of=0&&p=%%WINPRICE%%";
+        const char * extShowBuf = "&of=3";
         strncat(showBuf, extShowBuf, strlen(extShowBuf));
         return std::string(showBuf);
     }
@@ -115,6 +132,7 @@ namespace bidding {
                 queryCondition.mobileDevice = getSohuDeviceType(device.mobiletype());
                 queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
                 queryCondition.adxid = ADX_SOHU_MOBILE;
+                queryCondition.mobileNetwork = getSohuNeworkType(device.nettype());
             } else { // pc
                 queryCondition.pcOS = getOSTypeFromUA(device.ua());
                 queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
