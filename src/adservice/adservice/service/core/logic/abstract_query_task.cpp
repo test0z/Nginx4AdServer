@@ -176,7 +176,7 @@ namespace corelogic {
                 std::string & pricetype = iter->second;
                 log.adInfo.priceType = std::stoi(pricetype);
             }
-            if ((iter = paramMap.find(URL_ORDER_ID)) != paramMap.end()) { //
+            if ((iter = paramMap.find(URL_ORDER_ID)) != paramMap.end()) { //订单id
                 std::string & orderId = iter->second;
                 log.adInfo.orderId = std::stol(orderId);
             }
