@@ -35,7 +35,7 @@ namespace bidding {
     {
         char showBuf[1024];
         getShowPara(bidRequest.bidid(), showBuf, sizeof(showBuf));
-        const char * extShowBuf = "of=0&&p=%%WINPRICE%%";
+        const char * extShowBuf = "&of=0&&p=%%WINPRICE%%";
         strncat(showBuf, extShowBuf, strlen(extShowBuf));
         return std::string(showBuf);
     }
