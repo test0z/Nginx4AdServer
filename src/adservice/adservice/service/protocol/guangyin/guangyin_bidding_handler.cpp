@@ -164,7 +164,7 @@ namespace bidding {
             if (bidRequest_.has_app()) {
                 const App & app = bidRequest_.app();
                 if (app.has_name()) {
-                    queryCondition.adxpid = app.name();
+                    queryCondition.adxpid = app.bundle();
                 } else if (app.has_publisher()) {
                     queryCondition.adxpid = app.publisher().id();
                 }
