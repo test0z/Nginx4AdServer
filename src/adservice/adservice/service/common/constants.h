@@ -136,6 +136,8 @@
 #define URL_PRICE_TYPE                              "pt"
 // 产品包id
 #define URL_PRODUCTPACKAGE_ID                       "ep"
+// 订单id
+#define URL_ORDER_ID                                "od"
 // of,曝光类型
 #define URL_IMP_OF                                  "of"
 // pid,ssp曝光url中的广告位Id

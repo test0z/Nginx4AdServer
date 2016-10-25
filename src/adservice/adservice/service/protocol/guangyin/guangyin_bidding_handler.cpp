@@ -123,6 +123,7 @@ namespace bidding {
             logItem.adInfo.priceType = adInfo.priceType;
             logItem.adInfo.ppid = adInfo.ppid;
             logItem.referer = bidRequest_.has_site() ? bidRequest_.site().page() : "";
+            logItem.adInfo.orderId = adInfo.orderId;
         } else {
             logItem.adInfo.pid = adInfo.pid;
             logItem.adInfo.bidSize = adInfo.bidSize;

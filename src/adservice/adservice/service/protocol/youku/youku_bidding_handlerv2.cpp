@@ -123,6 +123,8 @@ namespace bidding {
                 adInfo.areaId.data(), logItem.geoInfo.country, logItem.geoInfo.province, logItem.geoInfo.city);
             logItem.adInfo.bidSize = adInfo.bidSize;
             logItem.referer = bidRequest.get("site.ref", "");
+            logItem.adInfo.orderId = adInfo.orderId;
+            logItem.adInfo.ppids = adInfo.ppids;
         } else {
             logItem.adInfo.pid = adInfo.pid;
             logItem.adInfo.bidSize = adInfo.bidSize;

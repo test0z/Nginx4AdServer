@@ -62,10 +62,10 @@ namespace bidding {
         int len;
         if (showParamBuf != NULL) {
             len = snprintf(showParamBuf, showBufSize,
-                           "a=%s&b=%s&c=%ld&d=%ld&e=%ld&s=%s&o=%s&x=%d&r=%s&u=%s&tm=%ld&pt=%d&ep=%d",
+                           "a=%s&b=%s&c=%ld&d=%ld&e=%ld&s=%s&o=%s&x=%d&r=%s&u=%s&tm=%ld&pt=%d&od=%ld&ep=%d",
                            adInfo.areaId.c_str(), encodePrice(adInfo.offerPrice).c_str(), adInfo.bannerId, adInfo.advId,
                            adInfo.sid, adInfo.adxpid.c_str(), adInfo.pid.c_str(), adInfo.adxid, bid.c_str(),
-                           biddingFlowInfo.deviceIdBuf, time(NULL), adInfo.priceType, adInfo.ppid);
+                           biddingFlowInfo.deviceIdBuf, time(NULL), adInfo.priceType, adInfo.orderId, adInfo.ppid);
             if (len >= showBufSize) {
                 LOG_WARN << "In AbstractBiddingHandler::httpsnippet,showBufSize too small,actual:" << len;
             }
@@ -82,12 +82,13 @@ namespace bidding {
             std::string encodedReferer;
             if (ref.size() > 0)
                 urlEncode_f(ref, encodedReferer, buffer);
-            int len = snprintf(clickParamBuf, clickBufSize,
-                               "s=%s&o=%s&b=%s&x=%d&r=%s&d=%ld&e=%ld&ep=%d&c=%ld&f=%s&h=000&a=%s&u=%s&pt=%d&url=%s",
-                               adInfo.adxpid.c_str(), adInfo.pid.c_str(), encodePrice(adInfo.offerPrice).c_str(),
-                               adInfo.adxid, adInfo.imp_id.c_str(), adInfo.advId, adInfo.sid, adInfo.ppid,
-                               adInfo.bannerId, encodedReferer.c_str(), adInfo.areaId.c_str(),
-                               biddingFlowInfo.deviceIdBuf, adInfo.priceType, encodedLandingUrl.c_str());
+            int len
+                = snprintf(clickParamBuf, clickBufSize,
+                           "s=%s&o=%s&b=%s&x=%d&r=%s&d=%ld&e=%ld&ep=%d&c=%ld&f=%s&h=000&a=%s&u=%s&pt=%d&od=%ld&url=%s",
+                           adInfo.adxpid.c_str(), adInfo.pid.c_str(), encodePrice(adInfo.offerPrice).c_str(),
+                           adInfo.adxid, adInfo.imp_id.c_str(), adInfo.advId, adInfo.sid, adInfo.ppid, adInfo.bannerId,
+                           encodedReferer.c_str(), adInfo.areaId.c_str(), biddingFlowInfo.deviceIdBuf, adInfo.priceType,
+                           adInfo.orderId, encodedLandingUrl.c_str());
             if (len >= clickBufSize) {
                 LOG_WARN << "in AbstractBiddingHandler::getClickPara,clickBufSize too small,actual:" << len;
             }
