@@ -17,25 +17,42 @@ namespace bidding {
     using namespace adservice::utility::userclient;
     using namespace adservice::server;
 
-    int getSohuDeviceType(const std::string & mobile)
-    {
-        if (mobile.find("iPhone") != std::string::npos) {
-            return SOLUTION_DEVICE_IPHONE;
-        } else if (mobile.find("AndroidPhone") != std::string::npos) {
-            return SOLUTION_DEVICE_ANDROID;
-        } else if (mobile.find("iPad") != std::string::npos) {
-            return SOLUTION_DEVICE_IPAD;
-        } else if (mobile.find("AndroidPad") != std::string::npos) {
-            return SOLUTION_DEVICE_ANDROIDPAD;
-        } else
-            return SOLUTION_DEVICE_OTHER;
+    namespace {
+
+        int getSohuDeviceType(const std::string & mobile)
+        {
+            if (!strcasecmp(mobile.data(), "iPhone")) {
+                return SOLUTION_DEVICE_IPHONE;
+            } else if (!strcasecmp(mobile.data(), "AndroidPhone")) {
+                return SOLUTION_DEVICE_ANDROID;
+            } else if (!strcasecmp(mobile.data(), "iPad")) {
+                return SOLUTION_DEVICE_IPAD;
+            } else if (!strcasecmp(mobile.data(), "AndroidPad")) {
+                return SOLUTION_DEVICE_ANDROIDPAD;
+            } else
+                return SOLUTION_DEVICE_OTHER;
+        }
+
+        int getSohuNeworkType(const std::string & netType)
+        {
+            if (!strcasecmp(netType.data(), "WIFI")) {
+                return SOLUTION_NETWORK_WIFI;
+            } else if (!strcasecmp(netType.data(), "4G")) {
+                return SOLUTION_NETWORK_4G;
+            } else if (!strcasecmp(netType.data(), "3G")) {
+                return SOLUTION_NETWORK_3G;
+            } else if (!strcasecmp(netType.data(), "2G")) {
+                return SOLUTION_NETWORK_2G;
+            } else
+                return SOLUTION_NETWORK_OTHER;
+        }
     }
 
     std::string SohuBiddingHandler::getDisplayPara()
     {
         char showBuf[1024];
         getShowPara(bidRequest.bidid(), showBuf, sizeof(showBuf));
-        const char * extShowBuf = "of=0&&p=%%WINPRICE%%";
+        const char * extShowBuf = "&of=3";
         strncat(showBuf, extShowBuf, strlen(extShowBuf));
         return std::string(showBuf);
     }
@@ -109,15 +126,19 @@ namespace bidding {
         AdSelectCondition queryCondition;
         queryCondition.adxid = ADX_SOHU_PC;
         queryCondition.adxpid = pid;
-        queryCondition.ip = bidRequest.device().ip();
         queryCondition.basePrice = adzInfo.has_bidfloor() ? adzInfo.bidfloor() : 0;
-        if (bidRequest.device().type() == "PC") {
-            queryCondition.pcOS = getOSTypeFromUA(bidRequest.device().ua());
-            queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
-        } else {
-            queryCondition.mobileDevice = getSohuDeviceType(bidRequest.device().mobiletype());
-            queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
-            queryCondition.adxid = ADX_SOHU_MOBILE;
+        if (bidRequest.has_device()) {
+            auto & device = bidRequest.device();
+            queryCondition.ip = device.has_ip() ? device.ip() : "";
+            if (strcasecmp(device.type().data(), "PC")) { // mobile
+                queryCondition.mobileDevice = getSohuDeviceType(device.mobiletype());
+                queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
+                queryCondition.adxid = ADX_SOHU_MOBILE;
+                queryCondition.mobileNetwork = getSohuNeworkType(device.nettype());
+            } else { // pc
+                queryCondition.pcOS = getOSTypeFromUA(device.ua());
+                queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
+            }
         }
         if (adzInfo.has_banner()) {
             const Request_Impression_Banner & banner = adzInfo.banner();
@@ -148,12 +169,32 @@ namespace bidding {
         Response_SeatBid * seatBid = bidResponse.add_seatbid();
         seatBid->set_idx(0);
         Response_Bid * adResult = seatBid->add_bid();
+        const MT::common::Solution & finalSolution = result.solution;
+        const MT::common::ADPlace & adplace = result.adplace;
         const MT::common::Banner & banner = result.banner;
+        int advId = finalSolution.advId;
+        // const Request_Impression& adzInfo = bidRequest.impression(0);
         int maxCpmPrice = result.bidPrice;
         adResult->set_price(maxCpmPrice);
 
         //缓存最终广告结果
-        fillAdInfo(selectCondition, result, bidRequest.has_user() ? bidRequest.user().suid() : "");
+        adInfo.pid = queryCondition.mttyPid;
+        adInfo.adxpid = queryCondition.adxpid;
+        adInfo.sid = finalSolution.sId;
+        adInfo.advId = advId;
+        adInfo.adxid = queryCondition.adxid;
+        adInfo.adxuid = bidRequest.has_user() ? bidRequest.user().suid() : "";
+        adInfo.bannerId = banner.bId;
+        adInfo.cid = adplace.cId;
+        adInfo.mid = adplace.mId;
+        adInfo.cpid = adInfo.advId;
+        adInfo.offerPrice = result.feePrice;
+        adInfo.priceType = finalSolution.priceType;
+        adInfo.ppid = result.ppid;
+        adInfo.bidSize = makeBidSize(banner.width, banner.height);
+        const std::string & userIp = bidRequest.device().ip();
+        IpManager & ipManager = IpManager::getInstance();
+        adInfo.areaId = ipManager.getAreaCodeStrByIp(userIp.data());
 
         char pjson[2048] = { '\0' };
         std::string strBannerJson = banner.json;
@@ -165,8 +206,11 @@ namespace bidding {
         std::string materialUrl = mtlsArray[0].get("p0", "");
         std::string landingUrl = mtlsArray[0].get("p1", "");
         adResult->set_adurl(materialUrl);
+        //            adResult->set_adpara()
+        //            adResult->set_ext()
         adResult->set_displaypara(getDisplayPara());
         adResult->set_clickpara(getSohuClickPara(landingUrl));
+        //            adResult->set_adm_url()
     }
 
     void SohuBiddingHandler::match(adservice::utility::HttpResponse & response)
