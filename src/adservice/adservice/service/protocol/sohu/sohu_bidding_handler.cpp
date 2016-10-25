@@ -149,6 +149,10 @@ namespace bidding {
             queryCondition.width = video.width();
             queryCondition.height = video.height();
         }
+        if (adzInfo.has_ispreferreddeals() && adzInfo.ispreferreddeals()) {
+            const std::string & dealId = adzInfo.campaignid();
+            queryCondition.dealId = std::string(",") + dealId + ",";
+        }
         if (!filterCb(this, queryCondition)) {
             adInfo.pid = std::to_string(queryCondition.mttyPid);
             adInfo.adxpid = queryCondition.adxpid;
