@@ -6,6 +6,6 @@ logs/2017*
 error.txt
 objs
 nginx
-adservice
+adservice.dist
 adservice.tgz
 *.user
