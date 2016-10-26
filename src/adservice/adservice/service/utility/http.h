@@ -8,6 +8,7 @@
 #include <map>
 #include <string>
 #include <sstream>
+#include <iostream>
 
 namespace adservice {
     namespace utility {
@@ -151,6 +152,7 @@ namespace adservice {
             }
 
             const std::string& get_body(){
+                std::cerr<<"bodyStream pos:"<<bodyStream.tellp()<<std::endl;
                 if(bodyStream.tellp()>0)
                     return std::move(bodyStream.str());
                 else
