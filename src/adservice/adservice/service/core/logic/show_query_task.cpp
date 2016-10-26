@@ -211,7 +211,7 @@ namespace corelogic {
         mtAdInfo["ppid"] = ppid;
         std::vector<int64_t> & ppids = selectResult.ppids;
         mtAdInfo["ppids"] = boost::algorithm::join(
-            ppids, boost::adaptors::transformed(static_cast<std::string (*)(int64_t)>(std::to_string)), ",");
+            ppids | boost::adaptors::transformed(static_cast<std::string (*)(int64_t)>(std::to_string)), ",");
         mtAdInfo["oid"] = selectResult.orderId;
         int advId = solution.advId;
         int bId = banner.bId;
