@@ -1,10 +1,10 @@
 #!/bin/bash
 
-mkdir -p adservice
-cp -R conf adservice
+mkdir -p adservice.dist
+cp -R conf adservice.dist
 rm -rf logs/*.log
-cp -R logs adservice
-cp -R res  adservice
-cp -R run.sh adservice
-cp objs/nginx adservice/
-tar -cvzf adservice.tgz adservice
+cp -R logs adservice.dist
+cp -R res  adservice.dist
+cp -R run.sh adservice.dist
+cp objs/nginx adservice.dist/
+tar -cvzf adservice.tgz adservice.dist
