@@ -8,3 +8,7 @@ objs
 nginx
 adservice
 adservice.tgz
+<<<<<<< HEAD
+=======
+*.user
+>>>>>>> 239eb9cf14810c1cc9249c980b965809f2659f0f
