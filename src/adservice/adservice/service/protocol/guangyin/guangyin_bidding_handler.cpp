@@ -205,7 +205,7 @@ namespace bidding {
         const MT::common::Banner & banner = result.banner;
 
         //缓存最终广告结果
-        fillAdInfo(queryCondition, result, bidRequest_.user().id(), bidRequest_.device().ip());
+		fillAdInfo(queryCondition, result, bidRequest_.user().id());
 
         const Imp & imp = bidRequest_.imp(0);
         float maxCpmPrice = (float)result.bidPrice;

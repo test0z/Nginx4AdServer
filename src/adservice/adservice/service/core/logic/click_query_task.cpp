@@ -6,6 +6,8 @@
 
 #include <iomanip>
 
+#include <hiredis/async.h>
+
 #include <aerospike/aerospike_key.h>
 #include <aerospike/as_operations.h>
 #include <aerospike/as_record.h>
@@ -14,6 +16,8 @@
 #include "logging.h"
 #include "utility/aero_spike.h"
 #include "utility/url.h"
+
+extern std::shared_ptr<redisAsyncContext> redisConnection;
 
 namespace adservice {
 namespace corelogic {
@@ -239,6 +243,11 @@ namespace corelogic {
             resp.status(302, "OK");
             resp.set_header("Location", log.adInfo.landingUrl);
             resp.set_body("m");
+
+			std::string orderId;
+
+			std::string command = "INCR order-counter:" + orderId + ":c";
+			redisAsyncCommand(redisConnection.get(), nullptr, nullptr, command.c_str());
         } else {
             resp.status(400, "Error,empty landing url");
         }

@@ -112,7 +112,8 @@ $ngx_addon_dir/service/utility/userclient.cpp"
 
 CFLAGS="$CFLAGS -march=native -Wno-error=narrowing -Wno-error=int-to-pointer-cast -DMUDUO_STD_STRING"
 
-CORE_LIBS="-L/usr/lib -L/usr/lib64 -L/usr/local/lib -L/usr/local/lib64 $CORE_LIBS /usr/local/lib/libcppcms.a
+CORE_LIBS="-L/usr/lib -L/usr/lib64 -L/usr/local/lib -L/usr/local/lib64 $CORE_LIBS
+/usr/local/lib/libcppcms.a
 /usr/local/lib/libbooster.a
 /usr/local/lib/libavrocpp_s.a
 /usr/local/lib/librdkafka++.a
@@ -124,7 +125,6 @@ CORE_LIBS="-L/usr/lib -L/usr/lib64 -L/usr/local/lib -L/usr/local/lib64 $CORE_LIB
 /usr/local/lib/libboost_filesystem.a
 /usr/local/lib/libboost_system.a
 /usr/lib64/libprotobuf.a
--lmuduo_base_cpp11 -ltbb -pthread
--lstdc++ -lcrypt -lpcre -lcrypto -lcryptopp -lz -lssl -lcurl -licuuc -licui18n -ldl -lzmq -lmtty
+-lmuduo_base_cpp11 -ltbb -pthread -lhiredis -lstdc++ -lcrypt -lpcre -lcrypto -lcryptopp -lz -lssl -lcurl -licuuc -licui18n -ldl -lzmq -lmtty
 -Wl,-rpath,/usr/local/lib "
 

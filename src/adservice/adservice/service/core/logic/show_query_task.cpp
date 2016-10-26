@@ -10,11 +10,15 @@
 #include "logging.h"
 #include "utility/utility.h"
 
+#include <hiredis/async.h>
+
 #include <boost/algorithm/string/join.hpp>
 #include <boost/range/adaptor/transformed.hpp>
+
 #include <tbb/concurrent_hash_map.h>
 
 extern adservice::adselectv2::AdSelectClientPtr adSelectClient;
+extern std::shared_ptr<redisAsyncContext> redisConnection;
 
 namespace adservice {
 namespace corelogic {
@@ -209,9 +213,9 @@ namespace corelogic {
         mtAdInfo["price"] = price;
         std::string ppid = to_string(selectResult.ppid);
         mtAdInfo["ppid"] = ppid;
-        std::vector<int64_t> & ppids = selectResult.ppids;
+		const std::vector<int64_t> & ppids = selectResult.ppids;
         mtAdInfo["ppids"] = boost::algorithm::join(
-            ppids, boost::adaptors::transformed(static_cast<std::string (*)(int64_t)>(std::to_string)), ",");
+			ppids | boost::adaptors::transformed(static_cast<std::string (*)(int64_t)>(std::to_string)), ",");
         mtAdInfo["oid"] = selectResult.orderId;
         int advId = solution.advId;
         int bId = banner.bId;
@@ -378,6 +382,11 @@ namespace corelogic {
                 int len = buildResponseForDsp(adBanner, paramMap, tmp, templateFmt, buffer, sizeof(buffer));
                 respBody = std::string(buffer, buffer + len);
             }
+
+			std::string orderId;
+
+			std::string command = "INCR order-counter:" + orderId + ":s";
+			redisAsyncCommand(redisConnection.get(), nullptr, nullptr, command.c_str());
         }
 
 #ifdef USE_ENCODING_GZIP

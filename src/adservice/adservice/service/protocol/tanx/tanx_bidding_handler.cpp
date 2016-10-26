@@ -205,7 +205,7 @@ namespace bidding {
         adResult->add_creative_type(banner.bannerType);
         adResult->add_category(adxIndustryType);
         //缓存最终广告结果
-        fillAdInfo(selectCondition, result, bidRequest.tid());
+		fillAdInfo(queryCondition, result, bidRequest.tid());
 
         char pjson[2048] = { '\0' };
         std::string strBannerJson = banner.json;

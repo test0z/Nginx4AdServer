@@ -9,7 +9,6 @@ INCLUDE_DIRECTORIES(
     ../../core
     ../../http
     ${MTTY_INCLUDE_DIR}
-
     )
 
 SET(SRC_LIST
@@ -43,6 +42,7 @@ SET(SRC_LIST
     ./service/protocol/guangyin/guangyin_bidding.pb.cpp
     ./service/protocol/guangyin/guangyin_bidding_handler.cpp
     ./service/protocol/guangyin/guangyin_price.cpp
+    ./service/protocol/log/log.cpp
     ./service/protocol/log/logstring.cpp
     ./service/protocol/netease/netease_bidding_handlerv2.cpp
     ./service/protocol/sohu/sohu_bidding_handler.cpp
@@ -66,6 +66,12 @@ SET(SRC_LIST
     ./service/utility/mttytime.cpp
     ./service/utility/random.cpp
     ./service/utility/url.cpp
-    ./service/utility/userclient.cpp)
+    ./service/utility/userclient.cpp
+    ./service/common/atomic.cpp
+    ./service/common/constants.cpp
+    ./service/common/functions.cpp
+    ./service/common/platform.cpp
+    ./service/common/spinlock.cpp
+    ./service/common/types.cpp)
 
 ADD_EXECUTABLE(${PROJECT_NAME} ${SRC_LIST})

@@ -172,7 +172,7 @@ namespace bidding {
         adResult->set_bid_price(maxCpmPrice);
         adResult->set_creative_id(std::to_string(banner.bId));
         //缓存最终广告结果
-        fillAdInfo(selectCondition, result, bidRequest.has_user() ? bidRequest.user().id() : "");
+		fillAdInfo(queryCondition, result, bidRequest.has_user() ? bidRequest.user().id() : "");
 
         // html snippet相关
         char showParam[2048];

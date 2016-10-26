@@ -273,7 +273,7 @@ namespace bidding {
         bidValue["impid"] = impId;
 
         //缓存最终广告结果
-        fillAdInfo(selectCondition, result, bidRequest.get("user.id", ""));
+		fillAdInfo(queryCondition, result, bidRequest.get("user.id", ""));
 
         // html snippet相关
         char pjson[2048] = { '\0' };

@@ -3,6 +3,7 @@
 //
 
 #include "abstract_bidding_handler.h"
+#include "core/core_ip_manager.h"
 #include "logging.h"
 #include "utility/utility.h"
 
@@ -134,12 +135,12 @@ namespace bidding {
         const MT::common::Banner & banner = result.banner;
 
         adInfo.pid = std::to_string(adplace.pId);
-        adInfo.adxpid = queryCondition.adxpid;
+		adInfo.adxpid = selectCondition.adxpid;
         adInfo.sid = finalSolution.sId;
 
         auto advId = finalSolution.advId;
         adInfo.advId = advId;
-        adInfo.adxid = queryCondition.adxid;
+		adInfo.adxid = selectCondition.adxid;
         adInfo.adxuid = adxUser;
         adInfo.bannerId = banner.bId;
         adInfo.cid = adplace.cId;

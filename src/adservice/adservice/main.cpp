@@ -3,6 +3,11 @@
 #include <string>
 
 #include <sys/types.h>
+#include <unistd.h>
+
+#include <hiredis/async.h>
+
+#include <boost/algorithm/string.hpp>
 
 extern "C" {
 #include <ngx_config.h>
@@ -27,8 +32,6 @@ extern "C" {
 #include "protocol/guangyin/guangyin_bidding_handler.h"
 #include "utility/aero_spike.h"
 #include "utility/utility.h"
-#include <boost/algorithm/string.hpp>
-#include <unistd.h>
 
 struct LocationConf {
     //运行日志级别
@@ -56,9 +59,16 @@ struct LocationConf {
     ngx_str_t asnode;
     // aerospike 默认namespace
     ngx_str_t asnamespace;
+	// redis config
+	// redis ip
+	ngx_str_t redisip;
+	// redis port
+	ngx_uint_t redisport;
     // working directory
     ngx_str_t workdir;
 };
+
+std::shared_ptr<redisAsyncContext> redisConnection;
 
 static ngx_int_t adservice_init(ngx_conf_t * cf);
 static ngx_int_t adservice_handler(ngx_http_request_t * r);
@@ -92,6 +102,8 @@ static ngx_command_t commands[] = { COMMAND_ITEM("logging_level", LocationConf, 
                                     COMMAND_ITEM("adselect_timeout", LocationConf, adselecttimeout, parseConfStr),
                                     COMMAND_ITEM("as_node", LocationConf, asnode, parseConfStr),
                                     COMMAND_ITEM("as_namespace", LocationConf, asnamespace, parseConfStr),
+									COMMAND_ITEM("redis_ip", LocationConf, redisip, parseConfStr),
+									COMMAND_ITEM("redis_port", LocationConf, redisport, parseConfNum),
                                     COMMAND_ITEM("workdir", LocationConf, workdir, parseConfStr),
                                     ngx_null_command };
 
@@ -119,6 +131,8 @@ static void * createLocationConf(ngx_conf_t * cf)
     ngx_str_null(&conf->adselecttimeout);
     ngx_str_null(&conf->asnode);
     ngx_str_null(&conf->asnamespace);
+	ngx_str_null(&conf->redisip);
+	conf->redisport = NGX_CONF_UNSET_UINT;
     ngx_str_null(&conf->workdir);
     return conf;
 }
@@ -139,6 +153,8 @@ static char * mergeLocationConf(ngx_conf_t * cf, void * parent, void * child)
     ngx_conf_merge_str_value(conf->adselecttimeout, prev->adselecttimeout, "0:15|21:-1|98:-1|99:-1");
     ngx_conf_merge_str_value(conf->asnode, prev->asnode, "");
     ngx_conf_merge_str_value(conf->asnamespace, prev->asnamespace, "mtty");
+	ngx_conf_merge_str_value(conf->redisip, prev->redisip, "192.168.2.44");
+	ngx_conf_merge_uint_value(conf->redisport, prev->redisport, 6379);
     ngx_conf_merge_str_value(conf->workdir, prev->workdir, "/usr/local/nginx/sbin/");
     return NGX_CONF_OK;
 }
@@ -238,11 +254,39 @@ void setGlobalLoggingLevel(int loggingLevel)
     AdServiceLog::globalLoggingLevel = (LoggingLevel)globalConfig.serverConfig.loggingLevel;
 }
 
+void onRedisDisconnect(const redisAsyncContext * c, int status);
+void connectToRedis(const char * i = nullptr, int p = 0)
+{
+	static const char * ip = (i == nullptr ? nullptr : i);
+	static int port = (p == 0 ? 0 : p);
+
+	redisAsyncContext * connection = redisAsyncConnect(ip, port);
+	if (connection->err) {
+		std::cerr << "redis connection error: " << connection->errstr << std::endl;
+		exit(-1);
+	}
+
+	redisAsyncSetDisconnectCallback(connection, onRedisDisconnect);
+
+	redisConnection = std::shared_ptr<redisAsyncContext>(connection, [](redisAsyncContext * p) { redisAsyncFree(p); });
+}
+
+void onRedisDisconnect(const redisAsyncContext * c, int status)
+{
+	if (status != REDIS_OK) {
+		connectToRedis();
+	}
+}
+
 static void global_init(LocationConf * conf)
 {
-    globalMutex.lock();
-    if (serviceInitialized)
+	connectToRedis(NGX_STR_2_STD_STR(conf->redisip).c_str(), conf->redisport);
+
+	globalMutex.lock();
+	if (serviceInitialized) {
         return;
+	}
+
     globalConfig.serverConfig.loggingLevel = (int)conf->logginglevel;
     setGlobalLoggingLevel(globalConfig.serverConfig.loggingLevel);
     globalConfig.logConfig.kafkaBroker = NGX_STR_2_STD_STR(conf->kafkabroker);
