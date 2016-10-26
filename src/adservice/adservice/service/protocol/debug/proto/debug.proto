@@ -1,0 +1,8 @@
+
+package protocol.debug;
+
+message DebugRequest{
+	required string originModule = 1;
+	required string originMethod = 2;
+	required bytes requestData = 3;
+}
