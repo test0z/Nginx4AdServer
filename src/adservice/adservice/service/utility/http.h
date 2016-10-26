@@ -145,12 +145,26 @@ namespace adservice {
             void set_body(const std::string& bodyMessage){
                 if(bodyMessage.length()==0)
                     return;
-                body = bodyMessage;
-                headers[CONTENTLENGTH] = std::to_string(body.length());
+                bodyStream.str("");
+                bodyStream<<bodyMessage;
+                headers[CONTENTLENGTH] = std::to_string(bodyStream.tellp());
             }
 
-            const std::string& get_body() const{
-                return body;
+            const std::string& get_body(){
+                if(bodyStream.tellp()>0)
+                    return std::move(bodyStream.str());
+                else
+                    return std::move(std::string(""));
+            }
+
+            void appendToBody(const std::string& more){
+                bodyStream << more;
+            }
+
+            template<typename T>
+            HttpResponse& operator<<(const T& t){
+                bodyStream<<t;
+                return *this;
             }
 
             std::string to_string(){
@@ -161,8 +175,8 @@ namespace adservice {
                         ss << iter->first << ":" << iter->second << "\r\n";
                     }
                 }
-                if(body.length()>0){
-                    ss<<"\r\n"<<body;
+                if(bodyStream.tellp()>0){
+                    ss<<"\r\n"<<bodyStream.str();
                 }
                 return ss.str();
             }
@@ -175,7 +189,7 @@ namespace adservice {
             int respStatus;
             std::string statusMsg;
             std::map<std::string,std::string> headers;
-            std::string body;
+            std::stringstream bodyStream;
         };
     }
 }

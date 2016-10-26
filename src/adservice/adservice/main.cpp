@@ -24,6 +24,7 @@ extern "C" {
 #include "core/logic/trace_task.h"
 #include "core/logpusher/log_pusher.h"
 #include "logging.h"
+#include "protocol/debug/debug.pb.h"
 #include "protocol/guangyin/guangyin_bidding_handler.h"
 #include "utility/aero_spike.h"
 #include "utility/utility.h"
@@ -201,6 +202,8 @@ adservice::log::LogPusherPtr serviceLogger = nullptr;
 AdServiceLogPtr serviceLogPtr = nullptr;
 adservice::adselectv2::AdSelectClientPtr adSelectClient;
 ngx_log_t * globalLog;
+__thread bool inDebugSession = false;
+__thread void * debugSession = nullptr;
 
 #define NGX_STR_2_STD_STR(str) std::string((const char *)str.data, (const char *)str.data + str.len)
 #define NGX_BOOL(b) (b == TRUE)
@@ -367,6 +370,42 @@ ngx_int_t build_response(ngx_http_request_t * r, adservice::utility::HttpRespons
     return ngx_http_output_filter(r, &out);
 }
 
+void makeDebugRequest(adservice::utility::HttpRequest & request, protocol::debug::DebugRequest & debugRequest)
+{
+    request.set(QUERYMETHOD, debugRequest.originmodule());
+    request.set(URI, debugRequest.originmethod());
+    if (request.request_method() == "GET") {
+        request.set(QUERYSTRING, debugRequest.requestdata());
+    } else {
+        request.set_post_data(debugRequest.requestdata());
+    }
+}
+
+void dispatchRequest(adservice::utility::HttpRequest & request, adservice::utility::HttpResponse & response)
+{
+    const std::string & queryPath = request.path_info();
+    if (queryPath.find("bid") != std::string::npos) {
+        adservice::corelogic::HandleBidQueryTask task(request, response);
+        task.setLogger(serviceLogger);
+        task();
+    } else if (queryPath == "/v" || queryPath == "/s") {
+        adservice::corelogic::HandleShowQueryTask task(request, response);
+        task.setLogger(serviceLogger);
+        task();
+    } else if (queryPath == "/c") {
+        adservice::corelogic::HandleClickQueryTask task(request, response);
+        task.setLogger(serviceLogger);
+        task();
+    } else if (queryPath == "/t") {
+        adservice::corelogic::HandleTraceTask task(request, response);
+        task.setLogger(serviceLogger);
+        task();
+    } else {
+        response.status(204);
+        response.set_content_header("text/html");
+    }
+}
+
 void after_read_post_data(ngx_http_request_t * r)
 {
     adservice::utility::HttpRequest httpRequest;
@@ -391,6 +430,22 @@ void after_read_post_data(ngx_http_request_t * r)
     } else if (queryPath == "debug") { // debug module
         //根据debug 请求的包，将它解析成一个正常的请求，同时打上debug 标记
         //一旦打上debug标记所有debug级别以下的输出将被输出到 socket peer,因此debug模块可以跟踪整个流程
+        protocol::debug::DebugRequest debugRequest;
+        bool parseResult = adservice::utility::serialize::getProtoBufObject(debugRequest, httpRequest.raw_post_data());
+        if (!parseResult) {
+            LOG_ERROR << "Debug Interface parse reqeust failed!!";
+        } else {
+            inDebugSession = true;
+            debugSession = (void *)(&httpResponse);
+            try {
+                makeDebugRequest(httpRequest, debugRequest);
+                dispatchRequest(httpRequest, httpResponse);
+            } catch (std::exception & e) {
+                LOG_ERROR << "some error occured in Debug Session,e:" << e.what();
+            }
+            inDebugSession = false;
+            debugSession = nullptr;
+        }
     }
     ngx_http_finalize_request(r, build_response(r, httpResponse));
 }
@@ -419,26 +474,7 @@ static ngx_int_t adservice_handler(ngx_http_request_t * r)
     read_header(r, httpRequest);
 
     adservice::utility::HttpResponse httpResponse;
-    const std::string queryPath = httpRequest.path_info();
-    if (queryPath.find("bid") != std::string::npos) {
-        adservice::corelogic::HandleBidQueryTask task(httpRequest, httpResponse);
-        task.setLogger(serviceLogger);
-        task();
-    } else if (queryPath == "/v" || queryPath == "/s") {
-        adservice::corelogic::HandleShowQueryTask task(httpRequest, httpResponse);
-        task.setLogger(serviceLogger);
-        task();
-    } else if (queryPath == "/c") {
-        adservice::corelogic::HandleClickQueryTask task(httpRequest, httpResponse);
-        task.setLogger(serviceLogger);
-        task();
-    } else if (queryPath == "/t") {
-        adservice::corelogic::HandleTraceTask task(httpRequest, httpResponse);
-        task.setLogger(serviceLogger);
-        task();
-    } else {
-        httpResponse.status(204);
-        httpResponse.set_content_header("text/html");
-    }
+    dispatchRequest(httpRequest, httpResponse);
+
     return build_response(r, httpResponse);
 }
