@@ -19,6 +19,7 @@ namespace bidding {
     using namespace adservice::server;
 
 #define AD_TX_CLICK_MACRO "%%CLICK_URL_PRE_ENC%%"
+#define AD_TX_CLICK_UNENC_MACRO "%%CLICK_URL_PRE_UNENC%%"
 #define AD_TX_PRICE_MACRO "%%SETTLE_PRICE%%"
 #define AD_COOKIEMAPPING_TANX ""
 
@@ -240,6 +241,10 @@ namespace bidding {
         //            bannerJson["of"] = "0";
         //            bannerJson["width"] = banner.width;
         //            bannerJson["height"] = banner.height;
+<<<<<<< HEAD
+=======
+        //            bannerJson["xcurl"] = AD_TX_CLICK_UNENC_MACRO;
+>>>>>>> 239eb9cf14810c1cc9249c980b965809f2659f0f
         //            std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
         //            char admBuffer[4096];
         //            snprintf(admBuffer, sizeof(admBuffer), adservice::corelogic::HandleShowQueryTask::showAdxTemplate,
