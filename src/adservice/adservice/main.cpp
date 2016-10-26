@@ -388,6 +388,9 @@ void after_read_post_data(ngx_http_request_t * r)
         adservice::corelogic::HandleBidQueryTask task(httpRequest, httpResponse);
         task.setLogger(serviceLogger);
         task();
+    } else if (queryPath == "debug") { // debug module
+        //根据debug 请求的包，将它解析成一个正常的请求，同时打上debug 标记
+        //一旦打上debug标记所有debug级别以下的输出将被输出到 socket peer,因此debug模块可以跟踪整个流程
     }
     ngx_http_finalize_request(r, build_response(r, httpResponse));
 }
