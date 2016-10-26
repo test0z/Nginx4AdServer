@@ -274,8 +274,8 @@ namespace bidding {
             adResult->set_adm(std::string(admBuffer));
         }
         std::string landingUrl = mtlsArray[0].get("p1", "");
-        getClickPara(bidRequest_.id(), buffer, sizeof(buffer), "", landingUrl);
-        adResult->set_curl(std::string("http://click.mtty.com/c?") + buffer);
+        // getClickPara(bidRequest_.id(), buffer, sizeof(buffer), "", landingUrl);
+        adResult->set_curl(landingUrl);
 
         adResult->set_w(banner.width);
         adResult->set_h(banner.height);
