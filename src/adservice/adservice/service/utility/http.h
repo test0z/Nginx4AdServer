@@ -146,7 +146,7 @@ namespace adservice {
                 if(bodyMessage.length()==0)
                     return;
                 body = bodyMessage;
-                headers[CONTENTLENGTH] = std::to_string(body.length());
+                //headers[CONTENTLENGTH] = std::to_string(body.length());
             }
 
             const std::string& get_body() const{

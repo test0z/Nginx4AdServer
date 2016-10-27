@@ -333,6 +333,7 @@ ngx_int_t build_response(ngx_http_request_t * r, adservice::utility::HttpRespons
     for (auto & iter : headers) {
         if (iter.first == CONTENTTYPE) {
             continue;
+        } else if (iter.first == CONTENTLENGTH) {
         }
         ngx_table_elt_t * h = (ngx_table_elt_t *)ngx_list_push(&r->headers_out.headers);
         if (h != nullptr) {
