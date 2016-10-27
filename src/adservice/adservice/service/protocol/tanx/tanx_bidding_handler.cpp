@@ -240,11 +240,8 @@ namespace bidding {
         //            bannerJson["unid"] = adInfo.adxid;
         //            bannerJson["of"] = "0";
         //            bannerJson["width"] = banner.width;
-        //            bannerJson["height"] = banner.height;
-<<<<<<< HEAD
-=======
-        //            bannerJson["xcurl"] = AD_TX_CLICK_UNENC_MACRO;
->>>>>>> 239eb9cf14810c1cc9249c980b965809f2659f0f
+		//            bannerJson["height"] = banner.height;
+		//            bannerJson["xcurl"] = AD_TX_CLICK_UNENC_MACRO;
         //            std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
         //            char admBuffer[4096];
         //            snprintf(admBuffer, sizeof(admBuffer), adservice::corelogic::HandleShowQueryTask::showAdxTemplate,

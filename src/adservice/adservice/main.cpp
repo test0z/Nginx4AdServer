@@ -254,7 +254,6 @@ void setGlobalLoggingLevel(int loggingLevel)
     AdServiceLog::globalLoggingLevel = (LoggingLevel)globalConfig.serverConfig.loggingLevel;
 }
 
-void onRedisDisconnect(const redisAsyncContext * c, int status);
 void connectToRedis(const char * i = nullptr, int p = 0)
 {
 	static const char * ip = (i == nullptr ? nullptr : i);
@@ -266,16 +265,13 @@ void connectToRedis(const char * i = nullptr, int p = 0)
 		exit(-1);
 	}
 
-	redisAsyncSetDisconnectCallback(connection, onRedisDisconnect);
+	redisAsyncSetDisconnectCallback(connection, [](const redisAsyncContext * c, int status) {
+		if (status != REDIS_OK) {
+			connectToRedis();
+		}
+	});
 
 	redisConnection = std::shared_ptr<redisAsyncContext>(connection, [](redisAsyncContext * p) { redisAsyncFree(p); });
-}
-
-void onRedisDisconnect(const redisAsyncContext * c, int status)
-{
-	if (status != REDIS_OK) {
-		connectToRedis();
-	}
 }
 
 static void global_init(LocationConf * conf)
