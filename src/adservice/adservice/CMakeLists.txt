@@ -66,6 +66,7 @@ SET(SRC_LIST
     ./service/utility/mttytime.cpp
     ./service/utility/random.cpp
     ./service/utility/url.cpp
-    ./service/utility/userclient.cpp)
+    ./service/utility/userclient.cpp
+    ./service/utility/http.cpp)
 
 ADD_EXECUTABLE(${PROJECT_NAME} ${SRC_LIST})

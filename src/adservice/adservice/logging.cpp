@@ -5,6 +5,7 @@
 #include <boost/log/expressions.hpp>
 #include <boost/log/sinks/async_frontend.hpp>
 #include <boost/log/support/date_time.hpp>
+#include <iostream>
 #include <vector>
 
 LoggingLevel AdServiceLog::globalLoggingLevel = LoggingLevel::INFO_;
@@ -29,6 +30,7 @@ public:
         if (inDebugSession) {
             //
         }
+        std::cerr << formatted_message << std::endl;
         boost::log::sinks::text_file_backend::consume(rec, formatted_message);
     }
 };
@@ -71,7 +73,12 @@ AdServiceLog::AdServiceLog(LoggingLevel lv, const std::string & logDirectory)
 
         auto sink = boost::make_shared<boost::log::sinks::asynchronous_sink<AdServiceLogBackendWraper>>(backend);
         sink->set_formatter(formatter);
-        sink->set_filter(boost::log::expressions::attr<LoggingLevel>("Severity") == i);
+        sink->set_filter([i, &inDebugSession](boost::log::attribute_value_set const & attrs) {
+            if (inDebugSession)
+                return true;
+            else
+                return attrs["Severity"] == i;
+        });
         sinks_.emplace_back(sink);
     }
     for (int i = currentLevel; i < LoggingLevel::SIZE_; ++i) {

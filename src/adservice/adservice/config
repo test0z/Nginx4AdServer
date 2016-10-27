@@ -52,7 +52,8 @@ $ngx_addon_dir/service/utility/memory.cpp
 $ngx_addon_dir/service/utility/mttytime.cpp
 $ngx_addon_dir/service/utility/random.cpp
 $ngx_addon_dir/service/utility/url.cpp
-$ngx_addon_dir/service/utility/userclient.cpp"
+$ngx_addon_dir/service/utility/userclient.cpp
+$ngx_addon_dir/service/utility/http.cpp"
 
 #CORE_DEPS="$CORE_DEPS $ngx_addon_dir/logging.h
 #$ngx_addon_dir/service/common/constants.h
