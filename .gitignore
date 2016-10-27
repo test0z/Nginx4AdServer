@@ -8,4 +8,5 @@ objs
 nginx
 adservice.dist
 adservice.tgz
+build-adservice-*
 *.user
