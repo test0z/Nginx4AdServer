@@ -166,7 +166,7 @@ namespace bidding {
                 if (app.has_name()) {
                     queryCondition.adxpid = app.bundle();
                 } else if (app.has_publisher()) {
-                    queryCondition.adxpid = app.publisher().id();
+                    queryCondition.adxpid = app.publisher().slot();
                 }
             }
         } else {
@@ -176,7 +176,7 @@ namespace bidding {
             if (bidRequest_.has_site()) {
                 const Site & site = bidRequest_.site();
                 if (site.has_publisher()) {
-                    queryCondition.adxpid = site.publisher().id();
+                    queryCondition.adxpid = site.publisher().slot();
                 }
             }
         }
