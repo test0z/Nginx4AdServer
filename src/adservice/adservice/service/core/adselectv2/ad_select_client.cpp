@@ -69,27 +69,54 @@ namespace adselectv2 {
         request.baseEcpm = selectCondition.basePrice;
     }
 
-    std::string serialize(MT::common::SelectRequest & request)
+    template <class T>
+    std::string serialize(T & obj)
     {
         std::ostringstream os;
         boost::archive::text_oarchive oa(os);
-        oa << request;
+        oa << obj;
         return os.str();
     }
 
-    void deserialize(const std::string & in, MT::common::SelectResult & result)
+    template <class T>
+    void deserialize(const std::string & in, T & obj)
     {
         try {
             std::stringstream ss;
             ss << in;
             LOG_TRACE << "inputstream:" << ss.str();
             boost::archive::text_iarchive ia(ss);
-            ia >> result;
+            ia >> obj;
         } catch (std::exception & e) {
             LOG_ERROR << "error with deserialization," << e.what();
         }
         LOG_DEBUG << "done with response deserialization";
         return;
+    }
+
+    bool filterDebugSessionRequest(uint8_t & flag, std::string & requestBin)
+    {
+        if (inDebugSession) {
+            MT::common::SelectDebugRequest debugRequest;
+            debugRequest.originMsgType = flag;
+            flag = (uint8_t)MT::common::MessageType::ADSELECT_DEBUG;
+            debugRequest.requestData = requestBin;
+            requestBin = serialize(debugRequest);
+            return true;
+        }
+        return false;
+    }
+
+    bool filterDebugSessionResponse(std::string & responseBin)
+    {
+        if (inDebugSession) {
+            MT::common::SelectDebugResponse debugResponse;
+            deserialize(responseBin, debugResponse);
+            LOG_DEBUG << "adselect module debug output:\n" << debugResponse.debugMessage;
+            responseBin = debugResponse.responseData;
+            return true;
+        }
+        return false;
     }
 
     bool AdSelectClient::search(int seqId, bool isSSP, AdSelectCondition & selectCondition,
@@ -98,10 +125,12 @@ namespace adselectv2 {
         MT::common::SelectRequest request;
 
         makeRequest(isSSP, selectCondition, request);
+        uint8_t flag = (uint8_t)MT::common::MessageType::ADSELECT_REQUEST;
         std::string requestBin = serialize(request);
 
+        filterDebugSessionRequest(flag, requestBin);
+
         zmq::message_t message(requestBin.length() + 1);
-        uint8_t flag = (uint8_t)MT::common::MessageType::ADSELECT_REQUEST;
         memcpy(static_cast<char *>(message.data()), &flag, 1);
         memcpy(static_cast<char *>(message.data()) + 1, requestBin.c_str(), requestBin.length());
 
@@ -120,6 +149,8 @@ namespace adselectv2 {
             return false;
         }
         std::string response((char *)reply.data() + 1, reply.size() - 1);
+        filterDebugSessionResponse(response);
+
         deserialize(response, result);
         if ((!selectCondition.adxpid.empty() && result.adplace.adxId != 0 && !result.adplace.adxPId.empty())
             && (selectCondition.adxid != result.adplace.adxId || selectCondition.adxpid != result.adplace.adxPId)) {
@@ -133,17 +164,22 @@ namespace adselectv2 {
     bool AdSelectClient::getBannerById(int64_t bannerId, MT::common::Banner & banner)
     {
         try {
-            zmq::message_t message(sizeof(bannerId) + 1);
-
             uint8_t flag = (uint8_t)MT::common::MessageType::GET_BANNER_REQUEST;
+            std::string requestBin
+                = std::string((const char *)(&bannerId), (const char *)(&bannerId) + sizeof(bannerId));
+            zmq::message_t message(requestBin.length() + 1);
+
+            filterDebugSessionRequest(flag, requestBin);
+
             memcpy(static_cast<char *>(message.data()), &flag, 1);
-            memcpy(static_cast<char *>(message.data()) + 1, &bannerId, sizeof(bannerId));
+            memcpy(static_cast<char *>(message.data()) + 1, requestBin.c_str(), requestBin.length());
             socket_.send(message);
 
             zmq::message_t reply;
             socket_.recv(&reply);
 
             std::string response((char *)reply.data() + 1, reply.size() - 1);
+            filterDebugSessionResponse(response);
 
             std::stringstream ss;
             ss << response;
