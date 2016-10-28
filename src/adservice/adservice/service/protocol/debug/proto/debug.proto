@@ -6,3 +6,8 @@ message DebugRequest{
 	required string originMethod = 2;
 	required bytes requestData = 3;
 }
+
+message DebugResponse{
+        required string debugMessage = 1;
+        required bytes responseData = 2;
+}

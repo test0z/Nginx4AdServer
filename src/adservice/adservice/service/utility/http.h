@@ -28,7 +28,9 @@ namespace utility {
     public:
         void set(const std::string & key, const std::string & value)
         {
-            headers.insert(std::make_pair(key, value));
+            if (!headers.insert(std::make_pair(key, value)).second) {
+                headers[key] = value;
+            }
         }
 
         std::string get(const std::string & key) const
@@ -166,7 +168,9 @@ namespace utility {
 
         std::string get_body();
 
-        void appendToBody(const std::string & more)
+        std::string get_debug_message();
+
+        void append_debug(const std::string & more)
         {
             bodyStream << more;
         }
@@ -202,6 +206,7 @@ namespace utility {
         int respStatus;
         std::string statusMsg;
         std::map<std::string, std::string> headers;
+        std::string body;
         std::stringstream bodyStream;
     };
 }

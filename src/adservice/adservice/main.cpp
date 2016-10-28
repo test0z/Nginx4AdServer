@@ -202,8 +202,8 @@ adservice::log::LogPusherPtr serviceLogger = nullptr;
 AdServiceLogPtr serviceLogPtr = nullptr;
 adservice::adselectv2::AdSelectClientPtr adSelectClient;
 ngx_log_t * globalLog;
-__thread bool inDebugSession = false;
-__thread void * debugSession = nullptr;
+bool inDebugSession = false;
+void * debugSession = nullptr;
 
 #define NGX_STR_2_STD_STR(str) std::string((const char *)str.data, (const char *)str.data + str.len)
 #define NGX_BOOL(b) (b == TRUE)
@@ -238,7 +238,7 @@ void parseConfigAdselectTimeout(const std::string & timeoutStr, std::map<int, in
 
 void setGlobalLoggingLevel(int loggingLevel)
 {
-    AdServiceLog::globalLoggingLevel = (LoggingLevel)globalConfig.serverConfig.loggingLevel;
+    AdServiceLog::globalLoggingLevel = (LoggingLevel)loggingLevel;
 }
 
 static void global_init(LocationConf * conf)
@@ -372,13 +372,14 @@ ngx_int_t build_response(ngx_http_request_t * r, adservice::utility::HttpRespons
 
 void makeDebugRequest(adservice::utility::HttpRequest & request, protocol::debug::DebugRequest & debugRequest)
 {
-    request.set(QUERYMETHOD, debugRequest.originmodule());
-    request.set(URI, debugRequest.originmethod());
+    request.set(QUERYMETHOD, debugRequest.originmethod());
+    request.set(URI, debugRequest.originmodule());
     if (request.request_method() == "GET") {
         request.set(QUERYSTRING, debugRequest.requestdata());
     } else {
         request.set_post_data(debugRequest.requestdata());
     }
+    std::cerr << request.path_info() << " " << request.request_method() << std::endl;
 }
 
 void dispatchRequest(adservice::utility::HttpRequest & request, adservice::utility::HttpResponse & response)
@@ -427,22 +428,32 @@ void after_read_post_data(ngx_http_request_t * r)
         adservice::corelogic::HandleBidQueryTask task(httpRequest, httpResponse);
         task.setLogger(serviceLogger);
         task();
-    } else if (queryPath == "debug") { // debug module
+    } else if (queryPath == "/debug") { // debug module
         //根据debug 请求的包，将它解析成一个正常的请求，同时打上debug 标记
         //一旦打上debug标记所有debug级别以下的输出将被输出到 socket peer,因此debug模块可以跟踪整个流程
         protocol::debug::DebugRequest debugRequest;
+        protocol::debug::DebugResponse debugResponse;
         bool parseResult = adservice::utility::serialize::getProtoBufObject(debugRequest, httpRequest.raw_post_data());
         if (!parseResult) {
             LOG_ERROR << "Debug Interface parse reqeust failed!!";
         } else {
             inDebugSession = true;
             debugSession = (void *)(&httpResponse);
+            LOG_DEBUG << "start debug session";
             try {
                 makeDebugRequest(httpRequest, debugRequest);
                 dispatchRequest(httpRequest, httpResponse);
+                debugResponse.set_responsedata(httpResponse.get_body());
+                debugResponse.set_debugmessage(httpResponse.get_debug_message());
+                std::string outDebugResponse;
+                if (!adservice::utility::serialize::writeProtoBufObject(debugResponse, &outDebugResponse)) {
+                    std::cerr << "serialize debug response failed" << std::endl;
+                }
+                httpResponse.set_body(outDebugResponse);
             } catch (std::exception & e) {
                 LOG_ERROR << "some error occured in Debug Session,e:" << e.what();
             }
+            LOG_DEBUG << "end debug session";
             inDebugSession = false;
             debugSession = nullptr;
         }

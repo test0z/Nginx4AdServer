@@ -7,14 +7,16 @@ namespace utility {
     {
         if (bodyMessage.length() == 0)
             return;
-        bodyStream.str("");
-        bodyStream << bodyMessage;
-        headers[CONTENTLENGTH] = std::to_string(bodyStream.tellp());
+        body = bodyMessage;
     }
 
     std::string HttpResponse::get_body()
     {
-        std::cerr << "bodyStream pos:" << bodyStream.tellp() << std::endl;
+        return body;
+    }
+
+    std::string HttpResponse::get_debug_message()
+    {
         if (bodyStream.tellp() > 0)
             return bodyStream.str();
         else

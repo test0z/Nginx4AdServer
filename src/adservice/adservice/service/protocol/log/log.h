@@ -17,8 +17,8 @@
  */
 
 
-#ifndef LOG_AVRO_LOG_H_2505078726__H_
-#define LOG_AVRO_LOG_H_2505078726__H_
+#ifndef LOG_AVRO_LOG_H_1359582338__H_
+#define LOG_AVRO_LOG_H_1359582338__H_
 
 
 #include <sstream>
