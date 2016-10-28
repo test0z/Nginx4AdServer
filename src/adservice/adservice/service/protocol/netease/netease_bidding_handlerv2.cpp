@@ -238,6 +238,7 @@ namespace bidding {
             } else {
                 mainTitle = mtlsArray[0]["p0"].str();
             }
+            bidResponse["style"] = std::to_string(style);
         } else {
             std::string materialUrl = mtlsArray[0]["p0"].str();
             materialUrls.push_back(materialUrl);
