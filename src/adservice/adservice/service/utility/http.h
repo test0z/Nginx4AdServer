@@ -191,8 +191,8 @@ namespace utility {
                     ss << iter->first << ":" << iter->second << "\r\n";
                 }
             }
-            if (bodyStream.tellp() > 0) {
-                ss << "\r\n" << bodyStream.str();
+            if (body.length() > 0) {
+                ss << "\r\n" << body;
             }
             return ss.str();
         }
