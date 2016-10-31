@@ -69,54 +69,32 @@ namespace adselectv2 {
         request.baseEcpm = selectCondition.basePrice;
     }
 
-    template <class T>
-    std::string serialize(T & obj)
-    {
-        std::ostringstream os;
-        boost::archive::text_oarchive oa(os);
-        oa << obj;
-        return os.str();
-    }
+    namespace {
 
-    template <class T>
-    void deserialize(const std::string & in, T & obj)
-    {
-        try {
-            std::stringstream ss;
-            ss << in;
-            LOG_TRACE << "inputstream:" << ss.str();
-            boost::archive::text_iarchive ia(ss);
-            ia >> obj;
-        } catch (std::exception & e) {
-            LOG_ERROR << "error with deserialization," << e.what();
+        bool filterDebugSessionRequest(uint8_t & flag, std::string & requestBin)
+        {
+            if (inDebugSession) {
+                MT::common::SelectDebugRequest debugRequest;
+                debugRequest.originMsgType = flag;
+                flag = (uint8_t)MT::common::MessageType::ADSELECT_DEBUG;
+                debugRequest.requestData = requestBin;
+                requestBin = MT::common::serialize(debugRequest);
+                return true;
+            }
+            return false;
         }
-        LOG_DEBUG << "done with response deserialization";
-        return;
-    }
 
-    bool filterDebugSessionRequest(uint8_t & flag, std::string & requestBin)
-    {
-        if (inDebugSession) {
-            MT::common::SelectDebugRequest debugRequest;
-            debugRequest.originMsgType = flag;
-            flag = (uint8_t)MT::common::MessageType::ADSELECT_DEBUG;
-            debugRequest.requestData = requestBin;
-            requestBin = serialize(debugRequest);
-            return true;
+        bool filterDebugSessionResponse(std::string & responseBin)
+        {
+            if (inDebugSession) {
+                MT::common::SelectDebugResponse debugResponse;
+                MT::common::deserialize(responseBin, debugResponse);
+                LOG_DEBUG << "adselect module debug output:\n" << debugResponse.debugMessage;
+                responseBin = debugResponse.responseData;
+                return true;
+            }
+            return false;
         }
-        return false;
-    }
-
-    bool filterDebugSessionResponse(std::string & responseBin)
-    {
-        if (inDebugSession) {
-            MT::common::SelectDebugResponse debugResponse;
-            deserialize(responseBin, debugResponse);
-            LOG_DEBUG << "adselect module debug output:\n" << debugResponse.debugMessage;
-            responseBin = debugResponse.responseData;
-            return true;
-        }
-        return false;
     }
 
     bool AdSelectClient::search(int seqId, bool isSSP, AdSelectCondition & selectCondition,
