@@ -41,6 +41,7 @@ $ngx_addon_dir/service/protocol/tencent_gdt/tencent_gdt_price.cpp
 $ngx_addon_dir/service/protocol/tencent_gdt/gdt.pb.cpp
 $ngx_addon_dir/service/protocol/youku/youku_bidding_handlerv2.cpp
 $ngx_addon_dir/service/protocol/youku/youku_price.cpp
+$ngx_addon_dir/service/protocol/debug/debug.pb.cpp
 $ngx_addon_dir/service/utility/aero_spike.cpp
 $ngx_addon_dir/service/utility/cypher.cpp
 $ngx_addon_dir/service/utility/escape.cpp
@@ -51,7 +52,8 @@ $ngx_addon_dir/service/utility/memory.cpp
 $ngx_addon_dir/service/utility/mttytime.cpp
 $ngx_addon_dir/service/utility/random.cpp
 $ngx_addon_dir/service/utility/url.cpp
-$ngx_addon_dir/service/utility/userclient.cpp"
+$ngx_addon_dir/service/utility/userclient.cpp
+$ngx_addon_dir/service/utility/http.cpp"
 
 #CORE_DEPS="$CORE_DEPS $ngx_addon_dir/logging.h
 #$ngx_addon_dir/service/common/constants.h
@@ -110,7 +112,7 @@ $ngx_addon_dir/service/utility/userclient.cpp"
 #$ngx_addon_dir/service/protocol/youku/youku_price.h
 #"
 
-CFLAGS="$CFLAGS -march=native -Wno-error=narrowing -Wno-error=int-to-pointer-cast -DMUDUO_STD_STRING"
+CFLAGS="$CFLAGS -march=native -Wno-error=narrowing -Wno-error=int-to-pointer-cast -Wno-error=type-limits -DMUDUO_STD_STRING"
 
 CORE_LIBS="-L/usr/lib -L/usr/lib64 -L/usr/local/lib -L/usr/local/lib64 $CORE_LIBS /usr/local/lib/libcppcms.a
 /usr/local/lib/libbooster.a
