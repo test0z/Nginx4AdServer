@@ -210,10 +210,17 @@ class DebugResponse : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required string debugMessage = 1;
+  // required int32 respStatus = 1;
+  inline bool has_respstatus() const;
+  inline void clear_respstatus();
+  static const int kRespStatusFieldNumber = 1;
+  inline ::google::protobuf::int32 respstatus() const;
+  inline void set_respstatus(::google::protobuf::int32 value);
+
+  // required string debugMessage = 2;
   inline bool has_debugmessage() const;
   inline void clear_debugmessage();
-  static const int kDebugMessageFieldNumber = 1;
+  static const int kDebugMessageFieldNumber = 2;
   inline const ::std::string& debugmessage() const;
   inline void set_debugmessage(const ::std::string& value);
   inline void set_debugmessage(const char* value);
@@ -222,10 +229,10 @@ class DebugResponse : public ::google::protobuf::Message {
   inline ::std::string* release_debugmessage();
   inline void set_allocated_debugmessage(::std::string* debugmessage);
 
-  // required bytes responseData = 2;
+  // required bytes responseData = 3;
   inline bool has_responsedata() const;
   inline void clear_responsedata();
-  static const int kResponseDataFieldNumber = 2;
+  static const int kResponseDataFieldNumber = 3;
   inline const ::std::string& responsedata() const;
   inline void set_responsedata(const ::std::string& value);
   inline void set_responsedata(const char* value);
@@ -236,6 +243,8 @@ class DebugResponse : public ::google::protobuf::Message {
 
   // @@protoc_insertion_point(class_scope:protocol.debug.DebugResponse)
  private:
+  inline void set_has_respstatus();
+  inline void clear_has_respstatus();
   inline void set_has_debugmessage();
   inline void clear_has_debugmessage();
   inline void set_has_responsedata();
@@ -245,9 +254,10 @@ class DebugResponse : public ::google::protobuf::Message {
 
   ::std::string* debugmessage_;
   ::std::string* responsedata_;
+  ::google::protobuf::int32 respstatus_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
 
   friend void  protobuf_AddDesc_debug_2eproto();
   friend void protobuf_AssignDesc_debug_2eproto();
@@ -477,15 +487,37 @@ inline void DebugRequest::set_allocated_requestdata(::std::string* requestdata) 
 
 // DebugResponse
 
-// required string debugMessage = 1;
-inline bool DebugResponse::has_debugmessage() const {
+// required int32 respStatus = 1;
+inline bool DebugResponse::has_respstatus() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void DebugResponse::set_has_debugmessage() {
+inline void DebugResponse::set_has_respstatus() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void DebugResponse::clear_has_debugmessage() {
+inline void DebugResponse::clear_has_respstatus() {
   _has_bits_[0] &= ~0x00000001u;
+}
+inline void DebugResponse::clear_respstatus() {
+  respstatus_ = 0;
+  clear_has_respstatus();
+}
+inline ::google::protobuf::int32 DebugResponse::respstatus() const {
+  return respstatus_;
+}
+inline void DebugResponse::set_respstatus(::google::protobuf::int32 value) {
+  set_has_respstatus();
+  respstatus_ = value;
+}
+
+// required string debugMessage = 2;
+inline bool DebugResponse::has_debugmessage() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void DebugResponse::set_has_debugmessage() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void DebugResponse::clear_has_debugmessage() {
+  _has_bits_[0] &= ~0x00000002u;
 }
 inline void DebugResponse::clear_debugmessage() {
   if (debugmessage_ != &::google::protobuf::internal::kEmptyString) {
@@ -547,15 +579,15 @@ inline void DebugResponse::set_allocated_debugmessage(::std::string* debugmessag
   }
 }
 
-// required bytes responseData = 2;
+// required bytes responseData = 3;
 inline bool DebugResponse::has_responsedata() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
+  return (_has_bits_[0] & 0x00000004u) != 0;
 }
 inline void DebugResponse::set_has_responsedata() {
-  _has_bits_[0] |= 0x00000002u;
+  _has_bits_[0] |= 0x00000004u;
 }
 inline void DebugResponse::clear_has_responsedata() {
-  _has_bits_[0] &= ~0x00000002u;
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline void DebugResponse::clear_responsedata() {
   if (responsedata_ != &::google::protobuf::internal::kEmptyString) {

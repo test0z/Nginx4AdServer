@@ -443,6 +443,8 @@ void after_read_post_data(ngx_http_request_t * r)
             try {
                 makeDebugRequest(httpRequest, debugRequest);
                 dispatchRequest(httpRequest, httpResponse);
+                debugResponse.set_respstatus(httpResponse.status());
+                httpResponse.status(200);
                 debugResponse.set_responsedata(httpResponse.get_body());
                 debugResponse.set_debugmessage(httpResponse.get_debug_message());
                 std::string outDebugResponse;

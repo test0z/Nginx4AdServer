@@ -55,7 +55,8 @@ void protobuf_AssignDesc_debug_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(DebugRequest));
   DebugResponse_descriptor_ = file->message_type(1);
-  static const int DebugResponse_offsets_[2] = {
+  static const int DebugResponse_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DebugResponse, respstatus_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DebugResponse, debugmessage_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DebugResponse, responsedata_),
   };
@@ -106,9 +107,9 @@ void protobuf_AddDesc_debug_2eproto() {
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
     "\n\013debug.proto\022\016protocol.debug\"O\n\014DebugRe"
     "quest\022\024\n\014originModule\030\001 \002(\t\022\024\n\014originMet"
-    "hod\030\002 \002(\t\022\023\n\013requestData\030\003 \002(\014\";\n\rDebugR"
-    "esponse\022\024\n\014debugMessage\030\001 \002(\t\022\024\n\014respons"
-    "eData\030\002 \002(\014", 171);
+    "hod\030\002 \002(\t\022\023\n\013requestData\030\003 \002(\014\"O\n\rDebugR"
+    "esponse\022\022\n\nrespStatus\030\001 \002(\005\022\024\n\014debugMess"
+    "age\030\002 \002(\t\022\024\n\014responseData\030\003 \002(\014", 191);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "debug.proto", &protobuf_RegisterTypes);
   DebugRequest::default_instance_ = new DebugRequest();
@@ -459,6 +460,7 @@ void DebugRequest::Swap(DebugRequest* other) {
 // ===================================================================
 
 #ifndef _MSC_VER
+const int DebugResponse::kRespStatusFieldNumber;
 const int DebugResponse::kDebugMessageFieldNumber;
 const int DebugResponse::kResponseDataFieldNumber;
 #endif  // !_MSC_VER
@@ -479,6 +481,7 @@ DebugResponse::DebugResponse(const DebugResponse& from)
 
 void DebugResponse::SharedCtor() {
   _cached_size_ = 0;
+  respstatus_ = 0;
   debugmessage_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   responsedata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -522,6 +525,7 @@ DebugResponse* DebugResponse::New() const {
 
 void DebugResponse::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    respstatus_ = 0;
     if (has_debugmessage()) {
       if (debugmessage_ != &::google::protobuf::internal::kEmptyString) {
         debugmessage_->clear();
@@ -543,10 +547,26 @@ bool DebugResponse::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required string debugMessage = 1;
+      // required int32 respStatus = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &respstatus_)));
+          set_has_respstatus();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(18)) goto parse_debugMessage;
+        break;
+      }
+
+      // required string debugMessage = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_debugMessage:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_debugmessage()));
           ::google::protobuf::internal::WireFormat::VerifyUTF8String(
@@ -555,12 +575,12 @@ bool DebugResponse::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(18)) goto parse_responseData;
+        if (input->ExpectTag(26)) goto parse_responseData;
         break;
       }
 
-      // required bytes responseData = 2;
-      case 2: {
+      // required bytes responseData = 3;
+      case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_responseData:
@@ -591,19 +611,24 @@ bool DebugResponse::MergePartialFromCodedStream(
 
 void DebugResponse::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // required string debugMessage = 1;
+  // required int32 respStatus = 1;
+  if (has_respstatus()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->respstatus(), output);
+  }
+
+  // required string debugMessage = 2;
   if (has_debugmessage()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->debugmessage().data(), this->debugmessage().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      1, this->debugmessage(), output);
+      2, this->debugmessage(), output);
   }
 
-  // required bytes responseData = 2;
+  // required bytes responseData = 3;
   if (has_responsedata()) {
     ::google::protobuf::internal::WireFormatLite::WriteBytes(
-      2, this->responsedata(), output);
+      3, this->responsedata(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -614,21 +639,26 @@ void DebugResponse::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* DebugResponse::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // required string debugMessage = 1;
+  // required int32 respStatus = 1;
+  if (has_respstatus()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->respstatus(), target);
+  }
+
+  // required string debugMessage = 2;
   if (has_debugmessage()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->debugmessage().data(), this->debugmessage().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->debugmessage(), target);
+        2, this->debugmessage(), target);
   }
 
-  // required bytes responseData = 2;
+  // required bytes responseData = 3;
   if (has_responsedata()) {
     target =
       ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
-        2, this->responsedata(), target);
+        3, this->responsedata(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -642,14 +672,21 @@ int DebugResponse::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // required string debugMessage = 1;
+    // required int32 respStatus = 1;
+    if (has_respstatus()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->respstatus());
+    }
+
+    // required string debugMessage = 2;
     if (has_debugmessage()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
           this->debugmessage());
     }
 
-    // required bytes responseData = 2;
+    // required bytes responseData = 3;
     if (has_responsedata()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::BytesSize(
@@ -683,6 +720,9 @@ void DebugResponse::MergeFrom(const ::google::protobuf::Message& from) {
 void DebugResponse::MergeFrom(const DebugResponse& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_respstatus()) {
+      set_respstatus(from.respstatus());
+    }
     if (from.has_debugmessage()) {
       set_debugmessage(from.debugmessage());
     }
@@ -706,13 +746,14 @@ void DebugResponse::CopyFrom(const DebugResponse& from) {
 }
 
 bool DebugResponse::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+  if ((_has_bits_[0] & 0x00000007) != 0x00000007) return false;
 
   return true;
 }
 
 void DebugResponse::Swap(DebugResponse* other) {
   if (other != this) {
+    std::swap(respstatus_, other->respstatus_);
     std::swap(debugmessage_, other->debugmessage_);
     std::swap(responsedata_, other->responsedata_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);

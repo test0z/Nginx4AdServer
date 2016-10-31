@@ -8,6 +8,7 @@ message DebugRequest{
 }
 
 message DebugResponse{
-        required string debugMessage = 1;
-        required bytes responseData = 2;
+        required int32 respStatus = 1;
+        required string debugMessage = 2;
+        required bytes responseData = 3;
 }
