@@ -163,7 +163,7 @@ namespace bidding {
             queryCondition.mobileNetwork = getNetWork(device.connectiontype());
             if (bidRequest_.has_app()) {
                 const App & app = bidRequest_.app();
-                if (app.has_name()) {
+                if (app.has_bundle()) {
                     queryCondition.adxpid = app.bundle();
                 } else if (app.has_publisher()) {
                     queryCondition.adxpid = app.publisher().slot();
