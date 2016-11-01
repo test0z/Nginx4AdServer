@@ -456,7 +456,7 @@ static ngx_int_t adservice_handler(ngx_http_request_t * r)
     read_header(r, httpRequest);
 
     adservice::utility::HttpResponse httpResponse;
-    const std::string queryPath = httpRequest.path_info();
+	const std::string queryPath = httpRequest.path_info();
     if (queryPath.find("bid") != std::string::npos) {
         adservice::corelogic::HandleBidQueryTask task(httpRequest, httpResponse);
         task.setLogger(serviceLogger);
