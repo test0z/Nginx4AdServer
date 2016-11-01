@@ -60,11 +60,11 @@ struct LocationConf {
     ngx_str_t asnode;
     // aerospike 默认namespace
     ngx_str_t asnamespace;
-	// redis config
-	// redis ip
-	ngx_str_t redisip;
-	// redis port
-	ngx_uint_t redisport;
+    // redis config
+    // redis ip
+    ngx_str_t redisip;
+    // redis port
+    ngx_uint_t redisport;
     // working directory
     ngx_str_t workdir;
 };
@@ -103,8 +103,8 @@ static ngx_command_t commands[] = { COMMAND_ITEM("logging_level", LocationConf, 
                                     COMMAND_ITEM("adselect_timeout", LocationConf, adselecttimeout, parseConfStr),
                                     COMMAND_ITEM("as_node", LocationConf, asnode, parseConfStr),
                                     COMMAND_ITEM("as_namespace", LocationConf, asnamespace, parseConfStr),
-									COMMAND_ITEM("redis_ip", LocationConf, redisip, parseConfStr),
-									COMMAND_ITEM("redis_port", LocationConf, redisport, parseConfNum),
+                                    COMMAND_ITEM("redis_ip", LocationConf, redisip, parseConfStr),
+                                    COMMAND_ITEM("redis_port", LocationConf, redisport, parseConfNum),
                                     COMMAND_ITEM("workdir", LocationConf, workdir, parseConfStr),
                                     ngx_null_command };
 
@@ -132,8 +132,8 @@ static void * createLocationConf(ngx_conf_t * cf)
     ngx_str_null(&conf->adselecttimeout);
     ngx_str_null(&conf->asnode);
     ngx_str_null(&conf->asnamespace);
-	ngx_str_null(&conf->redisip);
-	conf->redisport = NGX_CONF_UNSET_UINT;
+    ngx_str_null(&conf->redisip);
+    conf->redisport = NGX_CONF_UNSET_UINT;
     ngx_str_null(&conf->workdir);
     return conf;
 }
@@ -154,8 +154,8 @@ static char * mergeLocationConf(ngx_conf_t * cf, void * parent, void * child)
     ngx_conf_merge_str_value(conf->adselecttimeout, prev->adselecttimeout, "0:15|21:-1|98:-1|99:-1");
     ngx_conf_merge_str_value(conf->asnode, prev->asnode, "");
     ngx_conf_merge_str_value(conf->asnamespace, prev->asnamespace, "mtty");
-	ngx_conf_merge_str_value(conf->redisip, prev->redisip, "192.168.2.44");
-	ngx_conf_merge_uint_value(conf->redisport, prev->redisport, 6379);
+    ngx_conf_merge_str_value(conf->redisip, prev->redisip, "192.168.2.44");
+    ngx_conf_merge_uint_value(conf->redisport, prev->redisport, 6379);
     ngx_conf_merge_str_value(conf->workdir, prev->workdir, "/usr/local/nginx/sbin/");
     return NGX_CONF_OK;
 }
@@ -259,32 +259,32 @@ void setGlobalLoggingLevel(int loggingLevel)
 
 void connectToRedis(const char * i = nullptr, int p = 0)
 {
-	static const char * ip = (i == nullptr ? nullptr : i);
-	static int port = (p == 0 ? 0 : p);
+    static const char * ip = (i == nullptr ? nullptr : i);
+    static int port = (p == 0 ? 0 : p);
 
-	redisAsyncContext * connection = redisAsyncConnect(ip, port);
-	if (connection->err) {
-		std::cerr << "redis connection error: " << connection->errstr << std::endl;
-		exit(-1);
-	}
+    redisAsyncContext * connection = redisAsyncConnect(ip, port);
+    if (connection->err) {
+        std::cerr << "redis connection error: " << connection->errstr << std::endl;
+        exit(-1);
+    }
 
-	redisAsyncSetDisconnectCallback(connection, [](const redisAsyncContext * c, int status) {
-		if (status != REDIS_OK) {
-			connectToRedis();
-		}
-	});
+    redisAsyncSetDisconnectCallback(connection, [](const redisAsyncContext * c, int status) {
+        if (status != REDIS_OK) {
+            connectToRedis();
+        }
+    });
 
-	redisConnection = std::shared_ptr<redisAsyncContext>(connection, [](redisAsyncContext * p) { redisAsyncFree(p); });
+    redisConnection = std::shared_ptr<redisAsyncContext>(connection, [](redisAsyncContext * p) { redisAsyncFree(p); });
 }
 
 static void global_init(LocationConf * conf)
 {
-	connectToRedis(NGX_STR_2_STD_STR(conf->redisip).c_str(), conf->redisport);
+    connectToRedis(NGX_STR_2_STD_STR(conf->redisip).c_str(), conf->redisport);
 
-	globalMutex.lock();
-	if (serviceInitialized) {
+    globalMutex.lock();
+    if (serviceInitialized) {
         return;
-	}
+    }
 
     globalConfig.serverConfig.loggingLevel = (int)conf->logginglevel;
     setGlobalLoggingLevel(globalConfig.serverConfig.loggingLevel);
@@ -420,7 +420,7 @@ void makeDebugRequest(adservice::utility::HttpRequest & request, protocol::debug
     } else {
         request.set_post_data(debugRequest.requestdata());
     }
-    std::cerr << request.path_info() << " " << request.request_method() << std::endl;
+    // std::cerr << request.path_info() << " " << request.request_method() << std::endl;
 }
 
 void dispatchRequest(adservice::utility::HttpRequest & request, adservice::utility::HttpResponse & response)
