@@ -72,6 +72,7 @@ SET(SRC_LIST
     ./service/common/functions.cpp
     ./service/common/platform.cpp
     ./service/common/spinlock.cpp
-    ./service/common/types.cpp)
+    ./service/common/types.cpp
+    ./service/utility/http.cpp)
 
 ADD_EXECUTABLE(${PROJECT_NAME} ${SRC_LIST})
