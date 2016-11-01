@@ -10,12 +10,12 @@
 
 #include <mtty/types.h>
 
-#include "common/constants.h"
 #include "common/functions.h"
 #include "common/types.h"
 #include "core/adselectv2/ad_select_interface.h"
 #include "protocol/log/log.h"
 #include "utility/utility.h"
+#include <mtty/constants.h>
 
 namespace protocol {
 namespace bidding {

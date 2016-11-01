@@ -18,7 +18,6 @@ extern "C" {
 #include <ngx_string.h>
 }
 
-#include "common/constants.h"
 #include "core/adselectv2/ad_select_client.h"
 #include "core/config_types.h"
 #include "core/core_ip_manager.h"
@@ -33,6 +32,7 @@ extern "C" {
 #include "protocol/guangyin/guangyin_bidding_handler.h"
 #include "utility/aero_spike.h"
 #include "utility/utility.h"
+#include <mtty/constants.h>
 
 struct LocationConf {
     //运行日志级别
