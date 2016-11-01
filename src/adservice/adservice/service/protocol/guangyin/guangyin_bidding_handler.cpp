@@ -124,6 +124,7 @@ namespace bidding {
             logItem.adInfo.ppid = adInfo.ppid;
             logItem.referer = bidRequest_.has_site() ? bidRequest_.site().page() : "";
             logItem.adInfo.orderId = adInfo.orderId;
+            logItem.adInfo.ppids = adInfo.ppids;
         } else {
             logItem.adInfo.pid = adInfo.pid;
             logItem.adInfo.bidSize = adInfo.bidSize;
@@ -164,10 +165,10 @@ namespace bidding {
             queryCondition.mobileNetwork = getNetWork(device.connectiontype());
             if (bidRequest_.has_app()) {
                 const App & app = bidRequest_.app();
-                if (app.has_name()) {
+                if (app.has_bundle()) {
                     queryCondition.adxpid = app.bundle();
                 } else if (app.has_publisher()) {
-                    queryCondition.adxpid = app.publisher().id();
+                    queryCondition.adxpid = app.publisher().slot();
                 }
             }
         } else {
@@ -177,7 +178,7 @@ namespace bidding {
             if (bidRequest_.has_site()) {
                 const Site & site = bidRequest_.site();
                 if (site.has_publisher()) {
-                    queryCondition.adxpid = site.publisher().id();
+                    queryCondition.adxpid = site.publisher().slot();
                 }
             }
         }
@@ -205,7 +206,7 @@ namespace bidding {
         const MT::common::Banner & banner = result.banner;
 
         //缓存最终广告结果
-		fillAdInfo(queryCondition, result, bidRequest_.user().id());
+        fillAdInfo(queryCondition, result, bidRequest_.user().id());
 
         const Imp & imp = bidRequest_.imp(0);
         float maxCpmPrice = (float)result.bidPrice;
@@ -256,8 +257,8 @@ namespace bidding {
             adResult->set_adm(std::string(admBuffer));
         }
         std::string landingUrl = mtlsArray[0].get("p1", "");
-        getClickPara(bidRequest_.id(), buffer, sizeof(buffer), "", landingUrl);
-        adResult->set_curl(std::string("http://click.mtty.com/c?") + buffer);
+        // getClickPara(bidRequest_.id(), buffer, sizeof(buffer), "", landingUrl);
+        adResult->set_curl(landingUrl);
 
         adResult->set_w(banner.width);
         adResult->set_h(banner.height);

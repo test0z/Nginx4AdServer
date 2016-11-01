@@ -68,10 +68,10 @@ SET(SRC_LIST
     ./service/utility/url.cpp
     ./service/utility/userclient.cpp
     ./service/common/atomic.cpp
-    ./service/common/constants.cpp
     ./service/common/functions.cpp
     ./service/common/platform.cpp
     ./service/common/spinlock.cpp
-    ./service/common/types.cpp)
+    ./service/common/types.cpp
+    ./service/utility/http.cpp)
 
 ADD_EXECUTABLE(${PROJECT_NAME} ${SRC_LIST})

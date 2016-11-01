@@ -7,7 +7,7 @@
 
 #include <string>
 #include "common/functions.h"
-#include "common/constants.h"
+#include <mtty/constants.h>
 #if defined(USE_ALIYUN_LOG)
 #include <alibaba/SendResultONS.h>
 #include <alibaba/Message.h>

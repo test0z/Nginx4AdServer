@@ -18,7 +18,6 @@ extern "C" {
 #include <ngx_string.h>
 }
 
-#include "common/constants.h"
 #include "core/adselectv2/ad_select_client.h"
 #include "core/config_types.h"
 #include "core/core_ip_manager.h"
@@ -29,9 +28,11 @@ extern "C" {
 #include "core/logic/trace_task.h"
 #include "core/logpusher/log_pusher.h"
 #include "logging.h"
+#include "protocol/debug/debug.pb.h"
 #include "protocol/guangyin/guangyin_bidding_handler.h"
 #include "utility/aero_spike.h"
 #include "utility/utility.h"
+#include <mtty/constants.h>
 
 struct LocationConf {
     //运行日志级别
@@ -59,11 +60,11 @@ struct LocationConf {
     ngx_str_t asnode;
     // aerospike 默认namespace
     ngx_str_t asnamespace;
-	// redis config
-	// redis ip
-	ngx_str_t redisip;
-	// redis port
-	ngx_uint_t redisport;
+    // redis config
+    // redis ip
+    ngx_str_t redisip;
+    // redis port
+    ngx_uint_t redisport;
     // working directory
     ngx_str_t workdir;
 };
@@ -102,8 +103,8 @@ static ngx_command_t commands[] = { COMMAND_ITEM("logging_level", LocationConf, 
                                     COMMAND_ITEM("adselect_timeout", LocationConf, adselecttimeout, parseConfStr),
                                     COMMAND_ITEM("as_node", LocationConf, asnode, parseConfStr),
                                     COMMAND_ITEM("as_namespace", LocationConf, asnamespace, parseConfStr),
-									COMMAND_ITEM("redis_ip", LocationConf, redisip, parseConfStr),
-									COMMAND_ITEM("redis_port", LocationConf, redisport, parseConfNum),
+                                    COMMAND_ITEM("redis_ip", LocationConf, redisip, parseConfStr),
+                                    COMMAND_ITEM("redis_port", LocationConf, redisport, parseConfNum),
                                     COMMAND_ITEM("workdir", LocationConf, workdir, parseConfStr),
                                     ngx_null_command };
 
@@ -131,8 +132,8 @@ static void * createLocationConf(ngx_conf_t * cf)
     ngx_str_null(&conf->adselecttimeout);
     ngx_str_null(&conf->asnode);
     ngx_str_null(&conf->asnamespace);
-	ngx_str_null(&conf->redisip);
-	conf->redisport = NGX_CONF_UNSET_UINT;
+    ngx_str_null(&conf->redisip);
+    conf->redisport = NGX_CONF_UNSET_UINT;
     ngx_str_null(&conf->workdir);
     return conf;
 }
@@ -153,8 +154,8 @@ static char * mergeLocationConf(ngx_conf_t * cf, void * parent, void * child)
     ngx_conf_merge_str_value(conf->adselecttimeout, prev->adselecttimeout, "0:15|21:-1|98:-1|99:-1");
     ngx_conf_merge_str_value(conf->asnode, prev->asnode, "");
     ngx_conf_merge_str_value(conf->asnamespace, prev->asnamespace, "mtty");
-	ngx_conf_merge_str_value(conf->redisip, prev->redisip, "192.168.2.44");
-	ngx_conf_merge_uint_value(conf->redisport, prev->redisport, 6379);
+    ngx_conf_merge_str_value(conf->redisip, prev->redisip, "192.168.2.44");
+    ngx_conf_merge_uint_value(conf->redisport, prev->redisport, 6379);
     ngx_conf_merge_str_value(conf->workdir, prev->workdir, "/usr/local/nginx/sbin/");
     return NGX_CONF_OK;
 }
@@ -217,6 +218,8 @@ adservice::log::LogPusherPtr serviceLogger = nullptr;
 AdServiceLogPtr serviceLogPtr = nullptr;
 adservice::adselectv2::AdSelectClientPtr adSelectClient;
 ngx_log_t * globalLog;
+bool inDebugSession = false;
+void * debugSession = nullptr;
 
 #define NGX_STR_2_STD_STR(str) std::string((const char *)str.data, (const char *)str.data + str.len)
 #define NGX_BOOL(b) (b == TRUE)
@@ -251,37 +254,37 @@ void parseConfigAdselectTimeout(const std::string & timeoutStr, std::map<int, in
 
 void setGlobalLoggingLevel(int loggingLevel)
 {
-    AdServiceLog::globalLoggingLevel = (LoggingLevel)globalConfig.serverConfig.loggingLevel;
+    AdServiceLog::globalLoggingLevel = (LoggingLevel)loggingLevel;
 }
 
 void connectToRedis(const char * i = nullptr, int p = 0)
 {
-	static const char * ip = (i == nullptr ? nullptr : i);
-	static int port = (p == 0 ? 0 : p);
+    static const char * ip = (i == nullptr ? nullptr : i);
+    static int port = (p == 0 ? 0 : p);
 
-	redisAsyncContext * connection = redisAsyncConnect(ip, port);
-	if (connection->err) {
-		std::cerr << "redis connection error: " << connection->errstr << std::endl;
-		exit(-1);
-	}
+    redisAsyncContext * connection = redisAsyncConnect(ip, port);
+    if (connection->err) {
+        std::cerr << "redis connection error: " << connection->errstr << std::endl;
+        exit(-1);
+    }
 
-	redisAsyncSetDisconnectCallback(connection, [](const redisAsyncContext * c, int status) {
-		if (status != REDIS_OK) {
-			connectToRedis();
-		}
-	});
+    redisAsyncSetDisconnectCallback(connection, [](const redisAsyncContext * c, int status) {
+        if (status != REDIS_OK) {
+            connectToRedis();
+        }
+    });
 
-	redisConnection = std::shared_ptr<redisAsyncContext>(connection, [](redisAsyncContext * p) { redisAsyncFree(p); });
+    redisConnection = std::shared_ptr<redisAsyncContext>(connection, [](redisAsyncContext * p) { redisAsyncFree(p); });
 }
 
 static void global_init(LocationConf * conf)
 {
-	connectToRedis(NGX_STR_2_STD_STR(conf->redisip).c_str(), conf->redisport);
+    connectToRedis(NGX_STR_2_STD_STR(conf->redisip).c_str(), conf->redisport);
 
-	globalMutex.lock();
-	if (serviceInitialized) {
+    globalMutex.lock();
+    if (serviceInitialized) {
         return;
-	}
+    }
 
     globalConfig.serverConfig.loggingLevel = (int)conf->logginglevel;
     setGlobalLoggingLevel(globalConfig.serverConfig.loggingLevel);
@@ -373,6 +376,7 @@ ngx_int_t build_response(ngx_http_request_t * r, adservice::utility::HttpRespons
     for (auto & iter : headers) {
         if (iter.first == CONTENTTYPE) {
             continue;
+        } else if (iter.first == CONTENTLENGTH) {
         }
         ngx_table_elt_t * h = (ngx_table_elt_t *)ngx_list_push(&r->headers_out.headers);
         if (h != nullptr) {
@@ -407,6 +411,43 @@ ngx_int_t build_response(ngx_http_request_t * r, adservice::utility::HttpRespons
     return ngx_http_output_filter(r, &out);
 }
 
+void makeDebugRequest(adservice::utility::HttpRequest & request, protocol::debug::DebugRequest & debugRequest)
+{
+    request.set(QUERYMETHOD, debugRequest.originmethod());
+    request.set(URI, debugRequest.originmodule());
+    if (request.request_method() == "GET") {
+        request.set(QUERYSTRING, debugRequest.requestdata());
+    } else {
+        request.set_post_data(debugRequest.requestdata());
+    }
+    // std::cerr << request.path_info() << " " << request.request_method() << std::endl;
+}
+
+void dispatchRequest(adservice::utility::HttpRequest & request, adservice::utility::HttpResponse & response)
+{
+    const std::string & queryPath = request.path_info();
+    if (queryPath.find("bid") != std::string::npos) {
+        adservice::corelogic::HandleBidQueryTask task(request, response);
+        task.setLogger(serviceLogger);
+        task();
+    } else if (queryPath == "/v" || queryPath == "/s") {
+        adservice::corelogic::HandleShowQueryTask task(request, response);
+        task.setLogger(serviceLogger);
+        task();
+    } else if (queryPath == "/c") {
+        adservice::corelogic::HandleClickQueryTask task(request, response);
+        task.setLogger(serviceLogger);
+        task();
+    } else if (queryPath == "/t") {
+        adservice::corelogic::HandleTraceTask task(request, response);
+        task.setLogger(serviceLogger);
+        task();
+    } else {
+        response.status(204);
+        response.set_content_header("text/html");
+    }
+}
+
 void after_read_post_data(ngx_http_request_t * r)
 {
     adservice::utility::HttpRequest httpRequest;
@@ -428,6 +469,37 @@ void after_read_post_data(ngx_http_request_t * r)
         adservice::corelogic::HandleBidQueryTask task(httpRequest, httpResponse);
         task.setLogger(serviceLogger);
         task();
+    } else if (queryPath == "/debug") { // debug module
+        //根据debug 请求的包，将它解析成一个正常的请求，同时打上debug 标记
+        //一旦打上debug标记所有debug级别以下的输出将被输出到 socket peer,因此debug模块可以跟踪整个流程
+        protocol::debug::DebugRequest debugRequest;
+        protocol::debug::DebugResponse debugResponse;
+        bool parseResult = adservice::utility::serialize::getProtoBufObject(debugRequest, httpRequest.raw_post_data());
+        if (!parseResult) {
+            LOG_ERROR << "Debug Interface parse reqeust failed!!";
+        } else {
+            inDebugSession = true;
+            debugSession = (void *)(&httpResponse);
+            LOG_DEBUG << "start debug session";
+            try {
+                makeDebugRequest(httpRequest, debugRequest);
+                dispatchRequest(httpRequest, httpResponse);
+                debugResponse.set_respstatus(httpResponse.status());
+                httpResponse.status(200);
+                debugResponse.set_responsedata(httpResponse.get_body());
+                debugResponse.set_debugmessage(httpResponse.get_debug_message());
+                std::string outDebugResponse;
+                if (!adservice::utility::serialize::writeProtoBufObject(debugResponse, &outDebugResponse)) {
+                    std::cerr << "serialize debug response failed" << std::endl;
+                }
+                httpResponse.set_body(outDebugResponse);
+            } catch (std::exception & e) {
+                LOG_ERROR << "some error occured in Debug Session,e:" << e.what();
+            }
+            LOG_DEBUG << "end debug session";
+            inDebugSession = false;
+            debugSession = nullptr;
+        }
     }
     ngx_http_finalize_request(r, build_response(r, httpResponse));
 }
@@ -456,26 +528,7 @@ static ngx_int_t adservice_handler(ngx_http_request_t * r)
     read_header(r, httpRequest);
 
     adservice::utility::HttpResponse httpResponse;
-	const std::string queryPath = httpRequest.path_info();
-    if (queryPath.find("bid") != std::string::npos) {
-        adservice::corelogic::HandleBidQueryTask task(httpRequest, httpResponse);
-        task.setLogger(serviceLogger);
-        task();
-    } else if (queryPath == "/v" || queryPath == "/s") {
-        adservice::corelogic::HandleShowQueryTask task(httpRequest, httpResponse);
-        task.setLogger(serviceLogger);
-        task();
-    } else if (queryPath == "/c") {
-        adservice::corelogic::HandleClickQueryTask task(httpRequest, httpResponse);
-        task.setLogger(serviceLogger);
-        task();
-    } else if (queryPath == "/t") {
-        adservice::corelogic::HandleTraceTask task(httpRequest, httpResponse);
-        task.setLogger(serviceLogger);
-        task();
-    } else {
-        httpResponse.status(204);
-        httpResponse.set_content_header("text/html");
-    }
+    dispatchRequest(httpRequest, httpResponse);
+
     return build_response(r, httpResponse);
 }
