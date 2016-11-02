@@ -228,7 +228,7 @@ namespace bidding {
 
         cppcms::json::value bannerJson;
         std::stringstream ss;
-        ss << boost::algorithm::erase_all_copy(banner.json, "\\");
+        ss << banner.json; // boost::algorithm::erase_all_copy(banner.json, "\\");
         ss >> bannerJson;
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         if (banner.bannerType == 5) {

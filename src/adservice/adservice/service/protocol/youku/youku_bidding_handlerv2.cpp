@@ -273,13 +273,13 @@ namespace bidding {
         bidValue["impid"] = impId;
 
         //缓存最终广告结果
-		fillAdInfo(queryCondition, result, bidRequest.get("user.id", ""));
+        fillAdInfo(queryCondition, result, bidRequest.get("user.id", ""));
 
         // html snippet相关
         char pjson[2048] = { '\0' };
         std::string strBannerJson = banner.json;
         strncat(pjson, strBannerJson.data(), sizeof(pjson));
-        tripslash2(pjson);
+        // tripslash2(pjson);
         cppcms::json::value bannerJson;
         parseJson(pjson, bannerJson);
         cppcms::json::array & mtlsArray = bannerJson["mtls"].array();

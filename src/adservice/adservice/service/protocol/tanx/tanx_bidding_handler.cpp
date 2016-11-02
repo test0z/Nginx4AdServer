@@ -206,12 +206,12 @@ namespace bidding {
         adResult->add_creative_type(banner.bannerType);
         adResult->add_category(adxIndustryType);
         //缓存最终广告结果
-		fillAdInfo(queryCondition, result, bidRequest.tid());
+        fillAdInfo(queryCondition, result, bidRequest.tid());
 
         char pjson[2048] = { '\0' };
         std::string strBannerJson = banner.json;
         strncat(pjson, strBannerJson.data(), sizeof(pjson));
-        tripslash2(pjson);
+        // tripslash2(pjson);
         cppcms::json::value bannerJson;
         parseJson(pjson, bannerJson);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
@@ -240,8 +240,8 @@ namespace bidding {
         //            bannerJson["unid"] = adInfo.adxid;
         //            bannerJson["of"] = "0";
         //            bannerJson["width"] = banner.width;
-		//            bannerJson["height"] = banner.height;
-		//            bannerJson["xcurl"] = AD_TX_CLICK_UNENC_MACRO;
+        //            bannerJson["height"] = banner.height;
+        //            bannerJson["xcurl"] = AD_TX_CLICK_UNENC_MACRO;
         //            std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
         //            char admBuffer[4096];
         //            snprintf(admBuffer, sizeof(admBuffer), adservice::corelogic::HandleShowQueryTask::showAdxTemplate,

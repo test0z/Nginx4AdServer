@@ -187,7 +187,7 @@ namespace bidding {
         char pjson[2048] = { '\0' };
         std::string strBannerJson = banner.json;
         strncat(pjson, strBannerJson.data(), sizeof(pjson));
-        tripslash2(pjson);
+        // tripslash2(pjson);
         cppcms::json::value bannerJson;
         parseJson(pjson, bannerJson);
         std::string mainTitle;
