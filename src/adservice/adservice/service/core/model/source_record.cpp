@@ -1,13 +1,12 @@
 #include "source_record.h"
 
-#include "common/constants.h"
+#include "mtty/constants.h"
 
 namespace adservice {
 namespace core {
 	namespace model {
 
 		namespace {
-
 			std::string getStr(const as_record * record, const char * name)
 			{
 				char * value = as_record_get_str(record, name);
