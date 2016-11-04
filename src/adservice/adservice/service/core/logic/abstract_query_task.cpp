@@ -7,6 +7,7 @@
 #include "logging.h"
 #include "protocol/baidu/baidu_price.h"
 #include "protocol/guangyin/guangyin_price.h"
+#include "protocol/sohu/sohu_price.h"
 #include "protocol/tanx/tanx_price.h"
 #include "protocol/tencent_gdt/tencent_gdt_price.h"
 #include "protocol/youku/youku_price.h"
@@ -15,7 +16,7 @@
 namespace adservice {
 namespace corelogic {
 
-	using namespace utility;
+    using namespace utility;
 
     static int threadSeqId = 0;
     struct spinlock slock = { 0 };
@@ -28,7 +29,7 @@ namespace corelogic {
         spinlock_lock(&slock);
         seqId = threadSeqId++;
         spinlock_unlock(&slock);
-		LOG_INFO << "seqId:" << seqId;
+        LOG_INFO << "seqId:" << seqId;
     }
 
     /**
@@ -55,6 +56,9 @@ namespace corelogic {
             return gdt_price_decode(input);
         case ADX_NETEASE_MOBILE:
             return std::stoi(input);
+        case ADX_SOHU_PC:
+        case ADX_SOHU_MOBILE:
+            return sohu_price_decode(input);
         default:
             return 0;
         }
@@ -75,8 +79,8 @@ namespace corelogic {
                 bidPrice = 0;
             } else {
                 cost = 0;
-				bidPrice
-					= offerPrice * 1000; // 华哥那边对cpc计费按照cpm公式来算，但cpc是按个数结算的，为了兼容要乘以1000
+                bidPrice
+                    = offerPrice * 1000; // 华哥那边对cpc计费按照cpm公式来算，但cpc是按个数结算的，为了兼容要乘以1000
             }
         }
     }
@@ -92,7 +96,7 @@ namespace corelogic {
                 return std::stoi(result);
             }
         } catch (std::exception & e) {
-			LOG_ERROR << "in decodeOfferPrice," << e.what() << "," << input;
+            LOG_ERROR << "in decodeOfferPrice," << e.what() << "," << input;
         }
         return 0;
     }
@@ -177,7 +181,7 @@ namespace corelogic {
                 log.adInfo.priceType = std::stoi(pricetype);
             }
             int offerPrice
-				= paramMap.find(URL_BID_PRICE) != paramMap.end() ? decodeOfferPrice(paramMap[URL_BID_PRICE]) : 0;
+                = paramMap.find(URL_BID_PRICE) != paramMap.end() ? decodeOfferPrice(paramMap[URL_BID_PRICE]) : 0;
             if ((iter = paramMap.find(URL_EXCHANGE_PRICE)) != paramMap.end()) { //成交价格
                 std::string & price = iter->second;                             // paramMap[URL_EXCHANGE_PRICE];
                 int decodePrice = decodeAdxExchangePrice(log.adInfo.adxid, price);
@@ -217,11 +221,11 @@ namespace corelogic {
                 protocol::log::LogItem parseLog;
                 getAvroObject(parseLog, (uint8_t *)decode_string.c_str(), decode_string.length());
             } else {
-				LOG_WARN << "decoded string not equal origin,escape4ali not safe";
+                LOG_WARN << "decoded string not equal origin,escape4ali not safe";
             }
         } else {
-			LOG_WARN << "decoded string length not equal origin,escape4ali not safe," << input.length() << " "
-					 << decode_string.length();
+            LOG_WARN << "decoded string length not equal origin,escape4ali not safe," << input.length() << " "
+                     << decode_string.length();
         }
     }
 
@@ -281,8 +285,8 @@ namespace corelogic {
             }
             if (needNewCookies) { //传入的cookies中没有userId,cookies 传出
                 char cookiesString[64];
-				sprintf(cookiesString, "%s=%s;Domain=.%s;Max-Age=2617488000;", COOKIES_MTTY_ID, log.userId.c_str(),
-						COOKIES_MTTY_DOMAIN);
+                sprintf(cookiesString, "%s=%s;Domain=.%s;Max-Age=2617488000;", COOKIES_MTTY_ID, log.userId.c_str(),
+                        COOKIES_MTTY_DOMAIN);
                 resp.set("Set-Cookie", cookiesString);
             }
         } else { //对于POST方法传送过来的Query
@@ -308,28 +312,28 @@ namespace corelogic {
             std::string loggerName = usedLoggerName();
             std::string logConfigKey = usedLoggerConfig();
             adservice::log::LogPusherPtr logPusher = adservice::log::LogPusher::getLogger(loggerName, logConfigKey);
-			if (logPusher.use_count() > 0) {
+            if (logPusher.use_count() > 0) {
                 logPusher->push(logString);
-			}
+            }
         }
     }
 
     void AbstractQueryTask::operator()()
     {
-		try {
-			ParamMap paramMap;
-			protocol::log::LogItem log;
-			resp.status(expectedReqStatus());
-			commonLogic(paramMap, log, resp);
-			customLogic(paramMap, log, resp);
-			if (needLog) {
-				doLog(log);
-			}
-		} catch (std::exception & e) {
+        try {
+            ParamMap paramMap;
+            protocol::log::LogItem log;
+            resp.status(expectedReqStatus());
+            commonLogic(paramMap, log, resp);
+            customLogic(paramMap, log, resp);
+            if (needLog) {
+                doLog(log);
+            }
+        } catch (std::exception & e) {
             resp.status(500, "error");
             resp.set_content_header("text/html");
             onError(e, resp);
-		}
+        }
     }
 }
 }
