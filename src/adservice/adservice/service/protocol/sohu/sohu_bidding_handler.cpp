@@ -17,6 +17,8 @@ namespace bidding {
     using namespace adservice::utility::userclient;
     using namespace adservice::server;
 
+    static SohuSizeMap sohuSizeMap;
+
     namespace {
 
         int getSohuDeviceType(const std::string & mobile)
@@ -149,6 +151,11 @@ namespace bidding {
             queryCondition.width = video.width();
             queryCondition.height = video.height();
         }
+        if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
+            auto size = sohuSizeMap.get({ queryCondition.width, queryCondition.height });
+            queryCondition.width = size.first;
+            queryCondition.height = size.second;
+        }
         if (adzInfo.has_ispreferreddeals() && adzInfo.ispreferreddeals()) {
             const std::string & dealId = adzInfo.campaignid();
             queryCondition.dealId = std::string(",") + dealId + ",";
@@ -207,8 +214,15 @@ namespace bidding {
         cppcms::json::value bannerJson;
         parseJson(pjson, bannerJson);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
-        std::string materialUrl = mtlsArray[0].get("p0", "");
-        std::string landingUrl = mtlsArray[0].get("p1", "");
+        std::string materialUrl;
+        std::string landingUrl;
+        if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
+            materialUrl = mtlsArray[0].get("p6", "");
+            laddingUrl = mtlsArray[0].get("p9", "");
+        } else {
+            materialUrl = mtlsArray[0].get("p0", "");
+            laddingUrl = mtlsArray[0].get("p1", "");
+        }
         adResult->set_adurl(materialUrl);
         //            adResult->set_adpara()
         //            adResult->set_ext()
