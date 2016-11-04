@@ -7,6 +7,7 @@
 #include "logging.h"
 #include "protocol/baidu/baidu_price.h"
 #include "protocol/guangyin/guangyin_price.h"
+#include "protocol/sohu/sohu_price.h"
 #include "protocol/tanx/tanx_price.h"
 #include "protocol/tencent_gdt/tencent_gdt_price.h"
 #include "protocol/youku/youku_price.h"
@@ -55,6 +56,9 @@ namespace corelogic {
             return gdt_price_decode(input);
         case ADX_NETEASE_MOBILE:
             return std::stoi(input);
+        case ADX_SOHU_PC:
+        case ADX_SOHU_MOBILE:
+            return sohu_price_decode(input);
         default:
             return 0;
         }
