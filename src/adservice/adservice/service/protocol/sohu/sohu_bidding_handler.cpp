@@ -218,10 +218,10 @@ namespace bidding {
         std::string landingUrl;
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
             materialUrl = mtlsArray[0].get("p6", "");
-            laddingUrl = mtlsArray[0].get("p9", "");
+            landingUrl = mtlsArray[0].get("p9", "");
         } else {
             materialUrl = mtlsArray[0].get("p0", "");
-            laddingUrl = mtlsArray[0].get("p1", "");
+            landingUrl = mtlsArray[0].get("p1", "");
         }
         adResult->set_adurl(materialUrl);
         //            adResult->set_adpara()
