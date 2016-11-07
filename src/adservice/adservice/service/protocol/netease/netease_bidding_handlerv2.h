@@ -10,102 +10,88 @@
 #include "protocol/base/abstract_bidding_handler.h"
 #include "utility/json.h"
 
-namespace std {
-
-template <>
-struct hash<std::pair<int, int>> {
-    size_t operator()(const std::pair<int, int> & arg) const noexcept
-    {
-        auto h = std::hash<int>();
-        return h(arg.first) ^ h(arg.second);
-    }
-};
-}
-
 namespace protocol {
 namespace bidding {
 
-    struct NetEaseAdplaceStyle {
-        int width, height;
-        NetEaseAdplaceStyle()
-        {
-        }
-        NetEaseAdplaceStyle(int w, int h)
-            : width(w)
-            , height(h)
-        {
-        }
-    };
+	struct NetEaseAdplaceStyle {
+		int width, height;
+		NetEaseAdplaceStyle()
+		{
+		}
+		NetEaseAdplaceStyle(int w, int h)
+			: width(w)
+			, height(h)
+		{
+		}
+	};
 
-    class NetEaseAdplaceStyleMap {
-    public:
-        NetEaseAdplaceStyleMap()
-        {
-            add(3, 1, 0);
-            add(10, 2, 0);
-            add(11, 3, 0);
-        }
-        inline void add(int key, int width, int height)
-        {
-            styleMap.insert(std::make_pair(key, NetEaseAdplaceStyle(width, height)));
-            sizeStyleMap.insert(std::make_pair(std::make_pair(width, height), key));
-        }
-        inline NetEaseAdplaceStyle & get(int key)
-        {
-            return styleMap[key];
-        }
-        inline bool find(int key)
-        {
-            return styleMap.find(key) != styleMap.end();
-        }
+	class NetEaseAdplaceStyleMap {
+	public:
+		NetEaseAdplaceStyleMap()
+		{
+			add(1, 1, 0);
+			add(11, 1, 0);
+			add(12, 1, 0);
+			add(3, 3, 0);
+			add(4, 1, 0);
+			add(2, 2, 0);
+			add(21, 2, 0);
+			add(5, 2, 0);
+		}
+		inline void add(int key, int width, int height)
+		{
+			styleMap.insert(std::make_pair(key, NetEaseAdplaceStyle(width, height)));
+		}
+		inline NetEaseAdplaceStyle & get(int key)
+		{
+			return styleMap[key];
+		}
+		inline bool find(int key)
+		{
+			return styleMap.find(key) != styleMap.end();
+		}
 
-        const std::unordered_map<std::pair<int, int>, int> & getSizeStyleMap() const
-        {
-            return sizeStyleMap;
-        }
+	private:
+		std::map<int, NetEaseAdplaceStyle> styleMap;
+	};
 
-    private:
-        std::map<int, NetEaseAdplaceStyle> styleMap;
-        std::unordered_map<std::pair<int, int>, int> sizeStyleMap;
-    };
+	class NetEaseBiddingHandler : public AbstractBiddingHandler {
+	public:
+		/**
+		 * 从Adx Bid Post请求数据中获取具体的请求信息
+		 */
+		bool parseRequestData(const std::string & data);
 
-    class NetEaseBiddingHandler : public AbstractBiddingHandler {
-    public:
-        /**
-         * 从Adx Bid Post请求数据中获取具体的请求信息
-         */
-        bool parseRequestData(const std::string & data);
+		/**
+		 * 根据Bid 的相关信息对日志进行信息填充
+		 */
+		bool fillLogItem(protocol::log::LogItem & logItem);
 
-        /**
-         * 根据Bid 的相关信息对日志进行信息填充
-         */
-        bool fillLogItem(protocol::log::LogItem & logItem);
+		/**
+		 * 根据ADX的请求进行竞价匹配,决定是否接受这个流量,同时设置isBidAccepted
+		 * @return: true接受流量,false不接受流量
+		 */
+		bool filter(const BiddingFilterCallback & filterCb);
 
-        /**
-         * 根据ADX的请求进行竞价匹配,决定是否接受这个流量,同时设置isBidAccepted
-         * @return: true接受流量,false不接受流量
-         */
-        bool filter(const BiddingFilterCallback & filterCb);
+		/**
+		 * 将匹配结果转换为具体平台的格式的结果
+		 */
+		void buildBidResult(const AdSelectCondition & queryCondition, const MT::common::SelectResult & result);
 
-        /**
-         * 将匹配结果转换为具体平台的格式的结果
-         */
-        void buildBidResult(const AdSelectCondition & queryCondition, const MT::common::SelectResult & result);
+		/**
+		 * 当接受流量时装配合适的输出
+		 */
+		void match(INOUT adservice::utility::HttpResponse & response);
 
-        /**
-         * 当接受流量时装配合适的输出
-         */
-        void match(INOUT adservice::utility::HttpResponse & response);
+		/**
+		 * 不接受ADX的流量请求
+		 */
+		void reject(INOUT adservice::utility::HttpResponse & response);
 
-        /**
-         * 不接受ADX的流量请求
-         */
-        void reject(INOUT adservice::utility::HttpResponse & response);
-
-    private:
-        cppcms::json::value bidRequest;
-        cppcms::json::value bidResponse;
-    };
+	private:
+		cppcms::json::value bidRequest;
+		cppcms::json::value bidResponse;
+	};
 }
 }
 

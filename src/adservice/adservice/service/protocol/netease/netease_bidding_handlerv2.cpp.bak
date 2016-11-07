@@ -114,18 +114,13 @@ namespace bidding {
                 queryCondition.mobileNetwork = getNetwork(networkStatus.str());
             }
         }
-        int style = std::stoi(adzinfo.get("style", "4"));
-        if (style == 4 || style == 5) {
-            adInfo.adxpid = queryCondition.adxpid;
-            return bidFailedReturn();
-        }
         PreSetAdplaceInfo adplaceInfo;
         adplaceInfo.flowType = SOLUTION_FLOWTYPE_MOBILE;
-        if (adplaceStyleMap.find(style)) {
-            NetEaseAdplaceStyle & adplaceStyle = adplaceStyleMap.get(style);
-            adplaceInfo.sizeArray.push_back(std::make_pair(adplaceStyle.width, adplaceStyle.height));
-            queryCondition.width = adplaceStyle.width;
-            queryCondition.height = adplaceStyle.height;
+        auto & sizeStyleMap = adplaceStyleMap.getSizeStyleMap();
+        for (auto iter : sizeStyleMap) {
+            adplaceInfo.sizeArray.push_back(std::make_pair(iter.first.first, iter.first.second));
+            queryCondition.width = iter.first.first;
+            queryCondition.height = iter.first.second;
         }
         queryCondition.pAdplaceInfo = &adplaceInfo;
 
@@ -164,7 +159,6 @@ namespace bidding {
     void NetEaseBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
                                                const MT::common::SelectResult & result)
     {
-        cppcms::json::value & adzInfo = bidRequest["adunit"];
         const MT::common::ADPlace & adplace = result.adplace;
         const MT::common::Banner & banner = result.banner;
         if (queryCondition.adxid != adplace.adxId || queryCondition.adxpid != adplace.adxPId) {
@@ -174,7 +168,6 @@ namespace bidding {
             isBidAccepted = false;
             return;
         }
-
         if (!parseJson(BIDRESPONSE_TEMPLATE, bidResponse)) {
             LOG_ERROR << "in NetEaseBiddingHandler::buildBidResult parseJson failed";
             isBidAccepted = false;
@@ -216,8 +209,13 @@ namespace bidding {
             } else if (queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROID) {
                 downloadUrl = mtlsArray[0]["p11"].str();
             }
-            int style = std::stoi(adzInfo.get("style", "4"));
-            if (style == 1 || style == 11 || style == 12) {
+            int style = 0;
+            auto & sizeStyleMap = adplaceStyleMap.getSizeStyleMap();
+            for (auto iter = sizeStyleMap.find(std::make_pair(banner.width, banner.height));
+                 iter != sizeStyleMap.end() && (style = iter->second) && false;)
+                ;
+
+            if (style == 3) {
                 mainTitle = mtlsArray[0]["p1"].str();
                 std::string bakMainTitle = mtlsArray[0]["p0"].str();
                 if (mainTitle.length() < bakMainTitle.length()) {
@@ -226,6 +224,7 @@ namespace bidding {
             } else {
                 mainTitle = mtlsArray[0]["p0"].str();
             }
+            bidResponse["style"] = std::to_string(style);
         } else {
             std::string materialUrl = mtlsArray[0]["p0"].str();
             materialUrls.push_back(materialUrl);
