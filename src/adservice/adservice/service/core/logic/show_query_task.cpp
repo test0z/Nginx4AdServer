@@ -3,22 +3,26 @@
 //
 
 #include "show_query_task.h"
-#include "common/atomic.h"
-#include "core/adselectv2/ad_select_client.h"
-#include "core/adselectv2/ad_select_interface.h"
-#include "core/core_ip_manager.h"
-#include "logging.h"
-#include "utility/utility.h"
 
-#include <hiredis/async.h>
+#include <mtty/aerospike.h>
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 
 #include <tbb/concurrent_hash_map.h>
 
+#include "common/atomic.h"
+#include "core/adselectv2/ad_select_client.h"
+#include "core/adselectv2/ad_select_interface.h"
+#include "core/config_types.h"
+#include "core/core_ip_manager.h"
+#include "logging.h"
+#include "utility/utility.h"
+
 extern adservice::adselectv2::AdSelectClientPtr adSelectClient;
-extern std::shared_ptr<redisAsyncContext> redisConnection;
+
+extern MT::common::Aerospike aerospikeClient;
+extern GlobalConfig globalConfig;
 
 namespace adservice {
 namespace corelogic {
@@ -382,10 +386,23 @@ namespace corelogic {
                 int len = buildResponseForDsp(adBanner, paramMap, tmp, templateFmt, buffer, sizeof(buffer));
                 respBody = std::string(buffer, buffer + len);
             }
-            if (needLog) {
-                std::string orderId = paramMap[URL_ORDER_ID];
-                std::string command = "INCR order-counter:" + orderId + ":s";
-                redisAsyncCommand(redisConnection.get(), nullptr, nullptr, command.c_str());
+			if (needLog) {
+				int64_t orderId = 0;
+				try {
+					orderId = std::stoll(paramMap[URL_ORDER_ID]);
+
+					MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "order-counter", orderId);
+					MT::common::ASOperation op(1);
+					op.addIncr("s", (int64_t)1);
+
+					aerospikeClient.operate(key, op);
+				} catch (MT::common::AerospikeExcption & e) {
+					LOG_ERROR << "记录曝光失败，订单ID：" << orderId << "，" << e.what() << "，code:" << e.error().code
+							  << e.error().message << "，调用堆栈：" << std::endl
+							  << e.trace();
+				} catch (std::exception & e) {
+					LOG_ERROR << "记录曝光失败，订单ID无效：" << paramMap[URL_ORDER_ID];
+				}
             }
         }
 

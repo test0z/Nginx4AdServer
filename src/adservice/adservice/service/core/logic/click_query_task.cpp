@@ -4,20 +4,13 @@
 
 #include "click_query_task.h"
 
-#include <iomanip>
-
-#include <hiredis/async.h>
-
-#include <aerospike/aerospike_key.h>
-#include <aerospike/as_operations.h>
-#include <aerospike/as_record.h>
-
-#include "core/model/source_record.h"
+#include "core/config_types.h"
+#include "core/model/source_id.h"
 #include "logging.h"
-#include "utility/aero_spike.h"
 #include "utility/url.h"
 
-extern std::shared_ptr<redisAsyncContext> redisConnection;
+extern MT::common::Aerospike aerospikeClient;
+extern GlobalConfig globalConfig;
 
 namespace adservice {
 namespace corelogic {
@@ -29,73 +22,27 @@ namespace corelogic {
             while (*src != '\0') {
                 *p++ = *src++;
             }
-        }
+		}
 
-        std::string generateSourceId()
-        {
-            if (!utility::AeroSpike::instance && !utility::AeroSpike::instance.connect()) {
-                auto & error = utility::AeroSpike::instance.error();
-                LOG_ERROR << "connect error, code:" << error.code << ", msg:" << error.message;
-                return "";
-            }
+		core::model::SourceId generateSourceId()
+		{
+			MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "source_id_seq", "last_source_id");
 
-            aerospike * conn = utility::AeroSpike::instance.connection();
+			MT::common::ASOperation op(2);
+			op.addRead("val");
+			op.addIncr("val", (int64_t)1);
 
-            as_error error;
+			core::model::SourceId sourceId;
+			try {
+				aerospikeClient.operate(key, op, sourceId);
+			} catch (MT::common::AerospikeExcption & e) {
+				LOG_ERROR << "生成sourceId失败，" << e.what() << "，code：" << e.error().code << "，msg："
+						  << e.error().message << "，调用堆栈：" << std::endl
+						  << e.trace();
+				return sourceId;
+			}
 
-            as_key key;
-            as_key_init(&key, utility::AeroSpike::instance.nameSpace().c_str(), "source_id_seq", "last_source_id");
-
-            /* 检查是否存在souce id生成序列 */
-            as_record * rec = nullptr;
-            if (utility::AeroSpike::noTimeOutExec(&aerospike_key_get, conn, &error, nullptr, &key, &rec) != AEROSPIKE_OK
-                || !rec) {
-                // 不存在则创建
-                rec = as_record_new(1);
-                as_record_set_int64(rec, "val", 0);
-
-                if (utility::AeroSpike::noTimeOutExec(&aerospike_key_put, conn, &error, nullptr, &key, rec)
-                    != AEROSPIKE_OK) {
-                    LOG_ERROR << "put error, code:" << error.code << ", msg:" << error.message;
-                    as_record_destroy(rec);
-                    as_key_destroy(&key);
-                    return "";
-                }
-
-                as_record_destroy(rec);
-            }
-
-            /* 取id并自增，具有原子性 */
-            as_operations ops;
-            as_operations_init(&ops, 2);
-            as_operations_add_read(&ops, "val");
-            as_operations_add_incr(&ops, "val", 1);
-
-            rec = as_record_new(1);
-
-            if (utility::AeroSpike::noTimeOutExec(&aerospike_key_operate, conn, &error, nullptr, &key, &ops, &rec)
-                != AEROSPIKE_OK) {
-                LOG_ERROR << "operate error, code:" << error.code << ", msg:" << error.message;
-                as_record_destroy(rec);
-                as_key_destroy(&key);
-                return "";
-            }
-
-            /* 转化为16进制字符串 */
-            int64_t val = as_record_get_int64(rec, "val", -1);
-            std::string res;
-            if (val != -1) {
-                std::stringstream ss;
-                ss << std::setw(12) << std::setfill('0') << std::setbase(16) << val;
-                ss >> res;
-            } else {
-                LOG_ERROR << "生成source_id失败";
-            }
-
-            as_record_destroy(rec);
-            as_key_destroy(&key);
-
-            return res;
+			return sourceId;
         }
 
         void recordSource(ParamMap & paramMap, protocol::log::LogItem & log)
@@ -106,59 +53,39 @@ namespace corelogic {
                 return;
             }
 
-            if (!utility::AeroSpike::instance && !utility::AeroSpike::instance.connect()) {
-                auto & error = utility::AeroSpike::instance.error();
-                LOG_ERROR << "connect error, code:" << error.code << ", msg:" << error.message;
-                return;
-            }
-
-            aerospike * conn = utility::AeroSpike::instance.connection();
-
             /* 记录访问信息到缓存 */
             // 生成source id
-            std::string sourceId = generateSourceId();
-            if (sourceId.empty()) {
+			core::model::SourceId sourceId = generateSourceId();
+			if (sourceId.get().empty()) {
                 LOG_ERROR << "生成的sourceid为空。";
                 return;
             }
 
-            paramMap["source_id"] = sourceId;
+			paramMap["source_id"] = sourceId.get();
 
             // 填充数据
             core::model::SourceRecord sourceRecord(paramMap, log);
-            as_record * rec = sourceRecord.record();
+			MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "source_id", sourceId.get().c_str());
+			try {
+				aerospikeClient.put(key, sourceRecord);
+			} catch (MT::common::AerospikeExcption & e) {
+				LOG_ERROR << "记录source record失败，" << e.what() << "，code：" << e.error().code << "，msg："
+						  << e.error().message << "，调用堆栈：" << std::endl
+						  << e.trace();
+				return;
+			}
 
-            // 生成key
-            as_key key;
-            as_key_init(&key, utility::AeroSpike::instance.nameSpace().c_str(), "source_id", sourceId.c_str());
-
-            // 放入缓存
-            as_error error;
-
-            if (utility::AeroSpike::noTimeOutExec(&aerospike_key_put, conn, &error, nullptr, &key, rec)
-                != AEROSPIKE_OK) {
-                LOG_ERROR << "put error, code:" << error.code << ", msg:" << error.message;
-                as_key_destroy(&key);
-                return;
-            }
-
-            as_key_destroy(&key);
-
-            /* 记录索引信息，方便t模块根据用户ID和广告主ID查询到source id */
-            as_record rec2;
-            as_record_inita(&rec2, 1);
-            as_record_set_str(&rec2, "source_id", sourceId.c_str());
-
-            as_key_init(&key, utility::AeroSpike::instance.nameSpace().c_str(), "source_id_index",
-                        (userId + ownerId).c_str());
-
-            if (utility::AeroSpike::noTimeOutExec(&aerospike_key_put, conn, &error, nullptr, &key, &rec2)
-                != AEROSPIKE_OK) {
-                LOG_ERROR << "put index error, code:" << error.code << ", msg:" << error.message;
-            }
-
-            as_key_destroy(&key);
-            as_record_destroy(&rec2);
+			/* 记录索引信息，方便t模块根据用户ID和广告主ID查询到source id */
+			MT::common::ASKey indexKey(globalConfig.aerospikeConfig.nameSpace.c_str(), "source_id_index",
+									   (userId + ownerId).c_str());
+			try {
+				aerospikeClient.put(key, sourceId);
+			} catch (MT::common::AerospikeExcption & e) {
+				LOG_ERROR << "记录sourceId index失败，" << e.what() << "，code：" << e.error().code << "，msg："
+						  << e.error().message << "，调用堆栈：" << std::endl
+						  << e.trace();
+				return;
+			}
         }
 
         bool replace(std::string & str, const std::string & from, const std::string & to)
@@ -244,10 +171,22 @@ namespace corelogic {
             resp.set_header("Location", log.adInfo.landingUrl);
             resp.set_body("m");
 
-            std::string orderId = paramMap[URL_ORDER_ID];
+			int64_t orderId = 0;
+			try {
+				orderId = std::stoll(paramMap[URL_ORDER_ID]);
 
-            std::string command = "INCR order-counter:" + orderId + ":c";
-            redisAsyncCommand(redisConnection.get(), nullptr, nullptr, command.c_str());
+				MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "order-counter", orderId);
+				MT::common::ASOperation op(1);
+				op.addIncr("c", (int64_t)1);
+
+				aerospikeClient.operate(key, op);
+			} catch (MT::common::AerospikeExcption & e) {
+				LOG_ERROR << "记录点击失败，订单ID：" << orderId << "，" << e.what() << "，code:" << e.error().code
+						  << e.error().message << "，调用堆栈：" << std::endl
+						  << e.trace();
+			} catch (std::exception & e) {
+				LOG_ERROR << "记录点击失败，订单ID无效：" << paramMap[URL_ORDER_ID];
+			}
         } else {
             resp.status(400, "Error,empty landing url");
         }

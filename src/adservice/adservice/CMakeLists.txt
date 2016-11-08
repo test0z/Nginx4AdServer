@@ -28,7 +28,7 @@ SET(SRC_LIST
     ./service/core/logic/trace_task.cpp
     ./service/core/logpusher/kafka_log_producer.cpp
     ./service/core/logpusher/log_pusher.cpp
-    ./service/core/model/source_record.cpp
+    ./service/core/model/source_id.cpp
     ./service/kafka_checker.cpp
     ./service/libutil/AdAcbm.cpp
     ./service/libutil/AdIpc.cpp
@@ -56,7 +56,6 @@ SET(SRC_LIST
     ./service/protocol/tencent_gdt/tencent_gdt_price.cpp
     ./service/protocol/youku/youku_bidding_handlerv2.cpp
     ./service/protocol/youku/youku_price.cpp
-    ./service/utility/aero_spike.cpp
     ./service/utility/cypher.cpp
     ./service/utility/escape.cpp
     ./service/utility/file.cpp

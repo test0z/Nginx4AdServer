@@ -5,8 +5,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <hiredis/async.h>
-
 #include <boost/algorithm/string.hpp>
 
 extern "C" {
@@ -30,7 +28,6 @@ extern "C" {
 #include "logging.h"
 #include "protocol/debug/debug.pb.h"
 #include "protocol/guangyin/guangyin_bidding_handler.h"
-#include "utility/aero_spike.h"
 #include "utility/utility.h"
 #include <mtty/constants.h>
 
@@ -59,17 +56,10 @@ struct LocationConf {
     // aerospike 节点
     ngx_str_t asnode;
     // aerospike 默认namespace
-    ngx_str_t asnamespace;
-    // redis config
-    // redis ip
-    ngx_str_t redisip;
-    // redis port
-    ngx_uint_t redisport;
+	ngx_str_t asnamespace;
     // working directory
     ngx_str_t workdir;
 };
-
-std::shared_ptr<redisAsyncContext> redisConnection;
 
 static ngx_int_t adservice_init(ngx_conf_t * cf);
 static ngx_int_t adservice_handler(ngx_http_request_t * r);
@@ -102,9 +92,7 @@ static ngx_command_t commands[] = { COMMAND_ITEM("logging_level", LocationConf, 
                                     COMMAND_ITEM("adselect_entry", LocationConf, adselectentry, parseConfStr),
                                     COMMAND_ITEM("adselect_timeout", LocationConf, adselecttimeout, parseConfStr),
                                     COMMAND_ITEM("as_node", LocationConf, asnode, parseConfStr),
-                                    COMMAND_ITEM("as_namespace", LocationConf, asnamespace, parseConfStr),
-                                    COMMAND_ITEM("redis_ip", LocationConf, redisip, parseConfStr),
-                                    COMMAND_ITEM("redis_port", LocationConf, redisport, parseConfNum),
+									COMMAND_ITEM("as_namespace", LocationConf, asnamespace, parseConfStr),
                                     COMMAND_ITEM("workdir", LocationConf, workdir, parseConfStr),
                                     ngx_null_command };
 
@@ -131,9 +119,7 @@ static void * createLocationConf(ngx_conf_t * cf)
     ngx_str_null(&conf->adselectentry);
     ngx_str_null(&conf->adselecttimeout);
     ngx_str_null(&conf->asnode);
-    ngx_str_null(&conf->asnamespace);
-    ngx_str_null(&conf->redisip);
-    conf->redisport = NGX_CONF_UNSET_UINT;
+	ngx_str_null(&conf->asnamespace);
     ngx_str_null(&conf->workdir);
     return conf;
 }
@@ -153,9 +139,7 @@ static char * mergeLocationConf(ngx_conf_t * cf, void * parent, void * child)
     ngx_conf_merge_str_value(conf->adselectentry, prev->adselectentry, "");
     ngx_conf_merge_str_value(conf->adselecttimeout, prev->adselecttimeout, "0:15|21:-1|98:-1|99:-1");
     ngx_conf_merge_str_value(conf->asnode, prev->asnode, "");
-    ngx_conf_merge_str_value(conf->asnamespace, prev->asnamespace, "mtty");
-    ngx_conf_merge_str_value(conf->redisip, prev->redisip, "192.168.2.44");
-    ngx_conf_merge_uint_value(conf->redisport, prev->redisport, 6379);
+	ngx_conf_merge_str_value(conf->asnamespace, prev->asnamespace, "mtty");
     ngx_conf_merge_str_value(conf->workdir, prev->workdir, "/usr/local/nginx/sbin/");
     return NGX_CONF_OK;
 }
@@ -220,6 +204,7 @@ adservice::adselectv2::AdSelectClientPtr adSelectClient;
 ngx_log_t * globalLog;
 bool inDebugSession = false;
 void * debugSession = nullptr;
+MT::common::Aerospike aerospikeClient;
 
 #define NGX_STR_2_STD_STR(str) std::string((const char *)str.data, (const char *)str.data + str.len)
 #define NGX_BOOL(b) (b == TRUE)
@@ -230,11 +215,11 @@ void parseConfigAeroSpikeNode(const std::string & asNode, AerospikeConfig & conf
     while ((nextPos = asNode.find(",", prevPos)) != std::string::npos) {
         size_t portPos = 0;
         if ((portPos = asNode.find(":", prevPos)) != std::string::npos) {
-            config.connections.push_back(AerospikeConfig::Connection(
-                std::string(asNode.data() + prevPos, asNode.data() + portPos), std::stoi(asNode.data() + portPos + 1)));
+			config.connections.push_back(MT::common::ASConnection(
+				std::string(asNode.data() + prevPos, asNode.data() + portPos), std::stoi(asNode.data() + portPos + 1)));
         } else {
             config.connections.push_back(
-                AerospikeConfig::Connection(std::string(asNode.data() + prevPos, asNode.data() + nextPos), 3000));
+				MT::common::ASConnection(std::string(asNode.data() + prevPos, asNode.data() + nextPos), 3000));
         }
         prevPos = nextPos + 1;
     }
@@ -257,31 +242,10 @@ void setGlobalLoggingLevel(int loggingLevel)
     AdServiceLog::globalLoggingLevel = (LoggingLevel)loggingLevel;
 }
 
-void connectToRedis(const char * i = nullptr, int p = 0)
-{
-    static const char * ip = (i == nullptr ? nullptr : i);
-    static int port = (p == 0 ? 0 : p);
-
-    redisAsyncContext * connection = redisAsyncConnect(ip, port);
-    if (connection->err) {
-        std::cerr << "redis connection error: " << connection->errstr << std::endl;
-        exit(-1);
-    }
-
-    redisAsyncSetDisconnectCallback(connection, [](const redisAsyncContext * c, int status) {
-        if (status != REDIS_OK) {
-            connectToRedis();
-        }
-    });
-
-    redisConnection = std::shared_ptr<redisAsyncContext>(connection, [](redisAsyncContext * p) { redisAsyncFree(p); });
-}
-
 static void global_init(LocationConf * conf)
 {
-    connectToRedis(NGX_STR_2_STD_STR(conf->redisip).c_str(), conf->redisport);
+	std::unique_lock<std::mutex> lock(globalMutex);
 
-    globalMutex.lock();
     if (serviceInitialized) {
         return;
     }
@@ -296,16 +260,22 @@ static void global_init(LocationConf * conf)
     globalConfig.logConfig.localLoggerThreads = conf->localloggerthreads;
     globalConfig.adselectConfig.adselectNode = NGX_STR_2_STD_STR(conf->adselectentry);
     parseConfigAdselectTimeout(NGX_STR_2_STD_STR(conf->adselecttimeout), globalConfig.adselectConfig.adselectTimeout);
-    globalConfig.aerospikeConfig.nameSpace = NGX_STR_2_STD_STR(conf->asnamespace);
+
+	globalConfig.aerospikeConfig.nameSpace = NGX_STR_2_STD_STR(conf->asnamespace);
     std::string asNode = NGX_STR_2_STD_STR(conf->asnode);
     parseConfigAeroSpikeNode(asNode, globalConfig.aerospikeConfig);
+	aerospikeClient.setConnection(globalConfig.aerospikeConfig.connections);
+	aerospikeClient.connect();
+
     std::string workdir = NGX_STR_2_STD_STR(conf->workdir);
     chdir(workdir.c_str());
+
     pid_t currentPid = getpid();
     std::cerr << "current pid:" << (int64_t)currentPid << std::endl;
     if (serviceLogger.use_count() != 0) {
         serviceLogger->stop();
     }
+
     serviceLogger = adservice::log::LogPusher::getLogger(MTTY_SERVICE_LOGGER,
                                                          CONFIG_LOG,
                                                          globalConfig.logConfig.localLoggerThreads,
@@ -325,8 +295,7 @@ static void global_init(LocationConf * conf)
     getcwd(cwd, sizeof(cwd));
     std::cerr << "current working directory:" << cwd << std::endl;
 
-    serviceInitialized = true;
-    globalMutex.unlock();
+	serviceInitialized = true;
 }
 
 void read_header(ngx_http_request_t * r, adservice::utility::HttpRequest & httpRequest)
