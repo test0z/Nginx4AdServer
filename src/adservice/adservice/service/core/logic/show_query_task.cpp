@@ -329,6 +329,7 @@ namespace corelogic {
             if (!adSelectClient->search(seqId, true, condition, selectResult)) {
                 LOG_DEBUG << "ssp module:adselect failed";
                 const MT::common::ADPlace & tmpadplace = selectResult.adplace;
+                log.logType = protocol::log::LogPhaseType::BID;
                 log.adInfo.adxid = condition.adxid;
                 log.adInfo.pid = std::to_string(tmpadplace.pId);
                 log.adInfo.adxpid = tmpadplace.adxPId;
@@ -366,6 +367,9 @@ namespace corelogic {
             int len = buildResponseForSsp(selectResult, paramMap, tmp, templateFmt, buffer, sizeof(buffer), userIp,
                                           referer);
             respBody = std::string(buffer, buffer + len);
+            //狗尾续一个bid日志
+            doLog(log);
+            log.logType = protocol::log::LogPhaseType::BID;
         } else { // DSP of=0,of=2,of=3
             bool showCreative = true;
             dspSetParam(paramMap, showCreative, needLog);
