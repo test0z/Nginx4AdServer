@@ -13,7 +13,7 @@ $ngx_addon_dir/service/core/logic/show_query_task.cpp
 $ngx_addon_dir/service/core/logic/trace_task.cpp
 $ngx_addon_dir/service/core/logpusher/kafka_log_producer.cpp
 $ngx_addon_dir/service/core/logpusher/log_pusher.cpp
-$ngx_addon_dir/service/core/model/source_record.cpp
+$ngx_addon_dir/service/core/model/source_id.cpp
 $ngx_addon_dir/service/core/config_types.cpp
 $ngx_addon_dir/service/core/core_executor.cpp
 $ngx_addon_dir/service/core/core_ip_manager.cpp
@@ -42,7 +42,6 @@ $ngx_addon_dir/service/protocol/tencent_gdt/gdt.pb.cpp
 $ngx_addon_dir/service/protocol/youku/youku_bidding_handlerv2.cpp
 $ngx_addon_dir/service/protocol/youku/youku_price.cpp
 $ngx_addon_dir/service/protocol/debug/debug.pb.cpp
-$ngx_addon_dir/service/utility/aero_spike.cpp
 $ngx_addon_dir/service/utility/cypher.cpp
 $ngx_addon_dir/service/utility/escape.cpp
 $ngx_addon_dir/service/utility/file.cpp
@@ -75,7 +74,7 @@ $ngx_addon_dir/service/utility/http.cpp"
 #$ngx_addon_dir/service/core/logpusher/kafka_log_producer.h
 #$ngx_addon_dir/service/core/logpusher/log_producer.h
 #$ngx_addon_dir/service/core/logpusher/log_pusher.h
-#$ngx_addon_dir/service/core/model/source_record.h
+#$ngx_addon_dir/service/core/model/source_id.h
 #$ngx_addon_dir/service/core/config_types.h
 #$ngx_addon_dir/service/core/core_executor.h
 #$ngx_addon_dir/service/core/core_ip_manager.h
@@ -120,13 +119,13 @@ CORE_LIBS="-L/usr/lib -L/usr/lib64 -L/usr/local/lib -L/usr/local/lib64 $CORE_LIB
 /usr/local/lib/libavrocpp_s.a
 /usr/local/lib/librdkafka++.a
 /usr/local/lib/librdkafka.a
-/usr/lib/libaerospike.a
 /usr/local/lib/libboost_serialization.a
 /usr/local/lib/libboost_log.a
 /usr/local/lib/libboost_thread.a
 /usr/local/lib/libboost_filesystem.a
 /usr/local/lib/libboost_system.a
 /usr/lib64/libprotobuf.a
--lmuduo_base_cpp11 -ltbb -pthread -lhiredis -lstdc++ -lcrypt -lpcre -lcrypto -lcryptopp -lz -lssl -lcurl -licuuc -licui18n -ldl -lzmq -lmtty
+-lmuduo_base_cpp11 -ltbb -pthread -lstdc++ -lcrypt -lpcre -lcrypto -lcryptopp -lz -lssl -lcurl -licuuc -licui18n -ldl -lzmq -lmtty
+/usr/lib/libaerospike.a
 -Wl,-rpath,/usr/local/lib "
 

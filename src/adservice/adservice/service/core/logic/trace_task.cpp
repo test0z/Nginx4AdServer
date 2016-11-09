@@ -1,15 +1,17 @@
 #include "trace_task.h"
 
-#include <aerospike/aerospike_key.h>
+#include <mtty/aerospike.h>
 
-#include "core/model/source_record.h"
-#include "utility/aero_spike.h"
+#include "core/config_types.h"
+#include "core/model/source_id.h"
+
+extern MT::common::Aerospike aerospikeClient;
+extern GlobalConfig globalConfig;
 
 namespace adservice {
 namespace corelogic {
 
     namespace {
-
         const int TRACE_ID_ARRIVE = 5;
 
         // 版本号
@@ -54,69 +56,6 @@ namespace corelogic {
 
         // 协议，0为http，1为https
         const std::string URL_PROTOCOL = "i";
-
-        // sourceid
-        bool getSourceId(const std::string & sourceIdIndex, std::string & sourceId)
-        {
-            if (!utility::AeroSpike::instance && !utility::AeroSpike::instance.connect()) {
-                auto & error = utility::AeroSpike::instance.error();
-                LOG_ERROR << "connect error, code:" << error.code << ", msg:" << error.message;
-                return false;
-            }
-
-            aerospike * conn = utility::AeroSpike::instance.connection();
-
-            as_error error;
-            as_record * record = nullptr;
-
-            /* 根据用户id和广告主id获取source_id */
-            as_key key;
-            as_key_init(
-                &key, utility::AeroSpike::instance.nameSpace().c_str(), "source_id_index", sourceIdIndex.c_str());
-            if (utility::AeroSpike::noTimeOutExec(&aerospike_key_get, conn, &error, nullptr, &key, &record)
-                != AEROSPIKE_OK) {
-                LOG_ERROR << "get index error, code:" << error.code << ", msg:" << error.message;
-                as_key_destroy(&key);
-                as_record_destroy(record);
-                return false;
-            }
-
-            sourceId = as_record_get_str(record, "source_id");
-
-            as_key_destroy(&key);
-            as_record_destroy(record);
-            return true;
-        }
-
-        // sourceidindex
-        bool getRecord(const std::string & sourceId, core::model::SourceRecord & sourceRecord)
-        {
-            if (!utility::AeroSpike::instance && !utility::AeroSpike::instance.connect()) {
-                auto & error = utility::AeroSpike::instance.error();
-                LOG_ERROR << "connect error, code:" << error.code << ", msg:" << error.message;
-                return false;
-            }
-
-            aerospike * conn = utility::AeroSpike::instance.connection();
-
-            /* 获取source_id的内容 */
-            as_error error;
-            as_record * record = nullptr;
-
-            as_key key;
-            as_key_init(&key, utility::AeroSpike::instance.nameSpace().c_str(), "source_id", sourceId.c_str());
-            if (utility::AeroSpike::noTimeOutExec(&aerospike_key_get, conn, &error, nullptr, &key, &record)
-                != AEROSPIKE_OK) {
-                LOG_ERROR << "get error, code:" << error.code << ", msg:" << error.message;
-                as_key_destroy(&key);
-                as_record_destroy(record);
-                return false;
-            }
-
-            sourceRecord.record(*record);
-
-            return true;
-        }
 
         void fillLog(protocol::log::LogItem & log,
                      ParamMap & paramMap,
@@ -251,21 +190,35 @@ namespace corelogic {
                     requestTypeStr = paramMap[URL_REQUEST_TYPE], version = paramMap[URL_VERSION],
                     device = paramMap[URL_DEVICE_TYPE];
 
-        std::string sourceIdIndex = userId + ownerId;
-
         std::string sourceId = paramMap["g"];
-        if (sourceId.empty()) {
-            getSourceId(sourceIdIndex, sourceId);
+		if (sourceId.empty()) {
+
+			/* 根据用户id和广告主id获取source_id */
+			core::model::SourceId sourceIdEntity;
+			MT::common::ASKey key(
+				globalConfig.aerospikeConfig.nameSpace.c_str(), "source_id_index", (userId + ownerId).c_str());
+			try {
+				aerospikeClient.get(key, sourceIdEntity);
+				sourceId = sourceIdEntity.get();
+			} catch (MT::common::AerospikeExcption & e) {
+				LOG_ERROR << "获取source_id失败！userid:" << userId << ", ownerId:" << ownerId
+						  << "，code:" << e.error().code << ", error:" << e.error().message;
+			}
         }
 
         core::model::SourceRecord sourceRecord;
         if (!sourceId.empty()) {
             // 判断是否是一次到达，如果是pv，即y=6，限时10秒，否则请求类型保持原样
-            if (getRecord(sourceId, sourceRecord)) {
-                if (requestTypeStr == "6" && log.timeStamp - sourceRecord.time() <= 10) {
+			MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "source_id", sourceId.c_str());
+			try {
+				aerospikeClient.get(key, sourceRecord);
+				if (requestTypeStr == "6" && log.timeStamp - sourceRecord.time() <= 10) {
 					log.traceId = TRACE_ID_ARRIVE;
-                }
-            }
+				}
+			} catch (MT::common::AerospikeExcption & e) {
+				LOG_ERROR << "获取source record失败！sourceId:" << sourceId << "，code:" << e.error().code
+						  << ", error:" << e.error().message;
+			}
         }
 
         // 记录TraceInfo日志

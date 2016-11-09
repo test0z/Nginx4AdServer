@@ -5,11 +5,14 @@
 #ifndef ADCORE_CONFIG_TYPES_H
 #define ADCORE_CONFIG_TYPES_H
 
-#include <cppcms/json.h>
 #include <map>
-#include <mtty/constants.h>
 #include <string>
 #include <vector>
+
+#include <cppcms/json.h>
+
+#include <mtty/aerospike.h>
+#include <mtty/constants.h>
 
 //全局服务配置类型
 struct ServerConfig {
@@ -40,14 +43,7 @@ struct AdDataConfig {
 };
 
 struct AerospikeConfig {
-    struct Connection {
-        std::string host;
-        int port;
-        Connection(const std::string & h, int p)
-            : host(h)
-            , port(p){};
-    };
-    std::vector<Connection> connections;
+	std::vector<MT::common::ASConnection> connections;
     std::string nameSpace;
 };
 
