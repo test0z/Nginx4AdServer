@@ -221,38 +221,36 @@ namespace corelogic {
         mtAdInfo["ppids"] = boost::algorithm::join(
             ppids | boost::adaptors::transformed(static_cast<std::string (*)(int64_t)>(std::to_string)), ",");
         mtAdInfo["oid"] = selectResult.orderId;
+        mtAdInfo["ctype"] = banner.bannerType;
         int advId = solution.advId;
         int bId = banner.bId;
         int resultLen = 0;
         //需求http://redmine.mtty.com/redmine/issues/144
-        if (paramMap[URL_IMP_OF] == OF_SSP_MOBILE || pid == "3381") {
-            //替换点击宏
-            cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
-            cppcms::json::array & mtls = mtlsArray.array();
-            std::string clickMacro = mtls[0].get("p5", "");
-            char clickMacroBuffer[2048];
-            char landingPageBuffer[1024];
-            std::string landingUrl = mtls[0].get("p1", "");
-            std::string encodedLandingUrl;
-            urlEncode_f(landingUrl, encodedLandingUrl, landingPageBuffer);
-            size_t clickMacroLen = (size_t)snprintf(
-                clickMacroBuffer, sizeof(clickMacroBuffer),
-                SSP_CLICK_URL "?s=%s&o=%s&x=%s&r=%s&d=%d&e=%s&ep=%s&pt=%s&b=%s&c=%d&f=%s&h=000&a=%s&url=%s", pid.data(),
-                pid.data(), adxid.data(), impid.data(), advId, sid.data(), ppid.data(), priceType.data(), price.data(),
-                bId, referer.data(), address.data(), encodedLandingUrl.data());
-            if (clickMacroLen >= sizeof(clickMacroBuffer)) {
-                LOG_WARN << "in buildResponseForSsp,clickMacroLen greater than sizeof clickMacroBuffer,len:"
-                         << clickMacroLen;
+        if (paramMap[URL_IMP_OF] == OF_SSP_MOBILE) {
+            if (banner.bannerType != BANNER_TYPE_PRIMITIVE) {
+                //替换点击宏
+                cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
+                cppcms::json::array & mtls = mtlsArray.array();
+                // std::string clickMacro = mtls[0].get("p5", "");
+                char clickMacroBuffer[2048];
+                char landingPageBuffer[1024];
+                std::string landingUrl = mtls[0].get("p1", "");
+                std::string encodedLandingUrl;
+                urlEncode_f(landingUrl, encodedLandingUrl, landingPageBuffer);
+                size_t clickMacroLen = (size_t)snprintf(
+                    clickMacroBuffer, sizeof(clickMacroBuffer),
+                    SSP_CLICK_URL "?s=%s&o=%s&x=%s&r=%s&d=%d&e=%s&ep=%s&pt=%s&b=%s&c=%d&f=%s&h=000&a=%s&url=%s",
+                    pid.data(), pid.data(), adxid.data(), impid.data(), advId, sid.data(), ppid.data(),
+                    priceType.data(), price.data(), bId, referer.data(), address.data(), encodedLandingUrl.data());
+                if (clickMacroLen >= sizeof(clickMacroBuffer)) {
+                    LOG_WARN << "in buildResponseForSsp,clickMacroLen greater than sizeof clickMacroBuffer,len:"
+                             << clickMacroLen;
+                }
+                mtls[0].set("p5", std::string(clickMacroBuffer));
             }
-            mtls[0].set("p5", std::string(clickMacroBuffer));
             //只输出标准json
             std::string jsonResult = utility::json::toJson(mtAdInfo);
-            if (pid != "3381") {
-                resultLen = snprintf(buffer, bufferSize - 1, "%s", jsonResult.c_str());
-            } else {
-                resultLen
-                    = snprintf(buffer, bufferSize - 1, templateFmt, paramMap["callback"].c_str(), jsonResult.c_str());
-            }
+            resultLen = snprintf(buffer, bufferSize - 1, "%s", jsonResult.c_str());
         } else {
             std::string jsonResult = utility::json::toJson(mtAdInfo);
             resultLen = snprintf(buffer, bufferSize - 1, templateFmt, paramMap["callback"].c_str(), jsonResult.c_str());
