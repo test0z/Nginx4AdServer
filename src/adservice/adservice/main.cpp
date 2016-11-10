@@ -56,7 +56,7 @@ struct LocationConf {
     // aerospike 节点
     ngx_str_t asnode;
     // aerospike 默认namespace
-	ngx_str_t asnamespace;
+    ngx_str_t asnamespace;
     // working directory
     ngx_str_t workdir;
 };
@@ -92,7 +92,7 @@ static ngx_command_t commands[] = { COMMAND_ITEM("logging_level", LocationConf, 
                                     COMMAND_ITEM("adselect_entry", LocationConf, adselectentry, parseConfStr),
                                     COMMAND_ITEM("adselect_timeout", LocationConf, adselecttimeout, parseConfStr),
                                     COMMAND_ITEM("as_node", LocationConf, asnode, parseConfStr),
-									COMMAND_ITEM("as_namespace", LocationConf, asnamespace, parseConfStr),
+                                    COMMAND_ITEM("as_namespace", LocationConf, asnamespace, parseConfStr),
                                     COMMAND_ITEM("workdir", LocationConf, workdir, parseConfStr),
                                     ngx_null_command };
 
@@ -119,7 +119,7 @@ static void * createLocationConf(ngx_conf_t * cf)
     ngx_str_null(&conf->adselectentry);
     ngx_str_null(&conf->adselecttimeout);
     ngx_str_null(&conf->asnode);
-	ngx_str_null(&conf->asnamespace);
+    ngx_str_null(&conf->asnamespace);
     ngx_str_null(&conf->workdir);
     return conf;
 }
@@ -139,7 +139,7 @@ static char * mergeLocationConf(ngx_conf_t * cf, void * parent, void * child)
     ngx_conf_merge_str_value(conf->adselectentry, prev->adselectentry, "");
     ngx_conf_merge_str_value(conf->adselecttimeout, prev->adselecttimeout, "0:15|21:-1|98:-1|99:-1");
     ngx_conf_merge_str_value(conf->asnode, prev->asnode, "");
-	ngx_conf_merge_str_value(conf->asnamespace, prev->asnamespace, "mtty");
+    ngx_conf_merge_str_value(conf->asnamespace, prev->asnamespace, "mtty");
     ngx_conf_merge_str_value(conf->workdir, prev->workdir, "/usr/local/nginx/sbin/");
     return NGX_CONF_OK;
 }
@@ -215,11 +215,11 @@ void parseConfigAeroSpikeNode(const std::string & asNode, AerospikeConfig & conf
     while ((nextPos = asNode.find(",", prevPos)) != std::string::npos) {
         size_t portPos = 0;
         if ((portPos = asNode.find(":", prevPos)) != std::string::npos) {
-			config.connections.push_back(MT::common::ASConnection(
-				std::string(asNode.data() + prevPos, asNode.data() + portPos), std::stoi(asNode.data() + portPos + 1)));
+            config.connections.push_back(MT::common::ASConnection(
+                std::string(asNode.data() + prevPos, asNode.data() + portPos), std::stoi(asNode.data() + portPos + 1)));
         } else {
             config.connections.push_back(
-				MT::common::ASConnection(std::string(asNode.data() + prevPos, asNode.data() + nextPos), 3000));
+                MT::common::ASConnection(std::string(asNode.data() + prevPos, asNode.data() + nextPos), 3000));
         }
         prevPos = nextPos + 1;
     }
@@ -244,7 +244,7 @@ void setGlobalLoggingLevel(int loggingLevel)
 
 static void global_init(LocationConf * conf)
 {
-	std::unique_lock<std::mutex> lock(globalMutex);
+    std::unique_lock<std::mutex> lock(globalMutex);
 
     if (serviceInitialized) {
         return;
@@ -261,11 +261,11 @@ static void global_init(LocationConf * conf)
     globalConfig.adselectConfig.adselectNode = NGX_STR_2_STD_STR(conf->adselectentry);
     parseConfigAdselectTimeout(NGX_STR_2_STD_STR(conf->adselecttimeout), globalConfig.adselectConfig.adselectTimeout);
 
-	globalConfig.aerospikeConfig.nameSpace = NGX_STR_2_STD_STR(conf->asnamespace);
+    globalConfig.aerospikeConfig.nameSpace = NGX_STR_2_STD_STR(conf->asnamespace);
     std::string asNode = NGX_STR_2_STD_STR(conf->asnode);
     parseConfigAeroSpikeNode(asNode, globalConfig.aerospikeConfig);
-	aerospikeClient.setConnection(globalConfig.aerospikeConfig.connections);
-	aerospikeClient.connect();
+    aerospikeClient.setConnection(globalConfig.aerospikeConfig.connections);
+    aerospikeClient.connect();
 
     std::string workdir = NGX_STR_2_STD_STR(conf->workdir);
     chdir(workdir.c_str());
@@ -295,7 +295,7 @@ static void global_init(LocationConf * conf)
     getcwd(cwd, sizeof(cwd));
     std::cerr << "current working directory:" << cwd << std::endl;
 
-	serviceInitialized = true;
+    serviceInitialized = true;
 }
 
 void read_header(ngx_http_request_t * r, adservice::utility::HttpRequest & httpRequest)
@@ -324,7 +324,7 @@ void read_header(ngx_http_request_t * r, adservice::utility::HttpRequest & httpR
     std::stringstream cookiesstream;
     ngx_table_elt_t ** cookies = (ngx_table_elt_t **)r->headers_in.cookies.elts;
     for (ngx_uint_t i = 0; i < r->headers_in.cookies.nelts; ++i) {
-        cookiesstream << parseKey(cookies[i]) << "=" << parseValue(cookies[i]) << ";";
+        cookiesstream << parseValue(cookies[i]) << ";";
     }
     httpRequest.set(COOKIE, cookiesstream.str());
 }
