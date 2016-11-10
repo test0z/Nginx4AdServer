@@ -97,10 +97,8 @@ namespace bidding {
         }
         //从BID Request中获取请求的广告位信息,目前只取第一个
         const BidRequest_Impression & adzInfo = bidRequest.impressions(0);
-        long pid = adzInfo.placement_id();
         AdSelectCondition queryCondition;
         queryCondition.adxid = ADX_TENCENT_GDT;
-        queryCondition.adxpid = std::to_string(pid);
         queryCondition.ip = bidRequest.ip();
         queryCondition.basePrice = adzInfo.has_bid_floor() ? adzInfo.bid_floor() : 0;
         IpManager & ipManager = IpManager::getInstance();
@@ -137,6 +135,9 @@ namespace bidding {
                 queryCondition.adxid = ADX_GDT_MOBILE;
                 queryCondition.mobileDevice = getGdtMobileDeviceType(device.os());
             } else if (devType == BidRequest_DeviceType::BidRequest_DeviceType_kDeviceTypePad) {
+                adplaceInfo.flowType = SOLUTION_FLOWTYPE_MOBILE;
+                queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
+                queryCondition.adxid = ADX_GDT_MOBILE;
                 queryCondition.mobileDevice = device.os() == BidRequest_OperatingSystem_kOSIOS
                                                   ? SOLUTION_DEVICE_IPAD
                                                   : SOLUTION_DEVICE_ANDROIDPAD;
@@ -144,6 +145,14 @@ namespace bidding {
                 queryCondition.mobileDevice = SOLUTION_DEVICE_OTHER;
                 queryCondition.pcOS = SOLUTION_OS_OTHER;
             }
+        }
+        if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE && bidRequest.has_app()) {
+            const BidRequest_App & app = bidRequest.app();
+            if (app.has_app_bundle_id()) {
+                queryCondition.adxpid = app.app_bundle_id();
+            }
+        } else if (adzInfo.has_placement_id()) {
+            queryCondition.adxpid = adzInfo.placement_id();
         }
         queryCondition.pAdplaceInfo = &adplaceInfo;
         if (!filterCb(this, queryCondition)) {
@@ -172,7 +181,7 @@ namespace bidding {
         adResult->set_bid_price(maxCpmPrice);
         adResult->set_creative_id(std::to_string(banner.bId));
         //缓存最终广告结果
-		fillAdInfo(queryCondition, result, bidRequest.has_user() ? bidRequest.user().id() : "");
+        fillAdInfo(queryCondition, result, bidRequest.has_user() ? bidRequest.user().id() : "");
 
         // html snippet相关
         char showParam[2048];
