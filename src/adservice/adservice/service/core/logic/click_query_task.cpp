@@ -22,27 +22,27 @@ namespace corelogic {
             while (*src != '\0') {
                 *p++ = *src++;
             }
-		}
+        }
 
-		core::model::SourceId generateSourceId()
-		{
-			MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "source_id_seq", "last_source_id");
+        core::model::SourceId generateSourceId()
+        {
+            MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "source_id_seq", "last_source_id");
 
-			MT::common::ASOperation op(2);
-			op.addRead("val");
-			op.addIncr("val", (int64_t)1);
+            MT::common::ASOperation op(2);
+            op.addRead("val");
+            op.addIncr("val", (int64_t)1);
 
-			core::model::SourceId sourceId;
-			try {
-				aerospikeClient.operate(key, op, sourceId);
-			} catch (MT::common::AerospikeExcption & e) {
-				LOG_ERROR << "生成sourceId失败，" << e.what() << "，code：" << e.error().code << "，msg："
-						  << e.error().message << "，调用堆栈：" << std::endl
-						  << e.trace();
-				return sourceId;
-			}
+            core::model::SourceId sourceId;
+            try {
+                aerospikeClient.operate(key, op, sourceId);
+            } catch (MT::common::AerospikeExcption & e) {
+                LOG_ERROR << "生成sourceId失败，" << e.what() << "，code：" << e.error().code << "，msg："
+                          << e.error().message << "，调用堆栈：" << std::endl
+                          << e.trace();
+                return sourceId;
+            }
 
-			return sourceId;
+            return sourceId;
         }
 
         void recordSource(ParamMap & paramMap, protocol::log::LogItem & log)
@@ -55,37 +55,37 @@ namespace corelogic {
 
             /* 记录访问信息到缓存 */
             // 生成source id
-			core::model::SourceId sourceId = generateSourceId();
-			if (sourceId.get().empty()) {
+            core::model::SourceId sourceId = generateSourceId();
+            if (sourceId.get().empty()) {
                 LOG_ERROR << "生成的sourceid为空。";
                 return;
             }
 
-			paramMap["source_id"] = sourceId.get();
+            paramMap["source_id"] = sourceId.get();
 
             // 填充数据
             core::model::SourceRecord sourceRecord(paramMap, log);
-			MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "source_id", sourceId.get().c_str());
-			try {
-				aerospikeClient.put(key, sourceRecord);
-			} catch (MT::common::AerospikeExcption & e) {
-				LOG_ERROR << "记录source record失败，" << e.what() << "，code：" << e.error().code << "，msg："
-						  << e.error().message << "，调用堆栈：" << std::endl
-						  << e.trace();
-				return;
-			}
+            MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "source_id", sourceId.get().c_str());
+            try {
+                aerospikeClient.put(key, sourceRecord);
+            } catch (MT::common::AerospikeExcption & e) {
+                LOG_ERROR << "记录source record失败，" << e.what() << "，code：" << e.error().code << "，msg："
+                          << e.error().message << "，调用堆栈：" << std::endl
+                          << e.trace();
+                return;
+            }
 
-			/* 记录索引信息，方便t模块根据用户ID和广告主ID查询到source id */
-			MT::common::ASKey indexKey(globalConfig.aerospikeConfig.nameSpace.c_str(), "source_id_index",
-									   (userId + ownerId).c_str());
-			try {
-				aerospikeClient.put(key, sourceId);
-			} catch (MT::common::AerospikeExcption & e) {
-				LOG_ERROR << "记录sourceId index失败，" << e.what() << "，code：" << e.error().code << "，msg："
-						  << e.error().message << "，调用堆栈：" << std::endl
-						  << e.trace();
-				return;
-			}
+            /* 记录索引信息，方便t模块根据用户ID和广告主ID查询到source id */
+            MT::common::ASKey indexKey(globalConfig.aerospikeConfig.nameSpace.c_str(), "source_id_index",
+                                       (userId + ownerId).c_str());
+            try {
+                aerospikeClient.put(indexKey, sourceId);
+            } catch (MT::common::AerospikeExcption & e) {
+                LOG_ERROR << "记录sourceId index失败，" << e.what() << "，code：" << e.error().code << "，msg："
+                          << e.error().message << "，调用堆栈：" << std::endl
+                          << e.trace();
+                return;
+            }
         }
 
         bool replace(std::string & str, const std::string & from, const std::string & to)
@@ -171,22 +171,22 @@ namespace corelogic {
             resp.set_header("Location", log.adInfo.landingUrl);
             resp.set_body("m");
 
-			int64_t orderId = 0;
-			try {
-				orderId = std::stoll(paramMap[URL_ORDER_ID]);
+            int64_t orderId = 0;
+            try {
+                orderId = std::stoll(paramMap[URL_ORDER_ID]);
 
-				MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "order-counter", orderId);
-				MT::common::ASOperation op(1);
-				op.addIncr("c", (int64_t)1);
+                MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "order-counter", orderId);
+                MT::common::ASOperation op(1);
+                op.addIncr("c", (int64_t)1);
 
-				aerospikeClient.operate(key, op);
-			} catch (MT::common::AerospikeExcption & e) {
-				LOG_ERROR << "记录点击失败，订单ID：" << orderId << "，" << e.what() << "，code:" << e.error().code
-						  << e.error().message << "，调用堆栈：" << std::endl
-						  << e.trace();
-			} catch (std::exception & e) {
-				LOG_ERROR << "记录点击失败，订单ID无效：" << paramMap[URL_ORDER_ID];
-			}
+                aerospikeClient.operate(key, op);
+            } catch (MT::common::AerospikeExcption & e) {
+                LOG_ERROR << "记录点击失败，订单ID：" << orderId << "，" << e.what() << "，code:" << e.error().code
+                          << e.error().message << "，调用堆栈：" << std::endl
+                          << e.trace();
+            } catch (std::exception & e) {
+                LOG_ERROR << "记录点击失败，订单ID无效：" << paramMap[URL_ORDER_ID];
+            }
         } else {
             resp.status(400, "Error,empty landing url");
         }
