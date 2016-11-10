@@ -390,23 +390,24 @@ namespace corelogic {
                 int len = buildResponseForDsp(adBanner, paramMap, tmp, templateFmt, buffer, sizeof(buffer));
                 respBody = std::string(buffer, buffer + len);
             }
-			if (needLog) {
-				int64_t orderId = 0;
-				try {
-					orderId = std::stoll(paramMap[URL_ORDER_ID]);
+        }
 
-					MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "order-counter", orderId);
-					MT::common::ASOperation op(1);
-					op.addIncr("s", (int64_t)1);
+        if (needLog && log.adInfo.orderId != DEFAULT_PRODUCT_ORDER_ID) {
+            int64_t orderId = 0;
+            try {
+                orderId = log.adInfo.orderId;
 
-					aerospikeClient.operate(key, op);
-				} catch (MT::common::AerospikeExcption & e) {
-					LOG_ERROR << "记录曝光失败，订单ID：" << orderId << "，" << e.what() << "，code:" << e.error().code
-							  << e.error().message << "，调用堆栈：" << std::endl
-							  << e.trace();
-				} catch (std::exception & e) {
-					LOG_ERROR << "记录曝光失败，订单ID无效：" << paramMap[URL_ORDER_ID];
-				}
+                MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "order-counter", orderId);
+                MT::common::ASOperation op(1);
+                op.addIncr("s", (int64_t)1);
+
+                aerospikeClient.operate(key, op);
+            } catch (MT::common::AerospikeExcption & e) {
+                LOG_ERROR << "记录曝光失败，订单ID：" << orderId << "，" << e.what() << "，code:" << e.error().code
+                          << e.error().message << "，调用堆栈：" << std::endl
+                          << e.trace();
+            } catch (std::exception & e) {
+                LOG_ERROR << "记录曝光失败，订单ID无效：" << paramMap[URL_ORDER_ID];
             }
         }
 
