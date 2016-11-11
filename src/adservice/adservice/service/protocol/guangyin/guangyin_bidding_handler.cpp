@@ -165,10 +165,16 @@ namespace bidding {
             queryCondition.mobileNetwork = getNetWork(device.connectiontype());
             if (bidRequest_.has_app()) {
                 const App & app = bidRequest_.app();
-                if (app.has_bundle()) {
-                    queryCondition.adxpid = app.bundle();
-                } else if (app.has_publisher()) {
+                if (app.has_id()) {
+                    queryCondition.adxpid = app.id();
+                }
+                if (queryCondition.adxpid.empty() && app.has_publisher()) {
                     queryCondition.adxpid = app.publisher().slot();
+                }
+            } else if (bidRequest_.has_site()) {
+                const Site & site = bidRequest_.site();
+                if (site.has_publisher()) {
+                    queryCondition.adxpid = site.publisher().slot();
                 }
             }
         } else {

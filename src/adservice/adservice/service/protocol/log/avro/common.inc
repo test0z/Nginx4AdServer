@@ -44,15 +44,15 @@ record AdInfo{
     string imp_id;
     // 广告的落地页面,click模块非空
     string landingUrl;
-    // 成本,点击模块为空
+    // 在点击模块和曝光模块中使用，表示成本
     int cost;
-    // 扣广告主的钱,点击模块为空
+    // 在点击模块和曝光模块中使用，表示实际扣广告主的钱
     int bidPrice;
     // 广告交换商的pid,暂时和pid维持一样
     string adxpid ;
     // 广告交换商的uid
     string adxuid;
-    // 竞价模块返回给ADX的出价
+    // 竞价模块预计的结算价格,对应生成链接里的b参数，在点击和曝光模块转化为bidPrice字段
     int offerPrice;
     // 竞价模块请求的广告size
     string bidSize;
