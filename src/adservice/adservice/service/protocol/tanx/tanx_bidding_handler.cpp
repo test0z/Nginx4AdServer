@@ -130,7 +130,6 @@ namespace bidding {
             logItem.adInfo.bidSize = adInfo.bidSize;
             logItem.referer = bidRequest.has_url() ? bidRequest.url() : "";
             logItem.adInfo.orderId = adInfo.orderId;
-            logItem.adInfo.ppids = adInfo.ppids;
         } else {
             logItem.adInfo.pid = adInfo.pid;
             logItem.adInfo.bidSize = adInfo.bidSize;

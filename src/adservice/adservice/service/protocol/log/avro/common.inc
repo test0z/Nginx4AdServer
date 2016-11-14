@@ -62,8 +62,6 @@ record AdInfo{
     int ppid;
     // 订单id
     long orderId;
-    // 筛选过程中覆盖的产品包id
-    array<long> ppids;
 }
 
 @namespace("com.mtty.protocol")

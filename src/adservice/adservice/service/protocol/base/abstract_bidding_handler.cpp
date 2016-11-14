@@ -135,12 +135,12 @@ namespace bidding {
         const MT::common::Banner & banner = result.banner;
 
         adInfo.pid = std::to_string(adplace.pId);
-		adInfo.adxpid = selectCondition.adxpid;
+        adInfo.adxpid = selectCondition.adxpid;
         adInfo.sid = finalSolution.sId;
 
         auto advId = finalSolution.advId;
         adInfo.advId = advId;
-		adInfo.adxid = selectCondition.adxid;
+        adInfo.adxid = selectCondition.adxid;
         adInfo.adxuid = adxUser;
         adInfo.bannerId = banner.bId;
         adInfo.cid = adplace.cId;
@@ -150,9 +150,6 @@ namespace bidding {
         adInfo.priceType = finalSolution.priceType;
         adInfo.ppid = result.ppid;
         adInfo.orderId = result.orderId;
-        for (auto ppid : result.ppids) {
-            adInfo.ppids.push_back(ppid);
-        }
         adInfo.offerPrice = result.feePrice;
         adInfo.areaId = adservice::server::IpManager::getInstance().getAreaCodeStrByIp(selectCondition.ip.data());
     }

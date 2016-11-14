@@ -217,9 +217,9 @@ namespace corelogic {
         mtAdInfo["price"] = price;
         std::string ppid = to_string(selectResult.ppid);
         mtAdInfo["ppid"] = ppid;
-        const std::vector<int64_t> & ppids = selectResult.ppids;
-        mtAdInfo["ppids"] = boost::algorithm::join(
-            ppids | boost::adaptors::transformed(static_cast<std::string (*)(int64_t)>(std::to_string)), ",");
+        // const std::vector<int64_t> & ppids = selectResult.ppids;
+        // mtAdInfo["ppids"] = boost::algorithm::join(
+        //    ppids | boost::adaptors::transformed(static_cast<std::string (*)(int64_t)>(std::to_string)), ",");
         mtAdInfo["oid"] = selectResult.orderId;
         mtAdInfo["ctype"] = banner.bannerType;
         int advId = solution.advId;
@@ -353,9 +353,6 @@ namespace corelogic {
             log.adInfo.priceType = finalSolution.priceType;
             log.adInfo.ppid = selectResult.ppid;
             log.adInfo.orderId = selectResult.orderId;
-            for (auto ppid : selectResult.ppids) {
-                log.adInfo.ppids.push_back(ppid);
-            }
             if (finalSolution.priceType == PRICETYPE_RRTB_CPC) {
                 log.adInfo.bidPrice = 0;
             } else {
@@ -375,14 +372,14 @@ namespace corelogic {
         } else { // DSP of=0,of=2,of=3
             bool showCreative = true;
             dspSetParam(paramMap, showCreative, needLog);
-            MT::common::Banner adBanner;
-            int64_t bId = std::stoll(paramMap[URL_CREATIVE_ID]);
-            if (!adSelectClient->getBannerById(bId, adBanner)) {
-                log.adInfo.bannerId = 0;
-                log.reqStatus = 500;
-                return;
-            }
             if (showCreative) { //需要显示创意
+                MT::common::Banner adBanner;
+                int64_t bId = std::stoll(paramMap[URL_CREATIVE_ID]);
+                if (!adSelectClient->getBannerById(bId, adBanner)) {
+                    log.adInfo.bannerId = 0;
+                    log.reqStatus = 500;
+                    return;
+                }
                 const char * tmp = adBanner.json.data();
                 char buffer[8192];
                 int len = buildResponseForDsp(adBanner, paramMap, tmp, templateFmt, buffer, sizeof(buffer));
