@@ -387,7 +387,7 @@ namespace corelogic {
             }
         }
 
-        if (needLog && log.adInfo.orderId != DEFAULT_PRODUCT_ORDER_ID) {
+        if (needLog && log.adInfo.ppid != DEFAULT_PRODUCT_PACKAGE_ID) {
             int64_t orderId = 0;
             try {
                 orderId = log.adInfo.orderId;
