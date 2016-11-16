@@ -9,7 +9,6 @@ INCLUDE_DIRECTORIES(
     ../../core
     ../../http
     ${MTTY_INCLUDE_DIR}
-
     )
 
 SET(SRC_LIST
@@ -29,7 +28,7 @@ SET(SRC_LIST
     ./service/core/logic/trace_task.cpp
     ./service/core/logpusher/kafka_log_producer.cpp
     ./service/core/logpusher/log_pusher.cpp
-    ./service/core/model/source_record.cpp
+    ./service/core/model/source_id.cpp
     ./service/kafka_checker.cpp
     ./service/libutil/AdAcbm.cpp
     ./service/libutil/AdIpc.cpp
@@ -43,6 +42,7 @@ SET(SRC_LIST
     ./service/protocol/guangyin/guangyin_bidding.pb.cpp
     ./service/protocol/guangyin/guangyin_bidding_handler.cpp
     ./service/protocol/guangyin/guangyin_price.cpp
+    ./service/protocol/log/log.cpp
     ./service/protocol/log/logstring.cpp
     ./service/protocol/netease/netease_bidding_handlerv2.cpp
     ./service/protocol/sohu/sohu_bidding_handler.cpp
@@ -56,7 +56,7 @@ SET(SRC_LIST
     ./service/protocol/tencent_gdt/tencent_gdt_price.cpp
     ./service/protocol/youku/youku_bidding_handlerv2.cpp
     ./service/protocol/youku/youku_price.cpp
-    ./service/utility/aero_spike.cpp
+    ./service/protocol/inmobi/inmobi_bidding_handler.cpp
     ./service/utility/cypher.cpp
     ./service/utility/escape.cpp
     ./service/utility/file.cpp
@@ -67,6 +67,11 @@ SET(SRC_LIST
     ./service/utility/random.cpp
     ./service/utility/url.cpp
     ./service/utility/userclient.cpp
+    ./service/common/atomic.cpp
+    ./service/common/functions.cpp
+    ./service/common/platform.cpp
+    ./service/common/spinlock.cpp
+    ./service/common/types.cpp
     ./service/utility/http.cpp)
 
 ADD_EXECUTABLE(${PROJECT_NAME} ${SRC_LIST})

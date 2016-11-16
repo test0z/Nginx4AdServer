@@ -180,6 +180,10 @@ namespace corelogic {
                 std::string & pricetype = iter->second;
                 log.adInfo.priceType = std::stoi(pricetype);
             }
+            if ((iter = paramMap.find(URL_ORDER_ID)) != paramMap.end()) { //订单id
+                std::string & orderId = iter->second;
+                log.adInfo.orderId = std::stol(orderId);
+            }
             int offerPrice
                 = paramMap.find(URL_BID_PRICE) != paramMap.end() ? decodeOfferPrice(paramMap[URL_BID_PRICE]) : 0;
             if ((iter = paramMap.find(URL_EXCHANGE_PRICE)) != paramMap.end()) { //成交价格

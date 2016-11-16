@@ -15,7 +15,7 @@ namespace bidding {
     using namespace adservice::utility;
     using namespace adservice::utility::serialize;
     using namespace adservice::utility::userclient;
-	using namespace adservice::server;
+    using namespace adservice::server;
 
     static GdtAdplaceMap gdtAdplaceMap;
     static GdtSizeMap gdtAdplaceSizeMap;
@@ -81,8 +81,9 @@ namespace bidding {
             url::extractAreaInfo(adInfo.areaId.data(), logItem.geoInfo.country, logItem.geoInfo.province,
                                  logItem.geoInfo.city);
             logItem.adInfo.bidSize = adInfo.bidSize;
-		} else {
-			logItem.adInfo.pid = adInfo.pid;
+            logItem.adInfo.orderId = adInfo.orderId;
+        } else {
+            logItem.adInfo.pid = adInfo.pid;
             logItem.adInfo.bidSize = adInfo.bidSize;
         }
         return true;
@@ -95,12 +96,10 @@ namespace bidding {
         }
         //从BID Request中获取请求的广告位信息,目前只取第一个
         const BidRequest_Impression & adzInfo = bidRequest.impressions(0);
-        long pid = adzInfo.placement_id();
         AdSelectCondition queryCondition;
         queryCondition.adxid = ADX_TENCENT_GDT;
-        queryCondition.adxpid = std::to_string(pid);
         queryCondition.ip = bidRequest.ip();
-        queryCondition.basePrice = adzInfo.has_bid_floor()?adzInfo.bid_floor():0;
+        queryCondition.basePrice = adzInfo.has_bid_floor() ? adzInfo.bid_floor() : 0;
         IpManager & ipManager = IpManager::getInstance();
         queryCondition.dGeo = ipManager.getAreaByIp(queryCondition.ip.data());
         PreSetAdplaceInfo adplaceInfo;
@@ -109,8 +108,8 @@ namespace bidding {
             if (gdtAdplaceMap.find(createspecs)) {
                 GdtAdplace & gdtAdplace = gdtAdplaceMap.get(createspecs);
                 const std::pair<int, int> & sizePair
-					= gdtAdplaceSizeMap.get(std::make_pair(gdtAdplace.width, gdtAdplace.height));
-				adplaceInfo.sizeArray.push_back(std::make_pair(sizePair.first, sizePair.second));
+                    = gdtAdplaceSizeMap.get(std::make_pair(gdtAdplace.width, gdtAdplace.height));
+                adplaceInfo.sizeArray.push_back(std::make_pair(sizePair.first, sizePair.second));
                 adplaceInfo.flowType = gdtAdplace.flowType;
                 queryCondition.width = sizePair.first;
                 queryCondition.height = sizePair.second;
@@ -135,6 +134,9 @@ namespace bidding {
                 queryCondition.adxid = ADX_GDT_MOBILE;
                 queryCondition.mobileDevice = getGdtMobileDeviceType(device.os());
             } else if (devType == BidRequest_DeviceType::BidRequest_DeviceType_kDeviceTypePad) {
+                adplaceInfo.flowType = SOLUTION_FLOWTYPE_MOBILE;
+                queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
+                queryCondition.adxid = ADX_GDT_MOBILE;
                 queryCondition.mobileDevice = device.os() == BidRequest_OperatingSystem_kOSIOS
                                                   ? SOLUTION_DEVICE_IPAD
                                                   : SOLUTION_DEVICE_ANDROIDPAD;
@@ -142,6 +144,14 @@ namespace bidding {
                 queryCondition.mobileDevice = SOLUTION_DEVICE_OTHER;
                 queryCondition.pcOS = SOLUTION_OS_OTHER;
             }
+        }
+        if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE && bidRequest.has_app()) {
+            const BidRequest_App & app = bidRequest.app();
+            if (app.has_app_bundle_id()) {
+                queryCondition.adxpid = app.app_bundle_id();
+            }
+        } else if (adzInfo.has_placement_id()) {
+            queryCondition.adxpid = adzInfo.placement_id();
         }
         queryCondition.pAdplaceInfo = &adplaceInfo;
         if (!filterCb(this, queryCondition)) {
@@ -154,40 +164,23 @@ namespace bidding {
         return isBidAccepted = true;
     }
 
-	void GdtBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-										   const MT::common::SelectResult & result)
+    void GdtBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
+                                           const MT::common::SelectResult & result)
     {
         bidResponse.Clear();
         bidResponse.set_request_id(bidRequest.id());
         bidResponse.clear_seat_bids();
         BidResponse_SeatBid * seatBid = bidResponse.add_seat_bids();
-		const MT::common::Solution & finalSolution = result.solution;
-		const MT::common::ADPlace & adplace = result.adplace;
-		const MT::common::Banner & banner = result.banner;
+        const MT::common::Banner & banner = result.banner;
         // int advId = finalSolution.advId;
         const BidRequest_Impression & adzInfo = bidRequest.impressions(0);
         seatBid->set_impression_id(adzInfo.id());
         BidResponse_Bid * adResult = seatBid->add_bids();
         int maxCpmPrice = result.bidPrice;
         adResult->set_bid_price(maxCpmPrice);
-		adResult->set_creative_id(std::to_string(banner.bId));
+        adResult->set_creative_id(std::to_string(banner.bId));
         //缓存最终广告结果
-		adInfo.pid = std::to_string(adplace.pId);
-        adInfo.adxpid = queryCondition.adxpid;
-        adInfo.advId = finalSolution.advId;
-		adInfo.sid = finalSolution.sId;
-        adInfo.adxid = queryCondition.adxid;
-        adInfo.adxuid = bidRequest.user().id();
-		adInfo.bannerId = banner.bId;
-        adInfo.cpid = adInfo.advId;
-        adInfo.offerPrice = result.feePrice;
-        adInfo.priceType = finalSolution.priceType;
-        adInfo.ppid = result.ppid;
-        adInfo.bidSize = makeBidSize(banner.width, banner.height);
-
-        const std::string & userIp = bidRequest.ip();
-        IpManager & ipManager = IpManager::getInstance();
-        adInfo.areaId = ipManager.getAreaCodeStrByIp(userIp.data());
+        fillAdInfo(queryCondition, result, bidRequest.has_user() ? bidRequest.user().id() : "");
 
         // html snippet相关
         char showParam[2048];
@@ -201,7 +194,7 @@ namespace bidding {
     {
         std::string result;
         if (!writeProtoBufObject(bidResponse, &result)) {
-			LOG_ERROR << "failed to write protobuf object in GdtBiddingHandler::match";
+            LOG_ERROR << "failed to write protobuf object in GdtBiddingHandler::match";
             reject(response);
             return;
         }
@@ -216,7 +209,7 @@ namespace bidding {
         bidResponse.set_request_id(bidRequest.id());
         std::string result;
         if (!writeProtoBufObject(bidResponse, &result)) {
-			LOG_ERROR << "failed to write protobuf object in GdtBiddingHandler::reject";
+            LOG_ERROR << "failed to write protobuf object in GdtBiddingHandler::reject";
             return;
         }
         response.set_content_header("application/x-protobuf");

@@ -8,7 +8,6 @@
 
 #include "json.h"
 
-
 namespace adservice {
 namespace utility {
     namespace json {
@@ -18,7 +17,7 @@ namespace utility {
             char * p1 = str;
             char * p2 = p1;
             while (*p2 != '\0') {
-                if (*p2 == '\\' && p2[1] == '\"') {
+                if (*p2 == '\\' && p2[1] == '\\') {
                     p2++;
                 }
                 *p1++ = *p2++;

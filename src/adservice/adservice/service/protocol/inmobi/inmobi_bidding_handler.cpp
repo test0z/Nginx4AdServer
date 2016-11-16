@@ -1,13 +1,11 @@
-//
-// Created by guoze.lin on 16/5/3.
-//
+
 #include <sstream>
 
 #include "core/core_ip_manager.h"
 #include "core/core_typetable.h"
+#include "inmobi_bidding_handler.h"
 #include "logging.h"
 #include "utility/utility.h"
-#include "youku_bidding_handlerv2.h"
 
 namespace protocol {
 namespace bidding {
@@ -18,83 +16,99 @@ namespace bidding {
     using namespace adservice::utility::userclient;
     using namespace adservice::server;
 
-#define AD_YOUKU_CM_URL ""
-#define AD_YOUKU_FEED "http://show.mtty.com/v?of=3&p=%s&%s"
-#define AD_YOUKU_CLICK "http://click.mtty.com/c?%s"
-#define AD_YOUKU_PRICE "${AUCTION_PRICE}"
-#define YOUKU_DEVICE_HANDPHONE 0
-#define YOUKU_DEVICE_PAD 1
-#define YOUKU_DEVICE_PC 2
-#define YOUKU_DEVICE_TV 3
-#define YOUKU_OS_WINDOWS "Windows"
-#define YOUKU_OS_ANDROID "Android"
-#define YOUKU_OS_iPhone "ios"
-#define YOUKU_OS_MAC "Mac"
+#define INMOBI_DEV_MOBILEORPAD 1
+#define INMOBI_DEV_PC 2
+#define INMOBI_DEV_TV 3
+#define INMOBI_DEV_PHONE 4
+#define INMOBI_DEV_TABLET 5
+#define INMOBI_DEV_CONNECTEDDEVICE 6
+#define INMOBI_DEV_SETTOPBOX 7
 
-    static void fromYoukuDevTypeOsType(int devType,
-                                       const std::string & osType,
-                                       const std::string & ua,
-                                       int & flowType,
-                                       int & mobileDev,
-                                       int & pcOs,
-                                       std::string & pcBrowser)
-    {
-        if (devType == YOUKU_DEVICE_HANDPHONE) {
-            flowType = SOLUTION_FLOWTYPE_MOBILE;
-            if (!strcasecmp(osType.data(), YOUKU_OS_ANDROID)) {
-                mobileDev = SOLUTION_DEVICE_ANDROID;
-            } else if (!strcasecmp(osType.data(), YOUKU_OS_iPhone)) {
-                mobileDev = SOLUTION_DEVICE_IPHONE;
-            } else
-                mobileDev = SOLUTION_DEVICE_OTHER;
-        } else if (devType == YOUKU_DEVICE_PAD) {
-            flowType = SOLUTION_FLOWTYPE_MOBILE;
-            if (!strcasecmp(osType.data(), YOUKU_OS_ANDROID)) {
-                mobileDev = SOLUTION_DEVICE_ANDROIDPAD;
-            } else if (!strcasecmp(osType.data(), YOUKU_OS_iPhone)) {
-                mobileDev = SOLUTION_DEVICE_IPAD;
-            } else
-                mobileDev = SOLUTION_DEVICE_OTHER;
-        } else if (devType == YOUKU_DEVICE_PC) {
-            flowType = SOLUTION_FLOWTYPE_PC;
-            if (osType.empty()) {
-                pcOs = getOSTypeFromUA(ua);
-            } else {
-                if (!strcasecmp(osType.data(), YOUKU_OS_WINDOWS)) {
-                    pcOs = SOLUTION_OS_WINDOWS;
-                } else if (!strcasecmp(osType.data(), YOUKU_OS_MAC)) {
-                    pcOs = SOLUTION_OS_MAC;
+#define INMOBI_NETWORK_UNKNOWN 0
+#define INMOBI_NETWORK_ETHERNET 1
+#define INMOBI_NETWORK_WIFI 2
+#define INMOBI_NETWORK_CELLULAR_UNKNOWN 3
+#define INMOBI_NETWORK_CELLULAR_2G 4
+#define INMOBI_NETWORK_CELLULAR_3G 5
+#define INMOBI_NETWORK_CELLULAR_4G 6
+
+#define INMOBI_OS_ANDROID "android"
+#define INMOBI_OS_IOS "ios"
+#define INMOBI_OS_WINDOWS "windows"
+#define INMOBI_OS_MAC "mac"
+
+#define INMOBI_PRIVATE_AUCTION 0
+
+    namespace {
+        void fromInmobiDevTypeOsType(int devType,
+                                     const std::string & osType,
+                                     const std::string & ua,
+                                     int & flowType,
+                                     int & mobileDev,
+                                     int & pcOs,
+                                     std::string & pcBrowser)
+        {
+            if (devType == INMOBI_DEV_PHONE) {
+                flowType = SOLUTION_FLOWTYPE_MOBILE;
+                if (!strcasecmp(osType.data(), INMOBI_OS_ANDROID)) {
+                    mobileDev = SOLUTION_DEVICE_ANDROID;
+                } else if (!strcasecmp(osType.data(), INMOBI_OS_IOS)) {
+                    mobileDev = SOLUTION_DEVICE_IPHONE;
                 } else
-                    pcOs = SOLUTION_OS_OTHER;
+                    mobileDev = SOLUTION_DEVICE_OTHER;
+            } else if (devType == INMOBI_DEV_TABLET || devType == INMOBI_DEV_MOBILEORPAD) {
+                flowType = SOLUTION_FLOWTYPE_MOBILE;
+                if (!strcasecmp(osType.data(), INMOBI_OS_ANDROID)) {
+                    mobileDev = SOLUTION_DEVICE_ANDROIDPAD;
+                } else if (!strcasecmp(osType.data(), INMOBI_OS_IOS)) {
+                    mobileDev = SOLUTION_DEVICE_IPAD;
+                } else
+                    mobileDev = SOLUTION_DEVICE_OTHER;
+            } else if (devType == INMOBI_DEV_PC) {
+                flowType = SOLUTION_FLOWTYPE_PC;
+                if (osType.empty()) {
+                    pcOs = getOSTypeFromUA(ua);
+                } else {
+                    if (!strcasecmp(osType.data(), INMOBI_OS_WINDOWS)) {
+                        pcOs = SOLUTION_OS_WINDOWS;
+                    } else if (!strcasecmp(osType.data(), INMOBI_OS_MAC)) {
+                        pcOs = SOLUTION_OS_MAC;
+                    } else
+                        pcOs = SOLUTION_OS_OTHER;
+                }
+                pcBrowser = getBrowserTypeFromUA(ua);
+            } else { // connected device or set-top box or tv
+                flowType = SOLUTION_FLOWTYPE_MOBILE;
+                if (devType == INMOBI_DEV_TV) {
+                    mobileDev = SOLUTION_DEVICE_TV;
+                } else {
+                    mobileDev = SOLUTION_DEVICE_OTHER;
+                }
             }
-            pcBrowser = getBrowserTypeFromUA(ua);
+        }
+
+        int getInmobiNetwork(int network)
+        {
+            switch (network) {
+            case INMOBI_NETWORK_WIFI:
+                return SOLUTION_NETWORK_WIFI;
+            case INMOBI_NETWORK_CELLULAR_2G:
+                return SOLUTION_NETWORK_2G;
+            case INMOBI_NETWORK_CELLULAR_3G:
+                return SOLUTION_NETWORK_3G;
+            case INMOBI_NETWORK_CELLULAR_4G:
+                return SOLUTION_NETWORK_4G;
+            default:
+                return SOLUTION_NETWORK_ALL;
+            }
         }
     }
-
-    static int getNetwork(int network)
-    {
-        switch (network) {
-        case 0:
-        case 1:
-        case 3:
-            return SOLUTION_NETWORK_ALL;
-        case 2:
-            return SOLUTION_NETWORK_WIFI;
-        case 4:
-            return SOLUTION_NETWORK_2G;
-        case 5:
-            return SOLUTION_NETWORK_3G;
-        default:
-            return SOLUTION_NETWORK_ALL;
-        }
-    }
-
-    bool YoukuBiddingHandler::parseRequestData(const std::string & data)
+    bool InmobiBiddingHandler::parseRequestData(const std::string & data)
     {
         return parseJson(data.c_str(), bidRequest);
     }
 
-    bool YoukuBiddingHandler::fillLogItem(protocol::log::LogItem & logItem)
+    bool InmobiBiddingHandler::fillLogItem(protocol::log::LogItem & logItem)
     {
         logItem.reqStatus = 200;
         cppcms::json::value & deviceInfo = bidRequest["device"];
@@ -131,7 +145,7 @@ namespace bidding {
         return true;
     }
 
-    bool YoukuBiddingHandler::filter(const BiddingFilterCallback & filterCb)
+    bool InmobiBiddingHandler::filter(const BiddingFilterCallback & filterCb)
     {
         const cppcms::json::value & imp = bidRequest.find("imp");
         if (imp.is_undefined()) {
@@ -143,66 +157,74 @@ namespace bidding {
         }
 
         const cppcms::json::value & adzinfo = impressions[0];
-        std::string pid = adzinfo.get<std::string>("tagid");
+        std::string pid = adzinfo.get<std::string>("id");
         AdSelectCondition queryCondition;
-        queryCondition.adxid = ADX_YOUKU;
+        queryCondition.adxid = ADX_INMOBI;
         queryCondition.adxpid = pid;
-        queryCondition.basePrice = adzinfo.get<int>("bidfloor", 0);
-        adInfo.adxid = ADX_YOUKU;
-        cppcms::json::value bannerOrVideo = adzinfo.find("banner");
-        if (bannerOrVideo.is_undefined()) {
-            bannerOrVideo = adzinfo.find("video");
+        double priceFloor = adzinfo.get<double>("bidfloor", 0.0);
+        queryCondition.basePrice = (int)std::ceil(priceFloor);
+        boolean isNative = false;
+        cppcms::json::value adTypeObj = adzinfo.find("banner");
+        if (adTypeObj.is_undefined()) {
+            adTypeObj = adzinfo.find("video");
+            if (adTypeObj.is_undefined()) {
+                adTypeObj = adzinfo.find("native");
+                isNative = true;
+            }
         }
-        queryCondition.width = bannerOrVideo.get("w", 0);
-        queryCondition.height = bannerOrVideo.get("h", 0);
-
-        cppcms::json::value & device = bidRequest["device"];
+        if (!isNative) {
+            queryCondition.width = adTypeObj.get("w", 0);
+            queryCondition.height = adTypeObj.get("h", 0);
+        } else {
+            cppcms::json::value nativeAssets = adTypeObj.find("assets");
+            if (!nativeAssets.is_undefined()) {
+                const cppcms::json::array & assetsArray = nativeAssets.array();
+                if (assetsArray.size() > 0) {
+                    queryCondition.width = assetsArray[0].get("img.w", 0);
+                    queryCondition.height = assetsArray[0].get("img.h", 0);
+                }
+            }
+        }
+        cppcms::json::value & device = bidRequest.find("device");
         if (!device.is_undefined()) {
             std::string ip = device.get("ip", "");
             queryCondition.ip = ip;
-            int devType = device.get("devicetype", YOUKU_DEVICE_PC);
+            int devType = device.get("devicetype", INMOBI_DEV_MOBILEORPAD);
             std::string osType = device.get("os", "");
             std::string ua = device.get("ua", "");
-            fromYoukuDevTypeOsType(devType,
-                                   osType,
-                                   ua,
-                                   queryCondition.flowType,
-                                   queryCondition.mobileDevice,
-                                   queryCondition.pcOS,
-                                   queryCondition.pcBrowserStr);
+            fromInmobiDevTypeOsType(devType,
+                                    osType,
+                                    ua,
+                                    queryCondition.flowType,
+                                    queryCondition.mobileDevice,
+                                    queryCondition.pcOS,
+                                    queryCondition.pcBrowserStr);
             if (queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROID
                 || queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROIDPAD) {
-                std::string deviceId = device.get<std::string>("androidid", "");
+                std::string deviceId = device.get<std::string>("dpidmd5", "");
                 strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), sizeof(biddingFlowInfo.deviceIdBuf) - 1);
             } else if (queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD
                        || queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE) {
-                std::string deviceId = device.get<std::string>("idfa", "");
+                std::string deviceId = device.get<std::string>("didmd5", "");
                 strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), sizeof(biddingFlowInfo.deviceIdBuf) - 1);
             } else {
                 biddingFlowInfo.deviceIdBuf[0] = '\0';
             }
-            if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
-                queryCondition.adxid = ADX_YOUKU_MOBILE;
-                adInfo.adxid = ADX_YOUKU_MOBILE;
-            }
 
-            queryCondition.mobileNetwork = getNetwork(device.get("connectiontype", 0));
+            queryCondition.mobileNetwork = getInmobiNetwork(device.get("carrier", 0));
         }
-        const cppcms::json::value & siteContent = bidRequest.find("site.content.ext");
-        const cppcms::json::value & appContent = bidRequest.find("app.content.ext");
+        const cppcms::json::value & siteContent = bidRequest.find("site");
+        const cppcms::json::value & appContent = bidRequest.find("app");
         const cppcms::json::value & contentExt = siteContent.is_undefined() ? appContent : siteContent;
         if (!contentExt.is_undefined()) {
-            std::string channel = contentExt.get("channel", "");
-            std::string cs = contentExt.get("cs", "");
-            if (cs == "2070") {
-                channel = cs;
+            const cppcms::json::array & cats = contentExt.find("cat").array();
+            if (!cats.empty()) {
+                TypeTableManager & typeTableManager = TypeTableManager::getInstance();
+                queryCondition.mttyContentType = typeTableManager.getContentType(ADX_INMOBI, cats[0].str());
             }
-            TypeTableManager & typeTableManager = TypeTableManager::getInstance();
-            queryCondition.mttyContentType = typeTableManager.getContentType(ADX_YOUKU, channel);
         }
-        isDeal = false;
         const cppcms::json::value & pmp = adzinfo.find("pmp");
-        if (!pmp.is_undefined()) {
+        if (!pmp.is_undefined() && pmp.get("private_auction", 0) != INMOBI_PRIVATE_AUCTION) {
             // deal 请求
             const cppcms::json::array & deals = pmp.find("deals").array();
             if (!deals.empty()) {
@@ -213,7 +235,6 @@ namespace bidding {
                     ss << d << ",";
                 }
                 queryCondition.dealId = ss.str();
-                isDeal = true;
             }
         }
         if (!filterCb(this, queryCondition)) {
@@ -228,32 +249,34 @@ namespace bidding {
 
     static const char * BIDRESPONSE_TEMPLATE = R"(
 {
-	"id":"",
-	"bidid":"",
-	"seatbid":[
-		{
-			"bid":[
-				{
-					"adm":"",
-					"id":"",
-					"impid":"",
-					"nurl":"",
-					"price":"",
-					"crid":"",
-					"ext":{
-						"ldp":"",
-						"pm":[],
-						"cm":[],
-						"type":""
-					}
-				}
-			]
-		}
-	]
+    "id":"",
+    "bidid":"",
+    "seatbid":[
+        {
+          "seat":"1",
+          "bid":[
+                {
+                    "adm":"",
+                    "id":"",
+                    "impid":"",
+                    "nurl":"",
+                    "price":"",
+                    "crid":"",
+                    "ext":{
+                        "ldp":"",
+                        "pm":[],
+                        "cm":[],
+                        "type":""
+                    }
+                }
+            ]
+        }
+    ],
+    "cur":"CNY"
 })";
 
-    void YoukuBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-                                             const MT::common::SelectResult & result)
+    void InmobiBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
+                                              const MT::common::SelectResult & result)
     {
         const cppcms::json::value & adzInfo = bidRequest["imp"].array()[0];
         const MT::common::Solution & finalSolution = result.solution;
@@ -324,7 +347,7 @@ namespace bidding {
         bidValue["price"] = maxCpmPrice;
     }
 
-    void YoukuBiddingHandler::match(adservice::utility::HttpResponse & response)
+    void InmobiBiddingHandler::match(adservice::utility::HttpResponse & response)
     {
         std::string result = toJson(bidResponse);
         if (result.empty()) {
@@ -337,7 +360,7 @@ namespace bidding {
         }
     }
 
-    void YoukuBiddingHandler::reject(adservice::utility::HttpResponse & response)
+    void InmobiBiddingHandler::reject(adservice::utility::HttpResponse & response)
     {
         response.status(204);
         response.set_content_header("application/json; charset=utf-8");

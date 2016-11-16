@@ -106,6 +106,7 @@ namespace bidding {
             logItem.adInfo.bidSize = adInfo.bidSize;
             logItem.referer
                 = bidRequest.has_site() ? (bidRequest.site().has_page() ? bidRequest.site().page() : "") : "";
+            logItem.adInfo.orderId = adInfo.orderId;
         } else {
             logItem.adInfo.pid = adInfo.pid;
             logItem.adInfo.bidSize = adInfo.bidSize;
@@ -208,13 +209,13 @@ namespace bidding {
         char pjson[2048] = { '\0' };
         std::string strBannerJson = banner.json;
         strncat(pjson, strBannerJson.data(), sizeof(pjson));
-        tripslash2(pjson);
+        // tripslash2(pjson);
         cppcms::json::value bannerJson;
         parseJson(pjson, bannerJson);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string materialUrl;
         std::string landingUrl;
-        if (banner.bannerType == 4) {
+        if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
             materialUrl = mtlsArray[0].get("p6", "");
             landingUrl = mtlsArray[0].get("p9", "");
         } else {

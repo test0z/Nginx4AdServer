@@ -3,6 +3,7 @@
 //
 
 #include "abstract_bidding_handler.h"
+#include "core/core_ip_manager.h"
 #include "logging.h"
 #include "utility/utility.h"
 
@@ -10,7 +11,7 @@ namespace protocol {
 namespace bidding {
 
     using namespace adservice::utility::url;
-	using namespace adservice::utility::cypher;
+    using namespace adservice::utility::cypher;
 
     void extractSize(const std::string & size, int & width, int & height)
     {
@@ -62,12 +63,12 @@ namespace bidding {
         int len;
         if (showParamBuf != NULL) {
             len = snprintf(showParamBuf, showBufSize,
-                           "a=%s&b=%s&c=%ld&d=%ld&e=%ld&s=%s&o=%s&x=%d&r=%s&u=%s&tm=%ld&pt=%d&ep=%d",
+                           "a=%s&b=%s&c=%ld&d=%ld&e=%ld&s=%s&o=%s&x=%d&r=%s&u=%s&tm=%ld&pt=%d&od=%ld&ep=%d",
                            adInfo.areaId.c_str(), encodePrice(adInfo.offerPrice).c_str(), adInfo.bannerId, adInfo.advId,
                            adInfo.sid, adInfo.adxpid.c_str(), adInfo.pid.c_str(), adInfo.adxid, bid.c_str(),
-                           biddingFlowInfo.deviceIdBuf, time(NULL), adInfo.priceType, adInfo.ppid);
+                           biddingFlowInfo.deviceIdBuf, time(NULL), adInfo.priceType, adInfo.orderId, adInfo.ppid);
             if (len >= showBufSize) {
-				LOG_WARN << "In AbstractBiddingHandler::httpsnippet,showBufSize too small,actual:" << len;
+                LOG_WARN << "In AbstractBiddingHandler::httpsnippet,showBufSize too small,actual:" << len;
             }
         }
     }
@@ -82,14 +83,15 @@ namespace bidding {
             std::string encodedReferer;
             if (ref.size() > 0)
                 urlEncode_f(ref, encodedReferer, buffer);
-            int len = snprintf(clickParamBuf, clickBufSize,
-                               "s=%s&o=%s&b=%s&x=%d&r=%s&d=%ld&e=%ld&ep=%d&c=%ld&f=%s&h=000&a=%s&u=%s&pt=%d&url=%s",
-                               adInfo.adxpid.c_str(), adInfo.pid.c_str(), encodePrice(adInfo.offerPrice).c_str(),
-                               adInfo.adxid, adInfo.imp_id.c_str(), adInfo.advId, adInfo.sid, adInfo.ppid,
-                               adInfo.bannerId, encodedReferer.c_str(), adInfo.areaId.c_str(),
-                               biddingFlowInfo.deviceIdBuf, adInfo.priceType, encodedLandingUrl.c_str());
+            int len
+                = snprintf(clickParamBuf, clickBufSize,
+                           "s=%s&o=%s&b=%s&x=%d&r=%s&d=%ld&e=%ld&ep=%d&c=%ld&f=%s&h=000&a=%s&u=%s&pt=%d&od=%ld&url=%s",
+                           adInfo.adxpid.c_str(), adInfo.pid.c_str(), encodePrice(adInfo.offerPrice).c_str(),
+                           adInfo.adxid, adInfo.imp_id.c_str(), adInfo.advId, adInfo.sid, adInfo.ppid, adInfo.bannerId,
+                           encodedReferer.c_str(), adInfo.areaId.c_str(), biddingFlowInfo.deviceIdBuf, adInfo.priceType,
+                           adInfo.orderId, encodedLandingUrl.c_str());
             if (len >= clickBufSize) {
-				LOG_WARN << "in AbstractBiddingHandler::getClickPara,clickBufSize too small,actual:" << len;
+                LOG_WARN << "in AbstractBiddingHandler::getClickPara,clickBufSize too small,actual:" << len;
             }
         }
     }
@@ -103,7 +105,7 @@ namespace bidding {
         size_t len = (size_t)snprintf(html, sizeof(html), SNIPPET_IFRAME, width, height, SNIPPET_SHOW_URL, extShowBuf,
                                       showBuf, cookieMappingUrl);
         if (len >= sizeof(html)) {
-			LOG_WARN << "generateHtmlSnippet buffer size not enough,needed:" << len;
+            LOG_WARN << "generateHtmlSnippet buffer size not enough,needed:" << len;
         }
         return std::string(html, html + len);
     }
@@ -119,9 +121,37 @@ namespace bidding {
         int len = snprintf(script, sizeof(script), SNIPPET_SCRIPT, width, height, scriptUrl, showBuf, clickBuf,
                            clickBuf, extParam, clickMacro);
         if (len >= (int)sizeof(script)) {
-			LOG_WARN << "generateScript buffer size not enough,needed:" << len;
+            LOG_WARN << "generateScript buffer size not enough,needed:" << len;
         }
         return std::string(script, script + len);
+    }
+
+    void AbstractBiddingHandler::fillAdInfo(const AdSelectCondition & selectCondition,
+                                            const MT::common::SelectResult & result,
+                                            const std::string & adxUser)
+    {
+        const MT::common::Solution & finalSolution = result.solution;
+        const MT::common::ADPlace & adplace = result.adplace;
+        const MT::common::Banner & banner = result.banner;
+
+        adInfo.pid = std::to_string(adplace.pId);
+        adInfo.adxpid = selectCondition.adxpid;
+        adInfo.sid = finalSolution.sId;
+
+        auto advId = finalSolution.advId;
+        adInfo.advId = advId;
+        adInfo.adxid = selectCondition.adxid;
+        adInfo.adxuid = adxUser;
+        adInfo.bannerId = banner.bId;
+        adInfo.cid = adplace.cId;
+        adInfo.mid = adplace.mId;
+        adInfo.cpid = adInfo.advId;
+        adInfo.bidSize = makeBidSize(banner.width, banner.height);
+        adInfo.priceType = finalSolution.priceType;
+        adInfo.ppid = result.ppid;
+        adInfo.orderId = result.orderId;
+        adInfo.offerPrice = result.feePrice;
+        adInfo.areaId = adservice::server::IpManager::getInstance().getAreaCodeStrByIp(selectCondition.ip.data());
     }
 }
 }

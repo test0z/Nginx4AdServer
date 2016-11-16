@@ -3,22 +3,32 @@
 
 #include "utility/url.h"
 
-#include <aerospike/as_record.h>
+#include <mtty/aerospike.h>
 
 namespace adservice {
 namespace core {
 	namespace model {
 
-		class SourceRecord {
+		class SourceId : public MT::common::ASEntity {
+		public:
+			SourceId() = default;
+
+			const std::string & get() const;
+
+		private:
+			std::string val_;
+
+		protected:
+			virtual void record(const as_record * record) override;
+		};
+
+		class SourceRecord : public MT::common::ASEntity {
 		public:
 			SourceRecord() = default;
 
 			SourceRecord(utility::url::ParamMap & paramMap, protocol::log::LogItem & log);
 
-			~SourceRecord();
-
 			void record(const as_record & record);
-			as_record * record();
 
 			int64_t time() const;
 			const std::string & advId() const;
@@ -47,7 +57,8 @@ namespace core {
 			std::string refererUrl_; // 来源页
 			std::string bidPrice_;   // 出价价格
 
-			as_record * record_{ nullptr };
+		protected:
+			virtual void record(const as_record * record) override;
 		};
 
 	} // namespace model

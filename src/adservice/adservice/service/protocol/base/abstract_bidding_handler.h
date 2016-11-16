@@ -10,12 +10,12 @@
 
 #include <mtty/types.h>
 
-#include "common/constants.h"
 #include "common/functions.h"
 #include "common/types.h"
 #include "core/adselectv2/ad_select_interface.h"
 #include "protocol/log/log.h"
 #include "utility/utility.h"
+#include <mtty/constants.h>
 
 namespace protocol {
 namespace bidding {
@@ -75,8 +75,8 @@ namespace bidding {
         /**
          * 将匹配结果转换为具体平台的格式的结果
          */
-		virtual void buildBidResult(const AdSelectCondition & selectCondition, const MT::common::SelectResult & result)
-			= 0;
+        virtual void buildBidResult(const AdSelectCondition & selectCondition, const MT::common::SelectResult & result)
+            = 0;
 
         /**
          * 当接受流量时装配合适的输出
@@ -112,6 +112,9 @@ namespace bidding {
         void getClickPara(const std::string & bid, char * clickParamBuf, int clickBufSize, const std::string & ref,
                           const std::string & landingurl);
         int extractRealValue(const std::string & input, int adx);
+
+        void fillAdInfo(const AdSelectCondition & selectCondition, const MT::common::SelectResult & result,
+                        const std::string & adxUser);
 
     protected:
         //最近一次匹配的结果

@@ -3,6 +3,9 @@
 #include <string>
 
 #include <sys/types.h>
+#include <unistd.h>
+
+#include <boost/algorithm/string.hpp>
 
 extern "C" {
 #include <ngx_config.h>
@@ -13,7 +16,6 @@ extern "C" {
 #include <ngx_string.h>
 }
 
-#include "common/constants.h"
 #include "core/adselectv2/ad_select_client.h"
 #include "core/config_types.h"
 #include "core/core_ip_manager.h"
@@ -26,10 +28,8 @@ extern "C" {
 #include "logging.h"
 #include "protocol/debug/debug.pb.h"
 #include "protocol/guangyin/guangyin_bidding_handler.h"
-#include "utility/aero_spike.h"
 #include "utility/utility.h"
-#include <boost/algorithm/string.hpp>
-#include <unistd.h>
+#include <mtty/constants.h>
 
 struct LocationConf {
     //运行日志级别
@@ -204,6 +204,7 @@ adservice::adselectv2::AdSelectClientPtr adSelectClient;
 ngx_log_t * globalLog;
 bool inDebugSession = false;
 void * debugSession = nullptr;
+MT::common::Aerospike aerospikeClient;
 
 #define NGX_STR_2_STD_STR(str) std::string((const char *)str.data, (const char *)str.data + str.len)
 #define NGX_BOOL(b) (b == TRUE)
@@ -214,11 +215,11 @@ void parseConfigAeroSpikeNode(const std::string & asNode, AerospikeConfig & conf
     while ((nextPos = asNode.find(",", prevPos)) != std::string::npos) {
         size_t portPos = 0;
         if ((portPos = asNode.find(":", prevPos)) != std::string::npos) {
-            config.connections.push_back(AerospikeConfig::Connection(
+            config.connections.push_back(MT::common::ASConnection(
                 std::string(asNode.data() + prevPos, asNode.data() + portPos), std::stoi(asNode.data() + portPos + 1)));
         } else {
             config.connections.push_back(
-                AerospikeConfig::Connection(std::string(asNode.data() + prevPos, asNode.data() + nextPos), 3000));
+                MT::common::ASConnection(std::string(asNode.data() + prevPos, asNode.data() + nextPos), 3000));
         }
         prevPos = nextPos + 1;
     }
@@ -243,9 +244,12 @@ void setGlobalLoggingLevel(int loggingLevel)
 
 static void global_init(LocationConf * conf)
 {
-    globalMutex.lock();
-    if (serviceInitialized)
+    std::unique_lock<std::mutex> lock(globalMutex);
+
+    if (serviceInitialized) {
         return;
+    }
+
     globalConfig.serverConfig.loggingLevel = (int)conf->logginglevel;
     setGlobalLoggingLevel(globalConfig.serverConfig.loggingLevel);
     globalConfig.logConfig.kafkaBroker = NGX_STR_2_STD_STR(conf->kafkabroker);
@@ -256,16 +260,22 @@ static void global_init(LocationConf * conf)
     globalConfig.logConfig.localLoggerThreads = conf->localloggerthreads;
     globalConfig.adselectConfig.adselectNode = NGX_STR_2_STD_STR(conf->adselectentry);
     parseConfigAdselectTimeout(NGX_STR_2_STD_STR(conf->adselecttimeout), globalConfig.adselectConfig.adselectTimeout);
+
     globalConfig.aerospikeConfig.nameSpace = NGX_STR_2_STD_STR(conf->asnamespace);
     std::string asNode = NGX_STR_2_STD_STR(conf->asnode);
     parseConfigAeroSpikeNode(asNode, globalConfig.aerospikeConfig);
+    aerospikeClient.setConnection(globalConfig.aerospikeConfig.connections);
+    aerospikeClient.connect();
+
     std::string workdir = NGX_STR_2_STD_STR(conf->workdir);
     chdir(workdir.c_str());
+
     pid_t currentPid = getpid();
     std::cerr << "current pid:" << (int64_t)currentPid << std::endl;
     if (serviceLogger.use_count() != 0) {
         serviceLogger->stop();
     }
+
     serviceLogger = adservice::log::LogPusher::getLogger(MTTY_SERVICE_LOGGER,
                                                          CONFIG_LOG,
                                                          globalConfig.logConfig.localLoggerThreads,
@@ -286,7 +296,6 @@ static void global_init(LocationConf * conf)
     std::cerr << "current working directory:" << cwd << std::endl;
 
     serviceInitialized = true;
-    globalMutex.unlock();
 }
 
 void read_header(ngx_http_request_t * r, adservice::utility::HttpRequest & httpRequest)
@@ -315,7 +324,7 @@ void read_header(ngx_http_request_t * r, adservice::utility::HttpRequest & httpR
     std::stringstream cookiesstream;
     ngx_table_elt_t ** cookies = (ngx_table_elt_t **)r->headers_in.cookies.elts;
     for (ngx_uint_t i = 0; i < r->headers_in.cookies.nelts; ++i) {
-        cookiesstream << parseKey(cookies[i]) << "=" << parseValue(cookies[i]) << ";";
+        cookiesstream << parseValue(cookies[i]) << ";";
     }
     httpRequest.set(COOKIE, cookiesstream.str());
 }
@@ -380,7 +389,7 @@ void makeDebugRequest(adservice::utility::HttpRequest & request, protocol::debug
     } else {
         request.set_post_data(debugRequest.requestdata());
     }
-    std::cerr << request.path_info() << " " << request.request_method() << std::endl;
+    // std::cerr << request.path_info() << " " << request.request_method() << std::endl;
 }
 
 void dispatchRequest(adservice::utility::HttpRequest & request, adservice::utility::HttpResponse & response)

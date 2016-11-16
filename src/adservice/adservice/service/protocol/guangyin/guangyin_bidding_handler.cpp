@@ -123,6 +123,7 @@ namespace bidding {
             logItem.adInfo.priceType = adInfo.priceType;
             logItem.adInfo.ppid = adInfo.ppid;
             logItem.referer = bidRequest_.has_site() ? bidRequest_.site().page() : "";
+            logItem.adInfo.orderId = adInfo.orderId;
         } else {
             logItem.adInfo.pid = adInfo.pid;
             logItem.adInfo.bidSize = adInfo.bidSize;
@@ -163,10 +164,16 @@ namespace bidding {
             queryCondition.mobileNetwork = getNetWork(device.connectiontype());
             if (bidRequest_.has_app()) {
                 const App & app = bidRequest_.app();
-                if (app.has_bundle()) {
-                    queryCondition.adxpid = app.bundle();
-                } else if (app.has_publisher()) {
+                if (app.has_id()) {
+                    queryCondition.adxpid = app.id();
+                }
+                if (queryCondition.adxpid.empty() && app.has_publisher()) {
                     queryCondition.adxpid = app.publisher().slot();
+                }
+            } else if (bidRequest_.has_site()) {
+                const Site & site = bidRequest_.site();
+                if (site.has_publisher()) {
+                    queryCondition.adxpid = site.publisher().slot();
                 }
             }
         } else {
@@ -201,32 +208,13 @@ namespace bidding {
         bidResponse_.clear_seatbid();
 
         const MT::common::Solution & finalSolution = result.solution;
-        const MT::common::ADPlace & adplace = result.adplace;
         const MT::common::Banner & banner = result.banner;
 
         //缓存最终广告结果
-        adInfo.pid = std::to_string(adplace.pId);
-        adInfo.adxpid = queryCondition.adxpid;
-        adInfo.sid = finalSolution.sId;
-
-        auto advId = finalSolution.advId;
-        adInfo.advId = advId;
-        adInfo.adxid = queryCondition.adxid;
-        adInfo.adxuid = bidRequest_.user().id();
-        adInfo.bannerId = banner.bId;
-        adInfo.cid = adplace.cId;
-        adInfo.mid = adplace.mId;
-        adInfo.cpid = adInfo.advId;
-        adInfo.bidSize = makeBidSize(banner.width, banner.height);
-        adInfo.priceType = finalSolution.priceType;
-        adInfo.ppid = result.ppid;
+        fillAdInfo(queryCondition, result, bidRequest_.user().id());
 
         const Imp & imp = bidRequest_.imp(0);
         float maxCpmPrice = (float)result.bidPrice;
-        adInfo.offerPrice = result.feePrice;
-
-        const std::string & userIp = bidRequest_.device().ip();
-        adInfo.areaId = adservice::server::IpManager::getInstance().getAreaCodeStrByIp(userIp.c_str());
 
         SeatBid * seatBid = bidResponse_.add_seatbid();
         seatBid->set_seat("5761460d3ada7515003d3589");
@@ -245,7 +233,7 @@ namespace bidding {
 
         cppcms::json::value bannerJson;
         std::stringstream ss;
-        ss << boost::algorithm::erase_all_copy(banner.json, "\\");
+        ss << banner.json; // boost::algorithm::erase_all_copy(banner.json, "\\");
         ss >> bannerJson;
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         if (banner.bannerType == 5) {

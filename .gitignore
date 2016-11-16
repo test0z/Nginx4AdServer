@@ -8,6 +8,7 @@ objs
 nginx
 adservice.dist
 adservice.tgz
+.user
 src/adservice/build-adservice-Desktop-Default
 build-adservice-*
 *.user
