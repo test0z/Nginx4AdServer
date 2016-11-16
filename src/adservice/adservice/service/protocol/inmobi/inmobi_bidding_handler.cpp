@@ -166,7 +166,7 @@ namespace bidding {
         queryCondition.adxpid = pid;
         double priceFloor = adzinfo.get<double>("bidfloor", 0.0);
         queryCondition.basePrice = (int)std::ceil(priceFloor);
-        boolean isNative = false;
+        bool isNative = false;
         cppcms::json::value adTypeObj = adzinfo.find("banner");
         if (adTypeObj.is_undefined()) {
             adTypeObj = adzinfo.find("video");
@@ -188,7 +188,7 @@ namespace bidding {
                 }
             }
         }
-        cppcms::json::value & device = bidRequest.find("device");
+        const cppcms::json::value & device = bidRequest.find("device");
         if (!device.is_undefined()) {
             std::string ip = device.get("ip", "");
             queryCondition.ip = ip;
