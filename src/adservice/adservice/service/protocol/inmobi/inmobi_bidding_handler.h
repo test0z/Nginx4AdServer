@@ -47,4 +47,6 @@ namespace bidding {
         cppcms::json::value bidRequest;
         cppcms::json::value bidResponse;
     };
+}
+}
 #endif

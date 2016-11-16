@@ -6,6 +6,7 @@
 #include "common/atomic.h"
 #include "protocol/baidu/baidu_bidding_handler.h"
 #include "protocol/guangyin/guangyin_bidding_handler.h"
+#include "protocol/inmobi/inmobi_bidding_handler.h"
 #include "protocol/netease/netease_bidding_handlerv2.h"
 #include "protocol/sohu/sohu_bidding_handler.h"
 #include "protocol/tanx/tanx_bidding_handler.h"
@@ -63,6 +64,8 @@ namespace corelogic {
         ADD_MODULE_ENTRY(BID_QUERY_PATH_NETEASE, ADX_NETEASE_MOBILE);
         //光阴网络ADX
         ADD_MODULE_ENTRY(BID_QUERY_PATH_GUANGYIN, ADX_GUANGYIN);
+        // inmobi ADX
+        ADD_MODULE_ENTRY(BID_QUERY_PATH_INMOBI, ADX_INMOBI);
 
         std::sort<int *>(moduleIdx, moduleIdx + moduleCnt, [](const int & a, const int & b) {
             return moduleAdx[a].moduleHash < moduleAdx[b].moduleHash;
@@ -106,6 +109,8 @@ namespace corelogic {
             return new NetEaseBiddingHandler();
         case ADX_GUANGYIN:
             return new GuangyinBiddingHandler();
+        case ADX_INMOBI:
+            return new InmobiBiddingHandler();
         default:
             return NULL;
         }

@@ -39,6 +39,9 @@ namespace bidding {
 
 #define INMOBI_PRIVATE_AUCTION 0
 
+#define INMOBI_PRICE_MACRO "${AUCTION_PRICE}"
+#define AD_INMOBI_FEED "http://show.mtty.com/v?of=3&p=%s&%s"
+
     namespace {
         void fromInmobiDevTypeOsType(int devType,
                                      const std::string & osType,
@@ -163,7 +166,7 @@ namespace bidding {
         queryCondition.adxpid = pid;
         double priceFloor = adzinfo.get<double>("bidfloor", 0.0);
         queryCondition.basePrice = (int)std::ceil(priceFloor);
-        boolean isNative = false;
+        bool isNative = false;
         cppcms::json::value adTypeObj = adzinfo.find("banner");
         if (adTypeObj.is_undefined()) {
             adTypeObj = adzinfo.find("video");
@@ -185,7 +188,7 @@ namespace bidding {
                 }
             }
         }
-        cppcms::json::value & device = bidRequest.find("device");
+        const cppcms::json::value & device = bidRequest.find("device");
         if (!device.is_undefined()) {
             std::string ip = device.get("ip", "");
             queryCondition.ip = ip;
@@ -201,11 +204,11 @@ namespace bidding {
                                     queryCondition.pcBrowserStr);
             if (queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROID
                 || queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROIDPAD) {
-                std::string deviceId = device.get<std::string>("dpidmd5", "");
+                std::string deviceId = device.get<std::string>("didmd5", "");
                 strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), sizeof(biddingFlowInfo.deviceIdBuf) - 1);
             } else if (queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD
                        || queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE) {
-                std::string deviceId = device.get<std::string>("didmd5", "");
+                std::string deviceId = device.get<std::string>("idfamd5", "");
                 strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), sizeof(biddingFlowInfo.deviceIdBuf) - 1);
             } else {
                 biddingFlowInfo.deviceIdBuf[0] = '\0';
@@ -304,16 +307,10 @@ namespace bidding {
         // tripslash2(pjson);
         cppcms::json::value bannerJson;
         parseJson(pjson, bannerJson);
-        cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
-        std::string materialUrl = mtlsArray[0]["p0"].str();
-        std::string landingUrl = mtlsArray[0]["p1"].str();
-        std::string tview = bannerJson["tview"].str();
 
-        cppcms::json::value & extValue = bidValue["ext"];
         char showParam[2048];
-        char clickParam[2048];
         getShowPara(requestId, showParam, sizeof(showParam));
-        if (isDeal && finalSolution.dDealId != "0") { // deal 加特殊参数w
+        if (!queryCondition.dealId.empty() && finalSolution.dDealId != "0") { // deal 加特殊参数w
             char dealParam[256];
             int dealParamLen
                 = snprintf(dealParam, sizeof(dealParam), "&" URL_YOUKU_DEAL "=%s", finalSolution.dDealId.data());
@@ -321,27 +318,16 @@ namespace bidding {
             bidValue["dealid"] = finalSolution.dDealId;
         }
         char buffer[2048];
-        snprintf(buffer, sizeof(buffer), AD_YOUKU_FEED, AD_YOUKU_PRICE, showParam); //包含of=3
+        snprintf(buffer, sizeof(buffer), AD_INMOBI_FEED, INMOBI_PRICE_MACRO, showParam); //包含of=3
         bidValue["nurl"] = buffer;
         std::string crid = std::to_string(adInfo.bannerId);
         bidValue["crid"] = crid;
-        if (!adzInfo.find("video").is_undefined()
-            || queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) { //视频流量 adm为素材地址 ldp为点击链
-            bidValue["adm"] = materialUrl;
-            getClickPara(requestId, clickParam, sizeof(clickParam), "", landingUrl);
-            snprintf(buffer, sizeof(buffer), AD_YOUKU_CLICK, clickParam);
-            std::string cm = buffer;
-            extValue["ldp"] = cm;
-            if (!tview.empty()) {
-                cppcms::json::array & extPmArray = extValue["pm"].array();
-                extPmArray.push_back(cppcms::json::value(tview));
-            }
-        } else { //动态创意流量 adm为iframe 设置type
+        if (banner.bannerType != BANNER_TYPE_PRIMITIVE) { //非原生创意
             int w = banner.width;
             int h = banner.height;
             std::string html = generateHtmlSnippet(requestId, w, h, "of=2&", "");
             bidValue["adm"] = html;
-            extValue["type"] = "c";
+        } else { //设置admobject
         }
         int maxCpmPrice = result.bidPrice;
         bidValue["price"] = maxCpmPrice;
@@ -351,7 +337,7 @@ namespace bidding {
     {
         std::string result = toJson(bidResponse);
         if (result.empty()) {
-            LOG_ERROR << "YoukuBiddingHandler::match failed to parse obj to json";
+            LOG_ERROR << "InmobiBiddingHandler::match failed to parse obj to json";
             reject(response);
         } else {
             response.status(200);
