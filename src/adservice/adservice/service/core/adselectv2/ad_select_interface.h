@@ -74,6 +74,8 @@ namespace adselectv2 {
         int mobileNetWorkProvider{ 0 };
         //需要匹配的内容类型
         int mttyContentType{ 0 };
+        //需要匹配的banner 类型
+        int bannerType{ 0 };
         // 预设的广告位信息,比如从ADX流量获取的信息填充到这里,可以省略在ES中对广告位的查询
         PreSetAdplaceInfo * pAdplaceInfo{ nullptr };
     };
@@ -100,6 +102,7 @@ namespace adselectv2 {
         os << "mobileDevice:" << condition.mobileDevice << ",";
         os << "mobileNetwork:" << condition.mobileNetwork << ",";
         os << "mobileNetworkProvider:" << condition.mobileNetWorkProvider << ",";
+        os << "bannerType:" << condition.bannerType << ",";
         os << "dealId:" << condition.dealId;
         if (condition.pAdplaceInfo != nullptr) {
             os << "," << *condition.pAdplaceInfo;

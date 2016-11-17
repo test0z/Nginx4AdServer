@@ -89,6 +89,15 @@ namespace bidding {
         }
     }
 
+    static bool replace(std::string & str, const std::string & from, const std::string & to)
+    {
+        size_t start_pos = str.find(from);
+        if (start_pos == std::string::npos)
+            return false;
+        str.replace(start_pos, from.length(), to);
+        return true;
+    }
+
     bool YoukuBiddingHandler::parseRequestData(const std::string & data)
     {
         return parseJson(data.c_str(), bidRequest);
@@ -149,13 +158,34 @@ namespace bidding {
         queryCondition.adxpid = pid;
         queryCondition.basePrice = adzinfo.get<int>("bidfloor", 0);
         adInfo.adxid = ADX_YOUKU;
-        cppcms::json::value bannerOrVideo = adzinfo.find("banner");
-        if (bannerOrVideo.is_undefined()) {
-            bannerOrVideo = adzinfo.find("video");
+        PreSetAdplaceInfo adplaceInfo;
+        bool isNative = false;
+        cppcms::json::value adObject = adzinfo.find("banner");
+        if (adObject.is_undefined()) {
+            adObject = adzinfo.find("video");
+            if (adObject.is_undefined()) {
+                adObject = adzinfo.find("native");
+                isNative = true;
+            }
         }
-        queryCondition.width = bannerOrVideo.get("w", 0);
-        queryCondition.height = bannerOrVideo.get("h", 0);
-
+        if (!isNative) {
+            queryCondition.width = adObject.get("w", 0);
+            queryCondition.height = adObject.get("h", 0);
+        } else {
+            queryCondition.bannerType = BANNER_TYPE_PRIMITIVE;
+            const cppcms::json::array & assets = adObject.find("assets").array();
+            if (assets.size() > 0) {
+                for (uint32_t i = 0; i < assets.size(); i++) {
+                    const cppcms::json::value & asset = assets[i];
+                    queryCondition.width = asset.get("image_url.w", 750);
+                    queryCondition.height = asset.get("image_url.h", 350);
+                    adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
+                }
+                queryCondition.pAdplaceInfo = &adplaceInfo;
+            } else {
+                return false;
+            }
+        }
         cppcms::json::value & device = bidRequest["device"];
         if (!device.is_undefined()) {
             std::string ip = device.get("ip", "");
@@ -282,8 +312,6 @@ namespace bidding {
         cppcms::json::value bannerJson;
         parseJson(pjson, bannerJson);
         cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
-        std::string materialUrl = mtlsArray[0]["p0"].str();
-        std::string landingUrl = mtlsArray[0]["p1"].str();
         std::string tview = bannerJson["tview"].str();
 
         cppcms::json::value & extValue = bidValue["ext"];
@@ -293,7 +321,7 @@ namespace bidding {
         if (isDeal && finalSolution.dDealId != "0") { // deal 加特殊参数w
             char dealParam[256];
             int dealParamLen
-                = snprintf(dealParam, sizeof(dealParam), "&" URL_YOUKU_DEAL "=%s", finalSolution.dDealId.data());
+                = snprintf(dealParam, sizeof(dealParam), "&" URL_DEAL_ID "=%s", finalSolution.dDealId.data());
             strncat(showParam, dealParam, dealParamLen);
             bidValue["dealid"] = finalSolution.dDealId;
         }
@@ -304,7 +332,29 @@ namespace bidding {
         bidValue["crid"] = crid;
         if (!adzInfo.find("video").is_undefined()
             || queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) { //视频流量 adm为素材地址 ldp为点击链
-            bidValue["adm"] = materialUrl;
+            std::string landingUrl;
+            if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
+                int nativeTemplateId = 0;
+                const cppcms::json::array & assets = adzInfo.find("native.assets").array();
+                std::string title = mtlsArray[0]["p0"].str();
+                for (uint32_t i = 0; i < assets.size(); i++) {
+                    const cppcms::json::value & asset = assets[i];
+                    int w = asset.get("image_url.w", 0);
+                    int h = asset.get("image_url.h", 0);
+                    uint32_t titleLen = asset.get("title.len", 0);
+                    if (w == banner.width && h == banner.height && title.length() <= titleLen) {
+                        nativeTemplateId = asset.get("native_template_id", 0);
+                        break;
+                    }
+                }
+                bidValue["native.native_template_id"] = nativeTemplateId;
+                landingUrl = mtlsArray[0]["p9"].str();
+                replace(landingUrl, "{{click}}", "");
+            } else {
+                std::string materialUrl = mtlsArray[0]["p0"].str();
+                bidValue["adm"] = materialUrl;
+                landingUrl = mtlsArray[0]["p1"].str();
+            }
             getClickPara(requestId, clickParam, sizeof(clickParam), "", landingUrl);
             snprintf(buffer, sizeof(buffer), AD_YOUKU_CLICK, clickParam);
             std::string cm = buffer;

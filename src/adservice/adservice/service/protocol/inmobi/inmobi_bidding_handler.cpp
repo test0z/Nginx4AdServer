@@ -313,7 +313,7 @@ namespace bidding {
         if (!queryCondition.dealId.empty() && finalSolution.dDealId != "0") { // deal 加特殊参数w
             char dealParam[256];
             int dealParamLen
-                = snprintf(dealParam, sizeof(dealParam), "&" URL_YOUKU_DEAL "=%s", finalSolution.dDealId.data());
+                = snprintf(dealParam, sizeof(dealParam), "&" URL_DEAL_ID "=%s", finalSolution.dDealId.data());
             strncat(showParam, dealParam, dealParamLen);
             bidValue["dealid"] = finalSolution.dDealId;
         }

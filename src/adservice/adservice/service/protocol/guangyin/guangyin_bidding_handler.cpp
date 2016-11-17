@@ -236,7 +236,7 @@ namespace bidding {
         ss << banner.json; // boost::algorithm::erase_all_copy(banner.json, "\\");
         ss >> bannerJson;
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
-        if (banner.bannerType == 5) {
+        if (banner.bannerType == BANNER_TYPE_HTML) {
             std::string base64html = mtlsArray[0].get("p0", "");
             std::string html;
             adservice::utility::cypher::urlsafe_base64decode(base64html, html);

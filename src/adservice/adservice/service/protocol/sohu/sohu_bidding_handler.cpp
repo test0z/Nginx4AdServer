@@ -145,10 +145,16 @@ namespace bidding {
             const Request_Impression_Banner & banner = adzInfo.banner();
             queryCondition.width = banner.width();
             queryCondition.height = banner.height();
+            if (queryCondition.flowType == SOLUTION_FLOWTYPE_PC) {
+                queryCondition.bannerType = BANNER_TYPE_PIC;
+            } else {
+                queryCondition.bannerType = BANNER_TYPE_MOBILE;
+            }
         } else if (adzInfo.has_video()) {
             const Request_Impression_Video & video = adzInfo.video();
             queryCondition.width = video.width();
             queryCondition.height = video.height();
+            queryCondition.bannerType = BANNER_TYPE_VIDEO;
         }
         if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
             auto size = sohuSizeMap.get({ queryCondition.width, queryCondition.height });
@@ -183,7 +189,7 @@ namespace bidding {
         const MT::common::ADPlace & adplace = result.adplace;
         const MT::common::Banner & banner = result.banner;
         int advId = finalSolution.advId;
-        // const Request_Impression& adzInfo = bidRequest.impression(0);
+        const Request_Impression & adzInfo = bidRequest.impression(0);
         int maxCpmPrice = result.bidPrice;
         adResult->set_price(maxCpmPrice);
 
@@ -223,11 +229,16 @@ namespace bidding {
             landingUrl = mtlsArray[0].get("p1", "");
         }
         adResult->set_adurl(materialUrl);
-        //            adResult->set_adpara()
-        //            adResult->set_ext()
-        adResult->set_displaypara(getDisplayPara());
-        adResult->set_clickpara(getSohuClickPara(landingUrl));
-        //            adResult->set_adm_url()
+        std::string displayParam = getDisplayPara();
+        std::string clickParam = getSohuClickPara(landingUrl);
+        if (!queryCondition.dealId.empty()) {
+            displayParam += "&" URL_DEAL_ID "=";
+            displayParam += adzInfo.campaignid();
+            clickParam += "&" URL_DEAL_ID "=";
+            clickParam += adzInfo.campaignid();
+        }
+        adResult->set_displaypara(displayParam);
+        adResult->set_clickpara(clickParam);
     }
 
     void SohuBiddingHandler::match(adservice::utility::HttpResponse & response)

@@ -64,10 +64,10 @@ namespace corelogic {
         }
     }
 
-    void calcPrice(int adx, bool isYoukuDeal, int decodePrice, int offerPrice, int & cost, int & bidPrice,
+    void calcPrice(int adx, bool isDeal, int decodePrice, int offerPrice, int & cost, int & bidPrice,
                    protocol::log::LogPhaseType logPhase, int priceType = PRICETYPE_RRTB_CPM)
     {
-        if (((adx == ADX_YOUKU || adx == ADX_YOUKU_MOBILE) && isYoukuDeal) || adx == ADX_NETEASE_MOBILE) {
+        if (isDeal || adx == ADX_NETEASE_MOBILE) {
             cost = decodePrice;
             bidPrice = offerPrice == 0 ? cost : offerPrice;
         } else {
@@ -189,8 +189,8 @@ namespace corelogic {
             if ((iter = paramMap.find(URL_EXCHANGE_PRICE)) != paramMap.end()) { //成交价格
                 std::string & price = iter->second;                             // paramMap[URL_EXCHANGE_PRICE];
                 int decodePrice = decodeAdxExchangePrice(log.adInfo.adxid, price);
-                bool isYoukuDeal = paramMap.find(URL_YOUKU_DEAL) != paramMap.end() && !paramMap[URL_YOUKU_DEAL].empty();
-                calcPrice(log.adInfo.adxid, isYoukuDeal, decodePrice, offerPrice, log.adInfo.cost, log.adInfo.bidPrice,
+                bool isDeal = paramMap.find(URL_DEAL_ID) != paramMap.end() && !paramMap[URL_DEAL_ID].empty();
+                calcPrice(log.adInfo.adxid, isDeal, decodePrice, offerPrice, log.adInfo.cost, log.adInfo.bidPrice,
                           log.logType, log.adInfo.priceType);
             } else {
                 calcPrice(log.adInfo.adxid, false, offerPrice, offerPrice, log.adInfo.cost, log.adInfo.bidPrice,
