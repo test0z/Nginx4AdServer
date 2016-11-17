@@ -3,6 +3,7 @@
 //
 
 #include "sohu_bidding_handler.h"
+#include "core/core_ad_sizemap.h"
 #include "core/core_ip_manager.h"
 #include "logging.h"
 #include "utility/utility.h"
@@ -16,8 +17,6 @@ namespace bidding {
     using namespace adservice::utility::json;
     using namespace adservice::utility::userclient;
     using namespace adservice::server;
-
-    static SohuSizeMap sohuSizeMap;
 
     namespace {
 
@@ -157,7 +156,8 @@ namespace bidding {
             queryCondition.bannerType = BANNER_TYPE_VIDEO;
         }
         if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
-            auto size = sohuSizeMap.get({ queryCondition.width, queryCondition.height });
+            const adservice::utility::AdSizeMap & sizeMap = adservice::utility::AdSizeMap::getInstance();
+            auto size = sizeMap.get({ queryCondition.width, queryCondition.height });
             queryCondition.width = size.first;
             queryCondition.height = size.second;
         }

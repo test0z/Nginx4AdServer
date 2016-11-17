@@ -105,6 +105,15 @@ namespace bidding {
                 return SOLUTION_NETWORK_ALL;
             }
         }
+
+        bool replace(std::string & str, const std::string & from, const std::string & to)
+        {
+            size_t start_pos = str.find(from);
+            if (start_pos == std::string::npos)
+                return false;
+            str.replace(start_pos, from.length(), to);
+            return true;
+        }
     }
     bool InmobiBiddingHandler::parseRequestData(const std::string & data)
     {
@@ -166,6 +175,7 @@ namespace bidding {
         queryCondition.adxpid = pid;
         double priceFloor = adzinfo.get<double>("bidfloor", 0.0);
         queryCondition.basePrice = (int)std::ceil(priceFloor);
+        PreSetAdplaceInfo adplaceInfo;
         bool isNative = false;
         cppcms::json::value adTypeObj = adzinfo.find("banner");
         if (adTypeObj.is_undefined()) {
@@ -179,13 +189,18 @@ namespace bidding {
             queryCondition.width = adTypeObj.get("w", 0);
             queryCondition.height = adTypeObj.get("h", 0);
         } else {
-            cppcms::json::value nativeAssets = adTypeObj.find("assets");
-            if (!nativeAssets.is_undefined()) {
-                const cppcms::json::array & assetsArray = nativeAssets.array();
-                if (assetsArray.size() > 0) {
-                    queryCondition.width = assetsArray[0].get("img.w", 0);
-                    queryCondition.height = assetsArray[0].get("img.h", 0);
+            queryCondition.bannerType = BANNER_TYPE_PRIMITIVE;
+            const cppcms::json::array & assets = adTypeObj.find("assets").array();
+            if (assets.size() > 0) {
+                for (uint32_t i = 0; i < assets.size(); i++) {
+                    const cppcms::json::value & asset = assets[i];
+                    queryCondition.width = asset.get("img.w", 0);
+                    queryCondition.height = asset.get("img.h", 0);
+                    adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
                 }
+                queryCondition.pAdplaceInfo = &adplaceInfo;
+            } else {
+                return false;
             }
         }
         const cppcms::json::value & device = bidRequest.find("device");
@@ -328,6 +343,27 @@ namespace bidding {
             std::string html = generateHtmlSnippet(requestId, w, h, "of=2&", "");
             bidValue["adm"] = html;
         } else { //设置admobject
+            const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
+            const cppcms::json::array & assets = adzInfo.find("native.assets").array();
+            std::string title = mtlsArray[0]["p0"].str();
+            bidValue["admobject.native.assets"] = cppcms::json::array();
+            for (uint32_t i = 0; i < assets.size(); i++) {
+                const cppcms::json::value & asset = assets[i];
+                int w = asset.get("img.w", 0);
+                int h = asset.get("img.h", 0);
+                uint32_t titleLen = asset.get("title.len", 0);
+                if (w == banner.width && h == banner.height && title.length() <= titleLen) {
+                    cppcms::json::value assetObj;
+                    assetObj["id"] = 1;
+                    assetObj["img.w"] = banner.width;
+                    assetObj["img.h"] = banner.height;
+                    bidValue["admobject.native.assets"][0] = assetObj;
+                    break;
+                }
+            }
+            std::string landingUrl = mtlsArray[0]["p9"].str();
+            replace(landingUrl, "{{click}}", "");
+            bidValue["admobject.native.link.url"] = landingUrl;
         }
         int maxCpmPrice = result.bidPrice;
         bidValue["price"] = maxCpmPrice;

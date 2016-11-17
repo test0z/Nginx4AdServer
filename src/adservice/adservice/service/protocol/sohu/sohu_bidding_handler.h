@@ -11,45 +11,6 @@
 namespace protocol {
 namespace bidding {
 
-    class SohuSizeMap {
-    public:
-        SohuSizeMap()
-        {
-            add(std::make_pair(270, 202), std::make_pair(1, 0));
-            add(std::make_pair(240, 180), std::make_pair(1, 1));
-            add(std::make_pair(984, 328), std::make_pair(2, 0));
-            add(std::make_pair(1200, 800), std::make_pair(2, 1));
-            add(std::make_pair(1280, 720), std::make_pair(2, 2));
-            add(std::make_pair(1200, 627), std::make_pair(2, 3));
-            add(std::make_pair(800, 1200), std::make_pair(2, 4));
-            add(std::make_pair(640, 288), std::make_pair(2, 5));
-            add(std::make_pair(1000, 560), std::make_pair(2, 6));
-            add(std::make_pair(270, 202), std::make_pair(3, 0));
-            add(std::make_pair(480, 240), std::make_pair(2, 7));
-            add(std::make_pair(640, 320), std::make_pair(2, 8));
-            add(std::make_pair(1080, 540), std::make_pair(2, 9));
-            add(std::make_pair(360, 234), std::make_pair(1, 2));
-            add(std::make_pair(656, 324), std::make_pair(2, 10));
-            add(std::make_pair(228, 162), std::make_pair(1, 3));
-        }
-        void add(const std::pair<int, int> & k, const std::pair<int, int> & v)
-        {
-            sizemap.insert(std::make_pair(k, v));
-        }
-
-        std::pair<int, int> get(const std::pair<int, int> & k)
-        {
-            if (sizemap.find(k) != sizemap.end()) {
-                return sizemap[k];
-            } else {
-                return k;
-            }
-        }
-
-    private:
-        std::map<std::pair<int, int>, std::pair<int, int>> sizemap;
-    };
-
     class SohuBiddingHandler : public AbstractBiddingHandler {
     public:
         /**

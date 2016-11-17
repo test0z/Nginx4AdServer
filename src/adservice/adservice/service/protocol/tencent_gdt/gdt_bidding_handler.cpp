@@ -3,6 +3,7 @@
 //
 #include <string>
 
+#include "core/core_ad_sizemap.h"
 #include "core/core_ip_manager.h"
 #include "gdt_bidding_handler.h"
 #include "logging.h"
@@ -18,7 +19,6 @@ namespace bidding {
     using namespace adservice::server;
 
     static GdtAdplaceMap gdtAdplaceMap;
-    static GdtSizeMap gdtAdplaceSizeMap;
 
     inline int max(const int & a, const int & b)
     {
@@ -103,12 +103,13 @@ namespace bidding {
         IpManager & ipManager = IpManager::getInstance();
         queryCondition.dGeo = ipManager.getAreaByIp(queryCondition.ip.data());
         PreSetAdplaceInfo adplaceInfo;
+        const adservice::utility::AdSizeMap & adSizeMap = adservice::utility::AdSizeMap::getInstance();
         for (int i = 0; i < adzInfo.creative_specs_size(); i++) {
             int createspecs = adzInfo.creative_specs(i);
             if (gdtAdplaceMap.find(createspecs)) {
                 GdtAdplace & gdtAdplace = gdtAdplaceMap.get(createspecs);
                 const std::pair<int, int> & sizePair
-                    = gdtAdplaceSizeMap.get(std::make_pair(gdtAdplace.width, gdtAdplace.height));
+                    = adSizeMap.get(std::make_pair(gdtAdplace.width, gdtAdplace.height));
                 adplaceInfo.sizeArray.push_back(std::make_pair(sizePair.first, sizePair.second));
                 adplaceInfo.flowType = gdtAdplace.flowType;
                 queryCondition.width = sizePair.first;
