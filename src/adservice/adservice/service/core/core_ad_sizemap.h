@@ -33,6 +33,7 @@ namespace utility {
         void add(const std::pair<int, int> & k, const std::pair<int, int> & v)
         {
             sizemap.insert(std::make_pair(k, v));
+            rsizemap.insert(std::make_pair(v, k));
         }
 
         std::pair<int, int> get(const std::pair<int, int> & k) const
@@ -45,8 +46,19 @@ namespace utility {
             }
         }
 
+        std::pair<int, int> rget(const std::pair<int, int> & k) const
+        {
+            auto iter = rsizemap.find(k);
+            if (iter != rsizemap.end()) {
+                return iter->second;
+            } else {
+                return k;
+            }
+        }
+
     private:
         std::map<std::pair<int, int>, std::pair<int, int>> sizemap;
+        std::map<std::pair<int, int>, std::pair<int, int>> rsizemap;
 
     private:
         static AdSizeMap instance_;

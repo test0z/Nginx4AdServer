@@ -75,6 +75,8 @@ namespace bidding {
             replaces["{geoid}"] = adInfo.areaId;
             replaces["{width}"] = std::to_string(banner.width);
             replaces["{height}"] = std::to_string(banner.height);
+            replaces["{sid}"] = std::to_string(adInfo.sid);
+            replaces["{pid}"] = adInfo.pid;
             for (auto & k : replaces) {
                 replace(htmlTemplate, k.first, k.second);
             }

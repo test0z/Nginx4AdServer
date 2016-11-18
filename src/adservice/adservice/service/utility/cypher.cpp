@@ -155,27 +155,19 @@ namespace utility {
             return result;
         }
 
-        void urlsafe_base64decode(const std::string & input, std::string & output)
+        void urlsafe_base64decode(std::string input, std::string & output)
         {
-            assert(input.size() < 1024);
             try {
-                char buffer[1024];
-                const char * p = input.c_str();
-                char * dst = buffer;
-                while (*p != '\0') {
-                    if (*p == '-') {
-                        *dst = '+';
-                    } else if (*p == '_') {
-                        *dst = '/';
-                    } else {
-                        *dst = *p;
+                for (auto it = input.begin(); it != input.end(); ++it) {
+                    if (*it == '-') {
+                        *it = '+';
+                    } else if (*it == '_') {
+                        *it = '/';
                     }
-                    p++;
-                    dst++;
                 }
                 CryptoPP::Base64Decoder decoder;
                 decoder.Attach(new CryptoPP::StringSink(output));
-                decoder.Put((uchar_t *)buffer, input.size());
+                decoder.Put((uchar_t *)input.c_str(), input.size());
                 decoder.MessageEnd();
             } catch (exception & e) {
                 LOG_ERROR << "urlsafe_base64decode failed,e:" << e.what();
