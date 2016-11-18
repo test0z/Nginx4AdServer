@@ -25,6 +25,8 @@ namespace bidding {
                     return SOLUTION_DEVICE_IPHONE;
                 } else if (boost::iequals(device.model(), "iPad")) {
                     return SOLUTION_DEVICE_IPAD;
+                } else {
+                    return SOLUTION_DEVICE_IPHONE;
                 }
             } else if (boost::iequals(device.os(), "Android")) {
                 return SOLUTION_DEVICE_ANDROID;
