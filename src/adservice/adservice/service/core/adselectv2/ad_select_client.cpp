@@ -160,6 +160,7 @@ namespace adselectv2 {
             std::string response((char *)reply.data() + 1, reply.size() - 1);
             filterDebugSessionResponse(response);
             if (response.empty()) {
+                LOG_ERROR << "getBannerById,response empty,bannerId:" << bannerId;
                 return false;
             }
             std::stringstream ss;
@@ -171,6 +172,9 @@ namespace adselectv2 {
             return true;
         } catch (zmq::error_t & e) {
             LOG_ERROR << "查询banner失败：" << e.what();
+            return false;
+        } catch (std::exception & e) {
+            LOG_ERROR << "AdSelectClient::getBannerById error,e:" << e.what() << ",bannerId:" << bannerId;
             return false;
         }
     }
