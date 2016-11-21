@@ -159,7 +159,9 @@ namespace adselectv2 {
 
             std::string response((char *)reply.data() + 1, reply.size() - 1);
             filterDebugSessionResponse(response);
-
+            if (response.empty()) {
+                return false;
+            }
             std::stringstream ss;
             ss << response;
 

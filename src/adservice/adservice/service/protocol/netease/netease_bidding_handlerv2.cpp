@@ -115,11 +115,22 @@ namespace bidding {
         }
         PreSetAdplaceInfo adplaceInfo;
         adplaceInfo.flowType = SOLUTION_FLOWTYPE_MOBILE;
-        auto & sizeStyleMap = adplaceStyleMap.getSizeStyleMap();
-        for (auto iter : sizeStyleMap) {
-            adplaceInfo.sizeArray.push_back(std::make_pair(iter.first.first, iter.first.second));
-            queryCondition.width = iter.first.first;
-            queryCondition.height = iter.first.second;
+        const std::string & strStyles = adzinfo.get("style", "3,10,11");
+        std::vector<int64_t> styles;
+        MT::common::string2vecint(strStyles, styles);
+        if (styles.empty()) {
+            return isBidAccepted = false;
+        }
+        for (int64_t style : styles) {
+            if (adplaceStyleMap.find(style)) {
+                const auto & size = adplaceStyleMap.get(style);
+                adplaceInfo.sizeArray.push_back(std::make_pair(size.width, size.height));
+                queryCondition.width = size.width;
+                queryCondition.height = size.height;
+            }
+        }
+        if (adplaceInfo.sizeArray.empty()) {
+            return isBidAccepted = false;
         }
         queryCondition.pAdplaceInfo = &adplaceInfo;
 
