@@ -106,6 +106,7 @@ namespace bidding {
         logItem.ipInfo.proxy = bidRequest_.device().ip();
         logItem.adInfo.adxid = adInfo.adxid;
         logItem.adInfo.adxpid = adInfo.adxpid;
+        logItem.referer = bidRequest_.has_site() ? bidRequest_.site().page() : "";
         if (isBidAccepted) {
             if (bidRequest_.device().devicetype() == DeviceType::MOBILE) {
                 logItem.deviceInfo = bidRequest_.device().DebugString();
@@ -126,7 +127,6 @@ namespace bidding {
             logItem.adInfo.bidSize = adInfo.bidSize;
             logItem.adInfo.priceType = adInfo.priceType;
             logItem.adInfo.ppid = adInfo.ppid;
-            logItem.referer = bidRequest_.has_site() ? bidRequest_.site().page() : "";
             logItem.adInfo.orderId = adInfo.orderId;
         } else {
             logItem.adInfo.pid = adInfo.pid;
