@@ -107,8 +107,8 @@ namespace bidding {
     {
         logItem.reqStatus = 200;
         cppcms::json::value & deviceInfo = bidRequest["device"];
-        logItem.userAgent = deviceInfo["ua"].str();
-        logItem.ipInfo.proxy = deviceInfo["ip"].str();
+        logItem.userAgent = deviceInfo.get("ua", "");
+        logItem.ipInfo.proxy = deviceInfo.get("ip", "");
         logItem.adInfo.adxid = adInfo.adxid;
         logItem.adInfo.adxpid = adInfo.adxpid;
         if (isBidAccepted) {
