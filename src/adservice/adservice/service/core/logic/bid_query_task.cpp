@@ -152,7 +152,7 @@ namespace corelogic {
         } else {
             TaskThreadLocal * localData = threadData;
             bool bidResult = biddingHandler->filter(
-                [localData, &log](AbstractBiddingHandler * adapter, adselectv2::AdSelectCondition & condition) -> bool {
+                [localData, &log](AbstractBiddingHandler * adapter, adselectv2::AdSelectCondition * condition) -> bool {
                     int seqId = 0;
                     seqId = localData->seqId;
                     //地域定向接入
