@@ -79,7 +79,7 @@ namespace bidding {
         /**
          * 根据Bid 的相关信息对日志进行信息填充
          */
-        bool fillLogItem(protocol::log::LogItem & logItem);
+        bool fillLogItem(protocol::log::LogItem & logItem, bool isAccepted);
 
         /**
          * 根据ADX的请求进行竞价匹配,决定是否接受这个流量,同时设置isBidAccepted

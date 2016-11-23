@@ -6,9 +6,9 @@
 #define ADCORE_ABSTRACT_BIDDING_HANDLER_H
 
 #include <functional>
-#include <string>
-
 #include <mtty/types.h>
+#include <string>
+#include <vector>
 
 #include "common/functions.h"
 #include "common/types.h"
@@ -24,7 +24,7 @@ namespace bidding {
 
     class AbstractBiddingHandler;
 
-    typedef std::function<bool(AbstractBiddingHandler *, AdSelectCondition &)> BiddingFilterCallback;
+    typedef std::function<bool(AbstractBiddingHandler *, std::vector<AdSelectCondition> &)> BiddingFilterCallback;
 
     void extractSize(const std::string & size, int & width, int & height);
     std::string makeBidSize(int width, int height);
@@ -57,7 +57,7 @@ namespace bidding {
         /**
          * 根据Bid 的相关信息对日志进行信息填充
          */
-        virtual bool fillLogItem(protocol::log::LogItem & logItem)
+        virtual bool fillLogItem(protocol::log::LogItem & logItem, bool isAccepted = false)
         {
             return true;
         }

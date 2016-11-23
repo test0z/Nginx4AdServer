@@ -103,7 +103,7 @@ namespace bidding {
         return parseJson(data.c_str(), bidRequest);
     }
 
-    bool YoukuBiddingHandler::fillLogItem(protocol::log::LogItem & logItem)
+    bool YoukuBiddingHandler::fillLogItem(protocol::log::LogItem & logItem, bool isAccepted)
     {
         logItem.reqStatus = 200;
         cppcms::json::value & deviceInfo = bidRequest["device"];
@@ -111,7 +111,7 @@ namespace bidding {
         logItem.ipInfo.proxy = deviceInfo.get("ip", "");
         logItem.adInfo.adxid = adInfo.adxid;
         logItem.adInfo.adxpid = adInfo.adxpid;
-        if (isBidAccepted) {
+        if (isAccepted) {
             cppcms::json::value device;
             device["deviceInfo"] = deviceInfo;
             logItem.deviceInfo = toJson(device);
@@ -150,103 +150,106 @@ namespace bidding {
         if (impressions.empty()) {
             return false;
         }
+        std::vector<AdSelectCondition> queryConditions(impressions.size());
+        for (int i = 0; i < impressions.size(); i++) {
+            const cppcms::json::value & adzinfo = impressions[i];
+            std::string pid = adzinfo.get<std::string>("tagid");
 
-        const cppcms::json::value & adzinfo = impressions[0];
-        std::string pid = adzinfo.get<std::string>("tagid");
-        AdSelectCondition queryCondition;
-        queryCondition.adxid = ADX_YOUKU;
-        queryCondition.adxpid = pid;
-        queryCondition.basePrice = adzinfo.get<int>("bidfloor", 0);
-        adInfo.adxid = ADX_YOUKU;
-        PreSetAdplaceInfo adplaceInfo;
-        bool isNative = false;
-        cppcms::json::value adObject = adzinfo.find("banner");
-        if (adObject.is_undefined()) {
-            adObject = adzinfo.find("video");
+            AdSelectCondition & queryCondition = queryConditions[i];
+            queryCondition.adxid = ADX_YOUKU;
+            queryCondition.adxpid = pid;
+            queryCondition.basePrice = adzinfo.get<int>("bidfloor", 0);
+            adInfo.adxid = ADX_YOUKU;
+            PreSetAdplaceInfo adplaceInfo;
+            bool isNative = false;
+            cppcms::json::value adObject = adzinfo.find("banner");
             if (adObject.is_undefined()) {
-                adObject = adzinfo.find("native");
-                isNative = true;
-            }
-        }
-        if (!isNative) {
-            queryCondition.width = adObject.get("w", 0);
-            queryCondition.height = adObject.get("h", 0);
-        } else {
-            queryCondition.bannerType = BANNER_TYPE_PRIMITIVE;
-            const cppcms::json::array & assets = adObject.find("assets").array();
-            if (assets.size() > 0) {
-                for (uint32_t i = 0; i < assets.size(); i++) {
-                    const cppcms::json::value & asset = assets[i];
-                    queryCondition.width = asset.get("image_url.w", 750);
-                    queryCondition.height = asset.get("image_url.h", 350);
-                    adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
+                adObject = adzinfo.find("video");
+                if (adObject.is_undefined()) {
+                    adObject = adzinfo.find("native");
+                    isNative = true;
                 }
-                queryCondition.pAdplaceInfo = &adplaceInfo;
+            }
+            if (!isNative) {
+                queryCondition.width = adObject.get("w", 0);
+                queryCondition.height = adObject.get("h", 0);
             } else {
-                return false;
+                queryCondition.bannerType = BANNER_TYPE_PRIMITIVE;
+                const cppcms::json::array & assets = adObject.find("assets").array();
+                if (assets.size() > 0) {
+                    for (uint32_t i = 0; i < assets.size(); i++) {
+                        const cppcms::json::value & asset = assets[i];
+                        queryCondition.width = asset.get("image_url.w", 750);
+                        queryCondition.height = asset.get("image_url.h", 350);
+                        adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
+                    }
+                    queryCondition.pAdplaceInfo = &adplaceInfo;
+                } else {
+                    return false;
+                }
             }
-        }
-        cppcms::json::value & device = bidRequest["device"];
-        if (!device.is_undefined()) {
-            std::string ip = device.get("ip", "");
-            queryCondition.ip = ip;
-            int devType = device.get("devicetype", YOUKU_DEVICE_PC);
-            std::string osType = device.get("os", "");
-            std::string ua = device.get("ua", "");
-            fromYoukuDevTypeOsType(devType,
-                                   osType,
-                                   ua,
-                                   queryCondition.flowType,
-                                   queryCondition.mobileDevice,
-                                   queryCondition.pcOS,
-                                   queryCondition.pcBrowserStr);
-            if (queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROID
-                || queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROIDPAD) {
-                std::string deviceId = device.get<std::string>("androidid", "");
-                strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), sizeof(biddingFlowInfo.deviceIdBuf) - 1);
-            } else if (queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD
-                       || queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE) {
-                std::string deviceId = device.get<std::string>("idfa", "");
-                strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), sizeof(biddingFlowInfo.deviceIdBuf) - 1);
-            } else {
-                biddingFlowInfo.deviceIdBuf[0] = '\0';
-            }
-            if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
-                queryCondition.adxid = ADX_YOUKU_MOBILE;
-                adInfo.adxid = ADX_YOUKU_MOBILE;
-            }
+            cppcms::json::value & device = bidRequest["device"];
+            if (!device.is_undefined()) {
+                std::string ip = device.get("ip", "");
+                queryCondition.ip = ip;
+                int devType = device.get("devicetype", YOUKU_DEVICE_PC);
+                std::string osType = device.get("os", "");
+                std::string ua = device.get("ua", "");
+                fromYoukuDevTypeOsType(devType,
+                                       osType,
+                                       ua,
+                                       queryCondition.flowType,
+                                       queryCondition.mobileDevice,
+                                       queryCondition.pcOS,
+                                       queryCondition.pcBrowserStr);
+                if (queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROID
+                    || queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROIDPAD) {
+                    std::string deviceId = device.get<std::string>("androidid", "");
+                    strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), sizeof(biddingFlowInfo.deviceIdBuf) - 1);
+                } else if (queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD
+                           || queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE) {
+                    std::string deviceId = device.get<std::string>("idfa", "");
+                    strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), sizeof(biddingFlowInfo.deviceIdBuf) - 1);
+                } else {
+                    biddingFlowInfo.deviceIdBuf[0] = '\0';
+                }
+                if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
+                    queryCondition.adxid = ADX_YOUKU_MOBILE;
+                    adInfo.adxid = ADX_YOUKU_MOBILE;
+                }
 
-            queryCondition.mobileNetwork = getNetwork(device.get("connectiontype", 0));
-        }
-        const cppcms::json::value & siteContent = bidRequest.find("site.content.ext");
-        const cppcms::json::value & appContent = bidRequest.find("app.content.ext");
-        const cppcms::json::value & contentExt = siteContent.is_undefined() ? appContent : siteContent;
-        if (!contentExt.is_undefined()) {
-            std::string channel = contentExt.get("channel", "");
-            std::string cs = contentExt.get("cs", "");
-            if (cs == "2070") {
-                channel = cs;
+                queryCondition.mobileNetwork = getNetwork(device.get("connectiontype", 0));
             }
-            TypeTableManager & typeTableManager = TypeTableManager::getInstance();
-            queryCondition.mttyContentType = typeTableManager.getContentType(ADX_YOUKU, channel);
-        }
-        isDeal = false;
-        const cppcms::json::value & pmp = adzinfo.find("pmp");
-        if (!pmp.is_undefined()) {
-            // deal 请求
-            const cppcms::json::array & deals = pmp.find("deals").array();
-            if (!deals.empty()) {
-                std::stringstream ss;
-                ss << ",";
-                for (size_t i = 0; i < deals.size(); ++i) {
-                    std::string d = deals[i]["id"].str();
-                    ss << d << ",";
+            const cppcms::json::value & siteContent = bidRequest.find("site.content.ext");
+            const cppcms::json::value & appContent = bidRequest.find("app.content.ext");
+            const cppcms::json::value & contentExt = siteContent.is_undefined() ? appContent : siteContent;
+            if (!contentExt.is_undefined()) {
+                std::string channel = contentExt.get("channel", "");
+                std::string cs = contentExt.get("cs", "");
+                if (cs == "2070") {
+                    channel = cs;
                 }
-                queryCondition.dealId = ss.str();
-                isDeal = true;
+                TypeTableManager & typeTableManager = TypeTableManager::getInstance();
+                queryCondition.mttyContentType = typeTableManager.getContentType(ADX_YOUKU, channel);
+            }
+            isDeal = false;
+            const cppcms::json::value & pmp = adzinfo.find("pmp");
+            if (!pmp.is_undefined()) {
+                // deal 请求
+                const cppcms::json::array & deals = pmp.find("deals").array();
+                if (!deals.empty()) {
+                    std::stringstream ss;
+                    ss << ",";
+                    for (size_t i = 0; i < deals.size(); ++i) {
+                        std::string d = deals[i]["id"].str();
+                        ss << d << ",";
+                    }
+                    queryCondition.dealId = ss.str();
+                    isDeal = true;
+                }
             }
         }
-        if (!filterCb(this, queryCondition)) {
+        if (!filterCb(this, queryConditions)) {
             adInfo.pid = std::to_string(queryCondition.mttyPid);
             adInfo.adxpid = queryCondition.adxpid;
             adInfo.adxid = queryCondition.adxid;

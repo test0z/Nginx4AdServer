@@ -96,7 +96,7 @@ namespace bidding {
         return getProtoBufObject(bidRequest, data);
     }
 
-    bool TanxBiddingHandler::fillLogItem(protocol::log::LogItem & logItem)
+    bool TanxBiddingHandler::fillLogItem(protocol::log::LogItem & logItem, bool isAccepted)
     {
         logItem.reqStatus = 200;
         logItem.userAgent = bidRequest.user_agent();
@@ -104,7 +104,7 @@ namespace bidding {
         logItem.adInfo.adxid = adInfo.adxid;
         logItem.adInfo.adxpid = adInfo.adxpid;
         logItem.referer = bidRequest.has_url() ? bidRequest.url() : "";
-        if (isBidAccepted) {
+        if (isAccepted) {
             if (bidRequest.has_mobile()) {
                 const BidRequest_Mobile & mobile = bidRequest.mobile();
                 if (mobile.has_device()) {
@@ -148,7 +148,8 @@ namespace bidding {
             return bidFailedReturn();
         const BidRequest_AdzInfo & adzInfo = bidRequest.adzinfo(0);
         const std::string & pid = adzInfo.pid();
-        AdSelectCondition queryCondition;
+        std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
+        AdSelectCondition & queryCondition = queryConditions[0];
         queryCondition.adxid = ADX_TANX;
         queryCondition.adxpid = pid;
         queryCondition.ip = bidRequest.ip();
@@ -173,7 +174,7 @@ namespace bidding {
             queryCondition.pcBrowserStr = getBrowserTypeFromUA(bidRequest.user_agent());
             queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
         }
-        if (!filterCb(this, queryCondition)) {
+        if (!filterCb(this, queryConditions)) {
             adInfo.pid = std::to_string(queryCondition.mttyPid);
             adInfo.adxpid = queryCondition.adxpid;
             adInfo.adxid = queryCondition.adxid;

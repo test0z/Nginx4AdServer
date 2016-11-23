@@ -151,32 +151,41 @@ namespace corelogic {
             resp.status(200);
         } else {
             TaskThreadLocal * localData = threadData;
+            HandleBidQueryTask * task = this;
             bool bidResult = biddingHandler->filter(
-                [localData, &log](AbstractBiddingHandler * adapter, adselectv2::AdSelectCondition * condition) -> bool {
+                [localData, &log, task](AbstractBiddingHandler * adapter,
+                                        std::vector<adselectv2::AdSelectCondition> & conditions) -> bool {
                     int seqId = 0;
                     seqId = localData->seqId;
                     //地域定向接入
                     IpManager & ipManager = IpManager::getInstance();
-                    condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
-                    condition.dHour = adSelectTimeCodeUtc();
-                    MT::common::SelectResult resp;
-                    if (!adSelectClient->search(seqId, false, condition, resp)) {
-                        condition.mttyPid = resp.adplace.pId;
-                        log.adInfo.mid = resp.adplace.mId;
-                        return false;
+                    bool result = false;
+                    for (auto & condition : conditions) {
+                        condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
+                        condition.dHour = adSelectTimeCodeUtc();
+                        MT::common::SelectResult resp;
+                        bool bAccepted = false;
+                        if (!adSelectClient->search(seqId, false, condition, resp)) {
+                            condition.mttyPid = resp.adplace.pId;
+                            log.adInfo.mid = resp.adplace.mId;
+                        } else {
+                            adapter->buildBidResult(condition, resp);
+                            log.adInfo.mid = resp.adplace.mId;
+                            bAccepted = true;
+                            result = true;
+                        }
+                        if (biddingHandler->fillLogItem(log, bAccepted)) {
+                            task->doLog(log);
+                        }
                     }
-                    adapter->buildBidResult(condition, resp);
-                    log.adInfo.mid = resp.adplace.mId;
-                    return true;
+                    return result;
                 });
             if (bidResult) {
                 biddingHandler->match(resp);
             } else {
                 biddingHandler->reject(resp);
             }
-            if (!biddingHandler->fillLogItem(log)) {
-                needLog = false;
-            }
+            needLog = false;
         }
         handleBidRequests++;
         if (handleBidRequests % 10000 == 1) {

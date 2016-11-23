@@ -72,14 +72,14 @@ namespace bidding {
         return getProtoBufObject(bidRequest, data);
     }
 
-    bool SohuBiddingHandler::fillLogItem(protocol::log::LogItem & logItem)
+    bool SohuBiddingHandler::fillLogItem(protocol::log::LogItem & logItem, bool isAccepted)
     {
         logItem.reqStatus = 200;
         logItem.userAgent = bidRequest.device().ua();
         logItem.ipInfo.proxy = bidRequest.device().ip();
         logItem.adInfo.adxid = adInfo.adxid;
         logItem.adInfo.adxpid = adInfo.adxpid;
-        if (isBidAccepted) {
+        if (isAccepted) {
             if (bidRequest.has_device()) {
                 const Request_Device & device = bidRequest.device();
                 if (!(device.type() == "PC")) {
@@ -123,7 +123,8 @@ namespace bidding {
             return bidFailedReturn();
         const Request_Impression & adzInfo = bidRequest.impression(0);
         const std::string & pid = adzInfo.pid();
-        AdSelectCondition queryCondition;
+        std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
+        AdSelectCondition & queryCondition = queryConditions[0];
         queryCondition.adxid = ADX_SOHU_PC;
         queryCondition.adxpid = pid;
         queryCondition.basePrice = adzInfo.has_bidfloor() ? adzInfo.bidfloor() : 0;
@@ -165,7 +166,7 @@ namespace bidding {
             const std::string & dealId = adzInfo.campaignid();
             queryCondition.dealId = std::string(",") + dealId + ",";
         }
-        if (!filterCb(this, queryCondition)) {
+        if (!filterCb(this, queryConditions)) {
             adInfo.pid = std::to_string(queryCondition.mttyPid);
             adInfo.adxpid = queryCondition.adxpid;
             adInfo.adxid = queryCondition.adxid;

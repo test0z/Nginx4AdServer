@@ -43,14 +43,14 @@ namespace bidding {
         return parseJson(data.c_str(), bidRequest);
     }
 
-    bool NetEaseBiddingHandler::fillLogItem(protocol::log::LogItem & logItem)
+    bool NetEaseBiddingHandler::fillLogItem(protocol::log::LogItem & logItem, bool isAccepted)
     {
         logItem.logType = protocol::log::LogPhaseType::BID;
         logItem.reqStatus = 200;
         const cppcms::json::value & deviceInfo = bidRequest["device"];
         logItem.adInfo.adxid = ADX_NETEASE_MOBILE;
         logItem.adInfo.adxpid = adInfo.adxpid;
-        if (isBidAccepted) {
+        if (isAccepted) {
             cppcms::json::value device;
             device["deviceinfo"] = deviceInfo;
             logItem.deviceInfo = toJson(device);
@@ -87,7 +87,8 @@ namespace bidding {
         }
         cppcms::json::value & adzinfo = bidRequest["adunit"];
         std::string pid = adzinfo.get("space_id", "0");
-        AdSelectCondition queryCondition;
+        std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
+        AdSelectCondition & queryCondition = queryConditions[0];
         queryCondition.adxid = ADX_NETEASE_MOBILE;
         queryCondition.adxpid = pid;
         const cppcms::json::value & geo = bidRequest.find("geo");
@@ -134,7 +135,7 @@ namespace bidding {
         }
         queryCondition.pAdplaceInfo = &adplaceInfo;
 
-        if (!filterCb(this, queryCondition)) {
+        if (!filterCb(this, queryConditions)) {
             adInfo.pid = std::to_string(queryCondition.mttyPid);
             adInfo.adxpid = queryCondition.adxpid;
             adInfo.adxid = queryCondition.adxid;

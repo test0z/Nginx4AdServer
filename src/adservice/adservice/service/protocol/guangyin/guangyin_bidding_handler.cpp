@@ -99,7 +99,7 @@ namespace bidding {
         return adservice::utility::serialize::getProtoBufObject(bidRequest_, data);
     }
 
-    bool GuangyinBiddingHandler::fillLogItem(protocol::log::LogItem & logItem)
+    bool GuangyinBiddingHandler::fillLogItem(protocol::log::LogItem & logItem, bool isAccepted)
     {
         logItem.reqStatus = 200;
         logItem.userAgent = bidRequest_.device().ua();
@@ -107,7 +107,7 @@ namespace bidding {
         logItem.adInfo.adxid = adInfo.adxid;
         logItem.adInfo.adxpid = adInfo.adxpid;
         logItem.referer = bidRequest_.has_site() ? bidRequest_.site().page() : "";
-        if (isBidAccepted) {
+        if (isAccepted) {
             if (bidRequest_.device().devicetype() == DeviceType::MOBILE) {
                 logItem.deviceInfo = bidRequest_.device().DebugString();
             }
@@ -150,7 +150,8 @@ namespace bidding {
         Imp imp = bidRequest_.imp(0);
         const Banner & banner = imp.banner();
 
-        AdSelectCondition queryCondition;
+        std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
+        AdSelectCondition & queryCondition = queryConditions[0];
         queryCondition.adxid = ADX_GUANGYIN;
         queryCondition.adxpid = imp.id();
         queryCondition.ip = device.ip();
@@ -192,7 +193,7 @@ namespace bidding {
             }
         }
 
-        if (!filterCb(this, queryCondition)) {
+        if (!filterCb(this, queryConditions)) {
             adInfo.pid = std::to_string(queryCondition.mttyPid);
             adInfo.adxpid = queryCondition.adxpid;
             adInfo.adxid = queryCondition.adxid;

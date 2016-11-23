@@ -120,7 +120,7 @@ namespace bidding {
         return parseJson(data.c_str(), bidRequest);
     }
 
-    bool InmobiBiddingHandler::fillLogItem(protocol::log::LogItem & logItem)
+    bool InmobiBiddingHandler::fillLogItem(protocol::log::LogItem & logItem, bool isAccepted)
     {
         logItem.reqStatus = 200;
         cppcms::json::value & deviceInfo = bidRequest["device"];
@@ -128,7 +128,7 @@ namespace bidding {
         logItem.ipInfo.proxy = deviceInfo.get("ip", "");
         logItem.adInfo.adxid = adInfo.adxid;
         logItem.adInfo.adxpid = adInfo.adxpid;
-        if (isBidAccepted) {
+        if (isAccepted) {
             cppcms::json::value device;
             device["deviceInfo"] = deviceInfo;
             logItem.deviceInfo = toJson(device);
@@ -170,7 +170,8 @@ namespace bidding {
 
         const cppcms::json::value & adzinfo = impressions[0];
         std::string pid = adzinfo.get<std::string>("id");
-        AdSelectCondition queryCondition;
+        std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
+        AdSelectCondition & queryCondition = queryConditions[0];
         queryCondition.adxid = ADX_INMOBI;
         queryCondition.adxpid = pid;
         double priceFloor = adzinfo.get<double>("bidfloor", 0.0);
@@ -255,7 +256,7 @@ namespace bidding {
                 queryCondition.dealId = ss.str();
             }
         }
-        if (!filterCb(this, queryCondition)) {
+        if (!filterCb(this, queryConditions)) {
             adInfo.pid = std::to_string(queryCondition.mttyPid);
             adInfo.adxpid = queryCondition.adxpid;
             adInfo.adxid = queryCondition.adxid;

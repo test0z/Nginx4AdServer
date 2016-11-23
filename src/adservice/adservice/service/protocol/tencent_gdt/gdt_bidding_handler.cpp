@@ -55,13 +55,13 @@ namespace bidding {
         return getProtoBufObject(bidRequest, data);
     }
 
-    bool GdtBiddingHandler::fillLogItem(protocol::log::LogItem & logItem)
+    bool GdtBiddingHandler::fillLogItem(protocol::log::LogItem & logItem, bool isAccepted)
     {
         logItem.reqStatus = 200;
         logItem.ipInfo.proxy = bidRequest.ip();
         logItem.adInfo.adxid = adInfo.adxid;
         logItem.adInfo.adxpid = adInfo.adxpid;
-        if (isBidAccepted) {
+        if (isAccepted) {
             if (bidRequest.has_device()) {
                 const BidRequest_Device & device = bidRequest.device();
                 logItem.deviceInfo = device.DebugString();
@@ -96,7 +96,8 @@ namespace bidding {
         }
         //从BID Request中获取请求的广告位信息,目前只取第一个
         const BidRequest_Impression & adzInfo = bidRequest.impressions(0);
-        AdSelectCondition queryCondition;
+        std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
+        AdSelectCondition & queryCondition = queryConditions[0];
         queryCondition.adxid = ADX_TENCENT_GDT;
         queryCondition.ip = bidRequest.ip();
         queryCondition.basePrice = adzInfo.has_bid_floor() ? adzInfo.bid_floor() : 0;
@@ -155,7 +156,7 @@ namespace bidding {
             queryCondition.adxpid = adzInfo.placement_id();
         }
         queryCondition.pAdplaceInfo = &adplaceInfo;
-        if (!filterCb(this, queryCondition)) {
+        if (!filterCb(this, queryConditions)) {
             adInfo.pid = std::to_string(queryCondition.mttyPid);
             adInfo.adxid = queryCondition.adxid;
             adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
