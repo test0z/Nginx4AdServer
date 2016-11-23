@@ -97,7 +97,8 @@ namespace bidding {
         return getProtoBufObject(bidRequest, data);
     }
 
-    bool TanxBiddingHandler::fillSpecificLog(log::LogItem, bool isAccepted)
+    bool TanxBiddingHandler::fillSpecificLog(const AdSelectCondition & selectCondition,
+                                             protocol::log::LogItem & logItem, bool isAccepted)
     {
         logItem.userAgent = bidRequest.user_agent();
         logItem.ipInfo.proxy = bidRequest.ip();

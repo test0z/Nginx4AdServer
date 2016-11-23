@@ -44,7 +44,7 @@ namespace bidding {
     }
 
     bool NetEaseBiddingHandler::fillSpecificLog(const AdSelectCondition & selectCondition,
-                                                protocol::log::LogItem logItem, bool isAccepted)
+                                                protocol::log::LogItem & logItem, bool isAccepted)
     {
         logItem.ipInfo.proxy = selectCondition.ip;
         if (isAccepted) {

@@ -257,6 +257,7 @@ namespace bidding {
     void InmobiBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
                                               const MT::common::SelectResult & result, int seq)
     {
+        std::string requestId = bidRequest["id"].str();
         if (seq == 0) {
             if (!parseJson(BIDRESPONSE_TEMPLATE, bidResponse)) {
                 LOG_ERROR << "in InmobiBiddingHandler::buildBidResult parseJson failed";

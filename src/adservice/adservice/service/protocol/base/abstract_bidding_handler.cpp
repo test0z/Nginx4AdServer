@@ -54,8 +54,8 @@ namespace bidding {
             logItem.adInfo.areaId = adInfo.areaId;
             logItem.adInfo.priceType = adInfo.priceType;
             logItem.adInfo.ppid = adInfo.ppid;
-            url::extractAreaInfo(adInfo.areaId.data(), logItem.geoInfo.country, logItem.geoInfo.province,
-                                 logItem.geoInfo.city);
+            extractAreaInfo(adInfo.areaId.data(), logItem.geoInfo.country, logItem.geoInfo.province,
+                            logItem.geoInfo.city);
             logItem.adInfo.bidSize = adInfo.bidSize;
             logItem.adInfo.orderId = adInfo.orderId;
         } else {
@@ -64,7 +64,7 @@ namespace bidding {
             logItem.adInfo.adxid = queryCondition.adxid;
             logItem.adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
         }
-        return fillSpecificLog(logItem, isAccepted);
+        return fillSpecificLog(queryCondition, logItem, isAccepted);
     }
 
     int AbstractBiddingHandler::extractRealValue(const std::string & input, int targetAdx)

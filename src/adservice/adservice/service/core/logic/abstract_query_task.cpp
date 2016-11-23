@@ -63,7 +63,7 @@ namespace corelogic {
             try {
                 return std::stoi(input);
             } catch (...) {
-                LOG_ERROR << "adx inmobi price error,input:" < input;
+                LOG_ERROR << "adx inmobi price error,input:" << input;
                 return 0;
             }
         default:

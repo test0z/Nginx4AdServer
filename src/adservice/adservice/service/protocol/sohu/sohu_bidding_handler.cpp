@@ -72,8 +72,8 @@ namespace bidding {
         return getProtoBufObject(bidRequest, data);
     }
 
-    boo SohuBiddingHandler::fillSpecificLog(const AdSelectCondition & selectCondition, protocol::log::LogItem & logItem,
-                                            bool isAccepted)
+    bool SohuBiddingHandler::fillSpecificLog(const AdSelectCondition & selectCondition,
+                                             protocol::log::LogItem & logItem, bool isAccepted)
     {
         logItem.userAgent = bidRequest.device().ua();
         logItem.ipInfo.proxy = selectCondition.ip;

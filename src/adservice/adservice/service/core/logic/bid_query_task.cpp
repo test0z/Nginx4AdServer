@@ -175,7 +175,7 @@ namespace corelogic {
                             bAccepted = true;
                             result = true;
                         }
-                        if (biddingHandler->fillLogItem(condition, log, bAccepted)) {
+                        if (adapter->fillLogItem(condition, log, bAccepted)) {
                             task->doLog(log);
                         }
                         conditionIdx++;

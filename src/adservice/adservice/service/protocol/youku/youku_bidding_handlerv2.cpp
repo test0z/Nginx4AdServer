@@ -129,7 +129,7 @@ namespace bidding {
             return false;
         }
         std::vector<AdSelectCondition> queryConditions(impressions.size());
-        for (int i = 0; i < impressions.size(); i++) {
+        for (uint32_t i = 0; i < impressions.size(); i++) {
             const cppcms::json::value & adzinfo = impressions[i];
             std::string pid = adzinfo.get<std::string>("tagid");
 
@@ -248,14 +248,13 @@ namespace bidding {
     void YoukuBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
                                              const MT::common::SelectResult & result, int seq)
     {
-
+        std::string requestId = bidRequest["id"].str();
         if (seq == 0) {
             if (!parseJson(BIDRESPONSE_TEMPLATE, bidResponse)) {
                 LOG_ERROR << "in YoukuBiddingHandler::buildBidResult parseJson failed";
                 isBidAccepted = false;
                 return;
             }
-            std::string requestId = bidRequest["id"].str();
             bidResponse["id"] = requestId;
             bidResponse["bidid"] = "1";
         }
