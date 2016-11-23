@@ -57,7 +57,16 @@ namespace bidding {
         /**
          * 根据Bid 的相关信息对日志进行信息填充
          */
-        virtual bool fillLogItem(protocol::log::LogItem & logItem, bool isAccepted = false)
+        virtual bool fillLogItem(const AdSelectCondition & selectCondition, protocol::log::LogItem & logItem,
+                                 bool isAccepted = false);
+
+        /**
+         * @brief fillSpecificLog 各家平台具体日志字段的标准
+         * @param isAccepted
+         * @return
+         */
+        virtual bool fillSpecificLog(const AdSelectCondition & selectCondition, protocol::log::LogItem & logItem,
+                                     bool isAccepted = false)
         {
             return true;
         }
@@ -75,7 +84,8 @@ namespace bidding {
         /**
          * 将匹配结果转换为具体平台的格式的结果
          */
-        virtual void buildBidResult(const AdSelectCondition & selectCondition, const MT::common::SelectResult & result)
+        virtual void buildBidResult(const AdSelectCondition & selectCondition, const MT::common::SelectResult & result,
+                                    int seq = 0)
             = 0;
 
         /**

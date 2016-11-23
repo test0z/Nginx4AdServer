@@ -96,13 +96,10 @@ namespace bidding {
         return getProtoBufObject(bidRequest, data);
     }
 
-    bool TanxBiddingHandler::fillLogItem(protocol::log::LogItem & logItem, bool isAccepted)
+    bool TanxBiddingHandler::fillSpecificLog(log::LogItem, bool isAccepted)
     {
-        logItem.reqStatus = 200;
         logItem.userAgent = bidRequest.user_agent();
         logItem.ipInfo.proxy = bidRequest.ip();
-        logItem.adInfo.adxid = adInfo.adxid;
-        logItem.adInfo.adxpid = adInfo.adxpid;
         logItem.referer = bidRequest.has_url() ? bidRequest.url() : "";
         if (isAccepted) {
             if (bidRequest.has_mobile()) {
@@ -113,26 +110,6 @@ namespace bidding {
                     adInfo.adxid = logItem.adInfo.adxid = ADX_TANX_MOBILE;
                 }
             }
-            logItem.adInfo.sid = adInfo.sid;
-            logItem.adInfo.advId = adInfo.advId;
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.adxpid = adInfo.adxpid;
-            logItem.adInfo.adxuid = adInfo.adxuid;
-            logItem.adInfo.bannerId = adInfo.bannerId;
-            logItem.adInfo.cid = adInfo.cid;
-            logItem.adInfo.mid = adInfo.mid;
-            logItem.adInfo.cpid = adInfo.cpid;
-            logItem.adInfo.offerPrice = adInfo.offerPrice;
-            logItem.adInfo.areaId = adInfo.areaId;
-            logItem.adInfo.priceType = adInfo.priceType;
-            logItem.adInfo.ppid = adInfo.ppid;
-            url::extractAreaInfo(adInfo.areaId.data(), logItem.geoInfo.country, logItem.geoInfo.province,
-                                 logItem.geoInfo.city);
-            logItem.adInfo.bidSize = adInfo.bidSize;
-            logItem.adInfo.orderId = adInfo.orderId;
-        } else {
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.bidSize = adInfo.bidSize;
         }
         return true;
     }
@@ -175,29 +152,27 @@ namespace bidding {
             queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
         }
         if (!filterCb(this, queryConditions)) {
-            adInfo.pid = std::to_string(queryCondition.mttyPid);
-            adInfo.adxpid = queryCondition.adxpid;
-            adInfo.adxid = queryCondition.adxid;
-            adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
             return bidFailedReturn();
         }
         return isBidAccepted = true;
     }
 
     void TanxBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-                                            const MT::common::SelectResult & result)
+                                            const MT::common::SelectResult & result, int seq)
     {
-        bidResponse.Clear();
-        bidResponse.set_version(bidRequest.version());
-        bidResponse.set_bid(bidRequest.bid());
-        bidResponse.clear_ads();
+        if (seq == 0) {
+            bidResponse.Clear();
+            bidResponse.set_version(bidRequest.version());
+            bidResponse.set_bid(bidRequest.bid());
+            bidResponse.clear_ads();
+        }
         BidResponse_Ads * adResult = bidResponse.add_ads();
         const MT::common::Banner & banner = result.banner;
         std::string adxAdvIdStr = banner.adxAdvId;
         int adxAdvId = extractRealValue(adxAdvIdStr.data(), ADX_TANX);
         std::string adxIndustryTypeStr = banner.adxIndustryType;
         int adxIndustryType = extractRealValue(adxIndustryTypeStr.data(), ADX_TANX);
-        const BidRequest_AdzInfo & adzInfo = bidRequest.adzinfo(0);
+        const BidRequest_AdzInfo & adzInfo = bidRequest.adzinfo(seq);
         int maxCpmPrice = (int)result.bidPrice;
 
         adResult->set_max_cpm_price(maxCpmPrice);
@@ -225,35 +200,6 @@ namespace bidding {
         adResult->add_advertiser_ids(adxAdvId); // adx_advid
         adResult->set_html_snippet(tanxHtmlSnippet());
         adResult->set_feedback_address(feedbackUrl);
-        //        if (adInfo.adxid == ADX_TANX_MOBILE) {
-        //            adResult->set_html_snippet(tanxHtmlSnippet());
-        //            adResult->set_feedback_address(feedbackUrl);
-        //        } else {
-        //            bannerJson["advid"] = finalSolution.advId;
-        //            bannerJson["adxpid"] = adInfo.adxpid;
-        //            bannerJson["arid"] = adInfo.areaId;
-        //            bannerJson["gpid"] = finalSolution.sId;
-        //            bannerJson["pid"] = adInfo.pid;
-        //            bannerJson["ppid"] = adInfo.ppid;
-        //            bannerJson["price"] = adInfo.offerPrice;
-        //            bannerJson["pricetype"] = adInfo.priceType;
-        //            bannerJson["unid"] = adInfo.adxid;
-        //            bannerJson["of"] = "0";
-        //            bannerJson["width"] = banner.width;
-        //            bannerJson["height"] = banner.height;
-        //            bannerJson["xcurl"] = AD_TX_CLICK_UNENC_MACRO;
-        //            std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
-        //            char admBuffer[4096];
-        //            snprintf(admBuffer, sizeof(admBuffer), adservice::corelogic::HandleShowQueryTask::showAdxTemplate,
-        //                     mtadInfoStr.data());
-        //            adResult->set_html_snippet(admBuffer);
-        //            char showBuf[2048];
-        //            getShowPara(bidRequest.bid(), showBuf, sizeof(showBuf));
-        //            snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s%s&of=3", SNIPPET_SHOW_URL, "p="
-        //            AD_TX_PRICE_MACRO "&",
-        //                     showBuf);
-        //            adResult->set_feedback_address(feedbackUrl);
-        //        }
     }
 
     void TanxBiddingHandler::match(adservice::utility::HttpResponse & response)

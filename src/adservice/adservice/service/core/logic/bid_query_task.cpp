@@ -160,6 +160,7 @@ namespace corelogic {
                     //地域定向接入
                     IpManager & ipManager = IpManager::getInstance();
                     bool result = false;
+                    int conditionIdx = 0;
                     for (auto & condition : conditions) {
                         condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
                         condition.dHour = adSelectTimeCodeUtc();
@@ -169,14 +170,15 @@ namespace corelogic {
                             condition.mttyPid = resp.adplace.pId;
                             log.adInfo.mid = resp.adplace.mId;
                         } else {
-                            adapter->buildBidResult(condition, resp);
+                            adapter->buildBidResult(condition, resp, conditionIdx);
                             log.adInfo.mid = resp.adplace.mId;
                             bAccepted = true;
                             result = true;
                         }
-                        if (biddingHandler->fillLogItem(log, bAccepted)) {
+                        if (biddingHandler->fillLogItem(condition, log, bAccepted)) {
                             task->doLog(log);
                         }
+                        conditionIdx++;
                     }
                     return result;
                 });

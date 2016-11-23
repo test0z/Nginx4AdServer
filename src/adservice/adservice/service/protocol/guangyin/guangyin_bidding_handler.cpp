@@ -99,40 +99,17 @@ namespace bidding {
         return adservice::utility::serialize::getProtoBufObject(bidRequest_, data);
     }
 
-    bool GuangyinBiddingHandler::fillLogItem(protocol::log::LogItem & logItem, bool isAccepted)
+    bool GuangyinBiddingHandler::fillSpecificLog(const AdSelectCondition & selectCondition,
+                                                 protocol::log::LogItem & logItem, bool isAccepted)
     {
-        logItem.reqStatus = 200;
         logItem.userAgent = bidRequest_.device().ua();
-        logItem.ipInfo.proxy = bidRequest_.device().ip();
-        logItem.adInfo.adxid = adInfo.adxid;
-        logItem.adInfo.adxpid = adInfo.adxpid;
+        logItem.ipInfo.proxy = selectCondition.ip;
         logItem.referer = bidRequest_.has_site() ? bidRequest_.site().page() : "";
         if (isAccepted) {
             if (bidRequest_.device().devicetype() == DeviceType::MOBILE) {
                 logItem.deviceInfo = bidRequest_.device().DebugString();
             }
-            logItem.adInfo.sid = adInfo.sid;
-            logItem.adInfo.advId = adInfo.advId;
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.adxpid = adInfo.adxpid;
-            logItem.adInfo.adxuid = adInfo.adxuid;
-            logItem.adInfo.bannerId = adInfo.bannerId;
-            logItem.adInfo.cid = adInfo.cid;
-            logItem.adInfo.mid = adInfo.mid;
-            logItem.adInfo.cpid = adInfo.cpid;
-            logItem.adInfo.offerPrice = adInfo.offerPrice;
-            logItem.adInfo.areaId = adInfo.areaId;
-            adservice::utility::url::extractAreaInfo(adInfo.areaId.data(), logItem.geoInfo.country,
-                                                     logItem.geoInfo.province, logItem.geoInfo.city);
-            logItem.adInfo.bidSize = adInfo.bidSize;
-            logItem.adInfo.priceType = adInfo.priceType;
-            logItem.adInfo.ppid = adInfo.ppid;
-            logItem.adInfo.orderId = adInfo.orderId;
-        } else {
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.bidSize = adInfo.bidSize;
         }
-
         return true;
     }
 
@@ -205,20 +182,21 @@ namespace bidding {
     }
 
     void GuangyinBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-                                                const MT::common::SelectResult & result)
+                                                const MT::common::SelectResult & result, int seq)
     {
-        bidResponse_.Clear();
-        bidResponse_.set_id(bidRequest_.id());
-        bidResponse_.set_bidid(adservice::utility::cypher::randomId(3));
-        bidResponse_.clear_seatbid();
-
+        if (seq == 0) {
+            bidResponse_.Clear();
+            bidResponse_.set_id(bidRequest_.id());
+            bidResponse_.set_bidid(adservice::utility::cypher::randomId(3));
+            bidResponse_.clear_seatbid();
+        }
         const MT::common::Solution & finalSolution = result.solution;
         const MT::common::Banner & banner = result.banner;
 
         //缓存最终广告结果
         fillAdInfo(queryCondition, result, bidRequest_.user().id());
 
-        const Imp & imp = bidRequest_.imp(0);
+        const Imp & imp = bidRequest_.imp(seq);
         float maxCpmPrice = (float)result.bidPrice;
 
         SeatBid * seatBid = bidResponse_.add_seatbid();

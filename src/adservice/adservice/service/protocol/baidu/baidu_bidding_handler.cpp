@@ -56,35 +56,17 @@ namespace bidding {
         return generateScript(bid, width, height, sHtml.data(), AD_BD_CLICK_MACRO, extParam);
     }
 
-    bool BaiduBiddingHandler::fillLogItem(protocol::log::LogItem & logItem, bool isAccepted)
+    bool BaiduBiddingHandler::fillSpecificLog(const AdSelectCondition & selectCondition,
+                                              protocol::log::LogItem & logItem, bool isAccepted)
     {
-        logItem.reqStatus = 200;
         logItem.userAgent = bidRequest.user_agent();
-        logItem.ipInfo.proxy = bidRequest.ip();
-        logItem.adInfo.adxid = ADX_BAIDU;
+        logItem.ipInfo.proxy = selectCondition.ip;
+        logItem.referer = bidRequest.has_referer() ? bidRequest.referer() : "";
         if (isAccepted) {
             if (bidRequest.has_mobile()) {
                 const BidRequest_Mobile & mobile = bidRequest.mobile();
                 logItem.deviceInfo = mobile.DebugString();
             }
-            logItem.adInfo.sid = adInfo.sid;
-            logItem.adInfo.advId = adInfo.advId;
-            logItem.adInfo.adxid = adInfo.adxid;
-            logItem.adInfo.adxpid = adInfo.adxpid;
-            logItem.adInfo.adxuid = adInfo.adxuid;
-            logItem.adInfo.bannerId = adInfo.bannerId;
-            logItem.adInfo.cid = adInfo.cid;
-            logItem.adInfo.mid = adInfo.mid;
-            logItem.adInfo.cpid = adInfo.cpid;
-            logItem.adInfo.offerPrice = adInfo.offerPrice;
-            logItem.adInfo.priceType = adInfo.priceType;
-            logItem.adInfo.ppid = adInfo.ppid;
-            adservice::utility::url::extractAreaInfo(adInfo.areaId.data(), logItem.geoInfo.country,
-                                                     logItem.geoInfo.province, logItem.geoInfo.city);
-            logItem.adInfo.bidSize = adInfo.bidSize;
-            logItem.referer = bidRequest.has_referer() ? bidRequest.referer() : "";
-        } else {
-            logItem.adInfo.pid = adInfo.pid;
         }
         return true;
     }
@@ -110,17 +92,19 @@ namespace bidding {
     }
 
     void BaiduBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-                                             const MT::common::SelectResult & result)
+                                             const MT::common::SelectResult & result, int seq)
     {
-        bidResponse.Clear();
-        bidResponse.set_id(bidRequest.id());
-        bidResponse.clear_ad();
+        if (seq == 0) {
+            bidResponse.Clear();
+            bidResponse.set_id(bidRequest.id());
+            bidResponse.clear_ad();
+        }
         BidResponse_Ad * adResult = bidResponse.add_ad();
         const MT::common::Solution & finalSolution = result.solution;
         const MT::common::ADPlace & adplace = result.adplace;
         const MT::common::Banner & banner = result.banner;
         int advId = finalSolution.advId;
-        const BidRequest_AdSlot & adSlot = bidRequest.adslot(0);
+        const BidRequest_AdSlot & adSlot = bidRequest.adslot(seq);
         int maxCpmPrice = max(result.bidPrice, adSlot.minimum_cpm());
         adResult->set_max_cpm(maxCpmPrice);
         adResult->set_advertiser_id(advId);

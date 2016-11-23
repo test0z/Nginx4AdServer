@@ -120,39 +120,17 @@ namespace bidding {
         return parseJson(data.c_str(), bidRequest);
     }
 
-    bool InmobiBiddingHandler::fillLogItem(protocol::log::LogItem & logItem, bool isAccepted)
+    bool InmobiBiddingHandler::fillSpecificLog(const AdSelectCondition & selectCondition,
+                                               protocol::log::LogItem & logItem, bool isAccepted)
     {
-        logItem.reqStatus = 200;
         cppcms::json::value & deviceInfo = bidRequest["device"];
         logItem.userAgent = deviceInfo.get("ua", "");
-        logItem.ipInfo.proxy = deviceInfo.get("ip", "");
-        logItem.adInfo.adxid = adInfo.adxid;
-        logItem.adInfo.adxpid = adInfo.adxpid;
+        logItem.ipInfo.proxy = selectCondition.ip;
         if (isAccepted) {
             cppcms::json::value device;
             device["deviceInfo"] = deviceInfo;
             logItem.deviceInfo = toJson(device);
-            logItem.adInfo.sid = adInfo.sid;
-            logItem.adInfo.advId = adInfo.advId;
-            logItem.adInfo.adxid = adInfo.adxid;
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.adxpid = adInfo.adxpid;
-            logItem.adInfo.adxuid = adInfo.adxuid;
-            logItem.adInfo.bannerId = adInfo.bannerId;
-            logItem.adInfo.cid = adInfo.cid;
-            logItem.adInfo.mid = adInfo.mid;
-            logItem.adInfo.cpid = adInfo.cpid;
-            logItem.adInfo.offerPrice = adInfo.offerPrice;
-            logItem.adInfo.priceType = adInfo.priceType;
-            logItem.adInfo.ppid = adInfo.ppid;
-            url::extractAreaInfo(
-                adInfo.areaId.data(), logItem.geoInfo.country, logItem.geoInfo.province, logItem.geoInfo.city);
-            logItem.adInfo.bidSize = adInfo.bidSize;
             logItem.referer = bidRequest.get("site.ref", "");
-            logItem.adInfo.orderId = adInfo.orderId;
-        } else {
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.bidSize = adInfo.bidSize;
         }
         return true;
     }
@@ -257,10 +235,6 @@ namespace bidding {
             }
         }
         if (!filterCb(this, queryConditions)) {
-            adInfo.pid = std::to_string(queryCondition.mttyPid);
-            adInfo.adxpid = queryCondition.adxpid;
-            adInfo.adxid = queryCondition.adxid;
-            adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
             return bidFailedReturn();
         }
         return isBidAccepted = true;
@@ -274,20 +248,6 @@ namespace bidding {
         {
           "seat":"1",
           "bid":[
-                {
-                    "adm":"",
-                    "id":"",
-                    "impid":"",
-                    "nurl":"",
-                    "price":"",
-                    "crid":"",
-                    "ext":{
-                        "ldp":"",
-                        "pm":[],
-                        "cm":[],
-                        "type":""
-                    }
-                }
             ]
         }
     ],
@@ -295,20 +255,23 @@ namespace bidding {
 })";
 
     void InmobiBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-                                              const MT::common::SelectResult & result)
+                                              const MT::common::SelectResult & result, int seq)
     {
-        const cppcms::json::value & adzInfo = bidRequest["imp"].array()[0];
+        if (seq == 0) {
+            if (!parseJson(BIDRESPONSE_TEMPLATE, bidResponse)) {
+                LOG_ERROR << "in InmobiBiddingHandler::buildBidResult parseJson failed";
+                isBidAccepted = false;
+                return;
+            }
+            std::string requestId = bidRequest["id"].str();
+            bidResponse["id"] = requestId;
+            bidResponse["bidid"] = "1";
+        }
+        const cppcms::json::value & adzInfo = bidRequest["imp"].array()[seq];
         const MT::common::Solution & finalSolution = result.solution;
         const MT::common::Banner & banner = result.banner;
-        if (!parseJson(BIDRESPONSE_TEMPLATE, bidResponse)) {
-            LOG_ERROR << "in InmobiBiddingHandler::buildBidResult parseJson failed";
-            isBidAccepted = false;
-            return;
-        }
-        std::string requestId = bidRequest["id"].str();
-        bidResponse["id"] = requestId;
-        bidResponse["bidid"] = "1";
-        cppcms::json::value & bidValue = bidResponse["seatbid"][0]["bid"][0];
+        cppcms::json::array & bidArrays = bidResponse["seatbid"][0]["bid"].array();
+        cppcms::json::value bidValue;
         bidValue["id"] = "1";
         std::string impId = adzInfo["id"].str();
         bidValue["impid"] = impId;
@@ -368,6 +331,7 @@ namespace bidding {
         }
         int maxCpmPrice = result.bidPrice;
         bidValue["price"] = maxCpmPrice;
+        bidArrays.push_back(std::move(bidValue));
     }
 
     void InmobiBiddingHandler::match(adservice::utility::HttpResponse & response)

@@ -55,36 +55,15 @@ namespace bidding {
         return getProtoBufObject(bidRequest, data);
     }
 
-    bool GdtBiddingHandler::fillLogItem(protocol::log::LogItem & logItem, bool isAccepted)
+    bool GdtBiddingHandler::fillSpecificLog(const AdSelectCondition & selectCondition, protocol::log::LogItem & logItem,
+                                            bool isAccepted)
     {
-        logItem.reqStatus = 200;
-        logItem.ipInfo.proxy = bidRequest.ip();
-        logItem.adInfo.adxid = adInfo.adxid;
-        logItem.adInfo.adxpid = adInfo.adxpid;
+        logItem.ipInfo.proxy = selectCondition.ip;
         if (isAccepted) {
             if (bidRequest.has_device()) {
                 const BidRequest_Device & device = bidRequest.device();
                 logItem.deviceInfo = device.DebugString();
             }
-            logItem.adInfo.sid = adInfo.sid;
-            logItem.adInfo.advId = adInfo.advId;
-            logItem.adInfo.adxid = adInfo.adxid;
-            logItem.adInfo.adxpid = adInfo.adxpid;
-            logItem.adInfo.adxuid = adInfo.adxuid;
-            logItem.adInfo.bannerId = adInfo.bannerId;
-            logItem.adInfo.cid = adInfo.cid;
-            logItem.adInfo.mid = adInfo.mid;
-            logItem.adInfo.cpid = adInfo.cpid;
-            logItem.adInfo.offerPrice = adInfo.offerPrice;
-            logItem.adInfo.priceType = adInfo.priceType;
-            logItem.adInfo.ppid = adInfo.ppid;
-            url::extractAreaInfo(adInfo.areaId.data(), logItem.geoInfo.country, logItem.geoInfo.province,
-                                 logItem.geoInfo.city);
-            logItem.adInfo.bidSize = adInfo.bidSize;
-            logItem.adInfo.orderId = adInfo.orderId;
-        } else {
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.bidSize = adInfo.bidSize;
         }
         return true;
     }
@@ -157,9 +136,6 @@ namespace bidding {
         }
         queryCondition.pAdplaceInfo = &adplaceInfo;
         if (!filterCb(this, queryConditions)) {
-            adInfo.pid = std::to_string(queryCondition.mttyPid);
-            adInfo.adxid = queryCondition.adxid;
-            adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
             return bidFailedReturn();
         }
 
@@ -167,15 +143,16 @@ namespace bidding {
     }
 
     void GdtBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-                                           const MT::common::SelectResult & result)
+                                           const MT::common::SelectResult & result, int seq)
     {
-        bidResponse.Clear();
-        bidResponse.set_request_id(bidRequest.id());
-        bidResponse.clear_seat_bids();
+        if (seq == 0) {
+            bidResponse.Clear();
+            bidResponse.set_request_id(bidRequest.id());
+            bidResponse.clear_seat_bids();
+        }
         BidResponse_SeatBid * seatBid = bidResponse.add_seat_bids();
         const MT::common::Banner & banner = result.banner;
-        // int advId = finalSolution.advId;
-        const BidRequest_Impression & adzInfo = bidRequest.impressions(0);
+        const BidRequest_Impression & adzInfo = bidRequest.impressions(seq);
         seatBid->set_impression_id(adzInfo.id());
         BidResponse_Bid * adResult = seatBid->add_bids();
         int maxCpmPrice = result.bidPrice;
