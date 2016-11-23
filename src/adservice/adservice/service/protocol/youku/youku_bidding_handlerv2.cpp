@@ -107,8 +107,8 @@ namespace bidding {
     {
         logItem.reqStatus = 200;
         cppcms::json::value & deviceInfo = bidRequest["device"];
-        logItem.userAgent = deviceInfo["ua"].str();
-        logItem.ipInfo.proxy = deviceInfo["ip"].str();
+        logItem.userAgent = deviceInfo.get("ua", "");
+        logItem.ipInfo.proxy = deviceInfo.get("ip", "");
         logItem.adInfo.adxid = adInfo.adxid;
         logItem.adInfo.adxpid = adInfo.adxpid;
         if (isBidAccepted) {
@@ -330,45 +330,36 @@ namespace bidding {
         bidValue["nurl"] = buffer;
         std::string crid = std::to_string(adInfo.bannerId);
         bidValue["crid"] = crid;
-        if (!adzInfo.find("video").is_undefined()
-            || queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) { //视频流量 adm为素材地址 ldp为点击链
-            std::string landingUrl;
-            if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
-                int nativeTemplateId = 0;
-                const cppcms::json::array & assets = adzInfo.find("native.assets").array();
-                std::string title = mtlsArray[0]["p0"].str();
-                for (uint32_t i = 0; i < assets.size(); i++) {
-                    const cppcms::json::value & asset = assets[i];
-                    int w = asset.get("image_url.w", 0);
-                    int h = asset.get("image_url.h", 0);
-                    uint32_t titleLen = asset.get("title.len", 0);
-                    if (w == banner.width && h == banner.height && title.length() <= titleLen) {
-                        nativeTemplateId = asset.get("native_template_id", 0);
-                        break;
-                    }
+        std::string landingUrl;
+        if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
+            int nativeTemplateId = 0;
+            const cppcms::json::array & assets = adzInfo.find("native.assets").array();
+            std::string title = mtlsArray[0]["p0"].str();
+            for (uint32_t i = 0; i < assets.size(); i++) {
+                const cppcms::json::value & asset = assets[i];
+                int w = asset.get("image_url.w", 0);
+                int h = asset.get("image_url.h", 0);
+                uint32_t titleLen = asset.get("title.len", 0);
+                if (w == banner.width && h == banner.height && title.length() <= titleLen) {
+                    nativeTemplateId = asset.get("native_template_id", 0);
+                    break;
                 }
-                bidValue["native.native_template_id"] = nativeTemplateId;
-                landingUrl = mtlsArray[0]["p9"].str();
-                replace(landingUrl, "{{click}}", "");
-            } else {
-                std::string materialUrl = mtlsArray[0]["p0"].str();
-                bidValue["adm"] = materialUrl;
-                landingUrl = mtlsArray[0]["p1"].str();
             }
-            getClickPara(requestId, clickParam, sizeof(clickParam), "", landingUrl);
-            snprintf(buffer, sizeof(buffer), AD_YOUKU_CLICK, clickParam);
-            std::string cm = buffer;
-            extValue["ldp"] = cm;
-            if (!tview.empty()) {
-                cppcms::json::array & extPmArray = extValue["pm"].array();
-                extPmArray.push_back(cppcms::json::value(tview));
-            }
-        } else { //动态创意流量 adm为iframe 设置type
-            int w = banner.width;
-            int h = banner.height;
-            std::string html = generateHtmlSnippet(requestId, w, h, "of=2&", "");
-            bidValue["adm"] = html;
-            extValue["type"] = "c";
+            bidValue["native.native_template_id"] = nativeTemplateId;
+            landingUrl = mtlsArray[0]["p9"].str();
+            replace(landingUrl, "{{click}}", "");
+        } else {
+            std::string materialUrl = mtlsArray[0]["p0"].str();
+            bidValue["adm"] = materialUrl;
+            landingUrl = mtlsArray[0]["p1"].str();
+        }
+        getClickPara(requestId, clickParam, sizeof(clickParam), "", landingUrl);
+        snprintf(buffer, sizeof(buffer), AD_YOUKU_CLICK, clickParam);
+        std::string cm = buffer;
+        extValue["ldp"] = cm;
+        if (!tview.empty()) {
+            cppcms::json::array & extPmArray = extValue["pm"].array();
+            extPmArray.push_back(cppcms::json::value(tview));
         }
         int maxCpmPrice = result.bidPrice;
         bidValue["price"] = maxCpmPrice;

@@ -124,8 +124,8 @@ namespace bidding {
     {
         logItem.reqStatus = 200;
         cppcms::json::value & deviceInfo = bidRequest["device"];
-        logItem.userAgent = deviceInfo["ua"].str();
-        logItem.ipInfo.proxy = deviceInfo["ip"].str();
+        logItem.userAgent = deviceInfo.get("ua", "");
+        logItem.ipInfo.proxy = deviceInfo.get("ip", "");
         logItem.adInfo.adxid = adInfo.adxid;
         logItem.adInfo.adxpid = adInfo.adxpid;
         if (isBidAccepted) {
@@ -300,7 +300,7 @@ namespace bidding {
         const MT::common::Solution & finalSolution = result.solution;
         const MT::common::Banner & banner = result.banner;
         if (!parseJson(BIDRESPONSE_TEMPLATE, bidResponse)) {
-            LOG_ERROR << "in YoukuBiddingHandler::buildBidResult parseJson failed";
+            LOG_ERROR << "in InmobiBiddingHandler::buildBidResult parseJson failed";
             isBidAccepted = false;
             return;
         }
