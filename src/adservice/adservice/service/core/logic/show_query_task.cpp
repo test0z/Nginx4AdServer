@@ -172,6 +172,7 @@ namespace corelogic {
         std::string height = to_string(banner.height);
         mtAdInfo["width"] = width;
         mtAdInfo["height"] = height;
+        mtAdInfo["oid"] = selectResult.orderId;
         std::string jsonResult = utility::json::toJson(mtAdInfo);
         int len = snprintf(buffer, bufferSize - 1, templateFmt, jsonResult.c_str());
         if (len >= bufferSize) {
