@@ -15,7 +15,8 @@ namespace corelogic {
      */
     class HandleClickQueryTask : public AbstractQueryTask {
     public:
-        explicit HandleClickQueryTask(adservice::utility::HttpRequest & request, adservice::utility::HttpResponse & response)
+        explicit HandleClickQueryTask(adservice::utility::HttpRequest & request,
+                                      adservice::utility::HttpResponse & response)
             : AbstractQueryTask(request, response)
         {
         }

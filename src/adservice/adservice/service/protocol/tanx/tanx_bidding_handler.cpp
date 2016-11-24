@@ -4,6 +4,7 @@
 
 #include "tanx_bidding_handler.h"
 #include "core/core_ip_manager.h"
+#include "core/core_typetable.h"
 #include "core/logic/show_query_task.h"
 #include "logging.h"
 #include "utility/utility.h"
@@ -154,14 +155,27 @@ namespace bidding {
         queryCondition.ip = bidRequest.ip();
         queryCondition.basePrice = adzInfo.has_min_cpm_price() ? adzInfo.min_cpm_price() : 0;
         extractSize(adzInfo.size(), queryCondition.width, queryCondition.height);
+        if (bidRequest.content_categories().size() > 0) {
+            const BidRequest_ContentCategory & category = bidRequest.content_categories(0);
+            TypeTableManager & typeTableManager = TypeTableManager::getInstance();
+            queryCondition.mttyContentType = typeTableManager.getContentType(ADX_TANX, std::to_string(category.id()));
+        }
         if (bidRequest.has_mobile()) {
             const BidRequest_Mobile & mobile = bidRequest.mobile();
             const BidRequest_Mobile_Device & device = mobile.device();
             queryCondition.mobileDevice = getDeviceType(device.platform());
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.adxid = ADX_TANX_MOBILE;
-            if (mobile.has_is_app() && mobile.is_app() && mobile.has_package_name()) {
-                queryCondition.adxpid = mobile.package_name();
+            if (mobile.has_is_app() && mobile.is_app()) {
+                if (mobile.has_package_name()) {
+                    queryCondition.adxpid = mobile.package_name();
+                }
+                if (mobile.app_categories().size() > 0) {
+                    const BidRequest_Mobile_AppCategory & category = mobile.app_categories(0);
+                    TypeTableManager & typeTableManager = TypeTableManager::getInstance();
+                    queryCondition.mttyContentType
+                        = typeTableManager.getContentType(ADX_TANX, std::to_string(category.id()));
+                }
             }
             std::string deviceId = device.idfa().empty() ? device.android_id() : device.idfa();
             strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), deviceId.size());

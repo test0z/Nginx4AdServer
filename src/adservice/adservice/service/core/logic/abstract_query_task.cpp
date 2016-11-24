@@ -59,6 +59,13 @@ namespace corelogic {
         case ADX_SOHU_PC:
         case ADX_SOHU_MOBILE:
             return sohu_price_decode(input);
+        case ADX_INMOBI:
+            try {
+                return std::stoi(input);
+            } catch (...) {
+                LOG_ERROR << "adx inmobi price error,input:" < input;
+                return 0;
+            }
         default:
             return 0;
         }

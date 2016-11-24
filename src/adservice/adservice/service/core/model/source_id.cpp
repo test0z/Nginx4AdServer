@@ -12,16 +12,22 @@ namespace core {
         {
             return val_;
         }
+
         void SourceId::record(const as_record * record)
         {
-            std::stringstream ss;
-            ss << std::setw(12) << std::setfill('0') << std::setbase(16) << as_record_get_int64(record, "val", -1);
-            ss >> val_;
+            int64_t val = as_record_get_int64(record, "val", -1);
+            if (val != -1) {
+                std::stringstream ss;
+                ss << std::setw(12) << std::setfill('0') << std::setbase(16) << val;
+                ss >> val_;
 
-            if (record_ == nullptr) {
-                record_ = as_record_new(1);
+                if (record_ == nullptr) {
+                    record_ = as_record_new(1);
+                }
+                as_record_set_str(record_, "source_id", val_.c_str());
+            } else {
+                val_ = getStr(record, "source_id");
             }
-            as_record_set_str(record_, "source_id", val_.c_str());
         }
 
         SourceRecord::SourceRecord(utility::url::ParamMap & paramMap, protocol::log::LogItem & log)
