@@ -96,7 +96,10 @@ namespace corelogic {
     {
         try {
             if (!useAes) {
-                return std::stoi(input);
+                int output = std::stoi(input);
+                if (output < 0) {
+                    return -output;
+                }
             } else {
                 std::string result;
                 aes_ecbdecode((const unsigned char *)OFFERPRICE_ENCODE_KEY, input, result);
