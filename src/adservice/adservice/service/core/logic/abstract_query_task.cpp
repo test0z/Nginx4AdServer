@@ -63,7 +63,7 @@ namespace corelogic {
             try {
                 return std::stoi(input);
             } catch (...) {
-                LOG_ERROR << "adx inmobi price error,input:" < input;
+                LOG_ERROR << "adx inmobi price error,input:" << input;
                 return 0;
             }
         default:
@@ -79,7 +79,7 @@ namespace corelogic {
             bidPrice = offerPrice == 0 ? cost : offerPrice;
         } else {
             cost = decodePrice;
-            bidPrice = decodePrice * AD_OWNER_COST_FACTOR;
+            bidPrice = std::ceil(decodePrice * AD_OWNER_COST_FACTOR);
         }
         if (priceType == PRICETYPE_RRTB_CPC) {
             if (logPhase != protocol::log::LogPhaseType::CLICK) {
@@ -96,7 +96,10 @@ namespace corelogic {
     {
         try {
             if (!useAes) {
-                return std::stoi(input);
+                int output = std::stoi(input);
+                if (output < 0) {
+                    return -output;
+                }
             } else {
                 std::string result;
                 aes_ecbdecode((const unsigned char *)OFFERPRICE_ENCODE_KEY, input, result);
