@@ -69,5 +69,14 @@ namespace server {
         }
         return true;
     }
+
+    void CookieMappingManager::updateUserMappingAsync(const adservice::core::model::MtUserMapping & mapping)
+    {
+    }
+
+    void
+    CookieMappingManager::updateMappingAdxUidAsync(const std::string & userId, int64_t adxId, const std::string & value)
+    {
+    }
 }
 }
