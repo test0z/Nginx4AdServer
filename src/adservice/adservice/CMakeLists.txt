@@ -22,14 +22,17 @@ SET(SRC_LIST
     ./service/core/core_threadlocal_manager.cpp
     ./service/core/core_typetable.cpp
     ./service/core/core_ad_sizemap.cpp
+    ./service/core/core_cm_manager.cpp
     ./service/core/logic/abstract_query_task.cpp
     ./service/core/logic/bid_query_task.cpp
     ./service/core/logic/click_query_task.cpp
     ./service/core/logic/show_query_task.cpp
     ./service/core/logic/trace_task.cpp
+    ./service/core/logic/mapping_query_task.cpp
     ./service/core/logpusher/kafka_log_producer.cpp
     ./service/core/logpusher/log_pusher.cpp
     ./service/core/model/source_id.cpp
+    ./service/core/model/user.cpp
     ./service/kafka_checker.cpp
     ./service/libutil/AdAcbm.cpp
     ./service/libutil/AdIpc.cpp

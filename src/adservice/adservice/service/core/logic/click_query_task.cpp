@@ -187,6 +187,8 @@ namespace corelogic {
             } catch (std::exception & e) {
                 LOG_ERROR << "记录点击失败，订单ID无效：" << paramMap[URL_ORDER_ID];
             }
+            //用户频次控制逻辑接入
+            // todo:
         } else {
             resp.status(400, "Error,empty landing url");
         }

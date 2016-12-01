@@ -24,7 +24,7 @@ namespace adservice {
 
 namespace corelogic {
 
-	using namespace adservice::server;
+    using namespace adservice::server;
     using namespace adservice::utility::serialize;
     using namespace adservice::utility::cypher;
     using namespace adservice::utility::url;
@@ -36,13 +36,13 @@ namespace corelogic {
      */
     class AbstractQueryTask {
     public:
-		explicit AbstractQueryTask(adservice::utility::HttpRequest & request,
-								   adservice::utility::HttpResponse & response)
+        explicit AbstractQueryTask(adservice::utility::HttpRequest & request,
+                                   adservice::utility::HttpResponse & response)
             : resp(response)
         {
             isPost = request.request_method() == "POST";
             if (isPost) {
-				const std::string & postdata = request.raw_post_data();
+                const std::string & postdata = request.raw_post_data();
                 data = postdata;
             } else {
                 data = request.query_string();
@@ -93,9 +93,11 @@ namespace corelogic {
         {
         }
 
+        virtual std::string userCookieLogic(ParamMap & paramMap, adservice::utility::HttpResponse & response);
+
         // deal with custom bussiness
-		virtual void customLogic(ParamMap & paramMap, protocol::log::LogItem & log,
-								 adservice::utility::HttpResponse & response)
+        virtual void customLogic(ParamMap & paramMap, protocol::log::LogItem & log,
+                                 adservice::utility::HttpResponse & response)
             = 0;
 
         // set error detail to response body

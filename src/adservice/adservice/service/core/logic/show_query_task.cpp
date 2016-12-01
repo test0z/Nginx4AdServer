@@ -385,6 +385,8 @@ namespace corelogic {
                 char buffer[8192];
                 int len = buildResponseForDsp(adBanner, paramMap, tmp, templateFmt, buffer, sizeof(buffer));
                 respBody = std::string(buffer, buffer + len);
+                //用户频次控制逻辑接入
+                // todo:
             }
         }
 

@@ -13,6 +13,8 @@
 #include "common/functions.h"
 #include "common/types.h"
 #include "core/adselectv2/ad_select_interface.h"
+#include "core/core_cm_manager.h"
+#include "core/model/user.h"
 #include "protocol/log/log.h"
 #include "utility/utility.h"
 #include <mtty/constants.h>
@@ -21,6 +23,8 @@ namespace protocol {
 namespace bidding {
 
     using namespace adservice::adselectv2;
+    using namespace adservice::server;
+    using namespace adservice::core::model;
 
     class AbstractBiddingHandler;
 
@@ -97,6 +101,11 @@ namespace bidding {
         virtual std::string generateScript(const std::string & bid, int width, int height, const char * scriptUrl,
                                            const char * clickMacro, const char * extParam);
 
+        CookieMappingQueryKeyValue getCookieMappingQueryKeyValueMobile(const std::string & idfa,
+                                                                       const std::string & imei);
+
+        CookieMappingQueryKeyValue getCookieMappingQueryKeyValuePC(int64_t adxId, const std::string & cookie);
+
         inline bool bidFailedReturn()
         {
             return (isBidAccepted = false);
@@ -120,7 +129,7 @@ namespace bidding {
         //最近一次匹配的结果
         bool isBidAccepted;
         protocol::log::AdInfo adInfo;
-        BiddingFlowInfo biddingFlowInfo;
+        bool needCookieMapping{ false };
     };
 }
 }

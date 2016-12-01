@@ -12,6 +12,7 @@
 #include "protocol/tencent_gdt/tencent_gdt_price.h"
 #include "protocol/youku/youku_price.h"
 #include "utility/mttytime.h"
+#include <mtty/mtuser.h>
 
 namespace adservice {
 namespace corelogic {
@@ -243,18 +244,6 @@ namespace corelogic {
         }
     }
 
-    bool checkUserCookies(const std::string & oldCookies)
-    {
-        CypherResult128 cypherResult;
-        memcpy((void *)cypherResult.bytes, (void *)oldCookies.c_str(), oldCookies.length());
-        DecodeResult64 decodeResult64;
-        if (!cookiesDecode(cypherResult, decodeResult64) || decodeResult64.words[0] <= 0
-            || decodeResult64.words[0] > time::getCurrentTimeSinceMtty()) {
-            return false;
-        }
-        return true;
-    }
-
     void AbstractQueryTask::updateThreadData()
     {
         pthread_t thread = pthread_self();
@@ -273,6 +262,49 @@ namespace corelogic {
         }
     }
 
+    namespace {
+
+        void plantNewCookie(const std::string & cookieUid, adservice::utility::HttpResponse & resp)
+        {
+            std::string cookieString = COOKIES_MTTY_ID "=";
+            cookieString += cookieUid;
+            cookieString += ";Domain=." COOKIES_MTTY_DOMAIN ";Max-Age=2617488000;";
+            resp.set("Set-Cookie", cookieString);
+        }
+    }
+
+    /**
+     * 同时取u参数和cookie,进行兼容校验,返回一个可供追溯的有效用户id(明文)
+     * @brief AbstractQueryTask::userCookieLogic
+     * @param paramMap
+     * @param resp
+     * @return
+     */
+    std::string AbstractQueryTask::userCookieLogic(ParamMap & paramMap, adservice::utility::HttpResponse & resp)
+    {
+        std::string cookieEncUid = extractCookiesParam(COOKIES_MTTY_ID, userCookies);
+        const std::string & serverEncUid = paramMap.find(URL_MTTY_UID) != paramMap.end() ? paramMap[URL_MTTY_UID] : "";
+        MT::User::UserID clientUid(cookieEncUid, true);
+        MT::User::UserID serverUid(serverEncUid, true);
+        if (clientUid.isValid() && serverUid.isValid()) { //客户端id和服务端id同时存在且合法
+            int64_t clientUserTime = clientUid.time();
+            int64_t serverUserTime = serverUid.time();
+            if (clientUserTime < serverUserTime) {
+                return clientUid.text();
+            }
+            return serverUid.text();
+        } else if (!clientUid.isValid() && serverUid.isValid()) { //客户端id不合法,服务端id合法
+            plantNewCookie(serverUid.cipher(), resp);
+            return serverUid.text();
+        } else if (clientUid.isValid() && !serverUid.isValid()) { //客户端id合法，服务端id不合法
+            return clientUid.text();
+        } else { //客户端id不合法，服务端id也不合法
+            MT::User::UserID newUid(int64_t(utility::rng::randomInt() & 0x0000FFFF));
+            plantNewCookie(newUid.cipher(), resp);
+            return newUid.text();
+        }
+    }
+
     void AbstractQueryTask::commonLogic(ParamMap & paramMap, protocol::log::LogItem & log,
                                         adservice::utility::HttpResponse & resp)
     {
@@ -287,22 +319,7 @@ namespace corelogic {
             getParamv2(paramMap, data.c_str());
             filterParamMapSafe(paramMap);
             parseObjectToLogItem(paramMap, log, data.c_str());
-            std::string userId = extractCookiesParam(COOKIES_MTTY_ID, userCookies);
-            bool needNewCookies = false;
-            if (userId.empty() || !checkUserCookies(userId)) {
-                CypherResult128 cookiesResult;
-                makeCookies(cookiesResult);
-                log.userId = (char *)cookiesResult.char_bytes;
-                needNewCookies = true;
-            } else {
-                log.userId = userId;
-            }
-            if (needNewCookies) { //传入的cookies中没有userId,cookies 传出
-                char cookiesString[64];
-                sprintf(cookiesString, "%s=%s;Domain=.%s;Max-Age=2617488000;", COOKIES_MTTY_ID, log.userId.c_str(),
-                        COOKIES_MTTY_DOMAIN);
-                resp.set("Set-Cookie", cookiesString);
-            }
+            log.userId = userCookieLogic(paramMap, resp);
         } else { //对于POST方法传送过来的Query
             getPostParam(paramMap);
         }
