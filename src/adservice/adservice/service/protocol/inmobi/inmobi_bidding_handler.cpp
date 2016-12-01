@@ -1,6 +1,7 @@
 
 #include <sstream>
 
+#include "core/core_ad_sizemap.h"
 #include "core/core_ip_manager.h"
 #include "core/core_typetable.h"
 #include "inmobi_bidding_handler.h"
@@ -189,13 +190,17 @@ namespace bidding {
             queryCondition.width = adTypeObj.get("w", 0);
             queryCondition.height = adTypeObj.get("h", 0);
         } else {
+            const adservice::utility::AdSizeMap & adSizeMap = adservice::utility::AdSizeMap::getInstance();
             queryCondition.bannerType = BANNER_TYPE_PRIMITIVE;
-            const cppcms::json::array & assets = adTypeObj.find("assets").array();
+            const cppcms::json::array & assets = adTypeObj.find("requestobj.assets").array();
             if (assets.size() > 0) {
                 for (uint32_t i = 0; i < assets.size(); i++) {
                     const cppcms::json::value & asset = assets[i];
-                    queryCondition.width = asset.get("img.w", 0);
-                    queryCondition.height = asset.get("img.h", 0);
+                    int w = asset.get("img.wmin", 0);
+                    int h = asset.get("img.hmin", 0);
+                    auto sizePair = adSizeMap.get({ w, h });
+                    queryCondition.width = sizePair.first;
+                    queryCondition.height = sizePair.second;
                     adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
                 }
                 queryCondition.pAdplaceInfo = &adplaceInfo;
