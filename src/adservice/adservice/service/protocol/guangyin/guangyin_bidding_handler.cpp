@@ -162,8 +162,8 @@ namespace bidding {
             queryCondition.mobileDevice = getDeviceType(device);
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.adxid = ADX_GUANGYIN_MOBILE;
-            const std::string & deviceId = device.idfa().empty() ? device.androidid() : device.idfa();
-            strncpy(biddingFlowInfo.deviceIdBuf, deviceId.c_str(), deviceId.size());
+            //            const std::string & deviceId = device.idfa().empty() ? device.androidid() : device.idfa();
+            //            strncpy(biddingFlowInfo.deviceIdBuf, deviceId.c_str(), deviceId.size());
 
             queryCondition.mobileNetwork = getNetWork(device.connectiontype());
             if (bidRequest_.has_app()) {

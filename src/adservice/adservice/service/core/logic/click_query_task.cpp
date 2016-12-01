@@ -116,13 +116,12 @@ namespace corelogic {
         paramMap["adxpid"] = paramMap[URL_ADPLACE_ID];
         paramMap["bid"] = paramMap[URL_CREATIVE_ID];
         paramMap["sid"] = paramMap[URL_EXEC_ID];
-        paramMap["idfa"] = paramMap[URL_DEVICE_UID];
+        paramMap["idfa"] = paramMap[URL_DEVICE_IDFA];
         paramMap["ip"] = userIp;
 
         char buffer[1024];
         char result[1024];
-        //	std::string output;
-        //	url::urlDecode_f(logItem.adInfo.landingUrl, output, buffer);
+
         memcpy(buffer, logItem.adInfo.landingUrl.data(), logItem.adInfo.landingUrl.length());
         buffer[logItem.adInfo.landingUrl.length()] = '\0';
         char *p1 = buffer, *p = result;
@@ -191,12 +190,12 @@ namespace corelogic {
             // todo:
             if (!log.userId.empty()) {
                 try {
-                    std::string userSidKey = log.userId + ":" + log.adInfo.sid;
+                    std::string userSidKey = log.userId + ":" + std::to_string(log.adInfo.sid);
                     MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "user-freq", userSidKey);
                     MT::common::ASOperation op(1, DAY_SECOND);
                     op.addIncr("c", (int64_t)1);
                     aerospikeClient.operate(key, op);
-                } catch (MT::common::AerospikeException & e) {
+                } catch (MT::common::AerospikeExcption & e) {
                     LOG_ERROR << "记录点击频次失败，userId：" << log.userId << "，sid:" << log.adInfo.sid
                               << ",e:" << e.what() << "，code:" << e.error().code << e.error().message << "，调用堆栈："
                               << std::endl

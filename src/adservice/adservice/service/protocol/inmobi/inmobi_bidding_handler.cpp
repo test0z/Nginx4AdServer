@@ -217,18 +217,6 @@ namespace bidding {
                                     queryCondition.mobileDevice,
                                     queryCondition.pcOS,
                                     queryCondition.pcBrowserStr);
-            if (queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROID
-                || queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROIDPAD) {
-                std::string deviceId = device.get<std::string>("didmd5", "");
-                strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), sizeof(biddingFlowInfo.deviceIdBuf) - 1);
-            } else if (queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD
-                       || queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE) {
-                std::string deviceId = device.get<std::string>("idfamd5", "");
-                strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), sizeof(biddingFlowInfo.deviceIdBuf) - 1);
-            } else {
-                biddingFlowInfo.deviceIdBuf[0] = '\0';
-            }
-
             queryCondition.mobileNetwork = getInmobiNetwork(device.get("carrier", 0));
         }
         const cppcms::json::value & siteContent = bidRequest.find("site");

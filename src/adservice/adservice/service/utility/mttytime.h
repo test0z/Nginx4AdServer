@@ -8,6 +8,7 @@
 #include "common/types.h"
 #include <chrono>
 #include <ctime>
+#include <mtty/constants.h>
 #include <stddef.h>
 
 namespace adservice {
@@ -21,7 +22,6 @@ namespace utility {
         static const int32_t timeZone = 8;
         static constexpr int32_t UTC_TIME_DIFF_SEC = timeZone * 3600;
         static constexpr int64_t UTC_TIME_DIFF_MS = UTC_TIME_DIFF_SEC * 1000;
-        static constexpr int64_t DAY_SECOND = 3600 * 24;
 
         inline int64_t getMttyTimeBegin()
         {

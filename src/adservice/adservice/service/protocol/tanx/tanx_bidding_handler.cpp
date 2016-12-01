@@ -188,7 +188,7 @@ namespace bidding {
             queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
             cookieMappingKeyPC(ADX_TANX, bidRequest.has_tid() ? bidRequest.tid() : "");
         }
-        queryCookieMapping(cmInfo.queryKV, selectCondition);
+        queryCookieMapping(cmInfo.queryKV, queryCondition);
         if (!filterCb(this, queryCondition)) {
             adInfo.pid = std::to_string(queryCondition.mttyPid);
             adInfo.adxpid = queryCondition.adxpid;

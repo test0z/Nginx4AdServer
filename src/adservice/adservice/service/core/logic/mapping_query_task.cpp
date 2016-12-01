@@ -18,18 +18,11 @@ namespace corelogic {
             case ADX_TANX:
             case ADX_TANX_MOBILE:
                 return "tanx_tid";
+            case ADX_YOUKU:
+            case ADX_YOUKU_MOBILE:
+                return "mzid";
             }
             return "";
-        }
-
-        std::tuple<std::string, std::string> extractAdxUid(ParamMap & paramMap, protocol::log::LogItem & log)
-        {
-            int64_t adxId = log.adInfo.adxid;
-            std::string urlMappingId = getAdxMappingId(adxId);
-            std::string key = "adxuid_";
-            key += adxId;
-            std::string value = paramMap[urlMappingId];
-            return std::make_tuple(key, value);
         }
     }
 
@@ -113,4 +106,5 @@ namespace corelogic {
             LOG_ERROR << "exception thrown during HandleMappingQueryTask::customLogic,e:" << e.what();
         }
     }
+}
 }

@@ -6,7 +6,7 @@
 namespace adservice {
 namespace server {
 
-    static CookieMappingManager CookieMappingManager::instance_;
+    CookieMappingManager CookieMappingManager::instance_;
     extern GlobalConfig globalConfig;
     extern MT::common::Aerospike aerospikeClient;
 
@@ -40,9 +40,9 @@ namespace server {
         return mapping;
     }
 
-    bool CookieMappingManager::updateUserMapping(const core::model::MtUserMapping & mapping)
+    bool CookieMappingManager::updateUserMapping(core::model::MtUserMapping & mapping)
     {
-        MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "CookieMapping", userId.c_str());
+        MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "CookieMapping", mapping.userId.c_str());
         try {
             aerospikeClient.put(key, mapping);
         } catch (MT::common::AerospikeExcption & e) {
@@ -70,7 +70,7 @@ namespace server {
         return true;
     }
 
-    void CookieMappingManager::updateUserMappingAsync(const adservice::core::model::MtUserMapping & mapping)
+    void CookieMappingManager::updateUserMappingAsync(adservice::core::model::MtUserMapping & mapping)
     {
     }
 

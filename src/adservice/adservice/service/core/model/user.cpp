@@ -14,7 +14,7 @@ namespace core {
         std::string MtUserMapping::adxUidKey(int64_t adxId)
         {
             std::string asBinName = "adxuid_";
-            asBindName += std::to_string(adxId);
+            asBinName += std::to_string(adxId);
             return asBinName;
         }
 
@@ -108,7 +108,7 @@ namespace core {
             for (const auto & deviceKey : deviceKeys) {
                 this->deviceIds.insert({ deviceKey, getStr(record, deviceKey.c_str()) });
             }
-            this->userId = getStr(record, MAPPING_KEY_USER);
+            this->userId = getStr(record, MAPPING_KEY_USER.c_str());
         }
 
         as_record * MtUserMapping::record()

@@ -105,9 +105,9 @@ namespace bidding {
         queryCondition.mobileDevice = getNetEaseDeviceType(platform);
         const cppcms::json::value & device = bidRequest.find("device");
         if (!device.is_undefined()) {
-            std::string deviceId = queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROID ? device.get("imei", "")
-                                                                                          : device.get("idfa", "");
-            strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), sizeof(biddingFlowInfo.deviceIdBuf) - 1);
+            // std::string deviceId = queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROID ? device.get("imei", "")
+            //                                                                               : device.get("idfa", "");
+            // strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), sizeof(biddingFlowInfo.deviceIdBuf) - 1);
             const cppcms::json::value & networkStatus = device.find("network_status");
             if (!networkStatus.is_undefined()) {
                 queryCondition.mobileNetwork = getNetwork(networkStatus.str());

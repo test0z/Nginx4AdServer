@@ -9,7 +9,7 @@ namespace server {
 
     class CookieMappingQueryKeyValue {
     public:
-        CookieMappingManager() = default;
+        CookieMappingQueryKeyValue() = default;
         CookieMappingQueryKeyValue(const std::string & k, const std::string & v, bool adxCookie = true)
             : key(k)
             , value(v)
@@ -17,7 +17,7 @@ namespace server {
         {
         }
 
-        CookieMappingManager & rebind(const std::string & k, const std::string & v, bool adxCookie = true)
+        CookieMappingQueryKeyValue & rebind(const std::string & k, const std::string & v, bool adxCookie = true)
         {
             key = k;
             value = v;
@@ -25,12 +25,12 @@ namespace server {
             return *this;
         }
 
-        bool isNull()
+        bool isNull() const
         {
             return key.empty() || value.empty();
         }
 
-        bool isAdxCookieKey()
+        bool isAdxCookieKey() const
         {
             return isAdxCookie;
         }
@@ -48,18 +48,16 @@ namespace server {
             return instance_;
         }
 
-        CookieMappingManager(const std::string & ns, const std::string & set);
-
     public:
         adservice::core::model::MtUserMapping getUserMapping(const std::string & userId);
 
         adservice::core::model::MtUserMapping getUserMappingByKey(const std::string & key, const std::string & value);
 
-        bool updateUserMapping(const adservice::core::model::MtUserMapping & mapping);
+        bool updateUserMapping(adservice::core::model::MtUserMapping & mapping);
 
         bool updateMappingAdxUid(const std::string & userId, int64_t adxId, const std::string & value);
 
-        void updateUserMappingAsync(const adservice::core::model::MtUserMapping & mapping);
+        void updateUserMappingAsync(adservice::core::model::MtUserMapping & mapping);
 
         void updateMappingAdxUidAsync(const std::string & userId, int64_t adxId, const std::string & value);
 
