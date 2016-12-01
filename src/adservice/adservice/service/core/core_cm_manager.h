@@ -10,19 +10,35 @@ namespace server {
     class CookieMappingQueryKeyValue {
     public:
         CookieMappingManager() = default;
-        CookieMappingQueryKeyValue(const std::string & k, const std::string & v)
+        CookieMappingQueryKeyValue(const std::string & k, const std::string & v, bool adxCookie = true)
             : key(k)
             , value(v)
+            , isAdxCookie(adxCookie)
         {
         }
+
+        CookieMappingManager & rebind(const std::string & k, const std::string & v, bool adxCookie = true)
+        {
+            key = k;
+            value = v;
+            isAdxCookie = adxCookie;
+            return *this;
+        }
+
         bool isNull()
         {
             return key.empty() || value.empty();
         }
 
+        bool isAdxCookieKey()
+        {
+            return isAdxCookie;
+        }
+
     public:
         std::string key;
         std::string value;
+        bool isAdxCookie;
     };
 
     class CookieMappingManager {

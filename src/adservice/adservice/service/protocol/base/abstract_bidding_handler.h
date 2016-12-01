@@ -38,6 +38,13 @@ namespace bidding {
         char deviceIdBuf[1024];
     };
 
+    class BidCookieMappingInfo {
+    public:
+        CookieMappingQueryKeyValue queryKV;
+        MtUserMapping userMapping;
+        bool needReMapping{ false };
+    };
+
     /**
      * BiddingHandler主要处理协议层数据转换,屏蔽各个平台之间输入输出的差异
      * 实际上应该叫做BiddingDataAdapter
@@ -101,10 +108,13 @@ namespace bidding {
         virtual std::string generateScript(const std::string & bid, int width, int height, const char * scriptUrl,
                                            const char * clickMacro, const char * extParam);
 
-        CookieMappingQueryKeyValue getCookieMappingQueryKeyValueMobile(const std::string & idfa,
-                                                                       const std::string & imei);
+        const CookieMappingQueryKeyValue & cookieMappingKeyMobile(const std::string & idfa, const std::string & imei);
 
-        CookieMappingQueryKeyValue getCookieMappingQueryKeyValuePC(int64_t adxId, const std::string & cookie);
+        const CookieMappingQueryKeyValue & cookieMappingKeyPC(int64_t adxId, const std::string & cookie);
+
+        void queryCookieMapping(const CookieMappingQueryKeyValue & queryKV, AdSelectCondition & selectCondition);
+
+        std::string redoCookieMapping(int64_t adxId, const std::string & adxCookieMappingUrl);
 
         inline bool bidFailedReturn()
         {
@@ -129,7 +139,7 @@ namespace bidding {
         //最近一次匹配的结果
         bool isBidAccepted;
         protocol::log::AdInfo adInfo;
-        bool needCookieMapping{ false };
+        BidCookieMappingInfo cmInfo;
     };
 }
 }

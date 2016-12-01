@@ -189,6 +189,20 @@ namespace corelogic {
             }
             //用户频次控制逻辑接入
             // todo:
+            if (!log.userId.empty()) {
+                try {
+                    std::string userSidKey = log.userId + ":" + log.adInfo.sid;
+                    MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "user-freq", userSidKey);
+                    MT::common::ASOperation op(1, DAY_SECOND);
+                    op.addIncr("c", (int64_t)1);
+                    aerospikeClient.operate(key, op);
+                } catch (MT::common::AerospikeException & e) {
+                    LOG_ERROR << "记录点击频次失败，userId：" << log.userId << "，sid:" << log.adInfo.sid
+                              << ",e:" << e.what() << "，code:" << e.error().code << e.error().message << "，调用堆栈："
+                              << std::endl
+                              << e.trace();
+                }
+            }
         } else {
             resp.status(400, "Error,empty landing url");
         }

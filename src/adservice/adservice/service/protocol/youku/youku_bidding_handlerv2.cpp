@@ -31,6 +31,7 @@ namespace bidding {
 #define YOUKU_OS_ANDROID "Android"
 #define YOUKU_OS_iPhone "ios"
 #define YOUKU_OS_MAC "Mac"
+#define YOUKU_COOKIEMAPPING_URL "http://c.yes.youku.com?dspid="
 
     static void fromYoukuDevTypeOsType(int devType,
                                        const std::string & osType,
@@ -205,23 +206,14 @@ namespace bidding {
                                    queryCondition.mobileDevice,
                                    queryCondition.pcOS,
                                    queryCondition.pcBrowserStr);
-            if (queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROID
-                || queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROIDPAD) {
-                std::string deviceId = device.get<std::string>("androidid", "");
-                strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), sizeof(biddingFlowInfo.deviceIdBuf) - 1);
-            } else if (queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD
-                       || queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE) {
-                std::string deviceId = device.get<std::string>("idfa", "");
-                strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), sizeof(biddingFlowInfo.deviceIdBuf) - 1);
-            } else {
-                biddingFlowInfo.deviceIdBuf[0] = '\0';
-            }
             if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
                 queryCondition.adxid = ADX_YOUKU_MOBILE;
                 adInfo.adxid = ADX_YOUKU_MOBILE;
             }
-
             queryCondition.mobileNetwork = getNetwork(device.get("connectiontype", 0));
+            cookieMappingKeyMobile(device.get<std::string>("idfa", ""), device.get<std::string>("imei", ""));
+        } else {
+            cookieMappingKeyPC(ADX_YOUKU, bidRequest.get("user.id", ""));
         }
         const cppcms::json::value & siteContent = bidRequest.find("site.content.ext");
         const cppcms::json::value & appContent = bidRequest.find("app.content.ext");
@@ -251,6 +243,7 @@ namespace bidding {
                 isDeal = true;
             }
         }
+        queryCookieMapping(cmInfo.queryKV, queryCondition);
         if (!filterCb(this, queryCondition)) {
             adInfo.pid = std::to_string(queryCondition.mttyPid);
             adInfo.adxpid = queryCondition.adxpid;
@@ -309,6 +302,8 @@ namespace bidding {
         //缓存最终广告结果
         fillAdInfo(queryCondition, result, bidRequest.get("user.id", ""));
 
+        std::string cookieMappingUrl = redoCookieMapping(ADX_YOUKU, YOUKU_COOKIEMAPPING_URL);
+
         // html snippet相关
         char pjson[2048] = { '\0' };
         std::string strBannerJson = banner.json;
@@ -365,6 +360,9 @@ namespace bidding {
         if (!tview.empty()) {
             cppcms::json::array & extPmArray = extValue["pm"].array();
             extPmArray.push_back(cppcms::json::value(tview));
+        }
+        if (!cookieMappingUrl.empty()) {
+            extValue["pm"].array().push_back(cookieMappingUrl);
         }
         int maxCpmPrice = result.bidPrice;
         bidValue["price"] = maxCpmPrice;

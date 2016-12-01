@@ -22,7 +22,7 @@ namespace bidding {
 #define AD_TX_CLICK_MACRO "%%CLICK_URL_PRE_ENC%%"
 #define AD_TX_CLICK_UNENC_MACRO "%%CLICK_URL_PRE_UNENC%%"
 #define AD_TX_PRICE_MACRO "%%SETTLE_PRICE%%"
-#define AD_COOKIEMAPPING_TANX ""
+#define TANX_COOKIEMAPPING_URL "http://cms.tanx.com/t.gif?tanx_nid=&tanx_cm"
 
     inline int max(const int & a, const int & b)
     {
@@ -59,7 +59,7 @@ namespace bidding {
         }
     }
 
-    std::string TanxBiddingHandler::tanxHtmlSnippet()
+    std::string TanxBiddingHandler::tanxHtmlSnippet(const std::string & cookieMappingUrl)
     {
         std::string bid = bidRequest.bid();
         // bool isMobile = bidRequest.has_mobile();
@@ -67,7 +67,7 @@ namespace bidding {
         std::string bannerSize = adzInfo.size();
         int width, height;
         extractSize(bannerSize, width, height);
-        return generateHtmlSnippet(bid, width, height, NULL);
+        return generateHtmlSnippet(bid, width, height, NULL, cookieMappingUrl.c_str());
     }
 
     std::string TanxBiddingHandler::generateHtmlSnippet(const std::string & bid, int width, int height,
@@ -180,11 +180,15 @@ namespace bidding {
             if (device.has_network()) {
                 queryCondition.mobileNetwork = getNetWork(device.network());
             }
+            cookieMappingKeyMobile(device.has_idfa() ? device.idfa() : "",
+                                   device.has_imei() ? device.imei() : device.imei());
         } else {
             queryCondition.pcOS = getOSTypeFromUA(bidRequest.user_agent());
             queryCondition.pcBrowserStr = getBrowserTypeFromUA(bidRequest.user_agent());
             queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
+            cookieMappingKeyPC(ADX_TANX, bidRequest.has_tid() ? bidRequest.tid() : "");
         }
+        queryCookieMapping(cmInfo.queryKV, selectCondition);
         if (!filterCb(this, queryCondition)) {
             adInfo.pid = std::to_string(queryCondition.mttyPid);
             adInfo.adxpid = queryCondition.adxpid;
@@ -219,6 +223,8 @@ namespace bidding {
         //缓存最终广告结果
         fillAdInfo(queryCondition, result, bidRequest.tid());
 
+        std::string cookieMappingUrl = redoCookieMapping(ADX_TANX, TANX_COOKIEMAPPING_URL);
+
         char pjson[2048] = { '\0' };
         std::string strBannerJson = banner.json;
         strncat(pjson, strBannerJson.data(), sizeof(pjson));
@@ -234,7 +240,7 @@ namespace bidding {
         adResult->add_click_through_url(destUrl);
         adResult->set_creative_id(std::to_string(adInfo.bannerId));
         adResult->add_advertiser_ids(adxAdvId); // adx_advid
-        adResult->set_html_snippet(tanxHtmlSnippet());
+        adResult->set_html_snippet(tanxHtmlSnippet(cookieMappingUrl));
         adResult->set_feedback_address(feedbackUrl);
     }
 

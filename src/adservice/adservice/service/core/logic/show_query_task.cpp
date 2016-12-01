@@ -409,6 +409,22 @@ namespace corelogic {
             }
         }
 
+        // 用户曝光频次控制
+        if (!log.userId.empty()) {
+            try {
+                std::string userSidKey = log.userId + ":" + log.adInfo.sid;
+                MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "user-freq", userSidKey);
+                MT::common::ASOperation op(1, DAY_SECOND);
+                op.addIncr("s", (int64_t)1);
+                aerospikeClient.operate(key, op);
+            } catch (MT::common::AerospikeException & e) {
+                LOG_ERROR << "记录曝光频次失败，userId：" << log.userId << "，sid:" << log.adInfo.sid
+                          << ",e:" << e.what() << "，code:" << e.error().code << e.error().message << "，调用堆栈："
+                          << std::endl
+                          << e.trace();
+            }
+        }
+
 #ifdef USE_ENCODING_GZIP
         Buffer body;
         muduo::net::ZlibOutputStream zlibOutStream(&body);

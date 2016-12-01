@@ -6,6 +6,7 @@
 #include "core/core_ip_manager.h"
 #include "logging.h"
 #include "utility/utility.h"
+#include <mtty/mtuser.h>
 
 namespace protocol {
 namespace bidding {
@@ -66,8 +67,9 @@ namespace bidding {
             len = snprintf(showParamBuf, showBufSize,
                            "a=%s&b=%s&c=%ld&d=%ld&e=%ld&s=%s&o=%s&x=%d&r=%s&u=%s&tm=%ld&pt=%d&od=%ld&ep=%d",
                            adInfo.areaId.c_str(), encodePrice(adInfo.offerPrice).c_str(), adInfo.bannerId, adInfo.advId,
-                           adInfo.sid, adInfo.adxpid.c_str(), adInfo.pid.c_str(), adInfo.adxid, bid.c_str(), "",
-                           time(NULL), adInfo.priceType, adInfo.orderId, adInfo.ppid);
+                           adInfo.sid, adInfo.adxpid.c_str(), adInfo.pid.c_str(), adInfo.adxid, bid.c_str(),
+                           cmInfo.userMapping.cypherUserId.c_str(), time(NULL), adInfo.priceType, adInfo.orderId,
+                           adInfo.ppid);
             if (len >= showBufSize) {
                 LOG_WARN << "In AbstractBiddingHandler::httpsnippet,showBufSize too small,actual:" << len;
             }
@@ -84,12 +86,13 @@ namespace bidding {
             std::string encodedReferer;
             if (ref.size() > 0)
                 urlEncode_f(ref, encodedReferer, buffer);
-            int len = snprintf(
-                clickParamBuf, clickBufSize,
-                "s=%s&o=%s&b=%s&x=%d&r=%s&d=%ld&e=%ld&ep=%d&c=%ld&f=%s&h=000&a=%s&u=%s&pt=%d&od=%ld&url=%s",
-                adInfo.adxpid.c_str(), adInfo.pid.c_str(), encodePrice(adInfo.offerPrice).c_str(), adInfo.adxid,
-                adInfo.imp_id.c_str(), adInfo.advId, adInfo.sid, adInfo.ppid, adInfo.bannerId, encodedReferer.c_str(),
-                adInfo.areaId.c_str(), "", adInfo.priceType, adInfo.orderId, encodedLandingUrl.c_str());
+            int len
+                = snprintf(clickParamBuf, clickBufSize,
+                           "s=%s&o=%s&b=%s&x=%d&r=%s&d=%ld&e=%ld&ep=%d&c=%ld&f=%s&h=000&a=%s&u=%s&pt=%d&od=%ld&url=%s",
+                           adInfo.adxpid.c_str(), adInfo.pid.c_str(), encodePrice(adInfo.offerPrice).c_str(),
+                           adInfo.adxid, adInfo.imp_id.c_str(), adInfo.advId, adInfo.sid, adInfo.ppid, adInfo.bannerId,
+                           encodedReferer.c_str(), adInfo.areaId.c_str(), cmInfo.userMapping.cypherUserId.c_str(),
+                           adInfo.priceType, adInfo.orderId, encodedLandingUrl.c_str());
             if (len >= clickBufSize) {
                 LOG_WARN << "in AbstractBiddingHandler::getClickPara,clickBufSize too small,actual:" << len;
             }
@@ -154,27 +157,63 @@ namespace bidding {
         adInfo.areaId = adservice::server::IpManager::getInstance().getAreaCodeStrByIp(selectCondition.ip.data());
     }
 
-    CookieMappingQueryKeyValue AbstractBiddingHandler::getCookieMappingQueryKeyValueMobile(const std::string & idfa,
-                                                                                           const std::string & imei)
+    const CookieMappingQueryKeyValue & AbstractBiddingHandler::cookieMappingKeyMobile(const std::string & idfa,
+                                                                                      const std::string & imei)
     {
         if (!idfa.empty()) {
-            return CookieMappingQueryKeyValue(MtUserMapping::idfaKey(), idfa);
+            return cmInfo.queryKV.rebind(MtUserMapping::idfaKey(), idfa, false);
         } else if (!imei.empty()) {
-            return CookieMappingQueryKeyValue(MtUserMapping::imeiKey(), imei);
+            return cmInfo.queryKV.rebind(MtUserMapping::imeiKey(), imei, false);
         }
-        needCookieMapping = false;
-        return CookieMappingQueryKeyValue();
+        return cmInfo.queryKV.rebind("", "", false);
     }
 
-    CookieMappingQueryKeyValue AbstractBiddingHandler::getCookieMappingQueryKeyValuePC(int64_t adxId,
-                                                                                       const std::string & cookie)
+    const CookieMappingQueryKeyValue & AbstractBiddingHandler::cookieMappingKeyPC(int64_t adxId,
+                                                                                  const std::string & cookie)
     {
         if (!cookie.empty()) {
-            return CookieMappingQueryKeyValue(MtUserMapping::adxUidKey(adxId), cookie);
+            return cmInfo.queryKV.rebind(MtUserMapping::adxUidKey(adxId), cookie, true);
         } else {
-            needCookieMapping = true;
-            return CookieMappingQueryKeyValue();
+            return cmInfo.queryKV.rebind(MtUserMapping::adxUidKey(adxId), "", true);
         }
+    }
+
+    void AbstractBiddingHandler::queryCookieMapping(const CookieMappingQueryKeyValue & queryKV,
+                                                    AdSelectCondition & selectCondition)
+    {
+        cmInfo.needReMapping = false;
+        cmInfo.userMapping.reset();
+        if (!queryKV.isNull()) { //查询键值非空
+            CookieMappingManager & cmManager = CookieMappingManager::getInstance();
+            cmInfo.userMapping = cmManager.getUserMappingByKey(queryKV.key, queryKV.value);
+            if (cmInfo.userMapping.isValid()) {
+                // todo: 填充selectCondition的对应字段
+                return;
+            } else { //服务端找不到对应记录，需要重新mapping
+                cmInfo.needReMapping = true;
+            }
+        } else if (queryKV.isAdxCookieKey()) { //查询键值为空，但是需要植入cookie
+            cmInfo.needReMapping = true;
+        }
+    }
+
+    std::string AbstractBiddingHandler::redoCookieMapping(int64_t adxId, const std::string & adxCookieMappingUrl)
+    {
+        if (cmInfo.needReMapping) {
+            MT::User::UserID userId(int16_t(adservice::utility::rng::randomInt() & 0x0000FFFF));
+            cmInfo.userMapping.userId = userId.text();
+            cmInfo.userMapping.cypherUserId = userId.cipher();
+            if (cmInfo.queryKV.isAdxCookieKey()) {  // PC cookie
+                if (!adxCookieMappingUrl.empty()) { // adx原生支持image标签cookie mapping
+                    return adxCookieMappingUrl + "&u=" + userId.cipher() + "&x=" + std::to_string(adxId);
+                }
+            } else { // device id
+                CookieMappingManager & cmManager = CookieMappingManager::getInstance();
+                cmInfo.userMapping.addDeviceMapping(cmInfo.queryKV.key, cmInfo.queryKV.value);
+                cmManager.updateUserMappingAsync(cmInfo.userMapping);
+            }
+        }
+        return "";
     }
 }
 }

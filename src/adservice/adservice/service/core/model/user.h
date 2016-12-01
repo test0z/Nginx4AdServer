@@ -19,10 +19,12 @@ namespace core {
 
             bool isValid()
             {
-                return false;
+                return !userId.empty();
             }
 
             void addMapping(int64_t adxId, const std::string & adxUid);
+
+            void addDeviceMapping(const std::string & deviceKey, const std::string & deviceId);
 
             bool hasAdxUid(int64_t adxId) const;
 
@@ -34,12 +36,17 @@ namespace core {
 
             std::string getIMei() const;
 
+            void reset();
+
+            std::string cypherUid();
+
         protected:
             void record(const as_record * record);
             as_record * record();
 
         public:
             std::string userId;
+            std::string cypherUserId;
             std::map<int64_t, std::string> adxUids;
             std::map<std::string, std::string> deviceIds;
         };

@@ -1,5 +1,6 @@
 #include "user.h"
 #include <mtty/constants.h>
+#include <mtty/mtuser.h>
 #include <vector>
 
 namespace adservice {
@@ -27,9 +28,35 @@ namespace core {
             return MAPPING_KEY_IMEI;
         }
 
+        void MtUserMapping::reset()
+        {
+            userId = "";
+            cypherUserId = "";
+            adxUids.clear();
+            deviceIds.clear();
+        }
+
+        std::string MtUserMapping::cypherUid()
+        {
+            if (cypherUserId.empty()) {
+                MT::User::UserID uId(userId, false);
+                if (uId.isValid()) {
+                    cypherUserId = uId.cipher();
+                }
+                return cypherUserId;
+            } else {
+                return cypherUserId;
+            }
+        }
+
         void MtUserMapping::addMapping(int64_t adxId, const std::string & adxUid)
         {
             adxUids[adxId] = adxUid;
+        }
+
+        void MtUserMapping::addDeviceMapping(const std::string & deviceKey, const std::string & deviceId)
+        {
+            deviceIds[deviceKey] = deviceId;
         }
 
         bool MtUserMapping::hasAdxUid(int64_t adxId) const
@@ -74,13 +101,14 @@ namespace core {
                                                 ADX_SOHU_MOBILE,  ADX_TENCENT_GDT,     ADX_YOUKU,
                                                 ADX_YOUKU_MOBILE, ADX_NETEASE_MOBILE,  ADX_INMOBI };
             static std::vector<std::string> deviceKeys = { MAPPING_KEY_IDFA, MAPPING_KEY_IMEI };
-            for (auto id : adxids) {
-                this->adxUids.insert({ id, getStr(rec, adxUidKey(id).c_str()) });
+            this->reset();
+            for (auto id : adxIds) {
+                this->adxUids.insert({ id, getStr(record, adxUidKey(id).c_str()) });
             }
             for (const auto & deviceKey : deviceKeys) {
-                this->deviceIds.insert({ deviceKey, getStr(rec, deviceKey.c_str()) });
+                this->deviceIds.insert({ deviceKey, getStr(record, deviceKey.c_str()) });
             }
-            this->userId = getStr(rec, MAPPING_KEY_USER);
+            this->userId = getStr(record, MAPPING_KEY_USER);
         }
 
         as_record * MtUserMapping::record()

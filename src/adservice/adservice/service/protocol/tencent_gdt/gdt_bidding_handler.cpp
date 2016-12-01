@@ -123,6 +123,7 @@ namespace bidding {
         if (bidRequest.has_device()) { // device
             const BidRequest_Device & device = bidRequest.device();
             BidRequest_DeviceType devType = device.device_type();
+            std::string idfa, imei;
             if (devType == BidRequest_DeviceType::BidRequest_DeviceType_kDeviceTypePC) {
                 queryCondition.pcOS = getGdtOsType(device.os());
                 queryCondition.pcBrowserStr = getBrowserTypeFromUA(device.user_agent());

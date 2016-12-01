@@ -31,7 +31,7 @@ namespace server {
         asQuery.whereEqStr(key, value);
         adservice::core::model::MtUserMapping mapping;
         try {
-            aerospikeClient.queryWhere(asQuery, );
+            aerospikeClient.queryWhere(asQuery, &mapping);
         } catch (MT::common::AerospikeExcption & e) {
             LOG_ERROR << " 查询cookie mapping 失败，" << e.what() << ",code: " << e.error().code
                       << ",msg:" << e.error().message << ",调用堆栈：" << std::endl
@@ -58,7 +58,6 @@ namespace server {
     {
         core::model::MtUserMapping mapping;
         mapping.addMapping(adxId, value);
-        mapping.finishModification();
         MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "CookieMapping", userId.c_str());
         try {
             aerospikeClient.put(key, mapping);
