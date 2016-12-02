@@ -3,6 +3,7 @@
 //
 #include <sstream>
 
+#include "core/core_ad_sizemap.h"
 #include "core/core_ip_manager.h"
 #include "core/core_typetable.h"
 #include "logging.h"
@@ -128,6 +129,7 @@ namespace bidding {
         if (impressions.empty()) {
             return false;
         }
+        std::vector<PreSetAdplaceInfo> adplaceInfos(impressions.size());
         std::vector<AdSelectCondition> queryConditions(impressions.size());
         for (uint32_t i = 0; i < impressions.size(); i++) {
             const cppcms::json::value & adzinfo = impressions[i];
@@ -138,8 +140,8 @@ namespace bidding {
             queryCondition.adxpid = pid;
             queryCondition.basePrice = adzinfo.get<int>("bidfloor", 0);
             adInfo.adxid = ADX_YOUKU;
-            PreSetAdplaceInfo adplaceInfo;
             bool isNative = false;
+            PreSetAdplaceInfo & adplaceInfo = adplaceInfos[i];
             cppcms::json::value adObject = adzinfo.find("banner");
             if (adObject.is_undefined()) {
                 adObject = adzinfo.find("video");
@@ -148,6 +150,7 @@ namespace bidding {
                     isNative = true;
                 }
             }
+
             if (!isNative) {
                 queryCondition.width = adObject.get("w", 0);
                 queryCondition.height = adObject.get("h", 0);
