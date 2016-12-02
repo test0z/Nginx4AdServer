@@ -99,6 +99,8 @@ namespace corelogic {
                 int output = std::stoi(input);
                 if (output < 0) {
                     return -output;
+                } else {
+                    return output;
                 }
             } else {
                 std::string result;
