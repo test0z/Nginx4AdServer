@@ -94,6 +94,13 @@ namespace core {
             return getDeviceId(MAPPING_KEY_IMEI);
         }
 
+        /**
+         *insert into test.CookieMapping
+         *(PK,adxuid_1,adxuid_15,adxuid_6,adxuid_14,adxuid_21,adxuid_8,adxuid_19,adxuid_13,adxuid_5,adxuid_20,adxuid_10,idfa,imei,user_id)
+         *values ("12345678","a","b","c","d","e","f","g","h","i","j","k","l","m","n")
+         * @brief MtUserMapping::record
+         * @param record
+         */
         void MtUserMapping::record(const as_record * record)
         {
             static std::vector<int64_t> adxIds{ ADX_TANX,         ADX_TANX_MOBILE,     ADX_BAIDU,

@@ -3,12 +3,13 @@
 #include "logging.h"
 #include <mtty/aerospike.h>
 
+extern GlobalConfig globalConfig;
+extern MT::common::Aerospike aerospikeClient;
+
 namespace adservice {
 namespace server {
 
     CookieMappingManager CookieMappingManager::instance_;
-    extern GlobalConfig globalConfig;
-    extern MT::common::Aerospike aerospikeClient;
 
     adservice::core::model::MtUserMapping CookieMappingManager::getUserMapping(const std::string & userId)
     {
@@ -70,7 +71,7 @@ namespace server {
         return true;
     }
 
-    void CookieMappingManager::updateUserMappingAsync(adservice::core::model::MtUserMapping & mapping)
+    bool CookieMappingManager::updateUserMappingAsync(adservice::core::model::MtUserMapping & mapping)
     {
         MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "CookieMapping", mapping.userId.c_str());
         try {
@@ -84,7 +85,7 @@ namespace server {
         return true;
     }
 
-    void
+    bool
     CookieMappingManager::updateMappingAdxUidAsync(const std::string & userId, int64_t adxId, const std::string & value)
     {
         core::model::MtUserMapping mapping;

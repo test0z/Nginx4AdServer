@@ -57,9 +57,9 @@ namespace server {
 
         bool updateMappingAdxUid(const std::string & userId, int64_t adxId, const std::string & value);
 
-        void updateUserMappingAsync(adservice::core::model::MtUserMapping & mapping);
+        bool updateUserMappingAsync(adservice::core::model::MtUserMapping & mapping);
 
-        void updateMappingAdxUidAsync(const std::string & userId, int64_t adxId, const std::string & value);
+        bool updateMappingAdxUidAsync(const std::string & userId, int64_t adxId, const std::string & value);
 
     private:
         static CookieMappingManager instance_;

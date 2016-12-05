@@ -108,7 +108,7 @@ namespace utility {
         /**
          * 获取当日结束的Unix时间戳
          */
-        int64_t getTodayEndTime()
+        inline int64_t getTodayEndTime()
         {
             return getTodayStartTime() + DAY_SECOND;
         }
