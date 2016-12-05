@@ -188,6 +188,7 @@ namespace bidding {
             cmInfo.userMapping = cmManager.getUserMappingByKey(queryKV.key, queryKV.value);
             if (cmInfo.userMapping.isValid()) {
                 // todo: 填充selectCondition的对应字段
+                selectCondition.mtUserId = cmInfo.userMapping.userId;
                 return;
             } else { //服务端找不到对应记录，需要重新mapping
                 cmInfo.needReMapping = true;

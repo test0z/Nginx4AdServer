@@ -72,11 +72,33 @@ namespace server {
 
     void CookieMappingManager::updateUserMappingAsync(adservice::core::model::MtUserMapping & mapping)
     {
+        MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "CookieMapping", mapping.userId.c_str());
+        try {
+            aerospikeClient.putAsync(key, mapping);
+        } catch (MT::common::AerospikeExcption & e) {
+            LOG_ERROR << "异步记录cookie mapping失败，" << e.what() << "，code：" << e.error().code << "，msg："
+                      << e.error().message << "，调用堆栈：" << std::endl
+                      << e.trace();
+            return false;
+        }
+        return true;
     }
 
     void
     CookieMappingManager::updateMappingAdxUidAsync(const std::string & userId, int64_t adxId, const std::string & value)
     {
+        core::model::MtUserMapping mapping;
+        mapping.addMapping(adxId, value);
+        MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "CookieMapping", userId.c_str());
+        try {
+            aerospikeClient.putAsync(key, mapping);
+        } catch (MT::common::AerospikeExcption & e) {
+            LOG_ERROR << "记录cookie mapping失败，" << e.what() << "，code：" << e.error().code << "，msg："
+                      << e.error().message << "，调用堆栈：" << std::endl
+                      << e.trace();
+            return false;
+        }
+        return true;
     }
 }
 }
