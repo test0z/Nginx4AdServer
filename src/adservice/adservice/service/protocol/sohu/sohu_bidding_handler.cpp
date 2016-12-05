@@ -79,6 +79,7 @@ namespace bidding {
         logItem.ipInfo.proxy = bidRequest.device().ip();
         logItem.adInfo.adxid = adInfo.adxid;
         logItem.adInfo.adxpid = adInfo.adxpid;
+        logItem.referer = bidRequest.has_site() && bidRequest.site().has_page() ? bidRequest.site().page() : "";
         if (isBidAccepted) {
             if (bidRequest.has_device()) {
                 const Request_Device & device = bidRequest.device();
@@ -103,8 +104,6 @@ namespace bidding {
             url::extractAreaInfo(adInfo.areaId.data(), logItem.geoInfo.country, logItem.geoInfo.province,
                                  logItem.geoInfo.city);
             logItem.adInfo.bidSize = adInfo.bidSize;
-            logItem.referer
-                = bidRequest.has_site() ? (bidRequest.site().has_page() ? bidRequest.site().page() : "") : "";
             logItem.adInfo.orderId = adInfo.orderId;
         } else {
             logItem.adInfo.pid = adInfo.pid;
