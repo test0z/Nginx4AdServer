@@ -228,26 +228,28 @@ namespace corelogic {
         int resultLen = 0;
         //需求http://redmine.mtty.com/redmine/issues/144
         if (paramMap[URL_IMP_OF] == OF_SSP_MOBILE) {
+            cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
+            cppcms::json::array & mtls = mtlsArray.array();
+            char clickMacroBuffer[2048];
+            char landingPageBuffer[1024];
+            std::string landingUrl
+                = banner.bannerType == BANNER_TYPE_PRIMITIVE ? mtls[0].get("p9", "") : mtls[0].get("p1", "");
+            url_replace(landingUrl, "{{click}}", "");
+            std::string encodedLandingUrl;
+            urlEncode_f(landingUrl, encodedLandingUrl, landingPageBuffer);
+            size_t clickMacroLen = (size_t)snprintf(
+                clickMacroBuffer, sizeof(clickMacroBuffer),
+                SSP_CLICK_URL "?s=%s&o=%s&x=%s&r=%s&d=%d&e=%s&ep=%s&pt=%s&b=%s&c=%d&f=%s&h=000&a=%s&url=%s", pid.data(),
+                pid.data(), adxid.data(), impid.data(), advId, sid.data(), ppid.data(), priceType.data(), price.data(),
+                bId, referer.data(), address.data(), encodedLandingUrl.data());
+            if (clickMacroLen >= sizeof(clickMacroBuffer)) {
+                LOG_WARN << "in buildResponseForSsp,clickMacroLen greater than sizeof clickMacroBuffer,len:"
+                         << clickMacroLen;
+            }
             if (banner.bannerType != BANNER_TYPE_PRIMITIVE) {
-                //替换点击宏
-                cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
-                cppcms::json::array & mtls = mtlsArray.array();
-                // std::string clickMacro = mtls[0].get("p5", "");
-                char clickMacroBuffer[2048];
-                char landingPageBuffer[1024];
-                std::string landingUrl = mtls[0].get("p1", "");
-                std::string encodedLandingUrl;
-                urlEncode_f(landingUrl, encodedLandingUrl, landingPageBuffer);
-                size_t clickMacroLen = (size_t)snprintf(
-                    clickMacroBuffer, sizeof(clickMacroBuffer),
-                    SSP_CLICK_URL "?s=%s&o=%s&x=%s&r=%s&d=%d&e=%s&ep=%s&pt=%s&b=%s&c=%d&f=%s&h=000&a=%s&url=%s",
-                    pid.data(), pid.data(), adxid.data(), impid.data(), advId, sid.data(), ppid.data(),
-                    priceType.data(), price.data(), bId, referer.data(), address.data(), encodedLandingUrl.data());
-                if (clickMacroLen >= sizeof(clickMacroBuffer)) {
-                    LOG_WARN << "in buildResponseForSsp,clickMacroLen greater than sizeof clickMacroBuffer,len:"
-                             << clickMacroLen;
-                }
                 mtls[0].set("p5", std::string(clickMacroBuffer));
+            } else {
+                mtls[0].set("p9", std::string(clickMacroBuffer));
             }
             //只输出标准json
             std::string jsonResult = utility::json::toJson(mtAdInfo);
@@ -434,7 +436,7 @@ namespace corelogic {
 #else
         response.set_body(respBody);
 #endif
-        response.set_content_header("text/html");
+        response.set_content_header("text/html; charset=utf-8");
         response.set_header("Pragma", "no-cache");
         response.set_header("Cache-Control", "no-cache,no-store;must-revalidate");
         response.set_header("P3p",
