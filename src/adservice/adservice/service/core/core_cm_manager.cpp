@@ -65,6 +65,7 @@ namespace server {
     bool CookieMappingManager::updateMappingAdxUid(const std::string & userId, int64_t adxId, const std::string & value)
     {
         core::model::MtUserMapping mapping;
+        mapping.userId = userId;
         mapping.addMapping(adxId, value);
         MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "CookieMapping", userId);
         try {
@@ -99,6 +100,7 @@ namespace server {
     CookieMappingManager::updateMappingAdxUidAsync(const std::string & userId, int64_t adxId, const std::string & value)
     {
         core::model::MtUserMapping mapping;
+        mapping.userId = userId;
         mapping.addMapping(adxId, value);
         MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "CookieMapping", userId);
         try {

@@ -80,5 +80,5 @@ SET(SRC_LIST
     ./service/utility/http.cpp)
 
 ADD_EXECUTABLE(${PROJECT_NAME} ${SRC_LIST})
-add_subdirectory(test)
-add_subdirectory(tool)
+#add_subdirectory(test)
+#add_subdirectory(tool)
