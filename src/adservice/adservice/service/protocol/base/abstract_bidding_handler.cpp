@@ -201,7 +201,9 @@ namespace bidding {
     std::string AbstractBiddingHandler::redoCookieMapping(int64_t adxId, const std::string & adxCookieMappingUrl)
     {
         if (cmInfo.needReMapping) {
-            MT::User::UserID userId(int16_t(adservice::utility::rng::randomInt() & 0x0000FFFF));
+            // MT::User::UserID userId(int16_t(adservice::utility::rng::randomInt() & 0x0000FFFF));
+            auto idSeq = CookieMappingManager::IdSeq();
+            MT::User::UserID userId(idSeq.id(), idSeq.time());
             cmInfo.userMapping.userId = userId.text();
             cmInfo.userMapping.cypherUserId = userId.cipher();
             if (cmInfo.queryKV.isAdxCookieKey()) {  // PC cookie

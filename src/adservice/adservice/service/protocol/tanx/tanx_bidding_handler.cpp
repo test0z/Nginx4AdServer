@@ -83,7 +83,7 @@ namespace bidding {
             LOG_WARN << "feedbackUrl buffer size not enough,needed:" << len;
         }
         strncat(showBuf, "&of=2", 5);
-        len = (size_t)snprintf(html, sizeof(html), SNIPPET_IFRAME, width, height, SNIPPET_SHOW_URL,
+        len = (size_t)snprintf(html, sizeof(html), SNIPPET_IFRAME_SUPPORT_CM, width, height, SNIPPET_SHOW_URL,
                                "l=" AD_TX_CLICK_MACRO "&", showBuf, cookieMappingUrl);
         if (len >= sizeof(html)) {
             LOG_WARN << "generateHtmlSnippet buffer size not enough,needed:" << len;

@@ -1,6 +1,7 @@
 #ifndef CORE_CM_MANAGER_H
 #define CORE_CM_MANAGER_H
 
+#include "model/idseq.h"
 #include "model/user.h"
 #include <memory>
 
@@ -60,6 +61,13 @@ namespace server {
         bool updateUserMappingAsync(adservice::core::model::MtUserMapping & mapping);
 
         bool updateMappingAdxUidAsync(const std::string & userId, int64_t adxId, const std::string & value);
+
+        adservice::core::model::UserIDEntity newIdSeq();
+
+        static adservice::core::model::UserIDEntity IdSeq()
+        {
+            return instance_.newIdSeq();
+        }
 
     private:
         static CookieMappingManager instance_;

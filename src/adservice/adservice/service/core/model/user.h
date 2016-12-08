@@ -17,6 +17,8 @@ namespace core {
 
             static const std::string & imeiKey();
 
+            static const std::string & userIdKey();
+
             bool isValid()
             {
                 return !userId.empty();

@@ -33,6 +33,7 @@ SET(SRC_LIST
     ./service/core/logpusher/log_pusher.cpp
     ./service/core/model/source_id.cpp
     ./service/core/model/user.cpp
+    ./service/core/model/idseq.cpp
     ./service/kafka_checker.cpp
     ./service/libutil/AdAcbm.cpp
     ./service/libutil/AdIpc.cpp

@@ -28,6 +28,11 @@ namespace core {
             return MAPPING_KEY_IMEI;
         }
 
+        const std::string & MtUserMapping::userIdKey()
+        {
+            return MAPPING_KEY_USER;
+        }
+
         void MtUserMapping::reset()
         {
             userId = "";
@@ -124,10 +129,6 @@ namespace core {
             if (record_ == nullptr) {
                 record_ = as_record_new(size);
             }
-            if (record_ != nullptr && record_->bins.size != size) {
-                as_record_destroy(record_);
-                record_ = as_record_new(size);
-            }
             for (auto & iter : adxUids) {
                 int64_t adxId = iter.first;
                 as_record_set_str(record_, adxUidKey(adxId).c_str(), iter.second.c_str());
@@ -135,7 +136,9 @@ namespace core {
             for (auto & iter : deviceIds) {
                 as_record_set_str(record_, iter.first.c_str(), iter.second.c_str());
             }
-            as_record_set_str(record_, MAPPING_KEY_USER.c_str(), userId.c_str());
+            if (!userId.empty()) {
+                as_record_set_str(record_, MAPPING_KEY_USER.c_str(), userId.c_str());
+            }
             return record_;
         }
     }

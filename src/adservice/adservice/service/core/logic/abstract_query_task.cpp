@@ -4,6 +4,7 @@
 
 #include "abstract_query_task.h"
 #include "common/spinlock.h"
+#include "core/core_cm_manager.h"
 #include "logging.h"
 #include "protocol/baidu/baidu_price.h"
 #include "protocol/guangyin/guangyin_price.h"
@@ -301,7 +302,9 @@ namespace corelogic {
         } else if (clientUid.isValid() && !serverUid.isValid()) { //客户端id合法，服务端id不合法
             return clientUid.text();
         } else { //客户端id不合法，服务端id也不合法
-            MT::User::UserID newUid(int64_t(utility::rng::randomInt() & 0x0000FFFF));
+            // MT::User::UserID newUid(int64_t(utility::rng::randomInt() & 0x0000FFFF));
+            auto idSeq = CookieMappingManager::IdSeq();
+            MT::User::UserID newUid(idSeq.id(), idSeq.time());
             plantNewCookie(newUid.cipher(), resp);
             return newUid.text();
         }

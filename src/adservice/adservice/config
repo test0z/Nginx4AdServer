@@ -16,6 +16,7 @@ $ngx_addon_dir/service/core/logpusher/kafka_log_producer.cpp
 $ngx_addon_dir/service/core/logpusher/log_pusher.cpp
 $ngx_addon_dir/service/core/model/source_id.cpp
 $ngx_addon_dir/service/core/model/user.cpp
+$ngx_addon_dir/service/core/model/idseq.cpp
 $ngx_addon_dir/service/core/config_types.cpp
 $ngx_addon_dir/service/core/core_executor.cpp
 $ngx_addon_dir/service/core/core_ip_manager.cpp
