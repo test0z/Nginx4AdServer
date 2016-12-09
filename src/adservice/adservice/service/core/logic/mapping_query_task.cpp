@@ -92,15 +92,23 @@ namespace corelogic {
             std::string adxUidKey = getAdxMappingKey(adxId);
             std::string adxUid = paramMap.find(adxUidKey) != paramMap.end() ? paramMap[adxUidKey] : "";
             if (!adxUid.empty()) {
-                cmManager.updateMappingAdxUid(uId, adxId, adxUid);
+                char buf[1024];
+                std::string decodeAdxUid;
+                utility::url::urlDecode_f(adxUid, decodeAdxUid, buf);
+                bool bSuccess = cmManager.updateMappingAdxUid(uId, adxId, decodeAdxUid);
+                if (!bSuccess) {
+                    LOG_WARN << "failed to update cookie mapping,uid:" << uId << ",adxId:" << adxId
+                             << ",adxUid:" << adxUid;
+                }
             }
             //生成1x1图片
-            resp.set_content_header("image/gif");
+            resp.status(302, "OK");
+            resp.set_header("Location", "http://mtty-cdn.mtty.com/1x1.gif");
+            resp.set_body("m");
             resp.set_header("Pragma", "no-cache");
             resp.set_header("Cache-Control", "no-cache,no-store;must-revalidate");
             resp.set_header("P3p",
                             "CP=\"CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR\"");
-            resp.set_body(imageData);
         } catch (std::exception & e) {
             log.reqStatus = 500;
             LOG_ERROR << "exception thrown during HandleMappingQueryTask::customLogic,e:" << e.what();

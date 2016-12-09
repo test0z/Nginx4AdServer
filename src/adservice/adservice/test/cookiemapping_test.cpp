@@ -64,6 +64,33 @@ void testQueryWhere()
     }
 }
 
+void testUpdateSync()
+{
+    auto idSeq = CookieMappingManager::IdSeq();
+    MT::User::UserID userId(idSeq.id(),idSeq.time());
+    std::string userIdPublic = userId.text();
+    model::MtUserMapping userMapping;
+    userMapping.userId = userIdPublic;
+    CookieMappingManager & cmManager = CookieMappingManager::getInstance();
+    cmManager.updateUserMapping(userMapping);
+    model::MtUserMapping readUserMapping = cmManager.getUserMappingByKey(userMapping.userIdKey(), userMapping.userId);
+    if (readUserMapping.isValid()) {
+        printUserMapping(readUserMapping);
+    } else {
+        std::cout << "failed to fetch userMapping by key:" << userMapping.userId;
+    }
+    std::string timeString = time::getCurrentTimeUtcString();
+    if (!cmManager.updateMappingAdxUid(userIdPublic, ADX_TANX, timeString + ".12341")) {
+        std::cout << "failed to updateUserMappingAsync" << std::endl;
+    }
+    readUserMapping = cmManager.getUserMappingByKey(userMapping.userIdKey(), userMapping.userId);
+    if (readUserMapping.isValid()) {
+        printUserMapping(readUserMapping);
+    } else {
+        std::cout << "failed to fetch userMapping by key:" << userMapping.userId;
+    }
+}
+
 void testUpdateAsync()
 {
     auto idSeq = CookieMappingManager::IdSeq();
@@ -117,6 +144,18 @@ void testIdSeq()
         auto idSeq = CookieMappingManager::IdSeq();
         std::cout << "idSeq:" << idSeq.id() <<",time:"<<idSeq.time()<<std::endl;
     }
+}
+
+void testUserId(){
+    auto idSeq = CookieMappingManager::IdSeq();
+    MT::User::UserID userId(idSeq.id(),idSeq.time());
+    std::string cypherId = userId.cipher();
+    std::string userPublicId = userId.text();
+    std::cout<<"origin userId,cypher:"<<cypherId<<",public:"<<userPublicId<<std::endl;
+    MT::User::UserID userId2(cypherId,true);
+    std::cout<<"from cypher userId,cypher:"<<userId2.cipher()<<",public:"<<userId2.text()<<std::endl;
+    MT::User::UserID userId3(userPublicId,false);
+    std::cout<<"from public userId,cypher:"<<userId3.cipher()<<",public:"<<userId3.text()<<std::endl;
 }
 
 int main(int argc, char ** argv)

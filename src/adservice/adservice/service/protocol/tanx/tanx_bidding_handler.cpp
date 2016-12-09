@@ -22,7 +22,7 @@ namespace bidding {
 #define AD_TX_CLICK_MACRO "%%CLICK_URL_PRE_ENC%%"
 #define AD_TX_CLICK_UNENC_MACRO "%%CLICK_URL_PRE_UNENC%%"
 #define AD_TX_PRICE_MACRO "%%SETTLE_PRICE%%"
-#define TANX_COOKIEMAPPING_URL "http://cms.tanx.com/t.gif?tanx_nid=23307874&tanx_cm"
+#define TANX_COOKIEMAPPING_URL "http://cms.tanx.com/t.gif?tanx_nid=113168313&tanx_cm"
 
     inline int max(const int & a, const int & b)
     {
