@@ -334,13 +334,15 @@ namespace bidding {
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
             int nativeTemplateId = 0;
             const cppcms::json::array & assets = adzInfo.find("native.assets").array();
+            const adservice::utility::AdSizeMap & adSizeMap = adservice::utility::AdSizeMap::getInstance();
             // std::string title = mtlsArray[0]["p0"].str();
             for (uint32_t i = 0; i < assets.size(); i++) {
                 const cppcms::json::value & asset = assets[i];
                 int w = asset.get("image_url.w", 0);
                 int h = asset.get("image_url.h", 0);
+                auto sizePair = adSizeMap.get({ w, h });
                 // uint32_t titleLen = asset.get("title.len", 0);
-                if (w == banner.width && h == banner.height) {
+                if (sizePair.first == banner.width && sizePair.second == banner.height) {
                     nativeTemplateId = asset.get("native_template_id", 0);
                     break;
                 }
