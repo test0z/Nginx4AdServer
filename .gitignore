@@ -7,6 +7,8 @@ error.txt
 objs
 nginx
 adservice.dist
+adservice.test
+adservice.tool
 adservice.tgz
 .user
 src/adservice/build-adservice-Desktop-Default
