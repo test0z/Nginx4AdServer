@@ -185,6 +185,7 @@ namespace bidding {
         cmInfo.userMapping.reset();
         if (!queryKV.isNull()) { //查询键值非空
             CookieMappingManager & cmManager = CookieMappingManager::getInstance();
+            LOG_DEBUG << "cookie mapping query kv:" << queryKV.key << "," << queryKV.value;
             cmInfo.userMapping = cmManager.getUserMappingByKey(queryKV.key, queryKV.value);
             if (cmInfo.userMapping.isValid()) {
                 // todo: 填充selectCondition的对应字段

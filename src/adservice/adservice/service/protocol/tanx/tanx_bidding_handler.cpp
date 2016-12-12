@@ -67,7 +67,11 @@ namespace bidding {
         std::string bannerSize = adzInfo.size();
         int width, height;
         extractSize(bannerSize, width, height);
-        return generateHtmlSnippet(bid, width, height, NULL, cookieMappingUrl.c_str());
+        std::string cmImage;
+        if (!cookieMappingUrl.empty()) {
+            cmImage = cmImage + "<img src=\"" + cookieMappingUrl + "\"/>";
+        }
+        return generateHtmlSnippet(bid, width, height, NULL, cmImage.c_str());
     }
 
     std::string TanxBiddingHandler::generateHtmlSnippet(const std::string & bid, int width, int height,
