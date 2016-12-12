@@ -332,7 +332,7 @@ namespace bidding {
         bidValue["crid"] = crid;
         std::string landingUrl;
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
-            int nativeTemplateId = 0;
+            std::string nativeTemplateId = "0";
             const cppcms::json::array & assets = adzInfo.find("native.assets").array();
             const adservice::utility::AdSizeMap & adSizeMap = adservice::utility::AdSizeMap::getInstance();
             // std::string title = mtlsArray[0]["p0"].str();
@@ -343,7 +343,7 @@ namespace bidding {
                 auto sizePair = adSizeMap.get({ w, h });
                 // uint32_t titleLen = asset.get("title.len", 0);
                 if (sizePair.first == banner.width && sizePair.second == banner.height) {
-                    nativeTemplateId = asset.get("native_template_id", 0);
+                    nativeTemplateId = asset.get("native_template_id", "0");
                     break;
                 }
             }
