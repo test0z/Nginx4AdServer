@@ -189,14 +189,18 @@ void testAerospikeBatch(){
     for (auto & sId : sIds) {
         freqKeys.push_back(mtUserId + ":" + std::to_string(sId));
     }
-    if (freqKeys.size() > 0) {
-        MT::common::ASBatch asBatch("test", "user-freq", freqKeys);
-        std::vector<std::string> binNames(freqKeys.size(), "s");
-        std::vector<int64_t> freqCounts;
-        asBatchCBData cbData;
-        cbData.data1 = &freqCounts;
-        cbData.data2 = &binNames;
-        aerospikeClient.execBatchRead(asBatch, &asBatchCB, &cbData);
+    try{
+        if (freqKeys.size() > 0) {
+            MT::common::ASBatch asBatch("test", "user-freq", freqKeys);
+            std::vector<std::string> binNames(freqKeys.size(), "s");
+            std::vector<int64_t> freqCounts;
+            asBatchCBData cbData;
+            cbData.data1 = &freqCounts;
+            cbData.data2 = &binNames;
+            aerospikeClient.execBatchRead(asBatch, &asBatchCB, &cbData);
+        }
+    }catch(MT::common::AerospikeExcption& e){
+        std::cout<<"exception batch read:"<<e.what()<<std::endl;
     }
 }
 

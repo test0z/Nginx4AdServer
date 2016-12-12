@@ -334,18 +334,20 @@ namespace bidding {
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
             int nativeTemplateId = 0;
             const cppcms::json::array & assets = adzInfo.find("native.assets").array();
-            std::string title = mtlsArray[0]["p0"].str();
+            // std::string title = mtlsArray[0]["p0"].str();
             for (uint32_t i = 0; i < assets.size(); i++) {
                 const cppcms::json::value & asset = assets[i];
                 int w = asset.get("image_url.w", 0);
                 int h = asset.get("image_url.h", 0);
-                uint32_t titleLen = asset.get("title.len", 0);
-                if (w == banner.width && h == banner.height && title.length() <= titleLen) {
+                // uint32_t titleLen = asset.get("title.len", 0);
+                if (w == banner.width && h == banner.height) {
                     nativeTemplateId = asset.get("native_template_id", 0);
                     break;
                 }
             }
-            bidValue["native.native_template_id"] = nativeTemplateId;
+            cppcms::json::value nativeObj;
+            nativeObj["native_template_id"] = nativeTemplateId;
+            bidValue["native"] = nativeObj;
             landingUrl = mtlsArray[0]["p9"].str();
             replace(landingUrl, "{{click}}", "");
         } else {
