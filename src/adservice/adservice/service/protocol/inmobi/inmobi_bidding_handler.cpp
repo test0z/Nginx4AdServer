@@ -38,7 +38,7 @@ namespace bidding {
 #define INMOBI_OS_WINDOWS "windows"
 #define INMOBI_OS_MAC "mac"
 
-#define INMOBI_PRIVATE_AUCTION 0
+#define INMOBI_PRIVATE_AUCTION 1
 
 #define INMOBI_PRICE_MACRO "${AUCTION_PRICE}"
 #define AD_INMOBI_FEED "http://show.mtty.com/v?of=3&p=%s&%s"
@@ -226,7 +226,7 @@ namespace bidding {
             }
         }
         const cppcms::json::value & pmp = adzinfo.find("pmp");
-        if (!pmp.is_undefined() && pmp.get("private_auction", 0) != INMOBI_PRIVATE_AUCTION) {
+        if (!pmp.is_undefined()) {
             // deal 请求
             const cppcms::json::array & deals = pmp.find("deals").array();
             if (!deals.empty()) {
@@ -253,6 +253,20 @@ namespace bidding {
         {
           "seat":"1",
           "bid":[
+<<<<<<< HEAD
+=======
+                {
+                    "adm":"",
+                    "id":"",
+                    "impid":"",
+                    "nurl":"",
+                    "price":"",
+                    "crid":"",
+                    "adomain":[],
+                    "iurl":"",
+                    "attr":[]
+                }
+>>>>>>> master
             ]
         }
     ],
@@ -335,6 +349,7 @@ namespace bidding {
             replace(landingUrl, "{{click}}", "");
             bidValue["admobject.native.link.url"] = landingUrl;
         }
+        bidValue["attr"].array().push_back(3);
         int maxCpmPrice = result.bidPrice;
         bidValue["price"] = maxCpmPrice;
         bidArrays.push_back(std::move(bidValue));
