@@ -108,7 +108,9 @@ namespace bidding {
         virtual std::string generateScript(const std::string & bid, int width, int height, const char * scriptUrl,
                                            const char * clickMacro, const char * extParam);
 
-        const CookieMappingQueryKeyValue & cookieMappingKeyMobile(const std::string & idfa, const std::string & imei);
+        const CookieMappingQueryKeyValue & cookieMappingKeyMobile(const std::string & idfa, const std::string & imei,
+                                                                  const std::string & androidId,
+                                                                  const std::string & mac);
 
         const CookieMappingQueryKeyValue & cookieMappingKeyPC(int64_t adxId, const std::string & cookie);
 

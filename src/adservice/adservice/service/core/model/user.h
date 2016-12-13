@@ -17,6 +17,10 @@ namespace core {
 
             static const std::string & imeiKey();
 
+            static const std::string & androidIdKey();
+
+            static const std::string & macKey();
+
             static const std::string & userIdKey();
 
             bool isValid()

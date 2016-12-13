@@ -40,6 +40,7 @@ $ngx_addon_dir/service/protocol/sohu/sohu_price.cpp
 $ngx_addon_dir/service/protocol/sohu/sohuRTB.pb.cpp
 $ngx_addon_dir/service/protocol/tanx/tanx_bidding_handler.cpp
 $ngx_addon_dir/service/protocol/tanx/tanx_price.cpp
+$ngx_addon_dir/service/protocol/tanx/tanx_device_id.cpp
 $ngx_addon_dir/service/protocol/tanx/tanx_bidding.pb.cpp
 $ngx_addon_dir/service/protocol/tencent_gdt/gdt_bidding_handler.cpp
 $ngx_addon_dir/service/protocol/tencent_gdt/tencent_gdt_price.cpp

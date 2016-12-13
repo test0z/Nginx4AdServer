@@ -9,6 +9,8 @@
 #include "logging.h"
 #include "utility/utility.h"
 
+extern std::string tanxDeviceId(const std::string & src);
+
 namespace protocol {
 namespace bidding {
 
@@ -17,6 +19,7 @@ namespace bidding {
     using namespace adservice::utility::serialize;
     using namespace adservice::utility::json;
     using namespace adservice::utility::userclient;
+    using namespace adservice::utility::cypher;
     using namespace adservice::server;
 
 #define AD_TX_CLICK_MACRO "%%CLICK_URL_PRE_ENC%%"
@@ -184,8 +187,10 @@ namespace bidding {
             if (device.has_network()) {
                 queryCondition.mobileNetwork = getNetWork(device.network());
             }
-            cookieMappingKeyMobile(device.has_idfa() ? device.idfa() : "",
-                                   device.has_imei() ? device.imei() : device.imei());
+            cookieMappingKeyMobile(md5_encode(device.has_idfa() ? tanxDeviceId(device.idfa()) : ""),
+                                   md5_encode(device.has_imei() ? tanxDeviceId(device.imei()) : ""),
+                                   md5_encode(device.has_android_id() ? tanxDeviceId(device.android_id()) : ""),
+                                   md5_encode(device.has_mac() ? tanxDeviceId(device.mac()) : ""));
         } else {
             queryCondition.pcOS = getOSTypeFromUA(bidRequest.user_agent());
             queryCondition.pcBrowserStr = getBrowserTypeFromUA(bidRequest.user_agent());

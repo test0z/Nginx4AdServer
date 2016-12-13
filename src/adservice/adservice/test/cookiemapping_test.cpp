@@ -204,6 +204,13 @@ void testAerospikeBatch(){
     }
 }
 
+void testMd5(){
+    std::string output = cypher::md5_encode("helloworld");
+    std::cout<<"md5 of helloworld:"<<output<<std::endl;
+    output = cypher::md5_encode("CC7D4D04-C75A-41CC-8705-8C5880BD89C6");
+    std::cout<<"md5 of CC7D4D04-C75A-41CC-8705-8C5880BD89C6:"<<output<<std::endl;
+}
+
 int main(int argc, char ** argv)
 {
     std::vector<MT::common::ASConnection> connections{ MT::common::ASConnection("192.168.2.31", 3000) };
@@ -216,5 +223,6 @@ int main(int argc, char ** argv)
     testUpdateAsyncPressure();
     testIdSeq();
     testAerospikeBatch();
+    testMd5();
     return 0;
 }

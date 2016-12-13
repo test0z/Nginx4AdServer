@@ -56,6 +56,7 @@ SET(SRC_LIST
     ./service/protocol/tanx/tanx_bidding.pb.cpp
     ./service/protocol/tanx/tanx_bidding_handler.cpp
     ./service/protocol/tanx/tanx_price.cpp
+    ./service/protocol/tanx/tanx_device_id.cpp
     ./service/protocol/tencent_gdt/gdt.pb.cpp
     ./service/protocol/tencent_gdt/gdt_bidding_handler.cpp
     ./service/protocol/tencent_gdt/tencent_gdt_price.cpp

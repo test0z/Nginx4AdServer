@@ -158,12 +158,18 @@ namespace bidding {
     }
 
     const CookieMappingQueryKeyValue & AbstractBiddingHandler::cookieMappingKeyMobile(const std::string & idfa,
-                                                                                      const std::string & imei)
+                                                                                      const std::string & imei,
+                                                                                      const std::string & androidId,
+                                                                                      const std::string & mac)
     {
         if (!idfa.empty()) {
             return cmInfo.queryKV.rebind(MtUserMapping::idfaKey(), idfa, false);
         } else if (!imei.empty()) {
             return cmInfo.queryKV.rebind(MtUserMapping::imeiKey(), imei, false);
+        } else if (!androidId.empty()) {
+            return cmInfo.queryKV.rebind(MtUserMapping::androidIdKey(), androidId, false);
+        } else if (!mac.empty()) {
+            return cmInfo.queryKV.rebind(MtUserMapping::macKey(), mac, false);
         }
         return cmInfo.queryKV.rebind("", "", false);
     }
@@ -185,7 +191,7 @@ namespace bidding {
         cmInfo.userMapping.reset();
         if (!queryKV.isNull()) { //查询键值非空
             CookieMappingManager & cmManager = CookieMappingManager::getInstance();
-            LOG_DEBUG << "cookie mapping query kv:" << queryKV.key << "," << queryKV.value;
+            // LOG_DEBUG << "cookie mapping query kv:" << queryKV.key << "," << queryKV.value;
             cmInfo.userMapping = cmManager.getUserMappingByKey(queryKV.key, queryKV.value);
             if (cmInfo.userMapping.isValid()) {
                 // todo: 填充selectCondition的对应字段

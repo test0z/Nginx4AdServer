@@ -41,6 +41,8 @@ namespace utility {
 
         void aes_ecbdecode_nopadding(const uchar_t * key, const std::string & input, std::string & output);
 
+        std::string md5_encode(const std::string & input);
+
         std::string encodePrice(int price, bool useAes = false);
 
         std::string randomId(int field);

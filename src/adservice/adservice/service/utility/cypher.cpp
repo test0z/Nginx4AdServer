@@ -9,6 +9,9 @@
 #include <array>
 #include <cryptopp/aes.h>
 #include <cryptopp/base64.h>
+#define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
+#include <cryptopp/hex.h>
+#include <cryptopp/md5.h>
 #include <cryptopp/modes.h>
 #include <mtty/constants.h>
 #include <random>
@@ -209,6 +212,27 @@ namespace utility {
             } catch (CryptoPP::Exception & e) {
                 LOG_ERROR << "aes_ecbdecode failed,e:" << e.what();
             }
+        }
+
+        std::string md5_encode(const std::string & input)
+        {
+            if (input.empty()) {
+                return input;
+            }
+            try {
+                CryptoPP::Weak::MD5 md5;
+                byte digest[CryptoPP::Weak::MD5::DIGESTSIZE];
+                md5.CalculateDigest(digest, (const byte *)input.c_str(), input.length());
+                CryptoPP::HexEncoder encoder;
+                std::string output;
+                encoder.Attach(new CryptoPP::StringSink(output));
+                encoder.Put(digest, sizeof(digest));
+                encoder.MessageEnd();
+                return output;
+            } catch (CryptoPP::Exception & e) {
+                LOG_ERROR << "md5_encode failed,e:" << e.what();
+            }
+            return input;
         }
 
         std::string encodePrice(int price, bool useAes)

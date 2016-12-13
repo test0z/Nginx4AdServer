@@ -9,6 +9,8 @@ namespace core {
 
         const std::string MAPPING_KEY_IDFA = "idfa";
         const std::string MAPPING_KEY_IMEI = "imei";
+        const std::string MAPPING_KEY_MAC = "mac";
+        const std::string MAPPING_KEY_ANDROIDID = "androidId";
         const std::string MAPPING_KEY_USER = "user_id";
 
         std::string MtUserMapping::adxUidKey(int64_t adxId)
@@ -26,6 +28,16 @@ namespace core {
         const std::string & MtUserMapping::imeiKey()
         {
             return MAPPING_KEY_IMEI;
+        }
+
+        const std::string & MtUserMapping::androidIdKey()
+        {
+            return MAPPING_KEY_ANDROIDID;
+        }
+
+        const std::string & MtUserMapping::macKey()
+        {
+            return MAPPING_KEY_MAC;
         }
 
         const std::string & MtUserMapping::userIdKey()
