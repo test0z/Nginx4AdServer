@@ -32,7 +32,7 @@ namespace core {
 
         SourceRecord::SourceRecord(utility::url::ParamMap & paramMap, protocol::log::LogItem & log)
         {
-            record_ = as_record_new(11);
+            record_ = as_record_new(14);
 
             as_record_set_int64(record_, "latest_time", log.timeStamp);
             as_record_set_str(record_, "adv_id", paramMap[URL_ADOWNER_ID].c_str());
@@ -46,6 +46,8 @@ namespace core {
             as_record_set_str(record_, "geo_id", paramMap[URL_AREA_ID].c_str());
             as_record_set_str(record_, "referer_url", paramMap[URL_REFERER].c_str());
             as_record_set_str(record_, "bid_price", paramMap[URL_BID_PRICE].c_str());
+            as_record_set_str(record_, "ppid", paramMap[URL_PRODUCTPACKAGE_ID].c_str());
+            as_record_set_str(record_, "oid", paramMap[URL_ORDER_ID].c_str());
         }
 
         void SourceRecord::record(const as_record * record)
@@ -62,6 +64,8 @@ namespace core {
             geoId_ = getStr(record, "geo_id");
             refererUrl_ = getStr(record, "referer_url");
             bidPrice_ = getStr(record, "bid_price");
+            ppId_ = getStr(record, "ppid");
+            oId_ = getStr(record, "oid");
         }
 
         int64_t SourceRecord::time() const
@@ -111,6 +115,14 @@ namespace core {
         const std::string & SourceRecord::bidPrice() const
         {
             return bidPrice_;
+        }
+        const std::string & SourceRecord::ppId() const
+        {
+            return ppId_;
+        }
+        const std::string & SourceRecord::oId() const
+        {
+            return oId_;
         }
 
     } // namespace model
