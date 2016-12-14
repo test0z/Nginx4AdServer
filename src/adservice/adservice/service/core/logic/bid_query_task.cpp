@@ -7,7 +7,9 @@
 #include "protocol/baidu/baidu_bidding_handler.h"
 #include "protocol/guangyin/guangyin_bidding_handler.h"
 #include "protocol/inmobi/inmobi_bidding_handler.h"
+#include "protocol/kupai/kupai_bidding_handler.h"
 #include "protocol/netease/netease_bidding_handlerv2.h"
+#include "protocol/netease/nex_bidding_handler.h"
 #include "protocol/sohu/sohu_bidding_handler.h"
 #include "protocol/tanx/tanx_bidding_handler.h"
 #include "protocol/tencent_gdt/gdt_bidding_handler.h"
@@ -66,6 +68,10 @@ namespace corelogic {
         ADD_MODULE_ENTRY(BID_QUERY_PATH_GUANGYIN, ADX_GUANGYIN);
         // inmobi ADX
         ADD_MODULE_ENTRY(BID_QUERY_PATH_INMOBI, ADX_INMOBI);
+        //网易NEX
+        ADD_MODULE_ENTRY(BID_QUERY_PATH_NEX, ADX_NEX_PC);
+        //酷派移动
+        ADD_MODULE_ENTRY(BID_QUERY_PATH_KUPAI, ADX_KUPAI_MOBILE);
 
         std::sort<int *>(moduleIdx, moduleIdx + moduleCnt, [](const int & a, const int & b) {
             return moduleAdx[a].moduleHash < moduleAdx[b].moduleHash;
@@ -111,6 +117,10 @@ namespace corelogic {
             return new GuangyinBiddingHandler();
         case ADX_INMOBI:
             return new InmobiBiddingHandler();
+        case ADX_NEX_PC:
+            return new NexBiddingHandler();
+        case ADX_KUPAI_MOBILE:
+            return new KupaiBiddingHandler();
         default:
             return NULL;
         }

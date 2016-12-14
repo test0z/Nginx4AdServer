@@ -7,6 +7,7 @@
 #include "logging.h"
 #include "protocol/baidu/baidu_price.h"
 #include "protocol/guangyin/guangyin_price.h"
+#include "protocol/kupai/kupai_price_decode.h"
 #include "protocol/sohu/sohu_price.h"
 #include "protocol/tanx/tanx_price.h"
 #include "protocol/tencent_gdt/tencent_gdt_price.h"
@@ -60,12 +61,16 @@ namespace corelogic {
         case ADX_SOHU_MOBILE:
             return sohu_price_decode(input);
         case ADX_INMOBI:
+        case ADX_NEX_PC:
+        case ADX_NEX_MOBILE:
             try {
                 return std::stoi(input);
             } catch (...) {
-                LOG_ERROR << "adx inmobi price error,input:" << input;
+                LOG_ERROR << "adx inmobi/nex price error,input:" << input;
                 return 0;
             }
+        case ADX_KUPAI_MOBILE:
+            return kupai_price_decode(input);
         default:
             return 0;
         }

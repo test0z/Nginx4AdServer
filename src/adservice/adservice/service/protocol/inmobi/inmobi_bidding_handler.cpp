@@ -253,8 +253,6 @@ namespace bidding {
         {
           "seat":"1",
           "bid":[
-<<<<<<< HEAD
-=======
                 {
                     "adm":"",
                     "id":"",
@@ -266,7 +264,6 @@ namespace bidding {
                     "iurl":"",
                     "attr":[]
                 }
->>>>>>> master
             ]
         }
     ],

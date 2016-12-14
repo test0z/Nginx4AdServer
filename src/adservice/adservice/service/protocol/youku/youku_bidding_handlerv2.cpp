@@ -155,18 +155,22 @@ namespace bidding {
                 queryCondition.width = adObject.get("w", 0);
                 queryCondition.height = adObject.get("h", 0);
             } else {
+                const adservice::utility::AdSizeMap & adSizeMap = adservice::utility::AdSizeMap::getInstance();
                 queryCondition.bannerType = BANNER_TYPE_PRIMITIVE;
                 const cppcms::json::array & assets = adObject.find("assets").array();
                 if (assets.size() > 0) {
                     for (uint32_t i = 0; i < assets.size(); i++) {
                         const cppcms::json::value & asset = assets[i];
-                        queryCondition.width = asset.get("image_url.w", 750);
-                        queryCondition.height = asset.get("image_url.h", 350);
+                        int w = asset.get("image_url.w", 750);
+                        int h = asset.get("image_url.h", 350);
+                        auto sizePair = adSizeMap.get({ w, h });
+                        queryCondition.width = sizePair.first;
+                        queryCondition.height = sizePair.second;
                         adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
                     }
                     queryCondition.pAdplaceInfo = &adplaceInfo;
                 } else {
-                    return false;
+                    continue;
                 }
             }
             cppcms::json::value & device = bidRequest["device"];

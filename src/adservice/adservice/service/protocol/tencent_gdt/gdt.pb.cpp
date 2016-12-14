@@ -7,6 +7,7 @@
 #include <algorithm>
 
 #include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/port.h>
 #include <google/protobuf/stubs/once.h>
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/wire_format_lite_inl.h>
@@ -70,6 +71,7 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 }  // namespace
 
 
+void protobuf_AssignDesc_gdt_2eproto() GOOGLE_ATTRIBUTE_COLD;
 void protobuf_AssignDesc_gdt_2eproto() {
   protobuf_AddDesc_gdt_2eproto();
   const ::google::protobuf::FileDescriptor* file =
@@ -91,16 +93,16 @@ void protobuf_AssignDesc_gdt_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest, boss_qq_),
   };
   BidRequest_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
       BidRequest_descriptor_,
       BidRequest::default_instance_,
       BidRequest_offsets_,
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest, _unknown_fields_),
+      -1,
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest, _extensions_),
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(BidRequest));
+      sizeof(BidRequest),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest, _internal_metadata_),
+      -1);
   BidRequest_Impression_descriptor_ = BidRequest_descriptor_->nested_type(0);
   static const int BidRequest_Impression_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_Impression, id_),
@@ -111,32 +113,32 @@ void protobuf_AssignDesc_gdt_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_Impression, natives_),
   };
   BidRequest_Impression_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
       BidRequest_Impression_descriptor_,
       BidRequest_Impression::default_instance_,
       BidRequest_Impression_offsets_,
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_Impression, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_Impression, _unknown_fields_),
       -1,
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(BidRequest_Impression));
+      -1,
+      sizeof(BidRequest_Impression),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_Impression, _internal_metadata_),
+      -1);
   BidRequest_Impression_Native_descriptor_ = BidRequest_Impression_descriptor_->nested_type(0);
   static const int BidRequest_Impression_Native_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_Impression_Native, required_fields_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_Impression_Native, type_),
   };
   BidRequest_Impression_Native_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
       BidRequest_Impression_Native_descriptor_,
       BidRequest_Impression_Native::default_instance_,
       BidRequest_Impression_Native_offsets_,
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_Impression_Native, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_Impression_Native, _unknown_fields_),
       -1,
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(BidRequest_Impression_Native));
+      -1,
+      sizeof(BidRequest_Impression_Native),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_Impression_Native, _internal_metadata_),
+      -1);
   BidRequest_Impression_Native_Fields_descriptor_ = BidRequest_Impression_Native_descriptor_->enum_type(0);
   BidRequest_Impression_Native_Type_descriptor_ = BidRequest_Impression_Native_descriptor_->enum_type(1);
   BidRequest_Device_descriptor_ = BidRequest_descriptor_->nested_type(1);
@@ -155,16 +157,16 @@ void protobuf_AssignDesc_gdt_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_Device, language_),
   };
   BidRequest_Device_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
       BidRequest_Device_descriptor_,
       BidRequest_Device::default_instance_,
       BidRequest_Device_offsets_,
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_Device, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_Device, _unknown_fields_),
       -1,
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(BidRequest_Device));
+      -1,
+      sizeof(BidRequest_Device),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_Device, _internal_metadata_),
+      -1);
   BidRequest_User_descriptor_ = BidRequest_descriptor_->nested_type(2);
   static const int BidRequest_User_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_User, id_),
@@ -172,16 +174,16 @@ void protobuf_AssignDesc_gdt_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_User, verticals_),
   };
   BidRequest_User_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
       BidRequest_User_descriptor_,
       BidRequest_User::default_instance_,
       BidRequest_User_offsets_,
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_User, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_User, _unknown_fields_),
       -1,
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(BidRequest_User));
+      -1,
+      sizeof(BidRequest_User),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_User, _internal_metadata_),
+      -1);
   BidRequest_User_Demographic_descriptor_ = BidRequest_User_descriptor_->nested_type(0);
   static const int BidRequest_User_Demographic_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_User_Demographic, gender_),
@@ -190,16 +192,16 @@ void protobuf_AssignDesc_gdt_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_User_Demographic, age_high_),
   };
   BidRequest_User_Demographic_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
       BidRequest_User_Demographic_descriptor_,
       BidRequest_User_Demographic::default_instance_,
       BidRequest_User_Demographic_offsets_,
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_User_Demographic, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_User_Demographic, _unknown_fields_),
       -1,
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(BidRequest_User_Demographic));
+      -1,
+      sizeof(BidRequest_User_Demographic),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_User_Demographic, _internal_metadata_),
+      -1);
   BidRequest_User_Demographic_Gender_descriptor_ = BidRequest_User_Demographic_descriptor_->enum_type(0);
   BidRequest_User_Demographic_Education_descriptor_ = BidRequest_User_Demographic_descriptor_->enum_type(1);
   BidRequest_User_Vertical_descriptor_ = BidRequest_User_descriptor_->nested_type(1);
@@ -208,16 +210,16 @@ void protobuf_AssignDesc_gdt_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_User_Vertical, weight_),
   };
   BidRequest_User_Vertical_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
       BidRequest_User_Vertical_descriptor_,
       BidRequest_User_Vertical::default_instance_,
       BidRequest_User_Vertical_offsets_,
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_User_Vertical, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_User_Vertical, _unknown_fields_),
       -1,
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(BidRequest_User_Vertical));
+      -1,
+      sizeof(BidRequest_User_Vertical),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_User_Vertical, _internal_metadata_),
+      -1);
   BidRequest_Geo_descriptor_ = BidRequest_descriptor_->nested_type(3);
   static const int BidRequest_Geo_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_Geo, latitude_),
@@ -225,32 +227,32 @@ void protobuf_AssignDesc_gdt_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_Geo, accuracy_),
   };
   BidRequest_Geo_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
       BidRequest_Geo_descriptor_,
       BidRequest_Geo::default_instance_,
       BidRequest_Geo_offsets_,
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_Geo, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_Geo, _unknown_fields_),
       -1,
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(BidRequest_Geo));
+      -1,
+      sizeof(BidRequest_Geo),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_Geo, _internal_metadata_),
+      -1);
   BidRequest_App_descriptor_ = BidRequest_descriptor_->nested_type(4);
   static const int BidRequest_App_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_App, industry_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_App, app_bundle_id_),
   };
   BidRequest_App_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
       BidRequest_App_descriptor_,
       BidRequest_App::default_instance_,
       BidRequest_App_offsets_,
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_App, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_App, _unknown_fields_),
       -1,
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(BidRequest_App));
+      -1,
+      sizeof(BidRequest_App),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_App, _internal_metadata_),
+      -1);
   BidRequest_DeviceType_descriptor_ = BidRequest_descriptor_->enum_type(0);
   BidRequest_Carrier_descriptor_ = BidRequest_descriptor_->enum_type(1);
   BidRequest_ConnectionType_descriptor_ = BidRequest_descriptor_->enum_type(2);
@@ -262,16 +264,16 @@ void protobuf_AssignDesc_gdt_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse, processing_time_ms_),
   };
   BidResponse_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
       BidResponse_descriptor_,
       BidResponse::default_instance_,
       BidResponse_offsets_,
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse, _unknown_fields_),
+      -1,
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse, _extensions_),
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(BidResponse));
+      sizeof(BidResponse),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse, _internal_metadata_),
+      -1);
   BidResponse_Bid_descriptor_ = BidResponse_descriptor_->nested_type(0);
   static const int BidResponse_Bid_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_Bid, creative_id_),
@@ -280,32 +282,32 @@ void protobuf_AssignDesc_gdt_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_Bid, click_param_),
   };
   BidResponse_Bid_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
       BidResponse_Bid_descriptor_,
       BidResponse_Bid::default_instance_,
       BidResponse_Bid_offsets_,
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_Bid, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_Bid, _unknown_fields_),
+      -1,
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_Bid, _extensions_),
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(BidResponse_Bid));
+      sizeof(BidResponse_Bid),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_Bid, _internal_metadata_),
+      -1);
   BidResponse_SeatBid_descriptor_ = BidResponse_descriptor_->nested_type(1);
   static const int BidResponse_SeatBid_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_SeatBid, impression_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_SeatBid, bids_),
   };
   BidResponse_SeatBid_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
       BidResponse_SeatBid_descriptor_,
       BidResponse_SeatBid::default_instance_,
       BidResponse_SeatBid_offsets_,
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_SeatBid, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_SeatBid, _unknown_fields_),
       -1,
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(BidResponse_SeatBid));
+      -1,
+      sizeof(BidResponse_SeatBid),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_SeatBid, _internal_metadata_),
+      -1);
 }
 
 namespace {
@@ -316,32 +318,33 @@ inline void protobuf_AssignDescriptorsOnce() {
                  &protobuf_AssignDesc_gdt_2eproto);
 }
 
+void protobuf_RegisterTypes(const ::std::string&) GOOGLE_ATTRIBUTE_COLD;
 void protobuf_RegisterTypes(const ::std::string&) {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    BidRequest_descriptor_, &BidRequest::default_instance());
+      BidRequest_descriptor_, &BidRequest::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    BidRequest_Impression_descriptor_, &BidRequest_Impression::default_instance());
+      BidRequest_Impression_descriptor_, &BidRequest_Impression::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    BidRequest_Impression_Native_descriptor_, &BidRequest_Impression_Native::default_instance());
+      BidRequest_Impression_Native_descriptor_, &BidRequest_Impression_Native::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    BidRequest_Device_descriptor_, &BidRequest_Device::default_instance());
+      BidRequest_Device_descriptor_, &BidRequest_Device::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    BidRequest_User_descriptor_, &BidRequest_User::default_instance());
+      BidRequest_User_descriptor_, &BidRequest_User::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    BidRequest_User_Demographic_descriptor_, &BidRequest_User_Demographic::default_instance());
+      BidRequest_User_Demographic_descriptor_, &BidRequest_User_Demographic::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    BidRequest_User_Vertical_descriptor_, &BidRequest_User_Vertical::default_instance());
+      BidRequest_User_Vertical_descriptor_, &BidRequest_User_Vertical::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    BidRequest_Geo_descriptor_, &BidRequest_Geo::default_instance());
+      BidRequest_Geo_descriptor_, &BidRequest_Geo::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    BidRequest_App_descriptor_, &BidRequest_App::default_instance());
+      BidRequest_App_descriptor_, &BidRequest_App::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    BidResponse_descriptor_, &BidResponse::default_instance());
+      BidResponse_descriptor_, &BidResponse::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    BidResponse_Bid_descriptor_, &BidResponse_Bid::default_instance());
+      BidResponse_Bid_descriptor_, &BidResponse_Bid::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    BidResponse_SeatBid_descriptor_, &BidResponse_SeatBid::default_instance());
+      BidResponse_SeatBid_descriptor_, &BidResponse_SeatBid::default_instance());
 }
 
 }  // namespace
@@ -373,6 +376,7 @@ void protobuf_ShutdownFile_gdt_2eproto() {
   delete BidResponse_SeatBid_reflection_;
 }
 
+void protobuf_AddDesc_gdt_2eproto() GOOGLE_ATTRIBUTE_COLD;
 void protobuf_AddDesc_gdt_2eproto() {
   static bool already_here = false;
   if (already_here) return;
@@ -504,7 +508,7 @@ bool BidRequest_DeviceType_IsValid(int value) {
   }
 }
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const BidRequest_DeviceType BidRequest::kDeviceTypeUnknown;
 const BidRequest_DeviceType BidRequest::kDeviceTypePC;
 const BidRequest_DeviceType BidRequest::kDeviceTypeMobile;
@@ -512,7 +516,7 @@ const BidRequest_DeviceType BidRequest::kDeviceTypePad;
 const BidRequest_DeviceType BidRequest::DeviceType_MIN;
 const BidRequest_DeviceType BidRequest::DeviceType_MAX;
 const int BidRequest::DeviceType_ARRAYSIZE;
-#endif  // _MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 const ::google::protobuf::EnumDescriptor* BidRequest_Carrier_descriptor() {
   protobuf_AssignDescriptorsOnce();
   return BidRequest_Carrier_descriptor_;
@@ -529,7 +533,7 @@ bool BidRequest_Carrier_IsValid(int value) {
   }
 }
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const BidRequest_Carrier BidRequest::kCarrierUnknown;
 const BidRequest_Carrier BidRequest::kCarrierChinaMobile;
 const BidRequest_Carrier BidRequest::kCarrierChinaUnicom;
@@ -537,7 +541,7 @@ const BidRequest_Carrier BidRequest::kCarrierChinaTelecom;
 const BidRequest_Carrier BidRequest::Carrier_MIN;
 const BidRequest_Carrier BidRequest::Carrier_MAX;
 const int BidRequest::Carrier_ARRAYSIZE;
-#endif  // _MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 const ::google::protobuf::EnumDescriptor* BidRequest_ConnectionType_descriptor() {
   protobuf_AssignDescriptorsOnce();
   return BidRequest_ConnectionType_descriptor_;
@@ -555,7 +559,7 @@ bool BidRequest_ConnectionType_IsValid(int value) {
   }
 }
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const BidRequest_ConnectionType BidRequest::kConnTypeUnknown;
 const BidRequest_ConnectionType BidRequest::kConnTypeWifi;
 const BidRequest_ConnectionType BidRequest::kConnType2G;
@@ -564,7 +568,7 @@ const BidRequest_ConnectionType BidRequest::kConnType4G;
 const BidRequest_ConnectionType BidRequest::ConnectionType_MIN;
 const BidRequest_ConnectionType BidRequest::ConnectionType_MAX;
 const int BidRequest::ConnectionType_ARRAYSIZE;
-#endif  // _MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 const ::google::protobuf::EnumDescriptor* BidRequest_OperatingSystem_descriptor() {
   protobuf_AssignDescriptorsOnce();
   return BidRequest_OperatingSystem_descriptor_;
@@ -583,7 +587,7 @@ bool BidRequest_OperatingSystem_IsValid(int value) {
   }
 }
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const BidRequest_OperatingSystem BidRequest::kOSUnknown;
 const BidRequest_OperatingSystem BidRequest::kOSIOS;
 const BidRequest_OperatingSystem BidRequest::kOSAndroid;
@@ -593,7 +597,7 @@ const BidRequest_OperatingSystem BidRequest::kOSJava;
 const BidRequest_OperatingSystem BidRequest::OperatingSystem_MIN;
 const BidRequest_OperatingSystem BidRequest::OperatingSystem_MAX;
 const int BidRequest::OperatingSystem_ARRAYSIZE;
-#endif  // _MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 const ::google::protobuf::EnumDescriptor* BidRequest_Impression_Native_Fields_descriptor() {
   protobuf_AssignDescriptorsOnce();
   return BidRequest_Impression_Native_Fields_descriptor_;
@@ -610,7 +614,7 @@ bool BidRequest_Impression_Native_Fields_IsValid(int value) {
   }
 }
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const BidRequest_Impression_Native_Fields BidRequest_Impression_Native::kHeadline;
 const BidRequest_Impression_Native_Fields BidRequest_Impression_Native::kIcon;
 const BidRequest_Impression_Native_Fields BidRequest_Impression_Native::kImage;
@@ -618,7 +622,7 @@ const BidRequest_Impression_Native_Fields BidRequest_Impression_Native::kDescrip
 const BidRequest_Impression_Native_Fields BidRequest_Impression_Native::Fields_MIN;
 const BidRequest_Impression_Native_Fields BidRequest_Impression_Native::Fields_MAX;
 const int BidRequest_Impression_Native::Fields_ARRAYSIZE;
-#endif  // _MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 const ::google::protobuf::EnumDescriptor* BidRequest_Impression_Native_Type_descriptor() {
   protobuf_AssignDescriptorsOnce();
   return BidRequest_Impression_Native_Type_descriptor_;
@@ -633,30 +637,33 @@ bool BidRequest_Impression_Native_Type_IsValid(int value) {
   }
 }
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const BidRequest_Impression_Native_Type BidRequest_Impression_Native::kLink;
 const BidRequest_Impression_Native_Type BidRequest_Impression_Native::kApp;
 const BidRequest_Impression_Native_Type BidRequest_Impression_Native::Type_MIN;
 const BidRequest_Impression_Native_Type BidRequest_Impression_Native::Type_MAX;
 const int BidRequest_Impression_Native::Type_ARRAYSIZE;
-#endif  // _MSC_VER
-#ifndef _MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int BidRequest_Impression_Native::kRequiredFieldsFieldNumber;
 const int BidRequest_Impression_Native::kTypeFieldNumber;
-#endif  // !_MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 BidRequest_Impression_Native::BidRequest_Impression_Native()
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.gdt.adx.BidRequest.Impression.Native)
 }
 
 void BidRequest_Impression_Native::InitAsDefaultInstance() {
 }
 
 BidRequest_Impression_Native::BidRequest_Impression_Native(const BidRequest_Impression_Native& from)
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.gdt.adx.BidRequest.Impression.Native)
 }
 
 void BidRequest_Impression_Native::SharedCtor() {
@@ -667,6 +674,7 @@ void BidRequest_Impression_Native::SharedCtor() {
 }
 
 BidRequest_Impression_Native::~BidRequest_Impression_Native() {
+  // @@protoc_insertion_point(destructor:protocol.gdt.adx.BidRequest.Impression.Native)
   SharedDtor();
 }
 
@@ -692,35 +700,62 @@ const BidRequest_Impression_Native& BidRequest_Impression_Native::default_instan
 
 BidRequest_Impression_Native* BidRequest_Impression_Native::default_instance_ = NULL;
 
-BidRequest_Impression_Native* BidRequest_Impression_Native::New() const {
-  return new BidRequest_Impression_Native;
+BidRequest_Impression_Native* BidRequest_Impression_Native::New(::google::protobuf::Arena* arena) const {
+  BidRequest_Impression_Native* n = new BidRequest_Impression_Native;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
 }
 
 void BidRequest_Impression_Native::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    required_fields_ = GOOGLE_ULONGLONG(0);
-    type_ = 0;
-  }
+// @@protoc_insertion_point(message_clear_start:protocol.gdt.adx.BidRequest.Impression.Native)
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(BidRequest_Impression_Native, f) \
+  _Pragma("clang diagnostic pop")
+#else
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<BidRequest_Impression_Native*>(16)->f)
+#endif
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  ZR_(required_fields_, type_);
+
+#undef ZR_HELPER_
+#undef ZR_
+
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
 }
 
 bool BidRequest_Impression_Native::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:protocol.gdt.adx.BidRequest.Impression.Native)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // optional uint64 required_fields = 1;
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 8) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &required_fields_)));
           set_has_required_fields();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(16)) goto parse_type;
         break;
@@ -728,8 +763,7 @@ bool BidRequest_Impression_Native::MergePartialFromCodedStream(
 
       // optional .protocol.gdt.adx.BidRequest.Impression.Native.Type type = 2;
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 16) {
          parse_type:
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
@@ -741,17 +775,18 @@ bool BidRequest_Impression_Native::MergePartialFromCodedStream(
             mutable_unknown_fields()->AddVarint(2, value);
           }
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -759,12 +794,18 @@ bool BidRequest_Impression_Native::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.gdt.adx.BidRequest.Impression.Native)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.gdt.adx.BidRequest.Impression.Native)
+  return false;
 #undef DO_
 }
 
 void BidRequest_Impression_Native::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.gdt.adx.BidRequest.Impression.Native)
   // optional uint64 required_fields = 1;
   if (has_required_fields()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(1, this->required_fields(), output);
@@ -776,14 +817,16 @@ void BidRequest_Impression_Native::SerializeWithCachedSizes(
       2, this->type(), output);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:protocol.gdt.adx.BidRequest.Impression.Native)
 }
 
-::google::protobuf::uint8* BidRequest_Impression_Native::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* BidRequest_Impression_Native::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.gdt.adx.BidRequest.Impression.Native)
   // optional uint64 required_fields = 1;
   if (has_required_fields()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(1, this->required_fields(), target);
@@ -795,17 +838,19 @@ void BidRequest_Impression_Native::SerializeWithCachedSizes(
       2, this->type(), target);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.gdt.adx.BidRequest.Impression.Native)
   return target;
 }
 
 int BidRequest_Impression_Native::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.gdt.adx.BidRequest.Impression.Native)
   int total_size = 0;
 
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+  if (_has_bits_[0 / 32] & 3u) {
     // optional uint64 required_fields = 1;
     if (has_required_fields()) {
       total_size += 1 +
@@ -820,7 +865,7 @@ int BidRequest_Impression_Native::ByteSize() const {
     }
 
   }
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         unknown_fields());
@@ -832,19 +877,27 @@ int BidRequest_Impression_Native::ByteSize() const {
 }
 
 void BidRequest_Impression_Native::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const BidRequest_Impression_Native* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const BidRequest_Impression_Native*>(
-      &from);
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.gdt.adx.BidRequest.Impression.Native)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const BidRequest_Impression_Native* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const BidRequest_Impression_Native>(
+          &from);
   if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.gdt.adx.BidRequest.Impression.Native)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.gdt.adx.BidRequest.Impression.Native)
     MergeFrom(*source);
   }
 }
 
 void BidRequest_Impression_Native::MergeFrom(const BidRequest_Impression_Native& from) {
-  GOOGLE_CHECK_NE(&from, this);
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.gdt.adx.BidRequest.Impression.Native)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_required_fields()) {
       set_required_fields(from.required_fields());
@@ -853,16 +906,20 @@ void BidRequest_Impression_Native::MergeFrom(const BidRequest_Impression_Native&
       set_type(from.type());
     }
   }
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
 }
 
 void BidRequest_Impression_Native::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.gdt.adx.BidRequest.Impression.Native)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void BidRequest_Impression_Native::CopyFrom(const BidRequest_Impression_Native& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.gdt.adx.BidRequest.Impression.Native)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -874,13 +931,15 @@ bool BidRequest_Impression_Native::IsInitialized() const {
 }
 
 void BidRequest_Impression_Native::Swap(BidRequest_Impression_Native* other) {
-  if (other != this) {
-    std::swap(required_fields_, other->required_fields_);
-    std::swap(type_, other->type_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
+  if (other == this) return;
+  InternalSwap(other);
+}
+void BidRequest_Impression_Native::InternalSwap(BidRequest_Impression_Native* other) {
+  std::swap(required_fields_, other->required_fields_);
+  std::swap(type_, other->type_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata BidRequest_Impression_Native::GetMetadata() const {
@@ -894,45 +953,48 @@ void BidRequest_Impression_Native::Swap(BidRequest_Impression_Native* other) {
 
 // -------------------------------------------------------------------
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int BidRequest_Impression::kIdFieldNumber;
 const int BidRequest_Impression::kPlacementIdFieldNumber;
 const int BidRequest_Impression::kCreativeSpecsFieldNumber;
 const int BidRequest_Impression::kBidFloorFieldNumber;
 const int BidRequest_Impression::kBlockingIndustryIdFieldNumber;
 const int BidRequest_Impression::kNativesFieldNumber;
-#endif  // !_MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 BidRequest_Impression::BidRequest_Impression()
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.gdt.adx.BidRequest.Impression)
 }
 
 void BidRequest_Impression::InitAsDefaultInstance() {
 }
 
 BidRequest_Impression::BidRequest_Impression(const BidRequest_Impression& from)
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.gdt.adx.BidRequest.Impression)
 }
 
 void BidRequest_Impression::SharedCtor() {
+  ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  id_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   placement_id_ = GOOGLE_LONGLONG(0);
   bid_floor_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
 BidRequest_Impression::~BidRequest_Impression() {
+  // @@protoc_insertion_point(destructor:protocol.gdt.adx.BidRequest.Impression)
   SharedDtor();
 }
 
 void BidRequest_Impression::SharedDtor() {
-  if (id_ != &::google::protobuf::internal::kEmptyString) {
-    delete id_;
-  }
+  id_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
 }
@@ -954,16 +1016,19 @@ const BidRequest_Impression& BidRequest_Impression::default_instance() {
 
 BidRequest_Impression* BidRequest_Impression::default_instance_ = NULL;
 
-BidRequest_Impression* BidRequest_Impression::New() const {
-  return new BidRequest_Impression;
+BidRequest_Impression* BidRequest_Impression::New(::google::protobuf::Arena* arena) const {
+  BidRequest_Impression* n = new BidRequest_Impression;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
 }
 
 void BidRequest_Impression::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+// @@protoc_insertion_point(message_clear_start:protocol.gdt.adx.BidRequest.Impression)
+  if (_has_bits_[0 / 32] & 11u) {
     if (has_id()) {
-      if (id_ != &::google::protobuf::internal::kEmptyString) {
-        id_->clear();
-      }
+      id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
     placement_id_ = GOOGLE_LONGLONG(0);
     bid_floor_ = 0;
@@ -972,26 +1037,32 @@ void BidRequest_Impression::Clear() {
   blocking_industry_id_.Clear();
   natives_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
 }
 
 bool BidRequest_Impression::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:protocol.gdt.adx.BidRequest.Impression)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // optional string id = 1;
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 10) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_id()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
             this->id().data(), this->id().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "protocol.gdt.adx.BidRequest.Impression.id");
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(16)) goto parse_placement_id;
         break;
@@ -999,15 +1070,14 @@ bool BidRequest_Impression::MergePartialFromCodedStream(
 
       // optional int64 placement_id = 2;
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 16) {
          parse_placement_id:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
                  input, &placement_id_)));
           set_has_placement_id();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(24)) goto parse_creative_specs;
         break;
@@ -1015,20 +1085,17 @@ bool BidRequest_Impression::MergePartialFromCodedStream(
 
       // repeated int32 creative_specs = 3;
       case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 24) {
          parse_creative_specs:
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  1, 24, input, this->mutable_creative_specs())));
-        } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
-                   == ::google::protobuf::internal::WireFormatLite::
-                      WIRETYPE_LENGTH_DELIMITED) {
+        } else if (tag == 26) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, this->mutable_creative_specs())));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(24)) goto parse_creative_specs;
         if (input->ExpectTag(32)) goto parse_bid_floor;
@@ -1037,15 +1104,14 @@ bool BidRequest_Impression::MergePartialFromCodedStream(
 
       // optional int32 bid_floor = 4;
       case 4: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 32) {
          parse_bid_floor:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &bid_floor_)));
           set_has_bid_floor();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(40)) goto parse_blocking_industry_id;
         break;
@@ -1053,20 +1119,17 @@ bool BidRequest_Impression::MergePartialFromCodedStream(
 
       // repeated int64 blocking_industry_id = 5;
       case 5: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 40) {
          parse_blocking_industry_id:
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
                    ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
                  1, 40, input, this->mutable_blocking_industry_id())));
-        } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
-                   == ::google::protobuf::internal::WireFormatLite::
-                      WIRETYPE_LENGTH_DELIMITED) {
+        } else if (tag == 42) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
                    ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
                  input, this->mutable_blocking_industry_id())));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(40)) goto parse_blocking_industry_id;
         if (input->ExpectTag(50)) goto parse_natives;
@@ -1075,24 +1138,27 @@ bool BidRequest_Impression::MergePartialFromCodedStream(
 
       // repeated .protocol.gdt.adx.BidRequest.Impression.Native natives = 6;
       case 6: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 50) {
          parse_natives:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+          DO_(input->IncrementRecursionDepth());
+         parse_loop_natives:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
                 input, add_natives()));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectTag(50)) goto parse_natives;
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectTag(50)) goto parse_loop_natives;
+        input->UnsafeDecrementRecursionDepth();
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -1100,18 +1166,25 @@ bool BidRequest_Impression::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.gdt.adx.BidRequest.Impression)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.gdt.adx.BidRequest.Impression)
+  return false;
 #undef DO_
 }
 
 void BidRequest_Impression::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.gdt.adx.BidRequest.Impression)
   // optional string id = 1;
   if (has_id()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->id().data(), this->id().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidRequest.Impression.id");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->id(), output);
   }
 
@@ -1138,24 +1211,27 @@ void BidRequest_Impression::SerializeWithCachedSizes(
   }
 
   // repeated .protocol.gdt.adx.BidRequest.Impression.Native natives = 6;
-  for (int i = 0; i < this->natives_size(); i++) {
+  for (unsigned int i = 0, n = this->natives_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       6, this->natives(i), output);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:protocol.gdt.adx.BidRequest.Impression)
 }
 
-::google::protobuf::uint8* BidRequest_Impression::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* BidRequest_Impression::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.gdt.adx.BidRequest.Impression)
   // optional string id = 1;
   if (has_id()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->id().data(), this->id().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidRequest.Impression.id");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->id(), target);
@@ -1184,23 +1260,25 @@ void BidRequest_Impression::SerializeWithCachedSizes(
   }
 
   // repeated .protocol.gdt.adx.BidRequest.Impression.Native natives = 6;
-  for (int i = 0; i < this->natives_size(); i++) {
+  for (unsigned int i = 0, n = this->natives_size(); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteMessageNoVirtualToArray(
-        6, this->natives(i), target);
+      InternalWriteMessageNoVirtualToArray(
+        6, this->natives(i), false, target);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.gdt.adx.BidRequest.Impression)
   return target;
 }
 
 int BidRequest_Impression::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.gdt.adx.BidRequest.Impression)
   int total_size = 0;
 
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+  if (_has_bits_[0 / 32] & 11u) {
     // optional string id = 1;
     if (has_id()) {
       total_size += 1 +
@@ -1251,7 +1329,7 @@ int BidRequest_Impression::ByteSize() const {
         this->natives(i));
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         unknown_fields());
@@ -1263,25 +1341,34 @@ int BidRequest_Impression::ByteSize() const {
 }
 
 void BidRequest_Impression::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const BidRequest_Impression* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const BidRequest_Impression*>(
-      &from);
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.gdt.adx.BidRequest.Impression)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const BidRequest_Impression* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const BidRequest_Impression>(
+          &from);
   if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.gdt.adx.BidRequest.Impression)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.gdt.adx.BidRequest.Impression)
     MergeFrom(*source);
   }
 }
 
 void BidRequest_Impression::MergeFrom(const BidRequest_Impression& from) {
-  GOOGLE_CHECK_NE(&from, this);
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.gdt.adx.BidRequest.Impression)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
   creative_specs_.MergeFrom(from.creative_specs_);
   blocking_industry_id_.MergeFrom(from.blocking_industry_id_);
   natives_.MergeFrom(from.natives_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_id()) {
-      set_id(from.id());
+      set_has_id();
+      id_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.id_);
     }
     if (from.has_placement_id()) {
       set_placement_id(from.placement_id());
@@ -1290,16 +1377,20 @@ void BidRequest_Impression::MergeFrom(const BidRequest_Impression& from) {
       set_bid_floor(from.bid_floor());
     }
   }
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
 }
 
 void BidRequest_Impression::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.gdt.adx.BidRequest.Impression)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void BidRequest_Impression::CopyFrom(const BidRequest_Impression& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.gdt.adx.BidRequest.Impression)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -1311,17 +1402,19 @@ bool BidRequest_Impression::IsInitialized() const {
 }
 
 void BidRequest_Impression::Swap(BidRequest_Impression* other) {
-  if (other != this) {
-    std::swap(id_, other->id_);
-    std::swap(placement_id_, other->placement_id_);
-    creative_specs_.Swap(&other->creative_specs_);
-    std::swap(bid_floor_, other->bid_floor_);
-    blocking_industry_id_.Swap(&other->blocking_industry_id_);
-    natives_.Swap(&other->natives_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
+  if (other == this) return;
+  InternalSwap(other);
+}
+void BidRequest_Impression::InternalSwap(BidRequest_Impression* other) {
+  id_.Swap(&other->id_);
+  std::swap(placement_id_, other->placement_id_);
+  creative_specs_.UnsafeArenaSwap(&other->creative_specs_);
+  std::swap(bid_floor_, other->bid_floor_);
+  blocking_industry_id_.UnsafeArenaSwap(&other->blocking_industry_id_);
+  natives_.UnsafeArenaSwap(&other->natives_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata BidRequest_Impression::GetMetadata() const {
@@ -1335,7 +1428,7 @@ void BidRequest_Impression::Swap(BidRequest_Impression* other) {
 
 // -------------------------------------------------------------------
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int BidRequest_Device::kIdFieldNumber;
 const int BidRequest_Device::kDeviceTypeFieldNumber;
 const int BidRequest_Device::kOsFieldNumber;
@@ -1348,59 +1441,54 @@ const int BidRequest_Device::kCarrierFieldNumber;
 const int BidRequest_Device::kConnectionTypeFieldNumber;
 const int BidRequest_Device::kBrandAndModelFieldNumber;
 const int BidRequest_Device::kLanguageFieldNumber;
-#endif  // !_MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 BidRequest_Device::BidRequest_Device()
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.gdt.adx.BidRequest.Device)
 }
 
 void BidRequest_Device::InitAsDefaultInstance() {
 }
 
 BidRequest_Device::BidRequest_Device(const BidRequest_Device& from)
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.gdt.adx.BidRequest.Device)
 }
 
 void BidRequest_Device::SharedCtor() {
+  ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  id_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   device_type_ = 0;
   os_ = 0;
-  os_version_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  user_agent_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  os_version_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  user_agent_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   screen_width_ = 0;
   screen_height_ = 0;
   dpi_ = 0;
   carrier_ = 0;
   connection_type_ = 0;
-  brand_and_model_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  language_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  brand_and_model_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  language_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
 BidRequest_Device::~BidRequest_Device() {
+  // @@protoc_insertion_point(destructor:protocol.gdt.adx.BidRequest.Device)
   SharedDtor();
 }
 
 void BidRequest_Device::SharedDtor() {
-  if (id_ != &::google::protobuf::internal::kEmptyString) {
-    delete id_;
-  }
-  if (os_version_ != &::google::protobuf::internal::kEmptyString) {
-    delete os_version_;
-  }
-  if (user_agent_ != &::google::protobuf::internal::kEmptyString) {
-    delete user_agent_;
-  }
-  if (brand_and_model_ != &::google::protobuf::internal::kEmptyString) {
-    delete brand_and_model_;
-  }
-  if (language_ != &::google::protobuf::internal::kEmptyString) {
-    delete language_;
-  }
+  id_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  os_version_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  user_agent_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  brand_and_model_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  language_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
 }
@@ -1422,68 +1510,86 @@ const BidRequest_Device& BidRequest_Device::default_instance() {
 
 BidRequest_Device* BidRequest_Device::default_instance_ = NULL;
 
-BidRequest_Device* BidRequest_Device::New() const {
-  return new BidRequest_Device;
+BidRequest_Device* BidRequest_Device::New(::google::protobuf::Arena* arena) const {
+  BidRequest_Device* n = new BidRequest_Device;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
 }
 
 void BidRequest_Device::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+// @@protoc_insertion_point(message_clear_start:protocol.gdt.adx.BidRequest.Device)
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(BidRequest_Device, f) \
+  _Pragma("clang diagnostic pop")
+#else
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<BidRequest_Device*>(16)->f)
+#endif
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  if (_has_bits_[0 / 32] & 255u) {
+    ZR_(device_type_, os_);
+    ZR_(screen_width_, dpi_);
     if (has_id()) {
-      if (id_ != &::google::protobuf::internal::kEmptyString) {
-        id_->clear();
-      }
+      id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
-    device_type_ = 0;
-    os_ = 0;
     if (has_os_version()) {
-      if (os_version_ != &::google::protobuf::internal::kEmptyString) {
-        os_version_->clear();
-      }
+      os_version_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
     if (has_user_agent()) {
-      if (user_agent_ != &::google::protobuf::internal::kEmptyString) {
-        user_agent_->clear();
-      }
+      user_agent_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
-    screen_width_ = 0;
-    screen_height_ = 0;
-    dpi_ = 0;
   }
-  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+  if (_has_bits_[8 / 32] & 3840u) {
     carrier_ = 0;
     connection_type_ = 0;
     if (has_brand_and_model()) {
-      if (brand_and_model_ != &::google::protobuf::internal::kEmptyString) {
-        brand_and_model_->clear();
-      }
+      brand_and_model_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
     if (has_language()) {
-      if (language_ != &::google::protobuf::internal::kEmptyString) {
-        language_->clear();
-      }
+      language_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
   }
+
+#undef ZR_HELPER_
+#undef ZR_
+
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
 }
 
 bool BidRequest_Device::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:protocol.gdt.adx.BidRequest.Device)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // optional string id = 1;
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 10) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_id()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
             this->id().data(), this->id().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "protocol.gdt.adx.BidRequest.Device.id");
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(16)) goto parse_device_type;
         break;
@@ -1491,8 +1597,7 @@ bool BidRequest_Device::MergePartialFromCodedStream(
 
       // optional .protocol.gdt.adx.BidRequest.DeviceType device_type = 2;
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 16) {
          parse_device_type:
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
@@ -1504,7 +1609,7 @@ bool BidRequest_Device::MergePartialFromCodedStream(
             mutable_unknown_fields()->AddVarint(2, value);
           }
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(24)) goto parse_os;
         break;
@@ -1512,8 +1617,7 @@ bool BidRequest_Device::MergePartialFromCodedStream(
 
       // optional .protocol.gdt.adx.BidRequest.OperatingSystem os = 3;
       case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 24) {
          parse_os:
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
@@ -1525,7 +1629,7 @@ bool BidRequest_Device::MergePartialFromCodedStream(
             mutable_unknown_fields()->AddVarint(3, value);
           }
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(34)) goto parse_os_version;
         break;
@@ -1533,16 +1637,16 @@ bool BidRequest_Device::MergePartialFromCodedStream(
 
       // optional string os_version = 4;
       case 4: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 34) {
          parse_os_version:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_os_version()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
             this->os_version().data(), this->os_version().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "protocol.gdt.adx.BidRequest.Device.os_version");
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(42)) goto parse_user_agent;
         break;
@@ -1550,16 +1654,16 @@ bool BidRequest_Device::MergePartialFromCodedStream(
 
       // optional string user_agent = 5;
       case 5: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 42) {
          parse_user_agent:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_user_agent()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
             this->user_agent().data(), this->user_agent().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "protocol.gdt.adx.BidRequest.Device.user_agent");
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(48)) goto parse_screen_width;
         break;
@@ -1567,15 +1671,14 @@ bool BidRequest_Device::MergePartialFromCodedStream(
 
       // optional int32 screen_width = 6;
       case 6: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 48) {
          parse_screen_width:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &screen_width_)));
           set_has_screen_width();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(56)) goto parse_screen_height;
         break;
@@ -1583,15 +1686,14 @@ bool BidRequest_Device::MergePartialFromCodedStream(
 
       // optional int32 screen_height = 7;
       case 7: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 56) {
          parse_screen_height:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &screen_height_)));
           set_has_screen_height();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(64)) goto parse_dpi;
         break;
@@ -1599,15 +1701,14 @@ bool BidRequest_Device::MergePartialFromCodedStream(
 
       // optional int32 dpi = 8;
       case 8: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 64) {
          parse_dpi:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &dpi_)));
           set_has_dpi();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(72)) goto parse_carrier;
         break;
@@ -1615,8 +1716,7 @@ bool BidRequest_Device::MergePartialFromCodedStream(
 
       // optional .protocol.gdt.adx.BidRequest.Carrier carrier = 9;
       case 9: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 72) {
          parse_carrier:
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
@@ -1628,7 +1728,7 @@ bool BidRequest_Device::MergePartialFromCodedStream(
             mutable_unknown_fields()->AddVarint(9, value);
           }
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(80)) goto parse_connection_type;
         break;
@@ -1636,8 +1736,7 @@ bool BidRequest_Device::MergePartialFromCodedStream(
 
       // optional .protocol.gdt.adx.BidRequest.ConnectionType connection_type = 10;
       case 10: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 80) {
          parse_connection_type:
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
@@ -1649,7 +1748,7 @@ bool BidRequest_Device::MergePartialFromCodedStream(
             mutable_unknown_fields()->AddVarint(10, value);
           }
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(90)) goto parse_brand_and_model;
         break;
@@ -1657,16 +1756,16 @@ bool BidRequest_Device::MergePartialFromCodedStream(
 
       // optional string brand_and_model = 11;
       case 11: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 90) {
          parse_brand_and_model:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_brand_and_model()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
             this->brand_and_model().data(), this->brand_and_model().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "protocol.gdt.adx.BidRequest.Device.brand_and_model");
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(98)) goto parse_language;
         break;
@@ -1674,26 +1773,27 @@ bool BidRequest_Device::MergePartialFromCodedStream(
 
       // optional string language = 12;
       case 12: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 98) {
          parse_language:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_language()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
             this->language().data(), this->language().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "protocol.gdt.adx.BidRequest.Device.language");
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -1701,18 +1801,25 @@ bool BidRequest_Device::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.gdt.adx.BidRequest.Device)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.gdt.adx.BidRequest.Device)
+  return false;
 #undef DO_
 }
 
 void BidRequest_Device::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.gdt.adx.BidRequest.Device)
   // optional string id = 1;
   if (has_id()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->id().data(), this->id().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidRequest.Device.id");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->id(), output);
   }
 
@@ -1730,19 +1837,21 @@ void BidRequest_Device::SerializeWithCachedSizes(
 
   // optional string os_version = 4;
   if (has_os_version()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->os_version().data(), this->os_version().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidRequest.Device.os_version");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       4, this->os_version(), output);
   }
 
   // optional string user_agent = 5;
   if (has_user_agent()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->user_agent().data(), this->user_agent().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidRequest.Device.user_agent");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       5, this->user_agent(), output);
   }
 
@@ -1775,35 +1884,40 @@ void BidRequest_Device::SerializeWithCachedSizes(
 
   // optional string brand_and_model = 11;
   if (has_brand_and_model()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->brand_and_model().data(), this->brand_and_model().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidRequest.Device.brand_and_model");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       11, this->brand_and_model(), output);
   }
 
   // optional string language = 12;
   if (has_language()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->language().data(), this->language().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidRequest.Device.language");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       12, this->language(), output);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:protocol.gdt.adx.BidRequest.Device)
 }
 
-::google::protobuf::uint8* BidRequest_Device::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* BidRequest_Device::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.gdt.adx.BidRequest.Device)
   // optional string id = 1;
   if (has_id()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->id().data(), this->id().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidRequest.Device.id");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->id(), target);
@@ -1823,9 +1937,10 @@ void BidRequest_Device::SerializeWithCachedSizes(
 
   // optional string os_version = 4;
   if (has_os_version()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->os_version().data(), this->os_version().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidRequest.Device.os_version");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         4, this->os_version(), target);
@@ -1833,9 +1948,10 @@ void BidRequest_Device::SerializeWithCachedSizes(
 
   // optional string user_agent = 5;
   if (has_user_agent()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->user_agent().data(), this->user_agent().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidRequest.Device.user_agent");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         5, this->user_agent(), target);
@@ -1870,9 +1986,10 @@ void BidRequest_Device::SerializeWithCachedSizes(
 
   // optional string brand_and_model = 11;
   if (has_brand_and_model()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->brand_and_model().data(), this->brand_and_model().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidRequest.Device.brand_and_model");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         11, this->brand_and_model(), target);
@@ -1880,25 +1997,28 @@ void BidRequest_Device::SerializeWithCachedSizes(
 
   // optional string language = 12;
   if (has_language()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->language().data(), this->language().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidRequest.Device.language");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         12, this->language(), target);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.gdt.adx.BidRequest.Device)
   return target;
 }
 
 int BidRequest_Device::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.gdt.adx.BidRequest.Device)
   int total_size = 0;
 
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+  if (_has_bits_[0 / 32] & 255u) {
     // optional string id = 1;
     if (has_id()) {
       total_size += 1 +
@@ -1954,7 +2074,7 @@ int BidRequest_Device::ByteSize() const {
     }
 
   }
-  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+  if (_has_bits_[8 / 32] & 3840u) {
     // optional .protocol.gdt.adx.BidRequest.Carrier carrier = 9;
     if (has_carrier()) {
       total_size += 1 +
@@ -1982,7 +2102,7 @@ int BidRequest_Device::ByteSize() const {
     }
 
   }
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         unknown_fields());
@@ -1994,22 +2114,31 @@ int BidRequest_Device::ByteSize() const {
 }
 
 void BidRequest_Device::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const BidRequest_Device* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const BidRequest_Device*>(
-      &from);
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.gdt.adx.BidRequest.Device)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const BidRequest_Device* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const BidRequest_Device>(
+          &from);
   if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.gdt.adx.BidRequest.Device)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.gdt.adx.BidRequest.Device)
     MergeFrom(*source);
   }
 }
 
 void BidRequest_Device::MergeFrom(const BidRequest_Device& from) {
-  GOOGLE_CHECK_NE(&from, this);
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.gdt.adx.BidRequest.Device)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_id()) {
-      set_id(from.id());
+      set_has_id();
+      id_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.id_);
     }
     if (from.has_device_type()) {
       set_device_type(from.device_type());
@@ -2018,10 +2147,12 @@ void BidRequest_Device::MergeFrom(const BidRequest_Device& from) {
       set_os(from.os());
     }
     if (from.has_os_version()) {
-      set_os_version(from.os_version());
+      set_has_os_version();
+      os_version_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.os_version_);
     }
     if (from.has_user_agent()) {
-      set_user_agent(from.user_agent());
+      set_has_user_agent();
+      user_agent_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.user_agent_);
     }
     if (from.has_screen_width()) {
       set_screen_width(from.screen_width());
@@ -2041,22 +2172,28 @@ void BidRequest_Device::MergeFrom(const BidRequest_Device& from) {
       set_connection_type(from.connection_type());
     }
     if (from.has_brand_and_model()) {
-      set_brand_and_model(from.brand_and_model());
+      set_has_brand_and_model();
+      brand_and_model_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.brand_and_model_);
     }
     if (from.has_language()) {
-      set_language(from.language());
+      set_has_language();
+      language_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.language_);
     }
   }
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
 }
 
 void BidRequest_Device::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.gdt.adx.BidRequest.Device)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void BidRequest_Device::CopyFrom(const BidRequest_Device& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.gdt.adx.BidRequest.Device)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -2068,23 +2205,25 @@ bool BidRequest_Device::IsInitialized() const {
 }
 
 void BidRequest_Device::Swap(BidRequest_Device* other) {
-  if (other != this) {
-    std::swap(id_, other->id_);
-    std::swap(device_type_, other->device_type_);
-    std::swap(os_, other->os_);
-    std::swap(os_version_, other->os_version_);
-    std::swap(user_agent_, other->user_agent_);
-    std::swap(screen_width_, other->screen_width_);
-    std::swap(screen_height_, other->screen_height_);
-    std::swap(dpi_, other->dpi_);
-    std::swap(carrier_, other->carrier_);
-    std::swap(connection_type_, other->connection_type_);
-    std::swap(brand_and_model_, other->brand_and_model_);
-    std::swap(language_, other->language_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
+  if (other == this) return;
+  InternalSwap(other);
+}
+void BidRequest_Device::InternalSwap(BidRequest_Device* other) {
+  id_.Swap(&other->id_);
+  std::swap(device_type_, other->device_type_);
+  std::swap(os_, other->os_);
+  os_version_.Swap(&other->os_version_);
+  user_agent_.Swap(&other->user_agent_);
+  std::swap(screen_width_, other->screen_width_);
+  std::swap(screen_height_, other->screen_height_);
+  std::swap(dpi_, other->dpi_);
+  std::swap(carrier_, other->carrier_);
+  std::swap(connection_type_, other->connection_type_);
+  brand_and_model_.Swap(&other->brand_and_model_);
+  language_.Swap(&other->language_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata BidRequest_Device::GetMetadata() const {
@@ -2113,14 +2252,14 @@ bool BidRequest_User_Demographic_Gender_IsValid(int value) {
   }
 }
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const BidRequest_User_Demographic_Gender BidRequest_User_Demographic::GENDER_UNKNOWN;
 const BidRequest_User_Demographic_Gender BidRequest_User_Demographic::GENDER_MALE;
 const BidRequest_User_Demographic_Gender BidRequest_User_Demographic::GENDER_FEMALE;
 const BidRequest_User_Demographic_Gender BidRequest_User_Demographic::Gender_MIN;
 const BidRequest_User_Demographic_Gender BidRequest_User_Demographic::Gender_MAX;
 const int BidRequest_User_Demographic::Gender_ARRAYSIZE;
-#endif  // _MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 const ::google::protobuf::EnumDescriptor* BidRequest_User_Demographic_Education_descriptor() {
   protobuf_AssignDescriptorsOnce();
   return BidRequest_User_Demographic_Education_descriptor_;
@@ -2140,7 +2279,7 @@ bool BidRequest_User_Demographic_Education_IsValid(int value) {
   }
 }
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const BidRequest_User_Demographic_Education BidRequest_User_Demographic::EDUCATION_UNKNOWN;
 const BidRequest_User_Demographic_Education BidRequest_User_Demographic::EDUCATION_DOCTOR;
 const BidRequest_User_Demographic_Education BidRequest_User_Demographic::EDUCATION_MASTER;
@@ -2151,26 +2290,29 @@ const BidRequest_User_Demographic_Education BidRequest_User_Demographic::EDUCATI
 const BidRequest_User_Demographic_Education BidRequest_User_Demographic::Education_MIN;
 const BidRequest_User_Demographic_Education BidRequest_User_Demographic::Education_MAX;
 const int BidRequest_User_Demographic::Education_ARRAYSIZE;
-#endif  // _MSC_VER
-#ifndef _MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int BidRequest_User_Demographic::kGenderFieldNumber;
 const int BidRequest_User_Demographic::kEducationFieldNumber;
 const int BidRequest_User_Demographic::kAgeLowFieldNumber;
 const int BidRequest_User_Demographic::kAgeHighFieldNumber;
-#endif  // !_MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 BidRequest_User_Demographic::BidRequest_User_Demographic()
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.gdt.adx.BidRequest.User.Demographic)
 }
 
 void BidRequest_User_Demographic::InitAsDefaultInstance() {
 }
 
 BidRequest_User_Demographic::BidRequest_User_Demographic(const BidRequest_User_Demographic& from)
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.gdt.adx.BidRequest.User.Demographic)
 }
 
 void BidRequest_User_Demographic::SharedCtor() {
@@ -2183,6 +2325,7 @@ void BidRequest_User_Demographic::SharedCtor() {
 }
 
 BidRequest_User_Demographic::~BidRequest_User_Demographic() {
+  // @@protoc_insertion_point(destructor:protocol.gdt.adx.BidRequest.User.Demographic)
   SharedDtor();
 }
 
@@ -2208,31 +2351,59 @@ const BidRequest_User_Demographic& BidRequest_User_Demographic::default_instance
 
 BidRequest_User_Demographic* BidRequest_User_Demographic::default_instance_ = NULL;
 
-BidRequest_User_Demographic* BidRequest_User_Demographic::New() const {
-  return new BidRequest_User_Demographic;
+BidRequest_User_Demographic* BidRequest_User_Demographic::New(::google::protobuf::Arena* arena) const {
+  BidRequest_User_Demographic* n = new BidRequest_User_Demographic;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
 }
 
 void BidRequest_User_Demographic::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    gender_ = 0;
-    education_ = 0;
-    age_low_ = 0;
+// @@protoc_insertion_point(message_clear_start:protocol.gdt.adx.BidRequest.User.Demographic)
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(BidRequest_User_Demographic, f) \
+  _Pragma("clang diagnostic pop")
+#else
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<BidRequest_User_Demographic*>(16)->f)
+#endif
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  if (_has_bits_[0 / 32] & 15u) {
+    ZR_(gender_, age_low_);
     age_high_ = 999;
   }
+
+#undef ZR_HELPER_
+#undef ZR_
+
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
 }
 
 bool BidRequest_User_Demographic::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:protocol.gdt.adx.BidRequest.User.Demographic)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // optional .protocol.gdt.adx.BidRequest.User.Demographic.Gender gender = 1 [default = GENDER_UNKNOWN];
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 8) {
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
@@ -2243,7 +2414,7 @@ bool BidRequest_User_Demographic::MergePartialFromCodedStream(
             mutable_unknown_fields()->AddVarint(1, value);
           }
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(16)) goto parse_education;
         break;
@@ -2251,8 +2422,7 @@ bool BidRequest_User_Demographic::MergePartialFromCodedStream(
 
       // optional .protocol.gdt.adx.BidRequest.User.Demographic.Education education = 2 [default = EDUCATION_UNKNOWN];
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 16) {
          parse_education:
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
@@ -2264,7 +2434,7 @@ bool BidRequest_User_Demographic::MergePartialFromCodedStream(
             mutable_unknown_fields()->AddVarint(2, value);
           }
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(24)) goto parse_age_low;
         break;
@@ -2272,15 +2442,14 @@ bool BidRequest_User_Demographic::MergePartialFromCodedStream(
 
       // optional int32 age_low = 3 [default = 0];
       case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 24) {
          parse_age_low:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &age_low_)));
           set_has_age_low();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(32)) goto parse_age_high;
         break;
@@ -2288,25 +2457,25 @@ bool BidRequest_User_Demographic::MergePartialFromCodedStream(
 
       // optional int32 age_high = 4 [default = 999];
       case 4: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 32) {
          parse_age_high:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &age_high_)));
           set_has_age_high();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -2314,12 +2483,18 @@ bool BidRequest_User_Demographic::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.gdt.adx.BidRequest.User.Demographic)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.gdt.adx.BidRequest.User.Demographic)
+  return false;
 #undef DO_
 }
 
 void BidRequest_User_Demographic::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.gdt.adx.BidRequest.User.Demographic)
   // optional .protocol.gdt.adx.BidRequest.User.Demographic.Gender gender = 1 [default = GENDER_UNKNOWN];
   if (has_gender()) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
@@ -2342,14 +2517,16 @@ void BidRequest_User_Demographic::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->age_high(), output);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:protocol.gdt.adx.BidRequest.User.Demographic)
 }
 
-::google::protobuf::uint8* BidRequest_User_Demographic::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* BidRequest_User_Demographic::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.gdt.adx.BidRequest.User.Demographic)
   // optional .protocol.gdt.adx.BidRequest.User.Demographic.Gender gender = 1 [default = GENDER_UNKNOWN];
   if (has_gender()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
@@ -2372,17 +2549,19 @@ void BidRequest_User_Demographic::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->age_high(), target);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.gdt.adx.BidRequest.User.Demographic)
   return target;
 }
 
 int BidRequest_User_Demographic::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.gdt.adx.BidRequest.User.Demographic)
   int total_size = 0;
 
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+  if (_has_bits_[0 / 32] & 15u) {
     // optional .protocol.gdt.adx.BidRequest.User.Demographic.Gender gender = 1 [default = GENDER_UNKNOWN];
     if (has_gender()) {
       total_size += 1 +
@@ -2410,7 +2589,7 @@ int BidRequest_User_Demographic::ByteSize() const {
     }
 
   }
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         unknown_fields());
@@ -2422,19 +2601,27 @@ int BidRequest_User_Demographic::ByteSize() const {
 }
 
 void BidRequest_User_Demographic::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const BidRequest_User_Demographic* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const BidRequest_User_Demographic*>(
-      &from);
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.gdt.adx.BidRequest.User.Demographic)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const BidRequest_User_Demographic* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const BidRequest_User_Demographic>(
+          &from);
   if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.gdt.adx.BidRequest.User.Demographic)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.gdt.adx.BidRequest.User.Demographic)
     MergeFrom(*source);
   }
 }
 
 void BidRequest_User_Demographic::MergeFrom(const BidRequest_User_Demographic& from) {
-  GOOGLE_CHECK_NE(&from, this);
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.gdt.adx.BidRequest.User.Demographic)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_gender()) {
       set_gender(from.gender());
@@ -2449,16 +2636,20 @@ void BidRequest_User_Demographic::MergeFrom(const BidRequest_User_Demographic& f
       set_age_high(from.age_high());
     }
   }
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
 }
 
 void BidRequest_User_Demographic::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.gdt.adx.BidRequest.User.Demographic)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void BidRequest_User_Demographic::CopyFrom(const BidRequest_User_Demographic& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.gdt.adx.BidRequest.User.Demographic)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -2470,15 +2661,17 @@ bool BidRequest_User_Demographic::IsInitialized() const {
 }
 
 void BidRequest_User_Demographic::Swap(BidRequest_User_Demographic* other) {
-  if (other != this) {
-    std::swap(gender_, other->gender_);
-    std::swap(education_, other->education_);
-    std::swap(age_low_, other->age_low_);
-    std::swap(age_high_, other->age_high_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
+  if (other == this) return;
+  InternalSwap(other);
+}
+void BidRequest_User_Demographic::InternalSwap(BidRequest_User_Demographic* other) {
+  std::swap(gender_, other->gender_);
+  std::swap(education_, other->education_);
+  std::swap(age_low_, other->age_low_);
+  std::swap(age_high_, other->age_high_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata BidRequest_User_Demographic::GetMetadata() const {
@@ -2492,23 +2685,26 @@ void BidRequest_User_Demographic::Swap(BidRequest_User_Demographic* other) {
 
 // -------------------------------------------------------------------
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int BidRequest_User_Vertical::kIdFieldNumber;
 const int BidRequest_User_Vertical::kWeightFieldNumber;
-#endif  // !_MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 BidRequest_User_Vertical::BidRequest_User_Vertical()
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.gdt.adx.BidRequest.User.Vertical)
 }
 
 void BidRequest_User_Vertical::InitAsDefaultInstance() {
 }
 
 BidRequest_User_Vertical::BidRequest_User_Vertical(const BidRequest_User_Vertical& from)
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.gdt.adx.BidRequest.User.Vertical)
 }
 
 void BidRequest_User_Vertical::SharedCtor() {
@@ -2519,6 +2715,7 @@ void BidRequest_User_Vertical::SharedCtor() {
 }
 
 BidRequest_User_Vertical::~BidRequest_User_Vertical() {
+  // @@protoc_insertion_point(destructor:protocol.gdt.adx.BidRequest.User.Vertical)
   SharedDtor();
 }
 
@@ -2544,35 +2741,62 @@ const BidRequest_User_Vertical& BidRequest_User_Vertical::default_instance() {
 
 BidRequest_User_Vertical* BidRequest_User_Vertical::default_instance_ = NULL;
 
-BidRequest_User_Vertical* BidRequest_User_Vertical::New() const {
-  return new BidRequest_User_Vertical;
+BidRequest_User_Vertical* BidRequest_User_Vertical::New(::google::protobuf::Arena* arena) const {
+  BidRequest_User_Vertical* n = new BidRequest_User_Vertical;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
 }
 
 void BidRequest_User_Vertical::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    id_ = 0u;
-    weight_ = 0;
-  }
+// @@protoc_insertion_point(message_clear_start:protocol.gdt.adx.BidRequest.User.Vertical)
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(BidRequest_User_Vertical, f) \
+  _Pragma("clang diagnostic pop")
+#else
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<BidRequest_User_Vertical*>(16)->f)
+#endif
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  ZR_(id_, weight_);
+
+#undef ZR_HELPER_
+#undef ZR_
+
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
 }
 
 bool BidRequest_User_Vertical::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:protocol.gdt.adx.BidRequest.User.Vertical)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // optional uint32 id = 1;
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 8) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
                  input, &id_)));
           set_has_id();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(21)) goto parse_weight;
         break;
@@ -2580,25 +2804,25 @@ bool BidRequest_User_Vertical::MergePartialFromCodedStream(
 
       // optional float weight = 2;
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
+        if (tag == 21) {
          parse_weight:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
                  input, &weight_)));
           set_has_weight();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -2606,12 +2830,18 @@ bool BidRequest_User_Vertical::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.gdt.adx.BidRequest.User.Vertical)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.gdt.adx.BidRequest.User.Vertical)
+  return false;
 #undef DO_
 }
 
 void BidRequest_User_Vertical::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.gdt.adx.BidRequest.User.Vertical)
   // optional uint32 id = 1;
   if (has_id()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->id(), output);
@@ -2622,14 +2852,16 @@ void BidRequest_User_Vertical::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->weight(), output);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:protocol.gdt.adx.BidRequest.User.Vertical)
 }
 
-::google::protobuf::uint8* BidRequest_User_Vertical::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* BidRequest_User_Vertical::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.gdt.adx.BidRequest.User.Vertical)
   // optional uint32 id = 1;
   if (has_id()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->id(), target);
@@ -2640,17 +2872,19 @@ void BidRequest_User_Vertical::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->weight(), target);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.gdt.adx.BidRequest.User.Vertical)
   return target;
 }
 
 int BidRequest_User_Vertical::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.gdt.adx.BidRequest.User.Vertical)
   int total_size = 0;
 
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+  if (_has_bits_[0 / 32] & 3u) {
     // optional uint32 id = 1;
     if (has_id()) {
       total_size += 1 +
@@ -2664,7 +2898,7 @@ int BidRequest_User_Vertical::ByteSize() const {
     }
 
   }
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         unknown_fields());
@@ -2676,19 +2910,27 @@ int BidRequest_User_Vertical::ByteSize() const {
 }
 
 void BidRequest_User_Vertical::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const BidRequest_User_Vertical* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const BidRequest_User_Vertical*>(
-      &from);
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.gdt.adx.BidRequest.User.Vertical)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const BidRequest_User_Vertical* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const BidRequest_User_Vertical>(
+          &from);
   if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.gdt.adx.BidRequest.User.Vertical)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.gdt.adx.BidRequest.User.Vertical)
     MergeFrom(*source);
   }
 }
 
 void BidRequest_User_Vertical::MergeFrom(const BidRequest_User_Vertical& from) {
-  GOOGLE_CHECK_NE(&from, this);
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.gdt.adx.BidRequest.User.Vertical)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_id()) {
       set_id(from.id());
@@ -2697,16 +2939,20 @@ void BidRequest_User_Vertical::MergeFrom(const BidRequest_User_Vertical& from) {
       set_weight(from.weight());
     }
   }
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
 }
 
 void BidRequest_User_Vertical::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.gdt.adx.BidRequest.User.Vertical)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void BidRequest_User_Vertical::CopyFrom(const BidRequest_User_Vertical& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.gdt.adx.BidRequest.User.Vertical)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -2718,13 +2964,15 @@ bool BidRequest_User_Vertical::IsInitialized() const {
 }
 
 void BidRequest_User_Vertical::Swap(BidRequest_User_Vertical* other) {
-  if (other != this) {
-    std::swap(id_, other->id_);
-    std::swap(weight_, other->weight_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
+  if (other == this) return;
+  InternalSwap(other);
+}
+void BidRequest_User_Vertical::InternalSwap(BidRequest_User_Vertical* other) {
+  std::swap(id_, other->id_);
+  std::swap(weight_, other->weight_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata BidRequest_User_Vertical::GetMetadata() const {
@@ -2738,15 +2986,16 @@ void BidRequest_User_Vertical::Swap(BidRequest_User_Vertical* other) {
 
 // -------------------------------------------------------------------
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int BidRequest_User::kIdFieldNumber;
 const int BidRequest_User::kUserDemographicFieldNumber;
 const int BidRequest_User::kVerticalsFieldNumber;
-#endif  // !_MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 BidRequest_User::BidRequest_User()
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.gdt.adx.BidRequest.User)
 }
 
 void BidRequest_User::InitAsDefaultInstance() {
@@ -2754,26 +3003,28 @@ void BidRequest_User::InitAsDefaultInstance() {
 }
 
 BidRequest_User::BidRequest_User(const BidRequest_User& from)
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.gdt.adx.BidRequest.User)
 }
 
 void BidRequest_User::SharedCtor() {
+  ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  id_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   user_demographic_ = NULL;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
 BidRequest_User::~BidRequest_User() {
+  // @@protoc_insertion_point(destructor:protocol.gdt.adx.BidRequest.User)
   SharedDtor();
 }
 
 void BidRequest_User::SharedDtor() {
-  if (id_ != &::google::protobuf::internal::kEmptyString) {
-    delete id_;
-  }
+  id_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
     delete user_demographic_;
   }
@@ -2796,16 +3047,19 @@ const BidRequest_User& BidRequest_User::default_instance() {
 
 BidRequest_User* BidRequest_User::default_instance_ = NULL;
 
-BidRequest_User* BidRequest_User::New() const {
-  return new BidRequest_User;
+BidRequest_User* BidRequest_User::New(::google::protobuf::Arena* arena) const {
+  BidRequest_User* n = new BidRequest_User;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
 }
 
 void BidRequest_User::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+// @@protoc_insertion_point(message_clear_start:protocol.gdt.adx.BidRequest.User)
+  if (_has_bits_[0 / 32] & 3u) {
     if (has_id()) {
-      if (id_ != &::google::protobuf::internal::kEmptyString) {
-        id_->clear();
-      }
+      id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
     if (has_user_demographic()) {
       if (user_demographic_ != NULL) user_demographic_->::protocol::gdt::adx::BidRequest_User_Demographic::Clear();
@@ -2813,26 +3067,32 @@ void BidRequest_User::Clear() {
   }
   verticals_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
 }
 
 bool BidRequest_User::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:protocol.gdt.adx.BidRequest.User)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // optional string id = 1;
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 10) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_id()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
             this->id().data(), this->id().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "protocol.gdt.adx.BidRequest.User.id");
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(18)) goto parse_user_demographic;
         break;
@@ -2840,13 +3100,12 @@ bool BidRequest_User::MergePartialFromCodedStream(
 
       // optional .protocol.gdt.adx.BidRequest.User.Demographic user_demographic = 2;
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 18) {
          parse_user_demographic:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_user_demographic()));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(26)) goto parse_verticals;
         break;
@@ -2854,24 +3113,27 @@ bool BidRequest_User::MergePartialFromCodedStream(
 
       // repeated .protocol.gdt.adx.BidRequest.User.Vertical verticals = 3;
       case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 26) {
          parse_verticals:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+          DO_(input->IncrementRecursionDepth());
+         parse_loop_verticals:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
                 input, add_verticals()));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectTag(26)) goto parse_verticals;
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectTag(26)) goto parse_loop_verticals;
+        input->UnsafeDecrementRecursionDepth();
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -2879,46 +3141,56 @@ bool BidRequest_User::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.gdt.adx.BidRequest.User)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.gdt.adx.BidRequest.User)
+  return false;
 #undef DO_
 }
 
 void BidRequest_User::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.gdt.adx.BidRequest.User)
   // optional string id = 1;
   if (has_id()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->id().data(), this->id().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidRequest.User.id");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->id(), output);
   }
 
   // optional .protocol.gdt.adx.BidRequest.User.Demographic user_demographic = 2;
   if (has_user_demographic()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      2, this->user_demographic(), output);
+      2, *this->user_demographic_, output);
   }
 
   // repeated .protocol.gdt.adx.BidRequest.User.Vertical verticals = 3;
-  for (int i = 0; i < this->verticals_size(); i++) {
+  for (unsigned int i = 0, n = this->verticals_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       3, this->verticals(i), output);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:protocol.gdt.adx.BidRequest.User)
 }
 
-::google::protobuf::uint8* BidRequest_User::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* BidRequest_User::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.gdt.adx.BidRequest.User)
   // optional string id = 1;
   if (has_id()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->id().data(), this->id().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidRequest.User.id");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->id(), target);
@@ -2927,28 +3199,30 @@ void BidRequest_User::SerializeWithCachedSizes(
   // optional .protocol.gdt.adx.BidRequest.User.Demographic user_demographic = 2;
   if (has_user_demographic()) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteMessageNoVirtualToArray(
-        2, this->user_demographic(), target);
+      InternalWriteMessageNoVirtualToArray(
+        2, *this->user_demographic_, false, target);
   }
 
   // repeated .protocol.gdt.adx.BidRequest.User.Vertical verticals = 3;
-  for (int i = 0; i < this->verticals_size(); i++) {
+  for (unsigned int i = 0, n = this->verticals_size(); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteMessageNoVirtualToArray(
-        3, this->verticals(i), target);
+      InternalWriteMessageNoVirtualToArray(
+        3, this->verticals(i), false, target);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.gdt.adx.BidRequest.User)
   return target;
 }
 
 int BidRequest_User::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.gdt.adx.BidRequest.User)
   int total_size = 0;
 
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+  if (_has_bits_[0 / 32] & 3u) {
     // optional string id = 1;
     if (has_id()) {
       total_size += 1 +
@@ -2960,7 +3234,7 @@ int BidRequest_User::ByteSize() const {
     if (has_user_demographic()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          this->user_demographic());
+          *this->user_demographic_);
     }
 
   }
@@ -2972,7 +3246,7 @@ int BidRequest_User::ByteSize() const {
         this->verticals(i));
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         unknown_fields());
@@ -2984,38 +3258,51 @@ int BidRequest_User::ByteSize() const {
 }
 
 void BidRequest_User::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const BidRequest_User* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const BidRequest_User*>(
-      &from);
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.gdt.adx.BidRequest.User)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const BidRequest_User* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const BidRequest_User>(
+          &from);
   if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.gdt.adx.BidRequest.User)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.gdt.adx.BidRequest.User)
     MergeFrom(*source);
   }
 }
 
 void BidRequest_User::MergeFrom(const BidRequest_User& from) {
-  GOOGLE_CHECK_NE(&from, this);
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.gdt.adx.BidRequest.User)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
   verticals_.MergeFrom(from.verticals_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_id()) {
-      set_id(from.id());
+      set_has_id();
+      id_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.id_);
     }
     if (from.has_user_demographic()) {
       mutable_user_demographic()->::protocol::gdt::adx::BidRequest_User_Demographic::MergeFrom(from.user_demographic());
     }
   }
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
 }
 
 void BidRequest_User::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.gdt.adx.BidRequest.User)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void BidRequest_User::CopyFrom(const BidRequest_User& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.gdt.adx.BidRequest.User)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -3027,14 +3314,16 @@ bool BidRequest_User::IsInitialized() const {
 }
 
 void BidRequest_User::Swap(BidRequest_User* other) {
-  if (other != this) {
-    std::swap(id_, other->id_);
-    std::swap(user_demographic_, other->user_demographic_);
-    verticals_.Swap(&other->verticals_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
+  if (other == this) return;
+  InternalSwap(other);
+}
+void BidRequest_User::InternalSwap(BidRequest_User* other) {
+  id_.Swap(&other->id_);
+  std::swap(user_demographic_, other->user_demographic_);
+  verticals_.UnsafeArenaSwap(&other->verticals_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata BidRequest_User::GetMetadata() const {
@@ -3048,24 +3337,27 @@ void BidRequest_User::Swap(BidRequest_User* other) {
 
 // -------------------------------------------------------------------
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int BidRequest_Geo::kLatitudeFieldNumber;
 const int BidRequest_Geo::kLongitudeFieldNumber;
 const int BidRequest_Geo::kAccuracyFieldNumber;
-#endif  // !_MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 BidRequest_Geo::BidRequest_Geo()
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.gdt.adx.BidRequest.Geo)
 }
 
 void BidRequest_Geo::InitAsDefaultInstance() {
 }
 
 BidRequest_Geo::BidRequest_Geo(const BidRequest_Geo& from)
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.gdt.adx.BidRequest.Geo)
 }
 
 void BidRequest_Geo::SharedCtor() {
@@ -3077,6 +3369,7 @@ void BidRequest_Geo::SharedCtor() {
 }
 
 BidRequest_Geo::~BidRequest_Geo() {
+  // @@protoc_insertion_point(destructor:protocol.gdt.adx.BidRequest.Geo)
   SharedDtor();
 }
 
@@ -3102,36 +3395,62 @@ const BidRequest_Geo& BidRequest_Geo::default_instance() {
 
 BidRequest_Geo* BidRequest_Geo::default_instance_ = NULL;
 
-BidRequest_Geo* BidRequest_Geo::New() const {
-  return new BidRequest_Geo;
+BidRequest_Geo* BidRequest_Geo::New(::google::protobuf::Arena* arena) const {
+  BidRequest_Geo* n = new BidRequest_Geo;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
 }
 
 void BidRequest_Geo::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    latitude_ = 0;
-    longitude_ = 0;
-    accuracy_ = 0;
-  }
+// @@protoc_insertion_point(message_clear_start:protocol.gdt.adx.BidRequest.Geo)
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(BidRequest_Geo, f) \
+  _Pragma("clang diagnostic pop")
+#else
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<BidRequest_Geo*>(16)->f)
+#endif
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  ZR_(latitude_, accuracy_);
+
+#undef ZR_HELPER_
+#undef ZR_
+
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
 }
 
 bool BidRequest_Geo::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:protocol.gdt.adx.BidRequest.Geo)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // optional int32 latitude = 1;
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 8) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &latitude_)));
           set_has_latitude();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(16)) goto parse_longitude;
         break;
@@ -3139,15 +3458,14 @@ bool BidRequest_Geo::MergePartialFromCodedStream(
 
       // optional int32 longitude = 2;
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 16) {
          parse_longitude:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &longitude_)));
           set_has_longitude();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(25)) goto parse_accuracy;
         break;
@@ -3155,25 +3473,25 @@ bool BidRequest_Geo::MergePartialFromCodedStream(
 
       // optional double accuracy = 3;
       case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
+        if (tag == 25) {
          parse_accuracy:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
                  input, &accuracy_)));
           set_has_accuracy();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -3181,12 +3499,18 @@ bool BidRequest_Geo::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.gdt.adx.BidRequest.Geo)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.gdt.adx.BidRequest.Geo)
+  return false;
 #undef DO_
 }
 
 void BidRequest_Geo::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.gdt.adx.BidRequest.Geo)
   // optional int32 latitude = 1;
   if (has_latitude()) {
     ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->latitude(), output);
@@ -3202,14 +3526,16 @@ void BidRequest_Geo::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteDouble(3, this->accuracy(), output);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:protocol.gdt.adx.BidRequest.Geo)
 }
 
-::google::protobuf::uint8* BidRequest_Geo::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* BidRequest_Geo::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.gdt.adx.BidRequest.Geo)
   // optional int32 latitude = 1;
   if (has_latitude()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->latitude(), target);
@@ -3225,17 +3551,19 @@ void BidRequest_Geo::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(3, this->accuracy(), target);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.gdt.adx.BidRequest.Geo)
   return target;
 }
 
 int BidRequest_Geo::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.gdt.adx.BidRequest.Geo)
   int total_size = 0;
 
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+  if (_has_bits_[0 / 32] & 7u) {
     // optional int32 latitude = 1;
     if (has_latitude()) {
       total_size += 1 +
@@ -3256,7 +3584,7 @@ int BidRequest_Geo::ByteSize() const {
     }
 
   }
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         unknown_fields());
@@ -3268,19 +3596,27 @@ int BidRequest_Geo::ByteSize() const {
 }
 
 void BidRequest_Geo::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const BidRequest_Geo* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const BidRequest_Geo*>(
-      &from);
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.gdt.adx.BidRequest.Geo)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const BidRequest_Geo* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const BidRequest_Geo>(
+          &from);
   if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.gdt.adx.BidRequest.Geo)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.gdt.adx.BidRequest.Geo)
     MergeFrom(*source);
   }
 }
 
 void BidRequest_Geo::MergeFrom(const BidRequest_Geo& from) {
-  GOOGLE_CHECK_NE(&from, this);
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.gdt.adx.BidRequest.Geo)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_latitude()) {
       set_latitude(from.latitude());
@@ -3292,16 +3628,20 @@ void BidRequest_Geo::MergeFrom(const BidRequest_Geo& from) {
       set_accuracy(from.accuracy());
     }
   }
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
 }
 
 void BidRequest_Geo::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.gdt.adx.BidRequest.Geo)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void BidRequest_Geo::CopyFrom(const BidRequest_Geo& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.gdt.adx.BidRequest.Geo)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -3313,14 +3653,16 @@ bool BidRequest_Geo::IsInitialized() const {
 }
 
 void BidRequest_Geo::Swap(BidRequest_Geo* other) {
-  if (other != this) {
-    std::swap(latitude_, other->latitude_);
-    std::swap(longitude_, other->longitude_);
-    std::swap(accuracy_, other->accuracy_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
+  if (other == this) return;
+  InternalSwap(other);
+}
+void BidRequest_Geo::InternalSwap(BidRequest_Geo* other) {
+  std::swap(latitude_, other->latitude_);
+  std::swap(longitude_, other->longitude_);
+  std::swap(accuracy_, other->accuracy_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata BidRequest_Geo::GetMetadata() const {
@@ -3334,40 +3676,43 @@ void BidRequest_Geo::Swap(BidRequest_Geo* other) {
 
 // -------------------------------------------------------------------
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int BidRequest_App::kIndustryIdFieldNumber;
 const int BidRequest_App::kAppBundleIdFieldNumber;
-#endif  // !_MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 BidRequest_App::BidRequest_App()
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.gdt.adx.BidRequest.App)
 }
 
 void BidRequest_App::InitAsDefaultInstance() {
 }
 
 BidRequest_App::BidRequest_App(const BidRequest_App& from)
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.gdt.adx.BidRequest.App)
 }
 
 void BidRequest_App::SharedCtor() {
+  ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
   industry_id_ = GOOGLE_LONGLONG(0);
-  app_bundle_id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  app_bundle_id_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
 BidRequest_App::~BidRequest_App() {
+  // @@protoc_insertion_point(destructor:protocol.gdt.adx.BidRequest.App)
   SharedDtor();
 }
 
 void BidRequest_App::SharedDtor() {
-  if (app_bundle_id_ != &::google::protobuf::internal::kEmptyString) {
-    delete app_bundle_id_;
-  }
+  app_bundle_id_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
 }
@@ -3389,39 +3734,47 @@ const BidRequest_App& BidRequest_App::default_instance() {
 
 BidRequest_App* BidRequest_App::default_instance_ = NULL;
 
-BidRequest_App* BidRequest_App::New() const {
-  return new BidRequest_App;
+BidRequest_App* BidRequest_App::New(::google::protobuf::Arena* arena) const {
+  BidRequest_App* n = new BidRequest_App;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
 }
 
 void BidRequest_App::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+// @@protoc_insertion_point(message_clear_start:protocol.gdt.adx.BidRequest.App)
+  if (_has_bits_[0 / 32] & 3u) {
     industry_id_ = GOOGLE_LONGLONG(0);
     if (has_app_bundle_id()) {
-      if (app_bundle_id_ != &::google::protobuf::internal::kEmptyString) {
-        app_bundle_id_->clear();
-      }
+      app_bundle_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
 }
 
 bool BidRequest_App::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:protocol.gdt.adx.BidRequest.App)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // optional int64 industry_id = 1;
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 8) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
                  input, &industry_id_)));
           set_has_industry_id();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(18)) goto parse_app_bundle_id;
         break;
@@ -3429,26 +3782,27 @@ bool BidRequest_App::MergePartialFromCodedStream(
 
       // optional string app_bundle_id = 2;
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 18) {
          parse_app_bundle_id:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_app_bundle_id()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
             this->app_bundle_id().data(), this->app_bundle_id().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "protocol.gdt.adx.BidRequest.App.app_bundle_id");
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -3456,12 +3810,18 @@ bool BidRequest_App::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.gdt.adx.BidRequest.App)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.gdt.adx.BidRequest.App)
+  return false;
 #undef DO_
 }
 
 void BidRequest_App::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.gdt.adx.BidRequest.App)
   // optional int64 industry_id = 1;
   if (has_industry_id()) {
     ::google::protobuf::internal::WireFormatLite::WriteInt64(1, this->industry_id(), output);
@@ -3469,21 +3829,24 @@ void BidRequest_App::SerializeWithCachedSizes(
 
   // optional string app_bundle_id = 2;
   if (has_app_bundle_id()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->app_bundle_id().data(), this->app_bundle_id().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidRequest.App.app_bundle_id");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       2, this->app_bundle_id(), output);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:protocol.gdt.adx.BidRequest.App)
 }
 
-::google::protobuf::uint8* BidRequest_App::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* BidRequest_App::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.gdt.adx.BidRequest.App)
   // optional int64 industry_id = 1;
   if (has_industry_id()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(1, this->industry_id(), target);
@@ -3491,25 +3854,28 @@ void BidRequest_App::SerializeWithCachedSizes(
 
   // optional string app_bundle_id = 2;
   if (has_app_bundle_id()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->app_bundle_id().data(), this->app_bundle_id().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidRequest.App.app_bundle_id");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         2, this->app_bundle_id(), target);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.gdt.adx.BidRequest.App)
   return target;
 }
 
 int BidRequest_App::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.gdt.adx.BidRequest.App)
   int total_size = 0;
 
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+  if (_has_bits_[0 / 32] & 3u) {
     // optional int64 industry_id = 1;
     if (has_industry_id()) {
       total_size += 1 +
@@ -3525,7 +3891,7 @@ int BidRequest_App::ByteSize() const {
     }
 
   }
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         unknown_fields());
@@ -3537,37 +3903,50 @@ int BidRequest_App::ByteSize() const {
 }
 
 void BidRequest_App::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const BidRequest_App* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const BidRequest_App*>(
-      &from);
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.gdt.adx.BidRequest.App)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const BidRequest_App* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const BidRequest_App>(
+          &from);
   if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.gdt.adx.BidRequest.App)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.gdt.adx.BidRequest.App)
     MergeFrom(*source);
   }
 }
 
 void BidRequest_App::MergeFrom(const BidRequest_App& from) {
-  GOOGLE_CHECK_NE(&from, this);
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.gdt.adx.BidRequest.App)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_industry_id()) {
       set_industry_id(from.industry_id());
     }
     if (from.has_app_bundle_id()) {
-      set_app_bundle_id(from.app_bundle_id());
+      set_has_app_bundle_id();
+      app_bundle_id_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.app_bundle_id_);
     }
   }
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
 }
 
 void BidRequest_App::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.gdt.adx.BidRequest.App)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void BidRequest_App::CopyFrom(const BidRequest_App& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.gdt.adx.BidRequest.App)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -3579,13 +3958,15 @@ bool BidRequest_App::IsInitialized() const {
 }
 
 void BidRequest_App::Swap(BidRequest_App* other) {
-  if (other != this) {
-    std::swap(industry_id_, other->industry_id_);
-    std::swap(app_bundle_id_, other->app_bundle_id_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
+  if (other == this) return;
+  InternalSwap(other);
+}
+void BidRequest_App::InternalSwap(BidRequest_App* other) {
+  std::swap(industry_id_, other->industry_id_);
+  app_bundle_id_.Swap(&other->app_bundle_id_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata BidRequest_App::GetMetadata() const {
@@ -3599,7 +3980,7 @@ void BidRequest_App::Swap(BidRequest_App* other) {
 
 // -------------------------------------------------------------------
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int BidRequest::kIdFieldNumber;
 const int BidRequest::kIsPingFieldNumber;
 const int BidRequest::kIsTestFieldNumber;
@@ -3611,11 +3992,12 @@ const int BidRequest::kUserFieldNumber;
 const int BidRequest::kGeoFieldNumber;
 const int BidRequest::kAppFieldNumber;
 const int BidRequest::kBossQqFieldNumber;
-#endif  // !_MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 BidRequest::BidRequest()
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.gdt.adx.BidRequest)
 }
 
 void BidRequest::InitAsDefaultInstance() {
@@ -3626,18 +4008,21 @@ void BidRequest::InitAsDefaultInstance() {
 }
 
 BidRequest::BidRequest(const BidRequest& from)
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.gdt.adx.BidRequest)
 }
 
 void BidRequest::SharedCtor() {
+  ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  id_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   is_ping_ = false;
   is_test_ = false;
   device_ = NULL;
-  ip_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  ip_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   area_code_ = 0;
   user_ = NULL;
   geo_ = NULL;
@@ -3647,16 +4032,13 @@ void BidRequest::SharedCtor() {
 }
 
 BidRequest::~BidRequest() {
+  // @@protoc_insertion_point(destructor:protocol.gdt.adx.BidRequest)
   SharedDtor();
 }
 
 void BidRequest::SharedDtor() {
-  if (id_ != &::google::protobuf::internal::kEmptyString) {
-    delete id_;
-  }
-  if (ip_ != &::google::protobuf::internal::kEmptyString) {
-    delete ip_;
-  }
+  id_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  ip_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
     delete device_;
     delete user_;
@@ -3682,34 +4064,49 @@ const BidRequest& BidRequest::default_instance() {
 
 BidRequest* BidRequest::default_instance_ = NULL;
 
-BidRequest* BidRequest::New() const {
-  return new BidRequest;
+BidRequest* BidRequest::New(::google::protobuf::Arena* arena) const {
+  BidRequest* n = new BidRequest;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
 }
 
 void BidRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:protocol.gdt.adx.BidRequest)
   _extensions_.Clear();
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(BidRequest, f) \
+  _Pragma("clang diagnostic pop")
+#else
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<BidRequest*>(16)->f)
+#endif
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  if (_has_bits_[0 / 32] & 247u) {
+    ZR_(is_ping_, area_code_);
     if (has_id()) {
-      if (id_ != &::google::protobuf::internal::kEmptyString) {
-        id_->clear();
-      }
+      id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
-    is_ping_ = false;
-    is_test_ = false;
     if (has_device()) {
       if (device_ != NULL) device_->::protocol::gdt::adx::BidRequest_Device::Clear();
     }
     if (has_ip()) {
-      if (ip_ != &::google::protobuf::internal::kEmptyString) {
-        ip_->clear();
-      }
+      ip_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
-    area_code_ = 0;
     if (has_user()) {
       if (user_ != NULL) user_->::protocol::gdt::adx::BidRequest_User::Clear();
     }
   }
-  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+  if (_has_bits_[8 / 32] & 1792u) {
     if (has_geo()) {
       if (geo_ != NULL) geo_->::protocol::gdt::adx::BidRequest_Geo::Clear();
     }
@@ -3718,28 +4115,38 @@ void BidRequest::Clear() {
     }
     boss_qq_ = GOOGLE_ULONGLONG(0);
   }
+
+#undef ZR_HELPER_
+#undef ZR_
+
   impressions_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
 }
 
 bool BidRequest::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:protocol.gdt.adx.BidRequest)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // optional string id = 1;
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 10) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_id()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
             this->id().data(), this->id().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "protocol.gdt.adx.BidRequest.id");
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(16)) goto parse_is_ping;
         break;
@@ -3747,15 +4154,14 @@ bool BidRequest::MergePartialFromCodedStream(
 
       // optional bool is_ping = 2 [default = false];
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 16) {
          parse_is_ping:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &is_ping_)));
           set_has_is_ping();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(24)) goto parse_is_test;
         break;
@@ -3763,15 +4169,14 @@ bool BidRequest::MergePartialFromCodedStream(
 
       // optional bool is_test = 3 [default = false];
       case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 24) {
          parse_is_test:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &is_test_)));
           set_has_is_test();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(34)) goto parse_impressions;
         break;
@@ -3779,28 +4184,29 @@ bool BidRequest::MergePartialFromCodedStream(
 
       // repeated .protocol.gdt.adx.BidRequest.Impression impressions = 4;
       case 4: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 34) {
          parse_impressions:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+          DO_(input->IncrementRecursionDepth());
+         parse_loop_impressions:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
                 input, add_impressions()));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectTag(34)) goto parse_impressions;
+        if (input->ExpectTag(34)) goto parse_loop_impressions;
+        input->UnsafeDecrementRecursionDepth();
         if (input->ExpectTag(42)) goto parse_device;
         break;
       }
 
       // optional .protocol.gdt.adx.BidRequest.Device device = 5;
       case 5: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 42) {
          parse_device:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_device()));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(50)) goto parse_ip;
         break;
@@ -3808,16 +4214,16 @@ bool BidRequest::MergePartialFromCodedStream(
 
       // optional string ip = 6;
       case 6: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 50) {
          parse_ip:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_ip()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
             this->ip().data(), this->ip().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "protocol.gdt.adx.BidRequest.ip");
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(56)) goto parse_area_code;
         break;
@@ -3825,15 +4231,14 @@ bool BidRequest::MergePartialFromCodedStream(
 
       // optional int32 area_code = 7;
       case 7: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 56) {
          parse_area_code:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &area_code_)));
           set_has_area_code();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(66)) goto parse_user;
         break;
@@ -3841,13 +4246,12 @@ bool BidRequest::MergePartialFromCodedStream(
 
       // optional .protocol.gdt.adx.BidRequest.User user = 8;
       case 8: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 66) {
          parse_user:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_user()));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(74)) goto parse_geo;
         break;
@@ -3855,13 +4259,12 @@ bool BidRequest::MergePartialFromCodedStream(
 
       // optional .protocol.gdt.adx.BidRequest.Geo geo = 9;
       case 9: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 74) {
          parse_geo:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_geo()));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(82)) goto parse_app;
         break;
@@ -3869,13 +4272,12 @@ bool BidRequest::MergePartialFromCodedStream(
 
       // optional .protocol.gdt.adx.BidRequest.App app = 10;
       case 10: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 82) {
          parse_app:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_app()));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(88)) goto parse_boss_qq;
         break;
@@ -3883,25 +4285,25 @@ bool BidRequest::MergePartialFromCodedStream(
 
       // optional uint64 boss_qq = 11;
       case 11: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 88) {
          parse_boss_qq:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &boss_qq_)));
           set_has_boss_qq();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         if ((80000u <= tag)) {
           DO_(_extensions_.ParseField(tag, input, default_instance_,
@@ -3914,18 +4316,25 @@ bool BidRequest::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.gdt.adx.BidRequest)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.gdt.adx.BidRequest)
+  return false;
 #undef DO_
 }
 
 void BidRequest::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.gdt.adx.BidRequest)
   // optional string id = 1;
   if (has_id()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->id().data(), this->id().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidRequest.id");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->id(), output);
   }
 
@@ -3940,7 +4349,7 @@ void BidRequest::SerializeWithCachedSizes(
   }
 
   // repeated .protocol.gdt.adx.BidRequest.Impression impressions = 4;
-  for (int i = 0; i < this->impressions_size(); i++) {
+  for (unsigned int i = 0, n = this->impressions_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       4, this->impressions(i), output);
   }
@@ -3948,15 +4357,16 @@ void BidRequest::SerializeWithCachedSizes(
   // optional .protocol.gdt.adx.BidRequest.Device device = 5;
   if (has_device()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      5, this->device(), output);
+      5, *this->device_, output);
   }
 
   // optional string ip = 6;
   if (has_ip()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->ip().data(), this->ip().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidRequest.ip");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       6, this->ip(), output);
   }
 
@@ -3968,19 +4378,19 @@ void BidRequest::SerializeWithCachedSizes(
   // optional .protocol.gdt.adx.BidRequest.User user = 8;
   if (has_user()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      8, this->user(), output);
+      8, *this->user_, output);
   }
 
   // optional .protocol.gdt.adx.BidRequest.Geo geo = 9;
   if (has_geo()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      9, this->geo(), output);
+      9, *this->geo_, output);
   }
 
   // optional .protocol.gdt.adx.BidRequest.App app = 10;
   if (has_app()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      10, this->app(), output);
+      10, *this->app_, output);
   }
 
   // optional uint64 boss_qq = 11;
@@ -3992,19 +4402,22 @@ void BidRequest::SerializeWithCachedSizes(
   _extensions_.SerializeWithCachedSizes(
       10000, 536870912, output);
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:protocol.gdt.adx.BidRequest)
 }
 
-::google::protobuf::uint8* BidRequest::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* BidRequest::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.gdt.adx.BidRequest)
   // optional string id = 1;
   if (has_id()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->id().data(), this->id().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidRequest.id");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->id(), target);
@@ -4021,24 +4434,25 @@ void BidRequest::SerializeWithCachedSizes(
   }
 
   // repeated .protocol.gdt.adx.BidRequest.Impression impressions = 4;
-  for (int i = 0; i < this->impressions_size(); i++) {
+  for (unsigned int i = 0, n = this->impressions_size(); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteMessageNoVirtualToArray(
-        4, this->impressions(i), target);
+      InternalWriteMessageNoVirtualToArray(
+        4, this->impressions(i), false, target);
   }
 
   // optional .protocol.gdt.adx.BidRequest.Device device = 5;
   if (has_device()) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteMessageNoVirtualToArray(
-        5, this->device(), target);
+      InternalWriteMessageNoVirtualToArray(
+        5, *this->device_, false, target);
   }
 
   // optional string ip = 6;
   if (has_ip()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->ip().data(), this->ip().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidRequest.ip");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         6, this->ip(), target);
@@ -4052,22 +4466,22 @@ void BidRequest::SerializeWithCachedSizes(
   // optional .protocol.gdt.adx.BidRequest.User user = 8;
   if (has_user()) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteMessageNoVirtualToArray(
-        8, this->user(), target);
+      InternalWriteMessageNoVirtualToArray(
+        8, *this->user_, false, target);
   }
 
   // optional .protocol.gdt.adx.BidRequest.Geo geo = 9;
   if (has_geo()) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteMessageNoVirtualToArray(
-        9, this->geo(), target);
+      InternalWriteMessageNoVirtualToArray(
+        9, *this->geo_, false, target);
   }
 
   // optional .protocol.gdt.adx.BidRequest.App app = 10;
   if (has_app()) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteMessageNoVirtualToArray(
-        10, this->app(), target);
+      InternalWriteMessageNoVirtualToArray(
+        10, *this->app_, false, target);
   }
 
   // optional uint64 boss_qq = 11;
@@ -4076,20 +4490,22 @@ void BidRequest::SerializeWithCachedSizes(
   }
 
   // Extension range [10000, 536870912)
-  target = _extensions_.SerializeWithCachedSizesToArray(
-      10000, 536870912, target);
+  target = _extensions_.InternalSerializeWithCachedSizesToArray(
+      10000, 536870912, false, target);
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.gdt.adx.BidRequest)
   return target;
 }
 
 int BidRequest::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.gdt.adx.BidRequest)
   int total_size = 0;
 
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+  if (_has_bits_[0 / 32] & 247u) {
     // optional string id = 1;
     if (has_id()) {
       total_size += 1 +
@@ -4111,7 +4527,7 @@ int BidRequest::ByteSize() const {
     if (has_device()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          this->device());
+          *this->device_);
     }
 
     // optional string ip = 6;
@@ -4132,23 +4548,23 @@ int BidRequest::ByteSize() const {
     if (has_user()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          this->user());
+          *this->user_);
     }
 
   }
-  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+  if (_has_bits_[8 / 32] & 1792u) {
     // optional .protocol.gdt.adx.BidRequest.Geo geo = 9;
     if (has_geo()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          this->geo());
+          *this->geo_);
     }
 
     // optional .protocol.gdt.adx.BidRequest.App app = 10;
     if (has_app()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          this->app());
+          *this->app_);
     }
 
     // optional uint64 boss_qq = 11;
@@ -4169,7 +4585,7 @@ int BidRequest::ByteSize() const {
 
   total_size += _extensions_.ByteSize();
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         unknown_fields());
@@ -4181,23 +4597,32 @@ int BidRequest::ByteSize() const {
 }
 
 void BidRequest::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const BidRequest* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const BidRequest*>(
-      &from);
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.gdt.adx.BidRequest)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const BidRequest* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const BidRequest>(
+          &from);
   if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.gdt.adx.BidRequest)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.gdt.adx.BidRequest)
     MergeFrom(*source);
   }
 }
 
 void BidRequest::MergeFrom(const BidRequest& from) {
-  GOOGLE_CHECK_NE(&from, this);
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.gdt.adx.BidRequest)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
   impressions_.MergeFrom(from.impressions_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_id()) {
-      set_id(from.id());
+      set_has_id();
+      id_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.id_);
     }
     if (from.has_is_ping()) {
       set_is_ping(from.is_ping());
@@ -4209,7 +4634,8 @@ void BidRequest::MergeFrom(const BidRequest& from) {
       mutable_device()->::protocol::gdt::adx::BidRequest_Device::MergeFrom(from.device());
     }
     if (from.has_ip()) {
-      set_ip(from.ip());
+      set_has_ip();
+      ip_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.ip_);
     }
     if (from.has_area_code()) {
       set_area_code(from.area_code());
@@ -4230,16 +4656,20 @@ void BidRequest::MergeFrom(const BidRequest& from) {
     }
   }
   _extensions_.MergeFrom(from._extensions_);
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
 }
 
 void BidRequest::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.gdt.adx.BidRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void BidRequest::CopyFrom(const BidRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.gdt.adx.BidRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -4252,23 +4682,25 @@ bool BidRequest::IsInitialized() const {
 }
 
 void BidRequest::Swap(BidRequest* other) {
-  if (other != this) {
-    std::swap(id_, other->id_);
-    std::swap(is_ping_, other->is_ping_);
-    std::swap(is_test_, other->is_test_);
-    impressions_.Swap(&other->impressions_);
-    std::swap(device_, other->device_);
-    std::swap(ip_, other->ip_);
-    std::swap(area_code_, other->area_code_);
-    std::swap(user_, other->user_);
-    std::swap(geo_, other->geo_);
-    std::swap(app_, other->app_);
-    std::swap(boss_qq_, other->boss_qq_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-    _extensions_.Swap(&other->_extensions_);
-  }
+  if (other == this) return;
+  InternalSwap(other);
+}
+void BidRequest::InternalSwap(BidRequest* other) {
+  id_.Swap(&other->id_);
+  std::swap(is_ping_, other->is_ping_);
+  std::swap(is_test_, other->is_test_);
+  impressions_.UnsafeArenaSwap(&other->impressions_);
+  std::swap(device_, other->device_);
+  ip_.Swap(&other->ip_);
+  std::swap(area_code_, other->area_code_);
+  std::swap(user_, other->user_);
+  std::swap(geo_, other->geo_);
+  std::swap(app_, other->app_);
+  std::swap(boss_qq_, other->boss_qq_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+  _extensions_.Swap(&other->_extensions_);
 }
 
 ::google::protobuf::Metadata BidRequest::GetMetadata() const {
@@ -4279,53 +4711,1605 @@ void BidRequest::Swap(BidRequest* other) {
   return metadata;
 }
 
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// BidRequest_Impression_Native
+
+// optional uint64 required_fields = 1;
+bool BidRequest_Impression_Native::has_required_fields() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void BidRequest_Impression_Native::set_has_required_fields() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void BidRequest_Impression_Native::clear_has_required_fields() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void BidRequest_Impression_Native::clear_required_fields() {
+  required_fields_ = GOOGLE_ULONGLONG(0);
+  clear_has_required_fields();
+}
+ ::google::protobuf::uint64 BidRequest_Impression_Native::required_fields() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Impression.Native.required_fields)
+  return required_fields_;
+}
+ void BidRequest_Impression_Native::set_required_fields(::google::protobuf::uint64 value) {
+  set_has_required_fields();
+  required_fields_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Impression.Native.required_fields)
+}
+
+// optional .protocol.gdt.adx.BidRequest.Impression.Native.Type type = 2;
+bool BidRequest_Impression_Native::has_type() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void BidRequest_Impression_Native::set_has_type() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void BidRequest_Impression_Native::clear_has_type() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void BidRequest_Impression_Native::clear_type() {
+  type_ = 0;
+  clear_has_type();
+}
+ ::protocol::gdt::adx::BidRequest_Impression_Native_Type BidRequest_Impression_Native::type() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Impression.Native.type)
+  return static_cast< ::protocol::gdt::adx::BidRequest_Impression_Native_Type >(type_);
+}
+ void BidRequest_Impression_Native::set_type(::protocol::gdt::adx::BidRequest_Impression_Native_Type value) {
+  assert(::protocol::gdt::adx::BidRequest_Impression_Native_Type_IsValid(value));
+  set_has_type();
+  type_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Impression.Native.type)
+}
+
+// -------------------------------------------------------------------
+
+// BidRequest_Impression
+
+// optional string id = 1;
+bool BidRequest_Impression::has_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void BidRequest_Impression::set_has_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void BidRequest_Impression::clear_has_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void BidRequest_Impression::clear_id() {
+  id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_id();
+}
+ const ::std::string& BidRequest_Impression::id() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Impression.id)
+  return id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidRequest_Impression::set_id(const ::std::string& value) {
+  set_has_id();
+  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Impression.id)
+}
+ void BidRequest_Impression::set_id(const char* value) {
+  set_has_id();
+  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.gdt.adx.BidRequest.Impression.id)
+}
+ void BidRequest_Impression::set_id(const char* value, size_t size) {
+  set_has_id();
+  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.gdt.adx.BidRequest.Impression.id)
+}
+ ::std::string* BidRequest_Impression::mutable_id() {
+  set_has_id();
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidRequest.Impression.id)
+  return id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* BidRequest_Impression::release_id() {
+  // @@protoc_insertion_point(field_release:protocol.gdt.adx.BidRequest.Impression.id)
+  clear_has_id();
+  return id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidRequest_Impression::set_allocated_id(::std::string* id) {
+  if (id != NULL) {
+    set_has_id();
+  } else {
+    clear_has_id();
+  }
+  id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), id);
+  // @@protoc_insertion_point(field_set_allocated:protocol.gdt.adx.BidRequest.Impression.id)
+}
+
+// optional int64 placement_id = 2;
+bool BidRequest_Impression::has_placement_id() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void BidRequest_Impression::set_has_placement_id() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void BidRequest_Impression::clear_has_placement_id() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void BidRequest_Impression::clear_placement_id() {
+  placement_id_ = GOOGLE_LONGLONG(0);
+  clear_has_placement_id();
+}
+ ::google::protobuf::int64 BidRequest_Impression::placement_id() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Impression.placement_id)
+  return placement_id_;
+}
+ void BidRequest_Impression::set_placement_id(::google::protobuf::int64 value) {
+  set_has_placement_id();
+  placement_id_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Impression.placement_id)
+}
+
+// repeated int32 creative_specs = 3;
+int BidRequest_Impression::creative_specs_size() const {
+  return creative_specs_.size();
+}
+void BidRequest_Impression::clear_creative_specs() {
+  creative_specs_.Clear();
+}
+ ::google::protobuf::int32 BidRequest_Impression::creative_specs(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Impression.creative_specs)
+  return creative_specs_.Get(index);
+}
+ void BidRequest_Impression::set_creative_specs(int index, ::google::protobuf::int32 value) {
+  creative_specs_.Set(index, value);
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Impression.creative_specs)
+}
+ void BidRequest_Impression::add_creative_specs(::google::protobuf::int32 value) {
+  creative_specs_.Add(value);
+  // @@protoc_insertion_point(field_add:protocol.gdt.adx.BidRequest.Impression.creative_specs)
+}
+ const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
+BidRequest_Impression::creative_specs() const {
+  // @@protoc_insertion_point(field_list:protocol.gdt.adx.BidRequest.Impression.creative_specs)
+  return creative_specs_;
+}
+ ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
+BidRequest_Impression::mutable_creative_specs() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.gdt.adx.BidRequest.Impression.creative_specs)
+  return &creative_specs_;
+}
+
+// optional int32 bid_floor = 4;
+bool BidRequest_Impression::has_bid_floor() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+void BidRequest_Impression::set_has_bid_floor() {
+  _has_bits_[0] |= 0x00000008u;
+}
+void BidRequest_Impression::clear_has_bid_floor() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+void BidRequest_Impression::clear_bid_floor() {
+  bid_floor_ = 0;
+  clear_has_bid_floor();
+}
+ ::google::protobuf::int32 BidRequest_Impression::bid_floor() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Impression.bid_floor)
+  return bid_floor_;
+}
+ void BidRequest_Impression::set_bid_floor(::google::protobuf::int32 value) {
+  set_has_bid_floor();
+  bid_floor_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Impression.bid_floor)
+}
+
+// repeated int64 blocking_industry_id = 5;
+int BidRequest_Impression::blocking_industry_id_size() const {
+  return blocking_industry_id_.size();
+}
+void BidRequest_Impression::clear_blocking_industry_id() {
+  blocking_industry_id_.Clear();
+}
+ ::google::protobuf::int64 BidRequest_Impression::blocking_industry_id(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Impression.blocking_industry_id)
+  return blocking_industry_id_.Get(index);
+}
+ void BidRequest_Impression::set_blocking_industry_id(int index, ::google::protobuf::int64 value) {
+  blocking_industry_id_.Set(index, value);
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Impression.blocking_industry_id)
+}
+ void BidRequest_Impression::add_blocking_industry_id(::google::protobuf::int64 value) {
+  blocking_industry_id_.Add(value);
+  // @@protoc_insertion_point(field_add:protocol.gdt.adx.BidRequest.Impression.blocking_industry_id)
+}
+ const ::google::protobuf::RepeatedField< ::google::protobuf::int64 >&
+BidRequest_Impression::blocking_industry_id() const {
+  // @@protoc_insertion_point(field_list:protocol.gdt.adx.BidRequest.Impression.blocking_industry_id)
+  return blocking_industry_id_;
+}
+ ::google::protobuf::RepeatedField< ::google::protobuf::int64 >*
+BidRequest_Impression::mutable_blocking_industry_id() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.gdt.adx.BidRequest.Impression.blocking_industry_id)
+  return &blocking_industry_id_;
+}
+
+// repeated .protocol.gdt.adx.BidRequest.Impression.Native natives = 6;
+int BidRequest_Impression::natives_size() const {
+  return natives_.size();
+}
+void BidRequest_Impression::clear_natives() {
+  natives_.Clear();
+}
+const ::protocol::gdt::adx::BidRequest_Impression_Native& BidRequest_Impression::natives(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Impression.natives)
+  return natives_.Get(index);
+}
+::protocol::gdt::adx::BidRequest_Impression_Native* BidRequest_Impression::mutable_natives(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidRequest.Impression.natives)
+  return natives_.Mutable(index);
+}
+::protocol::gdt::adx::BidRequest_Impression_Native* BidRequest_Impression::add_natives() {
+  // @@protoc_insertion_point(field_add:protocol.gdt.adx.BidRequest.Impression.natives)
+  return natives_.Add();
+}
+::google::protobuf::RepeatedPtrField< ::protocol::gdt::adx::BidRequest_Impression_Native >*
+BidRequest_Impression::mutable_natives() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.gdt.adx.BidRequest.Impression.natives)
+  return &natives_;
+}
+const ::google::protobuf::RepeatedPtrField< ::protocol::gdt::adx::BidRequest_Impression_Native >&
+BidRequest_Impression::natives() const {
+  // @@protoc_insertion_point(field_list:protocol.gdt.adx.BidRequest.Impression.natives)
+  return natives_;
+}
+
+// -------------------------------------------------------------------
+
+// BidRequest_Device
+
+// optional string id = 1;
+bool BidRequest_Device::has_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void BidRequest_Device::set_has_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void BidRequest_Device::clear_has_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void BidRequest_Device::clear_id() {
+  id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_id();
+}
+ const ::std::string& BidRequest_Device::id() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Device.id)
+  return id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidRequest_Device::set_id(const ::std::string& value) {
+  set_has_id();
+  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Device.id)
+}
+ void BidRequest_Device::set_id(const char* value) {
+  set_has_id();
+  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.gdt.adx.BidRequest.Device.id)
+}
+ void BidRequest_Device::set_id(const char* value, size_t size) {
+  set_has_id();
+  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.gdt.adx.BidRequest.Device.id)
+}
+ ::std::string* BidRequest_Device::mutable_id() {
+  set_has_id();
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidRequest.Device.id)
+  return id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* BidRequest_Device::release_id() {
+  // @@protoc_insertion_point(field_release:protocol.gdt.adx.BidRequest.Device.id)
+  clear_has_id();
+  return id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidRequest_Device::set_allocated_id(::std::string* id) {
+  if (id != NULL) {
+    set_has_id();
+  } else {
+    clear_has_id();
+  }
+  id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), id);
+  // @@protoc_insertion_point(field_set_allocated:protocol.gdt.adx.BidRequest.Device.id)
+}
+
+// optional .protocol.gdt.adx.BidRequest.DeviceType device_type = 2;
+bool BidRequest_Device::has_device_type() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void BidRequest_Device::set_has_device_type() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void BidRequest_Device::clear_has_device_type() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void BidRequest_Device::clear_device_type() {
+  device_type_ = 0;
+  clear_has_device_type();
+}
+ ::protocol::gdt::adx::BidRequest_DeviceType BidRequest_Device::device_type() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Device.device_type)
+  return static_cast< ::protocol::gdt::adx::BidRequest_DeviceType >(device_type_);
+}
+ void BidRequest_Device::set_device_type(::protocol::gdt::adx::BidRequest_DeviceType value) {
+  assert(::protocol::gdt::adx::BidRequest_DeviceType_IsValid(value));
+  set_has_device_type();
+  device_type_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Device.device_type)
+}
+
+// optional .protocol.gdt.adx.BidRequest.OperatingSystem os = 3;
+bool BidRequest_Device::has_os() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+void BidRequest_Device::set_has_os() {
+  _has_bits_[0] |= 0x00000004u;
+}
+void BidRequest_Device::clear_has_os() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+void BidRequest_Device::clear_os() {
+  os_ = 0;
+  clear_has_os();
+}
+ ::protocol::gdt::adx::BidRequest_OperatingSystem BidRequest_Device::os() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Device.os)
+  return static_cast< ::protocol::gdt::adx::BidRequest_OperatingSystem >(os_);
+}
+ void BidRequest_Device::set_os(::protocol::gdt::adx::BidRequest_OperatingSystem value) {
+  assert(::protocol::gdt::adx::BidRequest_OperatingSystem_IsValid(value));
+  set_has_os();
+  os_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Device.os)
+}
+
+// optional string os_version = 4;
+bool BidRequest_Device::has_os_version() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+void BidRequest_Device::set_has_os_version() {
+  _has_bits_[0] |= 0x00000008u;
+}
+void BidRequest_Device::clear_has_os_version() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+void BidRequest_Device::clear_os_version() {
+  os_version_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_os_version();
+}
+ const ::std::string& BidRequest_Device::os_version() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Device.os_version)
+  return os_version_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidRequest_Device::set_os_version(const ::std::string& value) {
+  set_has_os_version();
+  os_version_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Device.os_version)
+}
+ void BidRequest_Device::set_os_version(const char* value) {
+  set_has_os_version();
+  os_version_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.gdt.adx.BidRequest.Device.os_version)
+}
+ void BidRequest_Device::set_os_version(const char* value, size_t size) {
+  set_has_os_version();
+  os_version_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.gdt.adx.BidRequest.Device.os_version)
+}
+ ::std::string* BidRequest_Device::mutable_os_version() {
+  set_has_os_version();
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidRequest.Device.os_version)
+  return os_version_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* BidRequest_Device::release_os_version() {
+  // @@protoc_insertion_point(field_release:protocol.gdt.adx.BidRequest.Device.os_version)
+  clear_has_os_version();
+  return os_version_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidRequest_Device::set_allocated_os_version(::std::string* os_version) {
+  if (os_version != NULL) {
+    set_has_os_version();
+  } else {
+    clear_has_os_version();
+  }
+  os_version_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), os_version);
+  // @@protoc_insertion_point(field_set_allocated:protocol.gdt.adx.BidRequest.Device.os_version)
+}
+
+// optional string user_agent = 5;
+bool BidRequest_Device::has_user_agent() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+void BidRequest_Device::set_has_user_agent() {
+  _has_bits_[0] |= 0x00000010u;
+}
+void BidRequest_Device::clear_has_user_agent() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+void BidRequest_Device::clear_user_agent() {
+  user_agent_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_user_agent();
+}
+ const ::std::string& BidRequest_Device::user_agent() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Device.user_agent)
+  return user_agent_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidRequest_Device::set_user_agent(const ::std::string& value) {
+  set_has_user_agent();
+  user_agent_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Device.user_agent)
+}
+ void BidRequest_Device::set_user_agent(const char* value) {
+  set_has_user_agent();
+  user_agent_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.gdt.adx.BidRequest.Device.user_agent)
+}
+ void BidRequest_Device::set_user_agent(const char* value, size_t size) {
+  set_has_user_agent();
+  user_agent_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.gdt.adx.BidRequest.Device.user_agent)
+}
+ ::std::string* BidRequest_Device::mutable_user_agent() {
+  set_has_user_agent();
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidRequest.Device.user_agent)
+  return user_agent_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* BidRequest_Device::release_user_agent() {
+  // @@protoc_insertion_point(field_release:protocol.gdt.adx.BidRequest.Device.user_agent)
+  clear_has_user_agent();
+  return user_agent_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidRequest_Device::set_allocated_user_agent(::std::string* user_agent) {
+  if (user_agent != NULL) {
+    set_has_user_agent();
+  } else {
+    clear_has_user_agent();
+  }
+  user_agent_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), user_agent);
+  // @@protoc_insertion_point(field_set_allocated:protocol.gdt.adx.BidRequest.Device.user_agent)
+}
+
+// optional int32 screen_width = 6;
+bool BidRequest_Device::has_screen_width() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+void BidRequest_Device::set_has_screen_width() {
+  _has_bits_[0] |= 0x00000020u;
+}
+void BidRequest_Device::clear_has_screen_width() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+void BidRequest_Device::clear_screen_width() {
+  screen_width_ = 0;
+  clear_has_screen_width();
+}
+ ::google::protobuf::int32 BidRequest_Device::screen_width() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Device.screen_width)
+  return screen_width_;
+}
+ void BidRequest_Device::set_screen_width(::google::protobuf::int32 value) {
+  set_has_screen_width();
+  screen_width_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Device.screen_width)
+}
+
+// optional int32 screen_height = 7;
+bool BidRequest_Device::has_screen_height() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+void BidRequest_Device::set_has_screen_height() {
+  _has_bits_[0] |= 0x00000040u;
+}
+void BidRequest_Device::clear_has_screen_height() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+void BidRequest_Device::clear_screen_height() {
+  screen_height_ = 0;
+  clear_has_screen_height();
+}
+ ::google::protobuf::int32 BidRequest_Device::screen_height() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Device.screen_height)
+  return screen_height_;
+}
+ void BidRequest_Device::set_screen_height(::google::protobuf::int32 value) {
+  set_has_screen_height();
+  screen_height_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Device.screen_height)
+}
+
+// optional int32 dpi = 8;
+bool BidRequest_Device::has_dpi() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+void BidRequest_Device::set_has_dpi() {
+  _has_bits_[0] |= 0x00000080u;
+}
+void BidRequest_Device::clear_has_dpi() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+void BidRequest_Device::clear_dpi() {
+  dpi_ = 0;
+  clear_has_dpi();
+}
+ ::google::protobuf::int32 BidRequest_Device::dpi() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Device.dpi)
+  return dpi_;
+}
+ void BidRequest_Device::set_dpi(::google::protobuf::int32 value) {
+  set_has_dpi();
+  dpi_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Device.dpi)
+}
+
+// optional .protocol.gdt.adx.BidRequest.Carrier carrier = 9;
+bool BidRequest_Device::has_carrier() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
+}
+void BidRequest_Device::set_has_carrier() {
+  _has_bits_[0] |= 0x00000100u;
+}
+void BidRequest_Device::clear_has_carrier() {
+  _has_bits_[0] &= ~0x00000100u;
+}
+void BidRequest_Device::clear_carrier() {
+  carrier_ = 0;
+  clear_has_carrier();
+}
+ ::protocol::gdt::adx::BidRequest_Carrier BidRequest_Device::carrier() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Device.carrier)
+  return static_cast< ::protocol::gdt::adx::BidRequest_Carrier >(carrier_);
+}
+ void BidRequest_Device::set_carrier(::protocol::gdt::adx::BidRequest_Carrier value) {
+  assert(::protocol::gdt::adx::BidRequest_Carrier_IsValid(value));
+  set_has_carrier();
+  carrier_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Device.carrier)
+}
+
+// optional .protocol.gdt.adx.BidRequest.ConnectionType connection_type = 10;
+bool BidRequest_Device::has_connection_type() const {
+  return (_has_bits_[0] & 0x00000200u) != 0;
+}
+void BidRequest_Device::set_has_connection_type() {
+  _has_bits_[0] |= 0x00000200u;
+}
+void BidRequest_Device::clear_has_connection_type() {
+  _has_bits_[0] &= ~0x00000200u;
+}
+void BidRequest_Device::clear_connection_type() {
+  connection_type_ = 0;
+  clear_has_connection_type();
+}
+ ::protocol::gdt::adx::BidRequest_ConnectionType BidRequest_Device::connection_type() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Device.connection_type)
+  return static_cast< ::protocol::gdt::adx::BidRequest_ConnectionType >(connection_type_);
+}
+ void BidRequest_Device::set_connection_type(::protocol::gdt::adx::BidRequest_ConnectionType value) {
+  assert(::protocol::gdt::adx::BidRequest_ConnectionType_IsValid(value));
+  set_has_connection_type();
+  connection_type_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Device.connection_type)
+}
+
+// optional string brand_and_model = 11;
+bool BidRequest_Device::has_brand_and_model() const {
+  return (_has_bits_[0] & 0x00000400u) != 0;
+}
+void BidRequest_Device::set_has_brand_and_model() {
+  _has_bits_[0] |= 0x00000400u;
+}
+void BidRequest_Device::clear_has_brand_and_model() {
+  _has_bits_[0] &= ~0x00000400u;
+}
+void BidRequest_Device::clear_brand_and_model() {
+  brand_and_model_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_brand_and_model();
+}
+ const ::std::string& BidRequest_Device::brand_and_model() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Device.brand_and_model)
+  return brand_and_model_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidRequest_Device::set_brand_and_model(const ::std::string& value) {
+  set_has_brand_and_model();
+  brand_and_model_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Device.brand_and_model)
+}
+ void BidRequest_Device::set_brand_and_model(const char* value) {
+  set_has_brand_and_model();
+  brand_and_model_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.gdt.adx.BidRequest.Device.brand_and_model)
+}
+ void BidRequest_Device::set_brand_and_model(const char* value, size_t size) {
+  set_has_brand_and_model();
+  brand_and_model_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.gdt.adx.BidRequest.Device.brand_and_model)
+}
+ ::std::string* BidRequest_Device::mutable_brand_and_model() {
+  set_has_brand_and_model();
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidRequest.Device.brand_and_model)
+  return brand_and_model_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* BidRequest_Device::release_brand_and_model() {
+  // @@protoc_insertion_point(field_release:protocol.gdt.adx.BidRequest.Device.brand_and_model)
+  clear_has_brand_and_model();
+  return brand_and_model_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidRequest_Device::set_allocated_brand_and_model(::std::string* brand_and_model) {
+  if (brand_and_model != NULL) {
+    set_has_brand_and_model();
+  } else {
+    clear_has_brand_and_model();
+  }
+  brand_and_model_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), brand_and_model);
+  // @@protoc_insertion_point(field_set_allocated:protocol.gdt.adx.BidRequest.Device.brand_and_model)
+}
+
+// optional string language = 12;
+bool BidRequest_Device::has_language() const {
+  return (_has_bits_[0] & 0x00000800u) != 0;
+}
+void BidRequest_Device::set_has_language() {
+  _has_bits_[0] |= 0x00000800u;
+}
+void BidRequest_Device::clear_has_language() {
+  _has_bits_[0] &= ~0x00000800u;
+}
+void BidRequest_Device::clear_language() {
+  language_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_language();
+}
+ const ::std::string& BidRequest_Device::language() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Device.language)
+  return language_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidRequest_Device::set_language(const ::std::string& value) {
+  set_has_language();
+  language_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Device.language)
+}
+ void BidRequest_Device::set_language(const char* value) {
+  set_has_language();
+  language_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.gdt.adx.BidRequest.Device.language)
+}
+ void BidRequest_Device::set_language(const char* value, size_t size) {
+  set_has_language();
+  language_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.gdt.adx.BidRequest.Device.language)
+}
+ ::std::string* BidRequest_Device::mutable_language() {
+  set_has_language();
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidRequest.Device.language)
+  return language_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* BidRequest_Device::release_language() {
+  // @@protoc_insertion_point(field_release:protocol.gdt.adx.BidRequest.Device.language)
+  clear_has_language();
+  return language_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidRequest_Device::set_allocated_language(::std::string* language) {
+  if (language != NULL) {
+    set_has_language();
+  } else {
+    clear_has_language();
+  }
+  language_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), language);
+  // @@protoc_insertion_point(field_set_allocated:protocol.gdt.adx.BidRequest.Device.language)
+}
+
+// -------------------------------------------------------------------
+
+// BidRequest_User_Demographic
+
+// optional .protocol.gdt.adx.BidRequest.User.Demographic.Gender gender = 1 [default = GENDER_UNKNOWN];
+bool BidRequest_User_Demographic::has_gender() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void BidRequest_User_Demographic::set_has_gender() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void BidRequest_User_Demographic::clear_has_gender() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void BidRequest_User_Demographic::clear_gender() {
+  gender_ = 0;
+  clear_has_gender();
+}
+ ::protocol::gdt::adx::BidRequest_User_Demographic_Gender BidRequest_User_Demographic::gender() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.User.Demographic.gender)
+  return static_cast< ::protocol::gdt::adx::BidRequest_User_Demographic_Gender >(gender_);
+}
+ void BidRequest_User_Demographic::set_gender(::protocol::gdt::adx::BidRequest_User_Demographic_Gender value) {
+  assert(::protocol::gdt::adx::BidRequest_User_Demographic_Gender_IsValid(value));
+  set_has_gender();
+  gender_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.User.Demographic.gender)
+}
+
+// optional .protocol.gdt.adx.BidRequest.User.Demographic.Education education = 2 [default = EDUCATION_UNKNOWN];
+bool BidRequest_User_Demographic::has_education() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void BidRequest_User_Demographic::set_has_education() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void BidRequest_User_Demographic::clear_has_education() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void BidRequest_User_Demographic::clear_education() {
+  education_ = 0;
+  clear_has_education();
+}
+ ::protocol::gdt::adx::BidRequest_User_Demographic_Education BidRequest_User_Demographic::education() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.User.Demographic.education)
+  return static_cast< ::protocol::gdt::adx::BidRequest_User_Demographic_Education >(education_);
+}
+ void BidRequest_User_Demographic::set_education(::protocol::gdt::adx::BidRequest_User_Demographic_Education value) {
+  assert(::protocol::gdt::adx::BidRequest_User_Demographic_Education_IsValid(value));
+  set_has_education();
+  education_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.User.Demographic.education)
+}
+
+// optional int32 age_low = 3 [default = 0];
+bool BidRequest_User_Demographic::has_age_low() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+void BidRequest_User_Demographic::set_has_age_low() {
+  _has_bits_[0] |= 0x00000004u;
+}
+void BidRequest_User_Demographic::clear_has_age_low() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+void BidRequest_User_Demographic::clear_age_low() {
+  age_low_ = 0;
+  clear_has_age_low();
+}
+ ::google::protobuf::int32 BidRequest_User_Demographic::age_low() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.User.Demographic.age_low)
+  return age_low_;
+}
+ void BidRequest_User_Demographic::set_age_low(::google::protobuf::int32 value) {
+  set_has_age_low();
+  age_low_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.User.Demographic.age_low)
+}
+
+// optional int32 age_high = 4 [default = 999];
+bool BidRequest_User_Demographic::has_age_high() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+void BidRequest_User_Demographic::set_has_age_high() {
+  _has_bits_[0] |= 0x00000008u;
+}
+void BidRequest_User_Demographic::clear_has_age_high() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+void BidRequest_User_Demographic::clear_age_high() {
+  age_high_ = 999;
+  clear_has_age_high();
+}
+ ::google::protobuf::int32 BidRequest_User_Demographic::age_high() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.User.Demographic.age_high)
+  return age_high_;
+}
+ void BidRequest_User_Demographic::set_age_high(::google::protobuf::int32 value) {
+  set_has_age_high();
+  age_high_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.User.Demographic.age_high)
+}
+
+// -------------------------------------------------------------------
+
+// BidRequest_User_Vertical
+
+// optional uint32 id = 1;
+bool BidRequest_User_Vertical::has_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void BidRequest_User_Vertical::set_has_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void BidRequest_User_Vertical::clear_has_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void BidRequest_User_Vertical::clear_id() {
+  id_ = 0u;
+  clear_has_id();
+}
+ ::google::protobuf::uint32 BidRequest_User_Vertical::id() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.User.Vertical.id)
+  return id_;
+}
+ void BidRequest_User_Vertical::set_id(::google::protobuf::uint32 value) {
+  set_has_id();
+  id_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.User.Vertical.id)
+}
+
+// optional float weight = 2;
+bool BidRequest_User_Vertical::has_weight() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void BidRequest_User_Vertical::set_has_weight() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void BidRequest_User_Vertical::clear_has_weight() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void BidRequest_User_Vertical::clear_weight() {
+  weight_ = 0;
+  clear_has_weight();
+}
+ float BidRequest_User_Vertical::weight() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.User.Vertical.weight)
+  return weight_;
+}
+ void BidRequest_User_Vertical::set_weight(float value) {
+  set_has_weight();
+  weight_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.User.Vertical.weight)
+}
+
+// -------------------------------------------------------------------
+
+// BidRequest_User
+
+// optional string id = 1;
+bool BidRequest_User::has_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void BidRequest_User::set_has_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void BidRequest_User::clear_has_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void BidRequest_User::clear_id() {
+  id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_id();
+}
+ const ::std::string& BidRequest_User::id() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.User.id)
+  return id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidRequest_User::set_id(const ::std::string& value) {
+  set_has_id();
+  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.User.id)
+}
+ void BidRequest_User::set_id(const char* value) {
+  set_has_id();
+  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.gdt.adx.BidRequest.User.id)
+}
+ void BidRequest_User::set_id(const char* value, size_t size) {
+  set_has_id();
+  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.gdt.adx.BidRequest.User.id)
+}
+ ::std::string* BidRequest_User::mutable_id() {
+  set_has_id();
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidRequest.User.id)
+  return id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* BidRequest_User::release_id() {
+  // @@protoc_insertion_point(field_release:protocol.gdt.adx.BidRequest.User.id)
+  clear_has_id();
+  return id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidRequest_User::set_allocated_id(::std::string* id) {
+  if (id != NULL) {
+    set_has_id();
+  } else {
+    clear_has_id();
+  }
+  id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), id);
+  // @@protoc_insertion_point(field_set_allocated:protocol.gdt.adx.BidRequest.User.id)
+}
+
+// optional .protocol.gdt.adx.BidRequest.User.Demographic user_demographic = 2;
+bool BidRequest_User::has_user_demographic() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void BidRequest_User::set_has_user_demographic() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void BidRequest_User::clear_has_user_demographic() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void BidRequest_User::clear_user_demographic() {
+  if (user_demographic_ != NULL) user_demographic_->::protocol::gdt::adx::BidRequest_User_Demographic::Clear();
+  clear_has_user_demographic();
+}
+const ::protocol::gdt::adx::BidRequest_User_Demographic& BidRequest_User::user_demographic() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.User.user_demographic)
+  return user_demographic_ != NULL ? *user_demographic_ : *default_instance_->user_demographic_;
+}
+::protocol::gdt::adx::BidRequest_User_Demographic* BidRequest_User::mutable_user_demographic() {
+  set_has_user_demographic();
+  if (user_demographic_ == NULL) {
+    user_demographic_ = new ::protocol::gdt::adx::BidRequest_User_Demographic;
+  }
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidRequest.User.user_demographic)
+  return user_demographic_;
+}
+::protocol::gdt::adx::BidRequest_User_Demographic* BidRequest_User::release_user_demographic() {
+  // @@protoc_insertion_point(field_release:protocol.gdt.adx.BidRequest.User.user_demographic)
+  clear_has_user_demographic();
+  ::protocol::gdt::adx::BidRequest_User_Demographic* temp = user_demographic_;
+  user_demographic_ = NULL;
+  return temp;
+}
+void BidRequest_User::set_allocated_user_demographic(::protocol::gdt::adx::BidRequest_User_Demographic* user_demographic) {
+  delete user_demographic_;
+  user_demographic_ = user_demographic;
+  if (user_demographic) {
+    set_has_user_demographic();
+  } else {
+    clear_has_user_demographic();
+  }
+  // @@protoc_insertion_point(field_set_allocated:protocol.gdt.adx.BidRequest.User.user_demographic)
+}
+
+// repeated .protocol.gdt.adx.BidRequest.User.Vertical verticals = 3;
+int BidRequest_User::verticals_size() const {
+  return verticals_.size();
+}
+void BidRequest_User::clear_verticals() {
+  verticals_.Clear();
+}
+const ::protocol::gdt::adx::BidRequest_User_Vertical& BidRequest_User::verticals(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.User.verticals)
+  return verticals_.Get(index);
+}
+::protocol::gdt::adx::BidRequest_User_Vertical* BidRequest_User::mutable_verticals(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidRequest.User.verticals)
+  return verticals_.Mutable(index);
+}
+::protocol::gdt::adx::BidRequest_User_Vertical* BidRequest_User::add_verticals() {
+  // @@protoc_insertion_point(field_add:protocol.gdt.adx.BidRequest.User.verticals)
+  return verticals_.Add();
+}
+::google::protobuf::RepeatedPtrField< ::protocol::gdt::adx::BidRequest_User_Vertical >*
+BidRequest_User::mutable_verticals() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.gdt.adx.BidRequest.User.verticals)
+  return &verticals_;
+}
+const ::google::protobuf::RepeatedPtrField< ::protocol::gdt::adx::BidRequest_User_Vertical >&
+BidRequest_User::verticals() const {
+  // @@protoc_insertion_point(field_list:protocol.gdt.adx.BidRequest.User.verticals)
+  return verticals_;
+}
+
+// -------------------------------------------------------------------
+
+// BidRequest_Geo
+
+// optional int32 latitude = 1;
+bool BidRequest_Geo::has_latitude() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void BidRequest_Geo::set_has_latitude() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void BidRequest_Geo::clear_has_latitude() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void BidRequest_Geo::clear_latitude() {
+  latitude_ = 0;
+  clear_has_latitude();
+}
+ ::google::protobuf::int32 BidRequest_Geo::latitude() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Geo.latitude)
+  return latitude_;
+}
+ void BidRequest_Geo::set_latitude(::google::protobuf::int32 value) {
+  set_has_latitude();
+  latitude_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Geo.latitude)
+}
+
+// optional int32 longitude = 2;
+bool BidRequest_Geo::has_longitude() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void BidRequest_Geo::set_has_longitude() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void BidRequest_Geo::clear_has_longitude() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void BidRequest_Geo::clear_longitude() {
+  longitude_ = 0;
+  clear_has_longitude();
+}
+ ::google::protobuf::int32 BidRequest_Geo::longitude() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Geo.longitude)
+  return longitude_;
+}
+ void BidRequest_Geo::set_longitude(::google::protobuf::int32 value) {
+  set_has_longitude();
+  longitude_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Geo.longitude)
+}
+
+// optional double accuracy = 3;
+bool BidRequest_Geo::has_accuracy() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+void BidRequest_Geo::set_has_accuracy() {
+  _has_bits_[0] |= 0x00000004u;
+}
+void BidRequest_Geo::clear_has_accuracy() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+void BidRequest_Geo::clear_accuracy() {
+  accuracy_ = 0;
+  clear_has_accuracy();
+}
+ double BidRequest_Geo::accuracy() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.Geo.accuracy)
+  return accuracy_;
+}
+ void BidRequest_Geo::set_accuracy(double value) {
+  set_has_accuracy();
+  accuracy_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.Geo.accuracy)
+}
+
+// -------------------------------------------------------------------
+
+// BidRequest_App
+
+// optional int64 industry_id = 1;
+bool BidRequest_App::has_industry_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void BidRequest_App::set_has_industry_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void BidRequest_App::clear_has_industry_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void BidRequest_App::clear_industry_id() {
+  industry_id_ = GOOGLE_LONGLONG(0);
+  clear_has_industry_id();
+}
+ ::google::protobuf::int64 BidRequest_App::industry_id() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.App.industry_id)
+  return industry_id_;
+}
+ void BidRequest_App::set_industry_id(::google::protobuf::int64 value) {
+  set_has_industry_id();
+  industry_id_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.App.industry_id)
+}
+
+// optional string app_bundle_id = 2;
+bool BidRequest_App::has_app_bundle_id() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void BidRequest_App::set_has_app_bundle_id() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void BidRequest_App::clear_has_app_bundle_id() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void BidRequest_App::clear_app_bundle_id() {
+  app_bundle_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_app_bundle_id();
+}
+ const ::std::string& BidRequest_App::app_bundle_id() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.App.app_bundle_id)
+  return app_bundle_id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidRequest_App::set_app_bundle_id(const ::std::string& value) {
+  set_has_app_bundle_id();
+  app_bundle_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.App.app_bundle_id)
+}
+ void BidRequest_App::set_app_bundle_id(const char* value) {
+  set_has_app_bundle_id();
+  app_bundle_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.gdt.adx.BidRequest.App.app_bundle_id)
+}
+ void BidRequest_App::set_app_bundle_id(const char* value, size_t size) {
+  set_has_app_bundle_id();
+  app_bundle_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.gdt.adx.BidRequest.App.app_bundle_id)
+}
+ ::std::string* BidRequest_App::mutable_app_bundle_id() {
+  set_has_app_bundle_id();
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidRequest.App.app_bundle_id)
+  return app_bundle_id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* BidRequest_App::release_app_bundle_id() {
+  // @@protoc_insertion_point(field_release:protocol.gdt.adx.BidRequest.App.app_bundle_id)
+  clear_has_app_bundle_id();
+  return app_bundle_id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidRequest_App::set_allocated_app_bundle_id(::std::string* app_bundle_id) {
+  if (app_bundle_id != NULL) {
+    set_has_app_bundle_id();
+  } else {
+    clear_has_app_bundle_id();
+  }
+  app_bundle_id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), app_bundle_id);
+  // @@protoc_insertion_point(field_set_allocated:protocol.gdt.adx.BidRequest.App.app_bundle_id)
+}
+
+// -------------------------------------------------------------------
+
+// BidRequest
+
+// optional string id = 1;
+bool BidRequest::has_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void BidRequest::set_has_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void BidRequest::clear_has_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void BidRequest::clear_id() {
+  id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_id();
+}
+ const ::std::string& BidRequest::id() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.id)
+  return id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidRequest::set_id(const ::std::string& value) {
+  set_has_id();
+  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.id)
+}
+ void BidRequest::set_id(const char* value) {
+  set_has_id();
+  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.gdt.adx.BidRequest.id)
+}
+ void BidRequest::set_id(const char* value, size_t size) {
+  set_has_id();
+  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.gdt.adx.BidRequest.id)
+}
+ ::std::string* BidRequest::mutable_id() {
+  set_has_id();
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidRequest.id)
+  return id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* BidRequest::release_id() {
+  // @@protoc_insertion_point(field_release:protocol.gdt.adx.BidRequest.id)
+  clear_has_id();
+  return id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidRequest::set_allocated_id(::std::string* id) {
+  if (id != NULL) {
+    set_has_id();
+  } else {
+    clear_has_id();
+  }
+  id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), id);
+  // @@protoc_insertion_point(field_set_allocated:protocol.gdt.adx.BidRequest.id)
+}
+
+// optional bool is_ping = 2 [default = false];
+bool BidRequest::has_is_ping() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void BidRequest::set_has_is_ping() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void BidRequest::clear_has_is_ping() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void BidRequest::clear_is_ping() {
+  is_ping_ = false;
+  clear_has_is_ping();
+}
+ bool BidRequest::is_ping() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.is_ping)
+  return is_ping_;
+}
+ void BidRequest::set_is_ping(bool value) {
+  set_has_is_ping();
+  is_ping_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.is_ping)
+}
+
+// optional bool is_test = 3 [default = false];
+bool BidRequest::has_is_test() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+void BidRequest::set_has_is_test() {
+  _has_bits_[0] |= 0x00000004u;
+}
+void BidRequest::clear_has_is_test() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+void BidRequest::clear_is_test() {
+  is_test_ = false;
+  clear_has_is_test();
+}
+ bool BidRequest::is_test() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.is_test)
+  return is_test_;
+}
+ void BidRequest::set_is_test(bool value) {
+  set_has_is_test();
+  is_test_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.is_test)
+}
+
+// repeated .protocol.gdt.adx.BidRequest.Impression impressions = 4;
+int BidRequest::impressions_size() const {
+  return impressions_.size();
+}
+void BidRequest::clear_impressions() {
+  impressions_.Clear();
+}
+const ::protocol::gdt::adx::BidRequest_Impression& BidRequest::impressions(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.impressions)
+  return impressions_.Get(index);
+}
+::protocol::gdt::adx::BidRequest_Impression* BidRequest::mutable_impressions(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidRequest.impressions)
+  return impressions_.Mutable(index);
+}
+::protocol::gdt::adx::BidRequest_Impression* BidRequest::add_impressions() {
+  // @@protoc_insertion_point(field_add:protocol.gdt.adx.BidRequest.impressions)
+  return impressions_.Add();
+}
+::google::protobuf::RepeatedPtrField< ::protocol::gdt::adx::BidRequest_Impression >*
+BidRequest::mutable_impressions() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.gdt.adx.BidRequest.impressions)
+  return &impressions_;
+}
+const ::google::protobuf::RepeatedPtrField< ::protocol::gdt::adx::BidRequest_Impression >&
+BidRequest::impressions() const {
+  // @@protoc_insertion_point(field_list:protocol.gdt.adx.BidRequest.impressions)
+  return impressions_;
+}
+
+// optional .protocol.gdt.adx.BidRequest.Device device = 5;
+bool BidRequest::has_device() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+void BidRequest::set_has_device() {
+  _has_bits_[0] |= 0x00000010u;
+}
+void BidRequest::clear_has_device() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+void BidRequest::clear_device() {
+  if (device_ != NULL) device_->::protocol::gdt::adx::BidRequest_Device::Clear();
+  clear_has_device();
+}
+const ::protocol::gdt::adx::BidRequest_Device& BidRequest::device() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.device)
+  return device_ != NULL ? *device_ : *default_instance_->device_;
+}
+::protocol::gdt::adx::BidRequest_Device* BidRequest::mutable_device() {
+  set_has_device();
+  if (device_ == NULL) {
+    device_ = new ::protocol::gdt::adx::BidRequest_Device;
+  }
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidRequest.device)
+  return device_;
+}
+::protocol::gdt::adx::BidRequest_Device* BidRequest::release_device() {
+  // @@protoc_insertion_point(field_release:protocol.gdt.adx.BidRequest.device)
+  clear_has_device();
+  ::protocol::gdt::adx::BidRequest_Device* temp = device_;
+  device_ = NULL;
+  return temp;
+}
+void BidRequest::set_allocated_device(::protocol::gdt::adx::BidRequest_Device* device) {
+  delete device_;
+  device_ = device;
+  if (device) {
+    set_has_device();
+  } else {
+    clear_has_device();
+  }
+  // @@protoc_insertion_point(field_set_allocated:protocol.gdt.adx.BidRequest.device)
+}
+
+// optional string ip = 6;
+bool BidRequest::has_ip() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+void BidRequest::set_has_ip() {
+  _has_bits_[0] |= 0x00000020u;
+}
+void BidRequest::clear_has_ip() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+void BidRequest::clear_ip() {
+  ip_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_ip();
+}
+ const ::std::string& BidRequest::ip() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.ip)
+  return ip_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidRequest::set_ip(const ::std::string& value) {
+  set_has_ip();
+  ip_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.ip)
+}
+ void BidRequest::set_ip(const char* value) {
+  set_has_ip();
+  ip_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.gdt.adx.BidRequest.ip)
+}
+ void BidRequest::set_ip(const char* value, size_t size) {
+  set_has_ip();
+  ip_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.gdt.adx.BidRequest.ip)
+}
+ ::std::string* BidRequest::mutable_ip() {
+  set_has_ip();
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidRequest.ip)
+  return ip_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* BidRequest::release_ip() {
+  // @@protoc_insertion_point(field_release:protocol.gdt.adx.BidRequest.ip)
+  clear_has_ip();
+  return ip_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidRequest::set_allocated_ip(::std::string* ip) {
+  if (ip != NULL) {
+    set_has_ip();
+  } else {
+    clear_has_ip();
+  }
+  ip_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ip);
+  // @@protoc_insertion_point(field_set_allocated:protocol.gdt.adx.BidRequest.ip)
+}
+
+// optional int32 area_code = 7;
+bool BidRequest::has_area_code() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+void BidRequest::set_has_area_code() {
+  _has_bits_[0] |= 0x00000040u;
+}
+void BidRequest::clear_has_area_code() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+void BidRequest::clear_area_code() {
+  area_code_ = 0;
+  clear_has_area_code();
+}
+ ::google::protobuf::int32 BidRequest::area_code() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.area_code)
+  return area_code_;
+}
+ void BidRequest::set_area_code(::google::protobuf::int32 value) {
+  set_has_area_code();
+  area_code_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.area_code)
+}
+
+// optional .protocol.gdt.adx.BidRequest.User user = 8;
+bool BidRequest::has_user() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+void BidRequest::set_has_user() {
+  _has_bits_[0] |= 0x00000080u;
+}
+void BidRequest::clear_has_user() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+void BidRequest::clear_user() {
+  if (user_ != NULL) user_->::protocol::gdt::adx::BidRequest_User::Clear();
+  clear_has_user();
+}
+const ::protocol::gdt::adx::BidRequest_User& BidRequest::user() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.user)
+  return user_ != NULL ? *user_ : *default_instance_->user_;
+}
+::protocol::gdt::adx::BidRequest_User* BidRequest::mutable_user() {
+  set_has_user();
+  if (user_ == NULL) {
+    user_ = new ::protocol::gdt::adx::BidRequest_User;
+  }
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidRequest.user)
+  return user_;
+}
+::protocol::gdt::adx::BidRequest_User* BidRequest::release_user() {
+  // @@protoc_insertion_point(field_release:protocol.gdt.adx.BidRequest.user)
+  clear_has_user();
+  ::protocol::gdt::adx::BidRequest_User* temp = user_;
+  user_ = NULL;
+  return temp;
+}
+void BidRequest::set_allocated_user(::protocol::gdt::adx::BidRequest_User* user) {
+  delete user_;
+  user_ = user;
+  if (user) {
+    set_has_user();
+  } else {
+    clear_has_user();
+  }
+  // @@protoc_insertion_point(field_set_allocated:protocol.gdt.adx.BidRequest.user)
+}
+
+// optional .protocol.gdt.adx.BidRequest.Geo geo = 9;
+bool BidRequest::has_geo() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
+}
+void BidRequest::set_has_geo() {
+  _has_bits_[0] |= 0x00000100u;
+}
+void BidRequest::clear_has_geo() {
+  _has_bits_[0] &= ~0x00000100u;
+}
+void BidRequest::clear_geo() {
+  if (geo_ != NULL) geo_->::protocol::gdt::adx::BidRequest_Geo::Clear();
+  clear_has_geo();
+}
+const ::protocol::gdt::adx::BidRequest_Geo& BidRequest::geo() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.geo)
+  return geo_ != NULL ? *geo_ : *default_instance_->geo_;
+}
+::protocol::gdt::adx::BidRequest_Geo* BidRequest::mutable_geo() {
+  set_has_geo();
+  if (geo_ == NULL) {
+    geo_ = new ::protocol::gdt::adx::BidRequest_Geo;
+  }
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidRequest.geo)
+  return geo_;
+}
+::protocol::gdt::adx::BidRequest_Geo* BidRequest::release_geo() {
+  // @@protoc_insertion_point(field_release:protocol.gdt.adx.BidRequest.geo)
+  clear_has_geo();
+  ::protocol::gdt::adx::BidRequest_Geo* temp = geo_;
+  geo_ = NULL;
+  return temp;
+}
+void BidRequest::set_allocated_geo(::protocol::gdt::adx::BidRequest_Geo* geo) {
+  delete geo_;
+  geo_ = geo;
+  if (geo) {
+    set_has_geo();
+  } else {
+    clear_has_geo();
+  }
+  // @@protoc_insertion_point(field_set_allocated:protocol.gdt.adx.BidRequest.geo)
+}
+
+// optional .protocol.gdt.adx.BidRequest.App app = 10;
+bool BidRequest::has_app() const {
+  return (_has_bits_[0] & 0x00000200u) != 0;
+}
+void BidRequest::set_has_app() {
+  _has_bits_[0] |= 0x00000200u;
+}
+void BidRequest::clear_has_app() {
+  _has_bits_[0] &= ~0x00000200u;
+}
+void BidRequest::clear_app() {
+  if (app_ != NULL) app_->::protocol::gdt::adx::BidRequest_App::Clear();
+  clear_has_app();
+}
+const ::protocol::gdt::adx::BidRequest_App& BidRequest::app() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.app)
+  return app_ != NULL ? *app_ : *default_instance_->app_;
+}
+::protocol::gdt::adx::BidRequest_App* BidRequest::mutable_app() {
+  set_has_app();
+  if (app_ == NULL) {
+    app_ = new ::protocol::gdt::adx::BidRequest_App;
+  }
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidRequest.app)
+  return app_;
+}
+::protocol::gdt::adx::BidRequest_App* BidRequest::release_app() {
+  // @@protoc_insertion_point(field_release:protocol.gdt.adx.BidRequest.app)
+  clear_has_app();
+  ::protocol::gdt::adx::BidRequest_App* temp = app_;
+  app_ = NULL;
+  return temp;
+}
+void BidRequest::set_allocated_app(::protocol::gdt::adx::BidRequest_App* app) {
+  delete app_;
+  app_ = app;
+  if (app) {
+    set_has_app();
+  } else {
+    clear_has_app();
+  }
+  // @@protoc_insertion_point(field_set_allocated:protocol.gdt.adx.BidRequest.app)
+}
+
+// optional uint64 boss_qq = 11;
+bool BidRequest::has_boss_qq() const {
+  return (_has_bits_[0] & 0x00000400u) != 0;
+}
+void BidRequest::set_has_boss_qq() {
+  _has_bits_[0] |= 0x00000400u;
+}
+void BidRequest::clear_has_boss_qq() {
+  _has_bits_[0] &= ~0x00000400u;
+}
+void BidRequest::clear_boss_qq() {
+  boss_qq_ = GOOGLE_ULONGLONG(0);
+  clear_has_boss_qq();
+}
+ ::google::protobuf::uint64 BidRequest::boss_qq() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidRequest.boss_qq)
+  return boss_qq_;
+}
+ void BidRequest::set_boss_qq(::google::protobuf::uint64 value) {
+  set_has_boss_qq();
+  boss_qq_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidRequest.boss_qq)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int BidResponse_Bid::kCreativeIdFieldNumber;
 const int BidResponse_Bid::kBidPriceFieldNumber;
 const int BidResponse_Bid::kImpressionParamFieldNumber;
 const int BidResponse_Bid::kClickParamFieldNumber;
-#endif  // !_MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 BidResponse_Bid::BidResponse_Bid()
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.gdt.adx.BidResponse.Bid)
 }
 
 void BidResponse_Bid::InitAsDefaultInstance() {
 }
 
 BidResponse_Bid::BidResponse_Bid(const BidResponse_Bid& from)
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.gdt.adx.BidResponse.Bid)
 }
 
 void BidResponse_Bid::SharedCtor() {
+  ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  creative_id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  creative_id_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   bid_price_ = 0;
-  impression_param_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  click_param_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  impression_param_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  click_param_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
 BidResponse_Bid::~BidResponse_Bid() {
+  // @@protoc_insertion_point(destructor:protocol.gdt.adx.BidResponse.Bid)
   SharedDtor();
 }
 
 void BidResponse_Bid::SharedDtor() {
-  if (creative_id_ != &::google::protobuf::internal::kEmptyString) {
-    delete creative_id_;
-  }
-  if (impression_param_ != &::google::protobuf::internal::kEmptyString) {
-    delete impression_param_;
-  }
-  if (click_param_ != &::google::protobuf::internal::kEmptyString) {
-    delete click_param_;
-  }
+  creative_id_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  impression_param_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  click_param_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
 }
@@ -4347,51 +6331,56 @@ const BidResponse_Bid& BidResponse_Bid::default_instance() {
 
 BidResponse_Bid* BidResponse_Bid::default_instance_ = NULL;
 
-BidResponse_Bid* BidResponse_Bid::New() const {
-  return new BidResponse_Bid;
+BidResponse_Bid* BidResponse_Bid::New(::google::protobuf::Arena* arena) const {
+  BidResponse_Bid* n = new BidResponse_Bid;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
 }
 
 void BidResponse_Bid::Clear() {
+// @@protoc_insertion_point(message_clear_start:protocol.gdt.adx.BidResponse.Bid)
   _extensions_.Clear();
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+  if (_has_bits_[0 / 32] & 15u) {
     if (has_creative_id()) {
-      if (creative_id_ != &::google::protobuf::internal::kEmptyString) {
-        creative_id_->clear();
-      }
+      creative_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
     bid_price_ = 0;
     if (has_impression_param()) {
-      if (impression_param_ != &::google::protobuf::internal::kEmptyString) {
-        impression_param_->clear();
-      }
+      impression_param_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
     if (has_click_param()) {
-      if (click_param_ != &::google::protobuf::internal::kEmptyString) {
-        click_param_->clear();
-      }
+      click_param_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
 }
 
 bool BidResponse_Bid::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:protocol.gdt.adx.BidResponse.Bid)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // optional string creative_id = 1;
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 10) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_creative_id()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
             this->creative_id().data(), this->creative_id().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "protocol.gdt.adx.BidResponse.Bid.creative_id");
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(16)) goto parse_bid_price;
         break;
@@ -4399,15 +6388,14 @@ bool BidResponse_Bid::MergePartialFromCodedStream(
 
       // optional int32 bid_price = 2;
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 16) {
          parse_bid_price:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &bid_price_)));
           set_has_bid_price();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(26)) goto parse_impression_param;
         break;
@@ -4415,16 +6403,16 @@ bool BidResponse_Bid::MergePartialFromCodedStream(
 
       // optional string impression_param = 3;
       case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 26) {
          parse_impression_param:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_impression_param()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
             this->impression_param().data(), this->impression_param().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "protocol.gdt.adx.BidResponse.Bid.impression_param");
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(34)) goto parse_click_param;
         break;
@@ -4432,26 +6420,27 @@ bool BidResponse_Bid::MergePartialFromCodedStream(
 
       // optional string click_param = 4;
       case 4: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 34) {
          parse_click_param:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_click_param()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
             this->click_param().data(), this->click_param().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "protocol.gdt.adx.BidResponse.Bid.click_param");
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         if ((80000u <= tag)) {
           DO_(_extensions_.ParseField(tag, input, default_instance_,
@@ -4464,18 +6453,25 @@ bool BidResponse_Bid::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.gdt.adx.BidResponse.Bid)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.gdt.adx.BidResponse.Bid)
+  return false;
 #undef DO_
 }
 
 void BidResponse_Bid::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.gdt.adx.BidResponse.Bid)
   // optional string creative_id = 1;
   if (has_creative_id()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->creative_id().data(), this->creative_id().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidResponse.Bid.creative_id");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->creative_id(), output);
   }
 
@@ -4486,19 +6482,21 @@ void BidResponse_Bid::SerializeWithCachedSizes(
 
   // optional string impression_param = 3;
   if (has_impression_param()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->impression_param().data(), this->impression_param().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidResponse.Bid.impression_param");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       3, this->impression_param(), output);
   }
 
   // optional string click_param = 4;
   if (has_click_param()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->click_param().data(), this->click_param().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidResponse.Bid.click_param");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       4, this->click_param(), output);
   }
 
@@ -4506,19 +6504,22 @@ void BidResponse_Bid::SerializeWithCachedSizes(
   _extensions_.SerializeWithCachedSizes(
       10000, 536870912, output);
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:protocol.gdt.adx.BidResponse.Bid)
 }
 
-::google::protobuf::uint8* BidResponse_Bid::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* BidResponse_Bid::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.gdt.adx.BidResponse.Bid)
   // optional string creative_id = 1;
   if (has_creative_id()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->creative_id().data(), this->creative_id().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidResponse.Bid.creative_id");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->creative_id(), target);
@@ -4531,9 +6532,10 @@ void BidResponse_Bid::SerializeWithCachedSizes(
 
   // optional string impression_param = 3;
   if (has_impression_param()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->impression_param().data(), this->impression_param().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidResponse.Bid.impression_param");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         3, this->impression_param(), target);
@@ -4541,29 +6543,32 @@ void BidResponse_Bid::SerializeWithCachedSizes(
 
   // optional string click_param = 4;
   if (has_click_param()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->click_param().data(), this->click_param().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidResponse.Bid.click_param");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         4, this->click_param(), target);
   }
 
   // Extension range [10000, 536870912)
-  target = _extensions_.SerializeWithCachedSizesToArray(
-      10000, 536870912, target);
+  target = _extensions_.InternalSerializeWithCachedSizesToArray(
+      10000, 536870912, false, target);
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.gdt.adx.BidResponse.Bid)
   return target;
 }
 
 int BidResponse_Bid::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.gdt.adx.BidResponse.Bid)
   int total_size = 0;
 
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+  if (_has_bits_[0 / 32] & 15u) {
     // optional string creative_id = 1;
     if (has_creative_id()) {
       total_size += 1 +
@@ -4595,7 +6600,7 @@ int BidResponse_Bid::ByteSize() const {
   }
   total_size += _extensions_.ByteSize();
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         unknown_fields());
@@ -4607,44 +6612,59 @@ int BidResponse_Bid::ByteSize() const {
 }
 
 void BidResponse_Bid::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const BidResponse_Bid* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const BidResponse_Bid*>(
-      &from);
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.gdt.adx.BidResponse.Bid)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const BidResponse_Bid* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const BidResponse_Bid>(
+          &from);
   if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.gdt.adx.BidResponse.Bid)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.gdt.adx.BidResponse.Bid)
     MergeFrom(*source);
   }
 }
 
 void BidResponse_Bid::MergeFrom(const BidResponse_Bid& from) {
-  GOOGLE_CHECK_NE(&from, this);
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.gdt.adx.BidResponse.Bid)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_creative_id()) {
-      set_creative_id(from.creative_id());
+      set_has_creative_id();
+      creative_id_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.creative_id_);
     }
     if (from.has_bid_price()) {
       set_bid_price(from.bid_price());
     }
     if (from.has_impression_param()) {
-      set_impression_param(from.impression_param());
+      set_has_impression_param();
+      impression_param_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.impression_param_);
     }
     if (from.has_click_param()) {
-      set_click_param(from.click_param());
+      set_has_click_param();
+      click_param_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.click_param_);
     }
   }
   _extensions_.MergeFrom(from._extensions_);
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
 }
 
 void BidResponse_Bid::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.gdt.adx.BidResponse.Bid)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void BidResponse_Bid::CopyFrom(const BidResponse_Bid& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.gdt.adx.BidResponse.Bid)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -4657,16 +6677,18 @@ bool BidResponse_Bid::IsInitialized() const {
 }
 
 void BidResponse_Bid::Swap(BidResponse_Bid* other) {
-  if (other != this) {
-    std::swap(creative_id_, other->creative_id_);
-    std::swap(bid_price_, other->bid_price_);
-    std::swap(impression_param_, other->impression_param_);
-    std::swap(click_param_, other->click_param_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-    _extensions_.Swap(&other->_extensions_);
-  }
+  if (other == this) return;
+  InternalSwap(other);
+}
+void BidResponse_Bid::InternalSwap(BidResponse_Bid* other) {
+  creative_id_.Swap(&other->creative_id_);
+  std::swap(bid_price_, other->bid_price_);
+  impression_param_.Swap(&other->impression_param_);
+  click_param_.Swap(&other->click_param_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+  _extensions_.Swap(&other->_extensions_);
 }
 
 ::google::protobuf::Metadata BidResponse_Bid::GetMetadata() const {
@@ -4680,39 +6702,42 @@ void BidResponse_Bid::Swap(BidResponse_Bid* other) {
 
 // -------------------------------------------------------------------
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int BidResponse_SeatBid::kImpressionIdFieldNumber;
 const int BidResponse_SeatBid::kBidsFieldNumber;
-#endif  // !_MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 BidResponse_SeatBid::BidResponse_SeatBid()
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.gdt.adx.BidResponse.SeatBid)
 }
 
 void BidResponse_SeatBid::InitAsDefaultInstance() {
 }
 
 BidResponse_SeatBid::BidResponse_SeatBid(const BidResponse_SeatBid& from)
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.gdt.adx.BidResponse.SeatBid)
 }
 
 void BidResponse_SeatBid::SharedCtor() {
+  ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  impression_id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  impression_id_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
 BidResponse_SeatBid::~BidResponse_SeatBid() {
+  // @@protoc_insertion_point(destructor:protocol.gdt.adx.BidResponse.SeatBid)
   SharedDtor();
 }
 
 void BidResponse_SeatBid::SharedDtor() {
-  if (impression_id_ != &::google::protobuf::internal::kEmptyString) {
-    delete impression_id_;
-  }
+  impression_id_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
 }
@@ -4734,40 +6759,47 @@ const BidResponse_SeatBid& BidResponse_SeatBid::default_instance() {
 
 BidResponse_SeatBid* BidResponse_SeatBid::default_instance_ = NULL;
 
-BidResponse_SeatBid* BidResponse_SeatBid::New() const {
-  return new BidResponse_SeatBid;
+BidResponse_SeatBid* BidResponse_SeatBid::New(::google::protobuf::Arena* arena) const {
+  BidResponse_SeatBid* n = new BidResponse_SeatBid;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
 }
 
 void BidResponse_SeatBid::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (has_impression_id()) {
-      if (impression_id_ != &::google::protobuf::internal::kEmptyString) {
-        impression_id_->clear();
-      }
-    }
+// @@protoc_insertion_point(message_clear_start:protocol.gdt.adx.BidResponse.SeatBid)
+  if (has_impression_id()) {
+    impression_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   }
   bids_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
 }
 
 bool BidResponse_SeatBid::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:protocol.gdt.adx.BidResponse.SeatBid)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // optional string impression_id = 1;
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 10) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_impression_id()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
             this->impression_id().data(), this->impression_id().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "protocol.gdt.adx.BidResponse.SeatBid.impression_id");
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(18)) goto parse_bids;
         break;
@@ -4775,24 +6807,27 @@ bool BidResponse_SeatBid::MergePartialFromCodedStream(
 
       // repeated .protocol.gdt.adx.BidResponse.Bid bids = 2;
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 18) {
          parse_bids:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+          DO_(input->IncrementRecursionDepth());
+         parse_loop_bids:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
                 input, add_bids()));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectTag(18)) goto parse_bids;
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectTag(18)) goto parse_loop_bids;
+        input->UnsafeDecrementRecursionDepth();
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -4800,71 +6835,81 @@ bool BidResponse_SeatBid::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.gdt.adx.BidResponse.SeatBid)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.gdt.adx.BidResponse.SeatBid)
+  return false;
 #undef DO_
 }
 
 void BidResponse_SeatBid::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.gdt.adx.BidResponse.SeatBid)
   // optional string impression_id = 1;
   if (has_impression_id()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->impression_id().data(), this->impression_id().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidResponse.SeatBid.impression_id");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->impression_id(), output);
   }
 
   // repeated .protocol.gdt.adx.BidResponse.Bid bids = 2;
-  for (int i = 0; i < this->bids_size(); i++) {
+  for (unsigned int i = 0, n = this->bids_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       2, this->bids(i), output);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:protocol.gdt.adx.BidResponse.SeatBid)
 }
 
-::google::protobuf::uint8* BidResponse_SeatBid::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* BidResponse_SeatBid::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.gdt.adx.BidResponse.SeatBid)
   // optional string impression_id = 1;
   if (has_impression_id()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->impression_id().data(), this->impression_id().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidResponse.SeatBid.impression_id");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->impression_id(), target);
   }
 
   // repeated .protocol.gdt.adx.BidResponse.Bid bids = 2;
-  for (int i = 0; i < this->bids_size(); i++) {
+  for (unsigned int i = 0, n = this->bids_size(); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteMessageNoVirtualToArray(
-        2, this->bids(i), target);
+      InternalWriteMessageNoVirtualToArray(
+        2, this->bids(i), false, target);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.gdt.adx.BidResponse.SeatBid)
   return target;
 }
 
 int BidResponse_SeatBid::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.gdt.adx.BidResponse.SeatBid)
   int total_size = 0;
 
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // optional string impression_id = 1;
-    if (has_impression_id()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->impression_id());
-    }
-
+  // optional string impression_id = 1;
+  if (has_impression_id()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->impression_id());
   }
+
   // repeated .protocol.gdt.adx.BidResponse.Bid bids = 2;
   total_size += 1 * this->bids_size();
   for (int i = 0; i < this->bids_size(); i++) {
@@ -4873,7 +6918,7 @@ int BidResponse_SeatBid::ByteSize() const {
         this->bids(i));
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         unknown_fields());
@@ -4885,35 +6930,48 @@ int BidResponse_SeatBid::ByteSize() const {
 }
 
 void BidResponse_SeatBid::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const BidResponse_SeatBid* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const BidResponse_SeatBid*>(
-      &from);
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.gdt.adx.BidResponse.SeatBid)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const BidResponse_SeatBid* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const BidResponse_SeatBid>(
+          &from);
   if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.gdt.adx.BidResponse.SeatBid)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.gdt.adx.BidResponse.SeatBid)
     MergeFrom(*source);
   }
 }
 
 void BidResponse_SeatBid::MergeFrom(const BidResponse_SeatBid& from) {
-  GOOGLE_CHECK_NE(&from, this);
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.gdt.adx.BidResponse.SeatBid)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
   bids_.MergeFrom(from.bids_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_impression_id()) {
-      set_impression_id(from.impression_id());
+      set_has_impression_id();
+      impression_id_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.impression_id_);
     }
   }
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
 }
 
 void BidResponse_SeatBid::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.gdt.adx.BidResponse.SeatBid)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void BidResponse_SeatBid::CopyFrom(const BidResponse_SeatBid& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.gdt.adx.BidResponse.SeatBid)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -4921,20 +6979,20 @@ void BidResponse_SeatBid::CopyFrom(const BidResponse_SeatBid& from) {
 
 bool BidResponse_SeatBid::IsInitialized() const {
 
-  for (int i = 0; i < bids_size(); i++) {
-    if (!this->bids(i).IsInitialized()) return false;
-  }
+  if (!::google::protobuf::internal::AllAreInitialized(this->bids())) return false;
   return true;
 }
 
 void BidResponse_SeatBid::Swap(BidResponse_SeatBid* other) {
-  if (other != this) {
-    std::swap(impression_id_, other->impression_id_);
-    bids_.Swap(&other->bids_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
+  if (other == this) return;
+  InternalSwap(other);
+}
+void BidResponse_SeatBid::InternalSwap(BidResponse_SeatBid* other) {
+  impression_id_.Swap(&other->impression_id_);
+  bids_.UnsafeArenaSwap(&other->bids_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata BidResponse_SeatBid::GetMetadata() const {
@@ -4948,41 +7006,44 @@ void BidResponse_SeatBid::Swap(BidResponse_SeatBid* other) {
 
 // -------------------------------------------------------------------
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int BidResponse::kRequestIdFieldNumber;
 const int BidResponse::kSeatBidsFieldNumber;
 const int BidResponse::kProcessingTimeMsFieldNumber;
-#endif  // !_MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 BidResponse::BidResponse()
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.gdt.adx.BidResponse)
 }
 
 void BidResponse::InitAsDefaultInstance() {
 }
 
 BidResponse::BidResponse(const BidResponse& from)
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.gdt.adx.BidResponse)
 }
 
 void BidResponse::SharedCtor() {
+  ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  request_id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  request_id_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   processing_time_ms_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
 BidResponse::~BidResponse() {
+  // @@protoc_insertion_point(destructor:protocol.gdt.adx.BidResponse)
   SharedDtor();
 }
 
 void BidResponse::SharedDtor() {
-  if (request_id_ != &::google::protobuf::internal::kEmptyString) {
-    delete request_id_;
-  }
+  request_id_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
 }
@@ -5004,42 +7065,51 @@ const BidResponse& BidResponse::default_instance() {
 
 BidResponse* BidResponse::default_instance_ = NULL;
 
-BidResponse* BidResponse::New() const {
-  return new BidResponse;
+BidResponse* BidResponse::New(::google::protobuf::Arena* arena) const {
+  BidResponse* n = new BidResponse;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
 }
 
 void BidResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:protocol.gdt.adx.BidResponse)
   _extensions_.Clear();
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+  if (_has_bits_[0 / 32] & 5u) {
     if (has_request_id()) {
-      if (request_id_ != &::google::protobuf::internal::kEmptyString) {
-        request_id_->clear();
-      }
+      request_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
     processing_time_ms_ = 0;
   }
   seat_bids_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
 }
 
 bool BidResponse::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:protocol.gdt.adx.BidResponse)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // optional string request_id = 1;
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 10) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_request_id()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
             this->request_id().data(), this->request_id().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "protocol.gdt.adx.BidResponse.request_id");
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(18)) goto parse_seat_bids;
         break;
@@ -5047,40 +7117,42 @@ bool BidResponse::MergePartialFromCodedStream(
 
       // repeated .protocol.gdt.adx.BidResponse.SeatBid seat_bids = 2;
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 18) {
          parse_seat_bids:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+          DO_(input->IncrementRecursionDepth());
+         parse_loop_seat_bids:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
                 input, add_seat_bids()));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectTag(18)) goto parse_seat_bids;
+        if (input->ExpectTag(18)) goto parse_loop_seat_bids;
+        input->UnsafeDecrementRecursionDepth();
         if (input->ExpectTag(24)) goto parse_processing_time_ms;
         break;
       }
 
       // optional int32 processing_time_ms = 3;
       case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 24) {
          parse_processing_time_ms:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &processing_time_ms_)));
           set_has_processing_time_ms();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         if ((80000u <= tag)) {
           DO_(_extensions_.ParseField(tag, input, default_instance_,
@@ -5093,23 +7165,30 @@ bool BidResponse::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.gdt.adx.BidResponse)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.gdt.adx.BidResponse)
+  return false;
 #undef DO_
 }
 
 void BidResponse::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.gdt.adx.BidResponse)
   // optional string request_id = 1;
   if (has_request_id()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->request_id().data(), this->request_id().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidResponse.request_id");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->request_id(), output);
   }
 
   // repeated .protocol.gdt.adx.BidResponse.SeatBid seat_bids = 2;
-  for (int i = 0; i < this->seat_bids_size(); i++) {
+  for (unsigned int i = 0, n = this->seat_bids_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       2, this->seat_bids(i), output);
   }
@@ -5123,29 +7202,32 @@ void BidResponse::SerializeWithCachedSizes(
   _extensions_.SerializeWithCachedSizes(
       10000, 536870912, output);
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:protocol.gdt.adx.BidResponse)
 }
 
-::google::protobuf::uint8* BidResponse::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* BidResponse::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.gdt.adx.BidResponse)
   // optional string request_id = 1;
   if (has_request_id()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->request_id().data(), this->request_id().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.gdt.adx.BidResponse.request_id");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->request_id(), target);
   }
 
   // repeated .protocol.gdt.adx.BidResponse.SeatBid seat_bids = 2;
-  for (int i = 0; i < this->seat_bids_size(); i++) {
+  for (unsigned int i = 0, n = this->seat_bids_size(); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteMessageNoVirtualToArray(
-        2, this->seat_bids(i), target);
+      InternalWriteMessageNoVirtualToArray(
+        2, this->seat_bids(i), false, target);
   }
 
   // optional int32 processing_time_ms = 3;
@@ -5154,20 +7236,22 @@ void BidResponse::SerializeWithCachedSizes(
   }
 
   // Extension range [10000, 536870912)
-  target = _extensions_.SerializeWithCachedSizesToArray(
-      10000, 536870912, target);
+  target = _extensions_.InternalSerializeWithCachedSizesToArray(
+      10000, 536870912, false, target);
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.gdt.adx.BidResponse)
   return target;
 }
 
 int BidResponse::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.gdt.adx.BidResponse)
   int total_size = 0;
 
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+  if (_has_bits_[0 / 32] & 5u) {
     // optional string request_id = 1;
     if (has_request_id()) {
       total_size += 1 +
@@ -5193,7 +7277,7 @@ int BidResponse::ByteSize() const {
 
   total_size += _extensions_.ByteSize();
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         unknown_fields());
@@ -5205,39 +7289,52 @@ int BidResponse::ByteSize() const {
 }
 
 void BidResponse::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const BidResponse* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const BidResponse*>(
-      &from);
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.gdt.adx.BidResponse)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const BidResponse* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const BidResponse>(
+          &from);
   if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.gdt.adx.BidResponse)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.gdt.adx.BidResponse)
     MergeFrom(*source);
   }
 }
 
 void BidResponse::MergeFrom(const BidResponse& from) {
-  GOOGLE_CHECK_NE(&from, this);
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.gdt.adx.BidResponse)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
   seat_bids_.MergeFrom(from.seat_bids_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_request_id()) {
-      set_request_id(from.request_id());
+      set_has_request_id();
+      request_id_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.request_id_);
     }
     if (from.has_processing_time_ms()) {
       set_processing_time_ms(from.processing_time_ms());
     }
   }
   _extensions_.MergeFrom(from._extensions_);
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
 }
 
 void BidResponse::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.gdt.adx.BidResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void BidResponse::CopyFrom(const BidResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.gdt.adx.BidResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -5245,23 +7342,23 @@ void BidResponse::CopyFrom(const BidResponse& from) {
 
 bool BidResponse::IsInitialized() const {
 
-  for (int i = 0; i < seat_bids_size(); i++) {
-    if (!this->seat_bids(i).IsInitialized()) return false;
-  }
+  if (!::google::protobuf::internal::AllAreInitialized(this->seat_bids())) return false;
 
   if (!_extensions_.IsInitialized()) return false;  return true;
 }
 
 void BidResponse::Swap(BidResponse* other) {
-  if (other != this) {
-    std::swap(request_id_, other->request_id_);
-    seat_bids_.Swap(&other->seat_bids_);
-    std::swap(processing_time_ms_, other->processing_time_ms_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-    _extensions_.Swap(&other->_extensions_);
-  }
+  if (other == this) return;
+  InternalSwap(other);
+}
+void BidResponse::InternalSwap(BidResponse* other) {
+  request_id_.Swap(&other->request_id_);
+  seat_bids_.UnsafeArenaSwap(&other->seat_bids_);
+  std::swap(processing_time_ms_, other->processing_time_ms_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+  _extensions_.Swap(&other->_extensions_);
 }
 
 ::google::protobuf::Metadata BidResponse::GetMetadata() const {
@@ -5272,6 +7369,396 @@ void BidResponse::Swap(BidResponse* other) {
   return metadata;
 }
 
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// BidResponse_Bid
+
+// optional string creative_id = 1;
+bool BidResponse_Bid::has_creative_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void BidResponse_Bid::set_has_creative_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void BidResponse_Bid::clear_has_creative_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void BidResponse_Bid::clear_creative_id() {
+  creative_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_creative_id();
+}
+ const ::std::string& BidResponse_Bid::creative_id() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidResponse.Bid.creative_id)
+  return creative_id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidResponse_Bid::set_creative_id(const ::std::string& value) {
+  set_has_creative_id();
+  creative_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidResponse.Bid.creative_id)
+}
+ void BidResponse_Bid::set_creative_id(const char* value) {
+  set_has_creative_id();
+  creative_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.gdt.adx.BidResponse.Bid.creative_id)
+}
+ void BidResponse_Bid::set_creative_id(const char* value, size_t size) {
+  set_has_creative_id();
+  creative_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.gdt.adx.BidResponse.Bid.creative_id)
+}
+ ::std::string* BidResponse_Bid::mutable_creative_id() {
+  set_has_creative_id();
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidResponse.Bid.creative_id)
+  return creative_id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* BidResponse_Bid::release_creative_id() {
+  // @@protoc_insertion_point(field_release:protocol.gdt.adx.BidResponse.Bid.creative_id)
+  clear_has_creative_id();
+  return creative_id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidResponse_Bid::set_allocated_creative_id(::std::string* creative_id) {
+  if (creative_id != NULL) {
+    set_has_creative_id();
+  } else {
+    clear_has_creative_id();
+  }
+  creative_id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), creative_id);
+  // @@protoc_insertion_point(field_set_allocated:protocol.gdt.adx.BidResponse.Bid.creative_id)
+}
+
+// optional int32 bid_price = 2;
+bool BidResponse_Bid::has_bid_price() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void BidResponse_Bid::set_has_bid_price() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void BidResponse_Bid::clear_has_bid_price() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void BidResponse_Bid::clear_bid_price() {
+  bid_price_ = 0;
+  clear_has_bid_price();
+}
+ ::google::protobuf::int32 BidResponse_Bid::bid_price() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidResponse.Bid.bid_price)
+  return bid_price_;
+}
+ void BidResponse_Bid::set_bid_price(::google::protobuf::int32 value) {
+  set_has_bid_price();
+  bid_price_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidResponse.Bid.bid_price)
+}
+
+// optional string impression_param = 3;
+bool BidResponse_Bid::has_impression_param() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+void BidResponse_Bid::set_has_impression_param() {
+  _has_bits_[0] |= 0x00000004u;
+}
+void BidResponse_Bid::clear_has_impression_param() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+void BidResponse_Bid::clear_impression_param() {
+  impression_param_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_impression_param();
+}
+ const ::std::string& BidResponse_Bid::impression_param() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidResponse.Bid.impression_param)
+  return impression_param_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidResponse_Bid::set_impression_param(const ::std::string& value) {
+  set_has_impression_param();
+  impression_param_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidResponse.Bid.impression_param)
+}
+ void BidResponse_Bid::set_impression_param(const char* value) {
+  set_has_impression_param();
+  impression_param_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.gdt.adx.BidResponse.Bid.impression_param)
+}
+ void BidResponse_Bid::set_impression_param(const char* value, size_t size) {
+  set_has_impression_param();
+  impression_param_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.gdt.adx.BidResponse.Bid.impression_param)
+}
+ ::std::string* BidResponse_Bid::mutable_impression_param() {
+  set_has_impression_param();
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidResponse.Bid.impression_param)
+  return impression_param_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* BidResponse_Bid::release_impression_param() {
+  // @@protoc_insertion_point(field_release:protocol.gdt.adx.BidResponse.Bid.impression_param)
+  clear_has_impression_param();
+  return impression_param_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidResponse_Bid::set_allocated_impression_param(::std::string* impression_param) {
+  if (impression_param != NULL) {
+    set_has_impression_param();
+  } else {
+    clear_has_impression_param();
+  }
+  impression_param_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), impression_param);
+  // @@protoc_insertion_point(field_set_allocated:protocol.gdt.adx.BidResponse.Bid.impression_param)
+}
+
+// optional string click_param = 4;
+bool BidResponse_Bid::has_click_param() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+void BidResponse_Bid::set_has_click_param() {
+  _has_bits_[0] |= 0x00000008u;
+}
+void BidResponse_Bid::clear_has_click_param() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+void BidResponse_Bid::clear_click_param() {
+  click_param_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_click_param();
+}
+ const ::std::string& BidResponse_Bid::click_param() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidResponse.Bid.click_param)
+  return click_param_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidResponse_Bid::set_click_param(const ::std::string& value) {
+  set_has_click_param();
+  click_param_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidResponse.Bid.click_param)
+}
+ void BidResponse_Bid::set_click_param(const char* value) {
+  set_has_click_param();
+  click_param_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.gdt.adx.BidResponse.Bid.click_param)
+}
+ void BidResponse_Bid::set_click_param(const char* value, size_t size) {
+  set_has_click_param();
+  click_param_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.gdt.adx.BidResponse.Bid.click_param)
+}
+ ::std::string* BidResponse_Bid::mutable_click_param() {
+  set_has_click_param();
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidResponse.Bid.click_param)
+  return click_param_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* BidResponse_Bid::release_click_param() {
+  // @@protoc_insertion_point(field_release:protocol.gdt.adx.BidResponse.Bid.click_param)
+  clear_has_click_param();
+  return click_param_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidResponse_Bid::set_allocated_click_param(::std::string* click_param) {
+  if (click_param != NULL) {
+    set_has_click_param();
+  } else {
+    clear_has_click_param();
+  }
+  click_param_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), click_param);
+  // @@protoc_insertion_point(field_set_allocated:protocol.gdt.adx.BidResponse.Bid.click_param)
+}
+
+// -------------------------------------------------------------------
+
+// BidResponse_SeatBid
+
+// optional string impression_id = 1;
+bool BidResponse_SeatBid::has_impression_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void BidResponse_SeatBid::set_has_impression_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void BidResponse_SeatBid::clear_has_impression_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void BidResponse_SeatBid::clear_impression_id() {
+  impression_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_impression_id();
+}
+ const ::std::string& BidResponse_SeatBid::impression_id() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidResponse.SeatBid.impression_id)
+  return impression_id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidResponse_SeatBid::set_impression_id(const ::std::string& value) {
+  set_has_impression_id();
+  impression_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidResponse.SeatBid.impression_id)
+}
+ void BidResponse_SeatBid::set_impression_id(const char* value) {
+  set_has_impression_id();
+  impression_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.gdt.adx.BidResponse.SeatBid.impression_id)
+}
+ void BidResponse_SeatBid::set_impression_id(const char* value, size_t size) {
+  set_has_impression_id();
+  impression_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.gdt.adx.BidResponse.SeatBid.impression_id)
+}
+ ::std::string* BidResponse_SeatBid::mutable_impression_id() {
+  set_has_impression_id();
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidResponse.SeatBid.impression_id)
+  return impression_id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* BidResponse_SeatBid::release_impression_id() {
+  // @@protoc_insertion_point(field_release:protocol.gdt.adx.BidResponse.SeatBid.impression_id)
+  clear_has_impression_id();
+  return impression_id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidResponse_SeatBid::set_allocated_impression_id(::std::string* impression_id) {
+  if (impression_id != NULL) {
+    set_has_impression_id();
+  } else {
+    clear_has_impression_id();
+  }
+  impression_id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), impression_id);
+  // @@protoc_insertion_point(field_set_allocated:protocol.gdt.adx.BidResponse.SeatBid.impression_id)
+}
+
+// repeated .protocol.gdt.adx.BidResponse.Bid bids = 2;
+int BidResponse_SeatBid::bids_size() const {
+  return bids_.size();
+}
+void BidResponse_SeatBid::clear_bids() {
+  bids_.Clear();
+}
+const ::protocol::gdt::adx::BidResponse_Bid& BidResponse_SeatBid::bids(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidResponse.SeatBid.bids)
+  return bids_.Get(index);
+}
+::protocol::gdt::adx::BidResponse_Bid* BidResponse_SeatBid::mutable_bids(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidResponse.SeatBid.bids)
+  return bids_.Mutable(index);
+}
+::protocol::gdt::adx::BidResponse_Bid* BidResponse_SeatBid::add_bids() {
+  // @@protoc_insertion_point(field_add:protocol.gdt.adx.BidResponse.SeatBid.bids)
+  return bids_.Add();
+}
+::google::protobuf::RepeatedPtrField< ::protocol::gdt::adx::BidResponse_Bid >*
+BidResponse_SeatBid::mutable_bids() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.gdt.adx.BidResponse.SeatBid.bids)
+  return &bids_;
+}
+const ::google::protobuf::RepeatedPtrField< ::protocol::gdt::adx::BidResponse_Bid >&
+BidResponse_SeatBid::bids() const {
+  // @@protoc_insertion_point(field_list:protocol.gdt.adx.BidResponse.SeatBid.bids)
+  return bids_;
+}
+
+// -------------------------------------------------------------------
+
+// BidResponse
+
+// optional string request_id = 1;
+bool BidResponse::has_request_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void BidResponse::set_has_request_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void BidResponse::clear_has_request_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void BidResponse::clear_request_id() {
+  request_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_request_id();
+}
+ const ::std::string& BidResponse::request_id() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidResponse.request_id)
+  return request_id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidResponse::set_request_id(const ::std::string& value) {
+  set_has_request_id();
+  request_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidResponse.request_id)
+}
+ void BidResponse::set_request_id(const char* value) {
+  set_has_request_id();
+  request_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.gdt.adx.BidResponse.request_id)
+}
+ void BidResponse::set_request_id(const char* value, size_t size) {
+  set_has_request_id();
+  request_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.gdt.adx.BidResponse.request_id)
+}
+ ::std::string* BidResponse::mutable_request_id() {
+  set_has_request_id();
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidResponse.request_id)
+  return request_id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* BidResponse::release_request_id() {
+  // @@protoc_insertion_point(field_release:protocol.gdt.adx.BidResponse.request_id)
+  clear_has_request_id();
+  return request_id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void BidResponse::set_allocated_request_id(::std::string* request_id) {
+  if (request_id != NULL) {
+    set_has_request_id();
+  } else {
+    clear_has_request_id();
+  }
+  request_id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), request_id);
+  // @@protoc_insertion_point(field_set_allocated:protocol.gdt.adx.BidResponse.request_id)
+}
+
+// repeated .protocol.gdt.adx.BidResponse.SeatBid seat_bids = 2;
+int BidResponse::seat_bids_size() const {
+  return seat_bids_.size();
+}
+void BidResponse::clear_seat_bids() {
+  seat_bids_.Clear();
+}
+const ::protocol::gdt::adx::BidResponse_SeatBid& BidResponse::seat_bids(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidResponse.seat_bids)
+  return seat_bids_.Get(index);
+}
+::protocol::gdt::adx::BidResponse_SeatBid* BidResponse::mutable_seat_bids(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.gdt.adx.BidResponse.seat_bids)
+  return seat_bids_.Mutable(index);
+}
+::protocol::gdt::adx::BidResponse_SeatBid* BidResponse::add_seat_bids() {
+  // @@protoc_insertion_point(field_add:protocol.gdt.adx.BidResponse.seat_bids)
+  return seat_bids_.Add();
+}
+::google::protobuf::RepeatedPtrField< ::protocol::gdt::adx::BidResponse_SeatBid >*
+BidResponse::mutable_seat_bids() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.gdt.adx.BidResponse.seat_bids)
+  return &seat_bids_;
+}
+const ::google::protobuf::RepeatedPtrField< ::protocol::gdt::adx::BidResponse_SeatBid >&
+BidResponse::seat_bids() const {
+  // @@protoc_insertion_point(field_list:protocol.gdt.adx.BidResponse.seat_bids)
+  return seat_bids_;
+}
+
+// optional int32 processing_time_ms = 3;
+bool BidResponse::has_processing_time_ms() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+void BidResponse::set_has_processing_time_ms() {
+  _has_bits_[0] |= 0x00000004u;
+}
+void BidResponse::clear_has_processing_time_ms() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+void BidResponse::clear_processing_time_ms() {
+  processing_time_ms_ = 0;
+  clear_has_processing_time_ms();
+}
+ ::google::protobuf::int32 BidResponse::processing_time_ms() const {
+  // @@protoc_insertion_point(field_get:protocol.gdt.adx.BidResponse.processing_time_ms)
+  return processing_time_ms_;
+}
+ void BidResponse::set_processing_time_ms(::google::protobuf::int32 value) {
+  set_has_processing_time_ms();
+  processing_time_ms_ = value;
+  // @@protoc_insertion_point(field_set:protocol.gdt.adx.BidResponse.processing_time_ms)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // @@protoc_insertion_point(namespace_scope)
 
