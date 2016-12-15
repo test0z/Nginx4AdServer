@@ -36,6 +36,39 @@ namespace bidding {
         return std::string(buf);
     }
 
+    bool AbstractBiddingHandler::fillLogItem(const AdSelectCondition & queryCondition, protocol::log::LogItem & logItem,
+                                             bool isAccepted)
+    {
+        logItem.reqStatus = 200;
+        logItem.adInfo.adxid = adInfo.adxid;
+        logItem.adInfo.adxpid = adInfo.adxpid;
+        if (isAccepted) {
+            logItem.adInfo.sid = adInfo.sid;
+            logItem.adInfo.advId = adInfo.advId;
+            logItem.adInfo.pid = adInfo.pid;
+            logItem.adInfo.adxpid = adInfo.adxpid;
+            logItem.adInfo.adxuid = adInfo.adxuid;
+            logItem.adInfo.bannerId = adInfo.bannerId;
+            logItem.adInfo.cid = adInfo.cid;
+            logItem.adInfo.mid = adInfo.mid;
+            logItem.adInfo.cpid = adInfo.cpid;
+            logItem.adInfo.offerPrice = adInfo.offerPrice;
+            logItem.adInfo.areaId = adInfo.areaId;
+            logItem.adInfo.priceType = adInfo.priceType;
+            logItem.adInfo.ppid = adInfo.ppid;
+            extractAreaInfo(adInfo.areaId.data(), logItem.geoInfo.country, logItem.geoInfo.province,
+                            logItem.geoInfo.city);
+            logItem.adInfo.bidSize = adInfo.bidSize;
+            logItem.adInfo.orderId = adInfo.orderId;
+        } else {
+            logItem.adInfo.pid = std::to_string(queryCondition.mttyPid);
+            logItem.adInfo.adxpid = queryCondition.adxpid;
+            logItem.adInfo.adxid = queryCondition.adxid;
+            logItem.adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
+        }
+        return fillSpecificLog(queryCondition, logItem, isAccepted);
+    }
+
     int AbstractBiddingHandler::extractRealValue(const std::string & input, int targetAdx)
     {
         const char * pdata = input.data();

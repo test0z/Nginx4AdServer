@@ -184,7 +184,7 @@ namespace corelogic {
                           << e.error().message << "，调用堆栈：" << std::endl
                           << e.trace();
             } catch (std::exception & e) {
-                LOG_ERROR << "记录点击失败，订单ID无效：" << paramMap[URL_ORDER_ID];
+                LOG_ERROR << "记录点击失败，订单ID无效：" << paramMap[URL_ORDER_ID] << ",query:" << data;
             }
             //用户频次控制逻辑接入
             // todo:

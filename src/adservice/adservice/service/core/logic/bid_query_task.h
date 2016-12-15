@@ -16,18 +16,18 @@ namespace corelogic {
 
     using namespace protocol::bidding;
 
-    static const int BID_MAX_MODULES = 10;
+    static const int BID_MAX_MODULES = 100;
 
     struct ModuleIndex {
-		uint64_t moduleHash;
+        uint64_t moduleHash;
         int64_t adxId;
 
-		ModuleIndex() = default;
+        ModuleIndex() = default;
 
-		ModuleIndex(uint64_t h, int64_t id)
-			: moduleHash(h)
-			, adxId(id)
-		{
+        ModuleIndex(uint64_t h, int64_t id)
+            : moduleHash(h)
+            , adxId(id)
+        {
         }
     };
 
@@ -45,8 +45,8 @@ namespace corelogic {
         static AbstractBiddingHandler * getBiddingHandler(int adxId);
 
     public:
-		explicit HandleBidQueryTask(adservice::utility::HttpRequest & request,
-									adservice::utility::HttpResponse & response)
+        explicit HandleBidQueryTask(adservice::utility::HttpRequest & request,
+                                    adservice::utility::HttpResponse & response)
             : AbstractQueryTask(request, response)
         {
             adxId = getAdxId(request.path_info());
@@ -68,8 +68,8 @@ namespace corelogic {
 
         void getPostParam(ParamMap & paramMap);
 
-		void customLogic(ParamMap & paramMap, protocol::log::LogItem & log,
-						 adservice::utility::HttpResponse & response);
+        void customLogic(ParamMap & paramMap, protocol::log::LogItem & log,
+                         adservice::utility::HttpResponse & response);
 
         virtual void onError(std::exception & e, adservice::utility::HttpResponse & resp) override;
 

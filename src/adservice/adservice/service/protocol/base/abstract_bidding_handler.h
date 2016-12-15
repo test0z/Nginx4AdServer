@@ -6,9 +6,9 @@
 #define ADCORE_ABSTRACT_BIDDING_HANDLER_H
 
 #include <functional>
-#include <string>
-
 #include <mtty/types.h>
+#include <string>
+#include <vector>
 
 #include "common/functions.h"
 #include "common/types.h"
@@ -28,7 +28,7 @@ namespace bidding {
 
     class AbstractBiddingHandler;
 
-    typedef std::function<bool(AbstractBiddingHandler *, AdSelectCondition &)> BiddingFilterCallback;
+    typedef std::function<bool(AbstractBiddingHandler *, std::vector<AdSelectCondition> &)> BiddingFilterCallback;
 
     void extractSize(const std::string & size, int & width, int & height);
     std::string makeBidSize(int width, int height);
@@ -68,7 +68,16 @@ namespace bidding {
         /**
          * 根据Bid 的相关信息对日志进行信息填充
          */
-        virtual bool fillLogItem(protocol::log::LogItem & logItem)
+        virtual bool fillLogItem(const AdSelectCondition & selectCondition, protocol::log::LogItem & logItem,
+                                 bool isAccepted = false);
+
+        /**
+         * @brief fillSpecificLog 各家平台具体日志字段的标准
+         * @param isAccepted
+         * @return
+         */
+        virtual bool fillSpecificLog(const AdSelectCondition & selectCondition, protocol::log::LogItem & logItem,
+                                     bool isAccepted = false)
         {
             return true;
         }
@@ -86,7 +95,8 @@ namespace bidding {
         /**
          * 将匹配结果转换为具体平台的格式的结果
          */
-        virtual void buildBidResult(const AdSelectCondition & selectCondition, const MT::common::SelectResult & result)
+        virtual void buildBidResult(const AdSelectCondition & selectCondition, const MT::common::SelectResult & result,
+                                    int seq = 0)
             = 0;
 
         /**

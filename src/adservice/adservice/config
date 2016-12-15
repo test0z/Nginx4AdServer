@@ -35,6 +35,11 @@ $ngx_addon_dir/service/protocol/guangyin/guangyin_bidding_handler.cpp
 $ngx_addon_dir/service/protocol/guangyin/guangyin_price.cpp
 $ngx_addon_dir/service/protocol/guangyin/guangyin_bidding.pb.cpp
 $ngx_addon_dir/service/protocol/netease/netease_bidding_handlerv2.cpp
+$ngx_addon_dir/service/protocol/netease/nex_bidding_handler.cpp
+$ngx_addon_dir/service/protocol/kupai/kupai_bidding_handler.cpp
+$ngx_addon_dir/service/protocol/kupai/wk_adx_rtb_ext.pb.cpp
+$ngx_addon_dir/service/protocol/kupai/openrtb.pb.cpp
+$ngx_addon_dir/service/protocol/kupai/kupai_price_decode.cpp
 $ngx_addon_dir/service/protocol/sohu/sohu_bidding_handler.cpp
 $ngx_addon_dir/service/protocol/sohu/sohu_price.cpp
 $ngx_addon_dir/service/protocol/sohu/sohuRTB.pb.cpp

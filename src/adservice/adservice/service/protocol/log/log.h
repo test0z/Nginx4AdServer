@@ -16,8 +16,8 @@
  * limitations under the License.
  */
 
-#ifndef LOG_AVRO_LOG_H_4021402556__H_
-#define LOG_AVRO_LOG_H_4021402556__H_
+#ifndef LOG_AVRO_LOG_H_3987287147__H_
+#define LOG_AVRO_LOG_H_3987287147__H_
 
 #include "avro/Decoder.hh"
 #include "avro/Encoder.hh"
@@ -533,12 +533,10 @@ struct codec_traits<protocol::log::LogPhaseType> {
     static void decode(Decoder & d, protocol::log::LogPhaseType & v)
     {
         size_t index = d.decodeEnum();
-        /*if (index < protocol::log::BID || index > protocol::log::MAPPING)
-        {
-                std::ostringstream error;
-                error << "enum value " << index << " is out of bound for protocol::log::LogPhaseType and cannot be
-        decoded";
-                throw avro::Exception(error.str());
+        /*if (index < protocol::log::BID || index > protocol::log::MAPPING) {
+            std::ostringstream error;
+            error << "enum value " << index << " is out of bound for protocol::log::LogPhaseType and cannot be decoded";
+            throw avro::Exception(error.str());
         }*/
         v = static_cast<protocol::log::LogPhaseType>(index);
     }

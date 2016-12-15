@@ -72,15 +72,13 @@ namespace bidding {
         return getProtoBufObject(bidRequest, data);
     }
 
-    bool SohuBiddingHandler::fillLogItem(protocol::log::LogItem & logItem)
+    bool SohuBiddingHandler::fillSpecificLog(const AdSelectCondition & selectCondition,
+                                             protocol::log::LogItem & logItem, bool isAccepted)
     {
-        logItem.reqStatus = 200;
         logItem.userAgent = bidRequest.device().ua();
-        logItem.ipInfo.proxy = bidRequest.device().ip();
-        logItem.adInfo.adxid = adInfo.adxid;
-        logItem.adInfo.adxpid = adInfo.adxpid;
-        logItem.referer = bidRequest.has_site() && bidRequest.site().has_page() ? bidRequest.site().page() : "";
-        if (isBidAccepted) {
+        logItem.ipInfo.proxy = selectCondition.ip;
+        logItem.referer = bidRequest.has_site() ? (bidRequest.site().has_page() ? bidRequest.site().page() : "") : "";
+        if (isAccepted) {
             if (bidRequest.has_device()) {
                 const Request_Device & device = bidRequest.device();
                 if (!(device.type() == "PC")) {
@@ -88,26 +86,6 @@ namespace bidding {
                     adInfo.adxid = logItem.adInfo.adxid = ADX_SOHU_MOBILE;
                 }
             }
-            logItem.adInfo.sid = adInfo.sid;
-            logItem.adInfo.advId = adInfo.advId;
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.adxpid = adInfo.adxpid;
-            logItem.adInfo.adxuid = adInfo.adxuid;
-            logItem.adInfo.bannerId = adInfo.bannerId;
-            logItem.adInfo.cid = adInfo.cid;
-            logItem.adInfo.mid = adInfo.mid;
-            logItem.adInfo.cpid = adInfo.cpid;
-            logItem.adInfo.offerPrice = adInfo.offerPrice;
-            logItem.adInfo.areaId = adInfo.areaId;
-            logItem.adInfo.priceType = adInfo.priceType;
-            logItem.adInfo.ppid = adInfo.ppid;
-            url::extractAreaInfo(adInfo.areaId.data(), logItem.geoInfo.country, logItem.geoInfo.province,
-                                 logItem.geoInfo.city);
-            logItem.adInfo.bidSize = adInfo.bidSize;
-            logItem.adInfo.orderId = adInfo.orderId;
-        } else {
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.bidSize = adInfo.bidSize;
         }
         return true;
     }
@@ -122,7 +100,8 @@ namespace bidding {
             return bidFailedReturn();
         const Request_Impression & adzInfo = bidRequest.impression(0);
         const std::string & pid = adzInfo.pid();
-        AdSelectCondition queryCondition;
+        std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
+        AdSelectCondition & queryCondition = queryConditions[0];
         queryCondition.adxid = ADX_SOHU_PC;
         queryCondition.adxpid = pid;
         queryCondition.basePrice = adzInfo.has_bidfloor() ? adzInfo.bidfloor() : 0;
@@ -164,31 +143,29 @@ namespace bidding {
             const std::string & dealId = adzInfo.campaignid();
             queryCondition.dealId = std::string(",") + dealId + ",";
         }
-        if (!filterCb(this, queryCondition)) {
-            adInfo.pid = std::to_string(queryCondition.mttyPid);
-            adInfo.adxpid = queryCondition.adxpid;
-            adInfo.adxid = queryCondition.adxid;
-            adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
+        if (!filterCb(this, queryConditions)) {
             return bidFailedReturn();
         }
         return isBidAccepted = true;
     }
 
     void SohuBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-                                            const MT::common::SelectResult & result)
+                                            const MT::common::SelectResult & result, int seq)
     {
-        bidResponse.Clear();
-        bidResponse.set_version(bidRequest.version());
-        bidResponse.set_bidid(bidRequest.bidid());
-        bidResponse.clear_seatbid();
+        if (seq == 0) {
+            bidResponse.Clear();
+            bidResponse.set_version(bidRequest.version());
+            bidResponse.set_bidid(bidRequest.bidid());
+            bidResponse.clear_seatbid();
+        }
         Response_SeatBid * seatBid = bidResponse.add_seatbid();
-        seatBid->set_idx(0);
+        seatBid->set_idx(seq);
         Response_Bid * adResult = seatBid->add_bid();
         const MT::common::Solution & finalSolution = result.solution;
         const MT::common::ADPlace & adplace = result.adplace;
         const MT::common::Banner & banner = result.banner;
         int advId = finalSolution.advId;
-        const Request_Impression & adzInfo = bidRequest.impression(0);
+        const Request_Impression & adzInfo = bidRequest.impression(seq);
         int maxCpmPrice = result.bidPrice;
         adResult->set_price(maxCpmPrice);
 

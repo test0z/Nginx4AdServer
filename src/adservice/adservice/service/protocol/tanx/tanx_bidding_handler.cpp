@@ -104,15 +104,13 @@ namespace bidding {
         return getProtoBufObject(bidRequest, data);
     }
 
-    bool TanxBiddingHandler::fillLogItem(protocol::log::LogItem & logItem)
+    bool TanxBiddingHandler::fillSpecificLog(const AdSelectCondition & selectCondition,
+                                             protocol::log::LogItem & logItem, bool isAccepted)
     {
-        logItem.reqStatus = 200;
         logItem.userAgent = bidRequest.user_agent();
         logItem.ipInfo.proxy = bidRequest.ip();
-        logItem.adInfo.adxid = adInfo.adxid;
-        logItem.adInfo.adxpid = adInfo.adxpid;
         logItem.referer = bidRequest.has_url() ? bidRequest.url() : "";
-        if (isBidAccepted) {
+        if (isAccepted) {
             if (bidRequest.has_mobile()) {
                 const BidRequest_Mobile & mobile = bidRequest.mobile();
                 if (mobile.has_device()) {
@@ -121,26 +119,6 @@ namespace bidding {
                     adInfo.adxid = logItem.adInfo.adxid = ADX_TANX_MOBILE;
                 }
             }
-            logItem.adInfo.sid = adInfo.sid;
-            logItem.adInfo.advId = adInfo.advId;
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.adxpid = adInfo.adxpid;
-            logItem.adInfo.adxuid = adInfo.adxuid;
-            logItem.adInfo.bannerId = adInfo.bannerId;
-            logItem.adInfo.cid = adInfo.cid;
-            logItem.adInfo.mid = adInfo.mid;
-            logItem.adInfo.cpid = adInfo.cpid;
-            logItem.adInfo.offerPrice = adInfo.offerPrice;
-            logItem.adInfo.areaId = adInfo.areaId;
-            logItem.adInfo.priceType = adInfo.priceType;
-            logItem.adInfo.ppid = adInfo.ppid;
-            url::extractAreaInfo(adInfo.areaId.data(), logItem.geoInfo.country, logItem.geoInfo.province,
-                                 logItem.geoInfo.city);
-            logItem.adInfo.bidSize = adInfo.bidSize;
-            logItem.adInfo.orderId = adInfo.orderId;
-        } else {
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.bidSize = adInfo.bidSize;
         }
         return true;
     }
@@ -156,7 +134,8 @@ namespace bidding {
             return bidFailedReturn();
         const BidRequest_AdzInfo & adzInfo = bidRequest.adzinfo(0);
         const std::string & pid = adzInfo.pid();
-        AdSelectCondition queryCondition;
+        std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
+        AdSelectCondition & queryCondition = queryConditions[0];
         queryCondition.adxid = ADX_TANX;
         queryCondition.adxpid = pid;
         queryCondition.ip = bidRequest.ip();
@@ -198,30 +177,29 @@ namespace bidding {
             cookieMappingKeyPC(ADX_TANX, bidRequest.has_tid() ? bidRequest.tid() : "");
         }
         queryCookieMapping(cmInfo.queryKV, queryCondition);
-        if (!filterCb(this, queryCondition)) {
-            adInfo.pid = std::to_string(queryCondition.mttyPid);
-            adInfo.adxpid = queryCondition.adxpid;
-            adInfo.adxid = queryCondition.adxid;
-            adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
+
+        if (!filterCb(this, queryConditions)) {
             return bidFailedReturn();
         }
         return isBidAccepted = true;
     }
 
     void TanxBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-                                            const MT::common::SelectResult & result)
+                                            const MT::common::SelectResult & result, int seq)
     {
-        bidResponse.Clear();
-        bidResponse.set_version(bidRequest.version());
-        bidResponse.set_bid(bidRequest.bid());
-        bidResponse.clear_ads();
+        if (seq == 0) {
+            bidResponse.Clear();
+            bidResponse.set_version(bidRequest.version());
+            bidResponse.set_bid(bidRequest.bid());
+            bidResponse.clear_ads();
+        }
         BidResponse_Ads * adResult = bidResponse.add_ads();
         const MT::common::Banner & banner = result.banner;
         std::string adxAdvIdStr = banner.adxAdvId;
         int adxAdvId = extractRealValue(adxAdvIdStr.data(), ADX_TANX);
         std::string adxIndustryTypeStr = banner.adxIndustryType;
         int adxIndustryType = extractRealValue(adxIndustryTypeStr.data(), ADX_TANX);
-        const BidRequest_AdzInfo & adzInfo = bidRequest.adzinfo(0);
+        const BidRequest_AdzInfo & adzInfo = bidRequest.adzinfo(seq);
         int maxCpmPrice = (int)result.bidPrice;
 
         adResult->set_max_cpm_price(maxCpmPrice);

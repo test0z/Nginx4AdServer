@@ -1,18 +1,20 @@
-//
-// Created by guoze.lin on 16/5/3.
-//
-
-#ifndef ADCORE_TANX_BIDDING_HANDLER_H
-#define ADCORE_TANX_BIDDING_HANDLER_H
+#ifndef NEX_BIDDING_HANDLER_H
+#define NEX_BIDDING_HANDLER_H
 
 #include "protocol/base/abstract_bidding_handler.h"
-#include "protocol/tanx/tanx_bidding.pb.h"
+#include "utility/json.h"
 
 namespace protocol {
 namespace bidding {
 
-    class TanxBiddingHandler : public AbstractBiddingHandler {
+
+    class NexBiddingHandler : public AbstractBiddingHandler {
     public:
+        NexBiddingHandler()
+            : isDeal(false)
+        {
+            dealId.reserve(256);
+        }
         /**
          * 从Adx Bid Post请求数据中获取具体的请求信息
          */
@@ -35,7 +37,7 @@ namespace bidding {
         /**
          * 将匹配结果转换为具体平台的格式的结果
          */
-        void buildBidResult(const AdSelectCondition & selectCondition, const MT::common::SelectResult & result,
+        void buildBidResult(const AdSelectCondition & queryCondition, const MT::common::SelectResult & result,
                             int seq = 0);
 
         /**
@@ -48,22 +50,13 @@ namespace bidding {
          */
         void reject(INOUT adservice::utility::HttpResponse & response);
 
-        std::string generateHtmlSnippet(const std::string & bid, int width, int height, const char * extShowBuf,
-                                        const char * cookieMappingUrl = "");
-
     private:
-        /**
-         * 产生tanx的html snippet
-         */
-
-        std::string tanxHtmlSnippet(const std::string & cookieMappingUrl = "");
-
-    private:
-        protocol::Tanx::BidRequest bidRequest;
-        protocol::Tanx::BidResponse bidResponse;
-        char feedbackUrl[2048];
+        cppcms::json::value bidRequest;
+        cppcms::json::value bidResponse;
+        bool isDeal;
+        std::string dealId;
     };
 }
 }
 
-#endif // ADCORE_TANX_BIDDING_HANDLER_H
+#endif // NEX_BIDDING_HANDLER_H

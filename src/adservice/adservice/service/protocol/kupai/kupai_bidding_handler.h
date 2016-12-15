@@ -1,44 +1,51 @@
-//
-// Created by guoze.lin on 16/6/27.
-//
-
-#ifndef ADCORE_NETEASE_BIDDING_HANDLER_H
-#define ADCORE_NETEASE_BIDDING_HANDLER_H
-
-#include <map>
+#ifndef __KUPAI_BIDDING_HANDLER_H__
+#define __KUPAI_BIDDING_HANDLER_H__
 
 #include "protocol/base/abstract_bidding_handler.h"
 #include "utility/utility.h"
+#include "wk_adx_rtb_ext.pb.h"
+#include <map>
 
 namespace protocol {
 namespace bidding {
 
-    struct NetEaseAdplaceStyle {
+    struct KupaiAdplaceStyle {
         int width, height;
-        NetEaseAdplaceStyle()
+        KupaiAdplaceStyle()
         {
         }
-        NetEaseAdplaceStyle(int w, int h)
+        KupaiAdplaceStyle(int w, int h)
             : width(w)
             , height(h)
         {
         }
     };
 
-    class NetEaseAdplaceStyleMap {
+    class KupaiAdplaceStyleMap {
     public:
-        NetEaseAdplaceStyleMap()
+        KupaiAdplaceStyleMap()
         {
-            add(3, 1, 0);
-            add(10, 2, 0);
-            add(11, 3, 0);
+            add(4, 320, 50);
+            add(4, 640, 100);
+            add(5, 120, 120);
+            add(4, 600, 500);
+            add(4, 960, 640);
+            add(4, 1080, 1920);
+            add(4, 768, 1280);
+            add(4, 640, 960);
+            add(2, 1, 1);
+            add(2, 1, 0);
+            add(3, 2, 7);
+            add(3, 2, 2);
+            add(3, 2, 8);
+            add(1, 3, 0);
         }
         inline void add(int key, int width, int height)
         {
-            styleMap.insert(std::make_pair(key, NetEaseAdplaceStyle(width, height)));
+            styleMap.insert(std::make_pair(key, KupaiAdplaceStyle(width, height)));
             sizeStyleMap.insert(std::make_pair(std::make_pair(width, height), key));
         }
-        inline NetEaseAdplaceStyle & get(int key)
+        inline KupaiAdplaceStyle & get(int key)
         {
             return styleMap[key];
         }
@@ -53,11 +60,11 @@ namespace bidding {
         }
 
     private:
-        std::map<int, NetEaseAdplaceStyle> styleMap;
+        std::map<int, KupaiAdplaceStyle> styleMap;
         std::unordered_map<std::pair<int, int>, int> sizeStyleMap;
     };
 
-    class NetEaseBiddingHandler : public AbstractBiddingHandler {
+    class KupaiBiddingHandler : public AbstractBiddingHandler {
     public:
         /**
          * 从Adx Bid Post请求数据中获取具体的请求信息
@@ -95,10 +102,11 @@ namespace bidding {
         void reject(INOUT adservice::utility::HttpResponse & response);
 
     private:
-        cppcms::json::value bidRequest;
-        cppcms::json::value bidResponse;
+        com::google::openrtb::BidRequest bidRequest_;
+        com::google::openrtb::BidResponse bidResponse_;
     };
-}
-}
 
-#endif // ADCORE_NETEASE_BIDDING_HANDLER_H
+} // namespace bidding
+} // namespace protocol
+
+#endif // __KUPAI_BIDDING_HANDLER_H__

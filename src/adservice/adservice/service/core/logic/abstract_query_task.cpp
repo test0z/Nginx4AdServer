@@ -8,6 +8,7 @@
 #include "logging.h"
 #include "protocol/baidu/baidu_price.h"
 #include "protocol/guangyin/guangyin_price.h"
+#include "protocol/kupai/kupai_price_decode.h"
 #include "protocol/sohu/sohu_price.h"
 #include "protocol/tanx/tanx_price.h"
 #include "protocol/tencent_gdt/tencent_gdt_price.h"
@@ -62,12 +63,16 @@ namespace corelogic {
         case ADX_SOHU_MOBILE:
             return sohu_price_decode(input);
         case ADX_INMOBI:
+        case ADX_NEX_PC:
+        case ADX_NEX_MOBILE:
             try {
                 return std::stoi(input);
             } catch (...) {
-                LOG_ERROR << "adx inmobi price error,input:" << input;
+                LOG_ERROR << "adx inmobi/nex price error,input:" << input;
                 return 0;
             }
+        case ADX_KUPAI_MOBILE:
+            return kupai_price_decode(input);
         default:
             return 0;
         }
@@ -278,6 +283,11 @@ namespace corelogic {
 
     /**
      * 同时取u参数和cookie,进行兼容校验,返回一个可供追溯的有效用户id(明文)
+     * u参数与cookie校正方案：
+     *    假定cookie与u参数都合法,但不相同。u参数的追溯时间与cookie的追溯时间作比较,cookie追溯时间更早，则使用cookie。
+     *    假定cookie不合法或不存在，但u合法，使用u参数。
+     *    假定cookie合法，但u不合法或不存在，使用cookie。
+     *    假定cookie与u均不合法或不存在,生成新cookie。
      * @brief AbstractQueryTask::userCookieLogic
      * @param paramMap
      * @param resp

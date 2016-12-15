@@ -31,6 +31,18 @@
 
 #include "google/protobuf/message.h"
 
+namespace std {
+
+template <>
+struct hash<std::pair<int, int>> {
+    size_t operator()(const std::pair<int, int> & arg) const noexcept
+    {
+        auto h = std::hash<int>();
+        return h(arg.first) ^ h(arg.second);
+    }
+};
+}
+
 namespace adservice{
    namespace utility{
 
