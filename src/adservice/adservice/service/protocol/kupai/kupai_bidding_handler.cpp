@@ -204,6 +204,8 @@ namespace bidding {
              iter != sizeStyleMap.end() && (style = iter->second) && false;)
             ;
         admObject["itemType"] = style;
+        std::string admJson = json::toJson(admObject);
+        adResult->set_adm(admJson);
         // getClickPara(bidRequest_.id(), buffer, sizeof(buffer), "", landingUrl);
         adResult->AddExtension(com::wk::adx::rtb::clktrackers, landingUrl);
 
