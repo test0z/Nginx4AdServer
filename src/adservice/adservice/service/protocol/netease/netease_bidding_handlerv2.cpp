@@ -15,8 +15,8 @@ namespace bidding {
     using namespace adservice::utility::json;
     using namespace adservice::server;
 
-#define AD_NETEASE_SHOW_URL "http://show.mtty.com/v?of=3&p=1500&%s"
-#define AD_NETEASE_CLICK_URL "http://click.mtty.com/c?%s"
+#define AD_NETEASE_SHOW_URL "https://show.mtty.com/v?of=3&p=1500&%s"
+#define AD_NETEASE_CLICK_URL "https://click.mtty.com/c?%s"
 
     static NetEaseAdplaceStyleMap adplaceStyleMap;
 
