@@ -158,10 +158,6 @@ namespace corelogic {
                 log.adInfo.advId = std::stol(d);
                 log.adInfo.cpid = log.adInfo.advId;
             }
-            //                if ((iter=paramMap.find(URL_ADPLAN_ID)) != paramMap.end()) { // 推广计划Id
-            //                    std::string &t = iter->second;//paramMap[URL_ADPLAN_ID];
-            //                    log.adInfo.cpid = std::stol(t);
-            //                }
             if ((iter = paramMap.find(URL_EXEC_ID)) != paramMap.end()) { // 投放单元Id
                 std::string & e = iter->second;                          // paramMap[URL_EXEC_ID];
                 log.adInfo.sid = std::stol(e);
