@@ -42,6 +42,9 @@ namespace core {
             const std::string & geoId() const;
             const std::string & refererUrl() const;
             const std::string & bidPrice() const;
+            const std::string & ppId() const;
+            const std::string & oId() const;
+            const std::string & priceType() const;
 
         private:
             int64_t time_{ 0 };      // 最后更新时间
@@ -56,6 +59,9 @@ namespace core {
             std::string geoId_;      // 地域ID
             std::string refererUrl_; // 来源页
             std::string bidPrice_;   // 出价价格
+            std::string ppId_;       // 产品包ID
+            std::string oId_;        // 订单ID
+            std::string priceType_;  // 出价类型
 
         protected:
             virtual void record(const as_record * record) override;
