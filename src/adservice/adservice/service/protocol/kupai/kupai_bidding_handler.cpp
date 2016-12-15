@@ -122,7 +122,6 @@ namespace bidding {
                 queryCondition.pAdplaceInfo = &adplaceInfo;
             }
         }
-        biddingFlowInfo.deviceIdBuf[0] = '\0';
         if (device.devicetype() != BidRequest_Device_DeviceType_PERSONAL_COMPUTER) {
             queryCondition.mobileDevice = getDeviceType(device.devicetype());
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;

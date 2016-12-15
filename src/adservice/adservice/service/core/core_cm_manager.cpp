@@ -123,7 +123,7 @@ namespace server {
         try {
             MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "userid-counter", time);
             MT::common::ASOperation op(2, 60);
-            op.addRead("id")(;
+            op.addRead("id");
             op.addIncr("id", (int64_t)1ll);
             aerospikeClient.operate(key, op, idEntity);
         } catch (MT::common::AerospikeExcption & e) {

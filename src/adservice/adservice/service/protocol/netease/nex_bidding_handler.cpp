@@ -157,7 +157,6 @@ namespace bidding {
                 }
                 queryCondition.mobileNetwork = getNetwork(device.get("connectiontype", ""));
             }
-            biddingFlowInfo.deviceIdBuf[0] = '\0';
             isDeal = false;
             const cppcms::json::value & pmp = adzinfo.find("pmp");
             if (!pmp.is_undefined()) {
