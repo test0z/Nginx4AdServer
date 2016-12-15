@@ -53,7 +53,7 @@ std::vector<uint8_t> decodeHex(const std::string & data) throw(PriceDecodeExcept
         std::vector<uint8_t> out(len >> 1);
         int i = 0;
 
-        for (int j = 0; j < len; ++i) {
+        for (uint j = 0; j < len; ++i) {
             int f = toDigit(data[j], j) << 4;
             ++j;
             f |= toDigit(data[j], j);
