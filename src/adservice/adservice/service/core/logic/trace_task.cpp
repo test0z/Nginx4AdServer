@@ -167,6 +167,9 @@ namespace corelogic {
             if (!sourceRecord.oId().empty()) {
                 result += "&od=" + sourceRecord.oId();
             }
+            if (!sourceRecord.priceType().empty()) {
+                result += "&pt=" + sourceRecord.priceType();
+            }
             if (!log.userId.empty()) {
                 result += "&u=" + log.userId;
             }
