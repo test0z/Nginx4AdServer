@@ -107,14 +107,14 @@ namespace bidding {
             cppcms::json::value nativeRequest;
             json::parseJson(strNativeRequest.c_str(), nativeRequest);
             cppcms::json::array & assets = nativeRequest["reqAssets"].array();
-            const adservice::utility::AdSizeMap & adSizeMap = adservice::utility::AdSizeMap::getInstance();
             queryCondition.bannerType = BANNER_TYPE_PRIMITIVE;
             if (assets.size() > 0) {
                 for (uint32_t i = 0; i < assets.size(); i++) {
                     const cppcms::json::value & asset = assets[i];
                     int w = asset.get("reqImg.w", 0);
                     int h = asset.get("reqImg.h", 0);
-                    auto sizePair = adSizeMap.get(std::make_pair(w, h));
+                    int t = asset.get("type", 0);
+                    auto sizePair = adplaceStyleMap.getMttySize(t, w, h);
                     queryCondition.width = sizePair.first;
                     queryCondition.height = sizePair.second;
                     adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
@@ -199,14 +199,16 @@ namespace bidding {
         }
         int style = 0;
         auto & sizeStyleMap = adplaceStyleMap.getSizeStyleMap();
-        for (auto iter = sizeStyleMap.find(std::make_pair(banner.width, banner.height));
-             iter != sizeStyleMap.end() && (style = iter->second) && false;)
-            ;
-        admObject["itemType"] = style;
+        auto sizeStyleListIter = sizeStyleMap.find(std::make_pair(banner.width, banner.height));
+        if (sizeStyleListIter != sizeStyleMap.end() && sizeStyleListIter->second.size() > 0) {
+            admObject["itemType"] = std::get<0>(sizeStyleListIter->second[0]);
+        } else {
+            admObject["itemType"] = style;
+        }
         std::string admJson = json::toJson(admObject);
         adResult->set_adm(admJson);
-        // getClickPara(bidRequest_.id(), buffer, sizeof(buffer), "", landingUrl);
-        adResult->AddExtension(com::wk::adx::rtb::clktrackers, landingUrl);
+        getClickPara(bidRequest_.id(), buffer, sizeof(buffer), "", landingUrl);
+        adResult->AddExtension(com::wk::adx::rtb::clktrackers, std::string(SNIPPET_CLICK_URL) + "?" + buffer);
 
         adResult->set_w(banner.width);
         adResult->set_h(banner.height);

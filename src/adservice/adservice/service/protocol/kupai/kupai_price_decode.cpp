@@ -153,8 +153,8 @@ double decodePrice(const std::string & dec_key, const std::string & i_key,
     return price;
 }
 
-static const std::string DEC_KEY = "800027BE870F120209B09B4374D98D06";
-static const std::string IKEY = "E9A536BE57DC261A8FA4E13653DF723F";
+static const std::string DEC_KEY = "5a88b012c4d5aa79f8e852ba6da099d989681ace";
+static const std::string IKEY = "6606f210b823e2688faec7947e9d82aa0c1f65fa";
 
 int64_t kupai_price_decode(const std::string & input)
 {

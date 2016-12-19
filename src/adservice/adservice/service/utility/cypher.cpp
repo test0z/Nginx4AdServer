@@ -177,6 +177,30 @@ namespace utility {
             }
         }
 
+        void base64encode(const std::string & input, std::string & output)
+        {
+            try {
+                CryptoPP::Base64Encoder encoder;
+                encoder.Attach(new CryptoPP::StringSink(output));
+                encoder.Put((const uchar_t *)input.c_str(), input.size());
+                encoder.MessageEnd();
+            } catch (exception & e) {
+                LOG_ERROR << "base64encode failed,e:" << e.what();
+            }
+        }
+
+        void base64decode(const std::string & input, std::string & output)
+        {
+            try {
+                CryptoPP::Base64Decoder encoder;
+                encoder.Attach(new CryptoPP::StringSink(output));
+                encoder.Put((const uchar_t *)input.c_str(), input.size());
+                encoder.MessageEnd();
+            } catch (exception & e) {
+                LOG_ERROR << "base64encode failed,e:" << e.what();
+            }
+        }
+
         void aes_ecbencode(const uchar_t * key, const std::string & input, std::string & output)
         {
             try {

@@ -4,7 +4,13 @@
 
 #include "url.h"
 #include "common/functions.h"
+#include "logging.h"
+#include <boost/algorithm/string.hpp>
+#include <boost/serialization/map.hpp>
 #include <iomanip>
+#include <iostream>
+#include <memory>
+#include <mtty/utils.h>
 
 namespace adservice {
 namespace utility {
@@ -253,6 +259,197 @@ namespace utility {
                 return false;
             str.replace(start_pos, from.length(), to);
             return true;
+        }
+
+        std::string URLHelper::MACRO_HOLDER = "_mh_";
+        std::string URLHelper::ENCODE_HOLDER = "_q_";
+
+        std::string URLHelper::cipherParam()
+        {
+            std::string encodeParam = MT::common::bserializeGzip(paramMap);
+            std::string base64Param;
+            cypher::base64encode(encodeParam, base64Param);
+            char presetBuf[2048];
+            char * buf = &presetBuf[0];
+            std::string urlSafeParam;
+            urlEncode_f(base64Param, urlSafeParam, buf);
+            for (auto & iter : macroParamMap) {
+                urlSafeParam += "%7c";
+                urlSafeParam += iter.first + "%7c";
+                urlSafeParam += iter.second;
+            }
+            urlSafeParam += "%7c";
+            return urlSafeParam;
+        }
+
+        std::string URLHelper::cipherUrl()
+        {
+            try {
+                std::string urlSafeParam = cipherParam();
+                std::string result;
+                result += protocolName.empty() ? "http://" : protocolName + "://";
+                result += host.empty() ? "" : host;
+                result += port.empty() ? "" : std::string(":") + port;
+                result += path.empty() ? "" : path;
+                result += urlSafeParam.empty() ? "" : std::string("?") + urlSafeParam;
+                return result;
+            } catch (std::exception & e) {
+                LOG_ERROR << "URLHelper::cipherUrl,exception:" << e.what();
+            }
+            return "";
+        }
+
+        URLHelper URLHelper::fromCipherUrl(const std::string & cipherUrl)
+        {
+            return URLHelper(cipherUrl, true);
+        }
+
+        std::string URLHelper::toUrlParam()
+        {
+            std::string data;
+            if (!paramMap.empty()) {
+                int seq = 0;
+                for (auto & iter : paramMap) {
+                    if (seq++ != 0) {
+                        data += "&";
+                    }
+                    data += iter.first + "=" + iter.second;
+                }
+            }
+            if (!macroParamMap.empty()) {
+                int seq = data.empty() ? 0 : 1;
+                for (auto & iter : macroParamMap) {
+                    if (seq++ != 0) {
+                        data += "&";
+                    }
+                    data += iter.first + "=" + iter.second;
+                }
+            }
+            return data;
+        }
+
+        std::string URLHelper::toUrl()
+        {
+            std::string data = toUrlParam();
+            std::string result;
+            result += protocolName.empty() ? "http://" : protocolName + "://";
+            result += host.empty() ? "" : host;
+            result += port.empty() ? "" : std::string(":") + port;
+            result += path.empty() ? "" : path;
+            result += data.empty() ? "" : std::string("?") + data;
+            return result;
+        }
+
+        URLHelper URLHelper::fromUrl(const std::string & url)
+        {
+            return URLHelper(url, false);
+        }
+
+        URLHelper::URLHelper(const std::string & url, bool encoded)
+        {
+            int pos = 0;
+            const char * cUrl = url.c_str();
+            const char * hostBegin = url.c_str();
+            while ((pos = url.find(":", pos)) != std::string::npos) {
+                if (pos < url.length() - 3 && cUrl[pos + 1] == '/' && cUrl[pos + 2] == '/') { // protocol
+                    protocolName = std::string(cUrl, cUrl + pos);
+                    hostBegin = cUrl + pos + 3;
+                    pos += 3;
+                } else if (pos < url.length() - 2 && std::isdigit(cUrl[pos + 1])) { // host and port
+                    host = std::string(hostBegin, cUrl + pos);
+                    int32_t p = atoi(cUrl + pos + 1);
+                    port = std::to_string(p);
+                    break;
+                } else {
+                    break;
+                }
+            }
+            pos = hostBegin - cUrl;
+            if ((pos = url.find("/", pos)) != std::string::npos) {
+                if (host.empty()) {
+                    host = std::string(hostBegin, cUrl + pos);
+                }
+                const char * pathBegin = cUrl + pos;
+                if ((pos = url.find("?", pos)) != std::string::npos) {
+                    path = std::string(pathBegin, cUrl + pos);
+                    processParamData(std::string(cUrl + pos + 1, cUrl + url.length()), encoded);
+                    return;
+                } else {
+                    path = std::string(pathBegin, cUrl + url.length());
+                }
+            }
+        }
+
+        URLHelper::URLHelper(const std::string & protocol, const std::string & host, const std::string & port,
+                             const std::string & path)
+        {
+            this->protocolName = protocol;
+            this->host = host;
+            this->port = port;
+            this->path = path;
+            if (*this->path.begin() != '/') {
+                this->path = std::string("/") + this->path;
+            }
+        }
+
+        URLHelper::URLHelper(const std::string & protocol, const std::string & host, const std::string & port,
+                             const std::string & path, const std::string & data, bool encoded)
+        {
+            this->protocolName = protocol;
+            this->host = host;
+            this->port = port;
+            this->path = path;
+            if (*this->path.begin() != '/') {
+                this->path = std::string("/") + this->path;
+            }
+            processParamData(data, encoded);
+        }
+
+        void URLHelper::processParamData(const std::string & data, bool encoded)
+        {
+            try {
+                if (encoded) { // data是编码数据，解码
+                    char presetBuf[2048];
+                    char * buf = &presetBuf[0];
+                    std::string safeData;
+                    urlDecode_f(data, safeData, buf);
+                    std::vector<std::string> tmp;
+                    boost::split(tmp, safeData, boost::is_any_of("|"));
+                    if (tmp.size() > 0) {
+                        std::string mainPart = tmp[0];
+                        int pos;
+                        if ((pos = mainPart.rfind("&", mainPart.length() - 1)) != std::string::npos) {
+                            mainPart = std::string(mainPart.begin() + pos + 1, mainPart.end());
+                        }
+                        std::string base64param;
+                        cypher::base64decode(mainPart, base64param);
+                        MT::common::bdeserializeGzip(base64param, this->paramMap);
+                        for (int i = 1; i < tmp.size() - 1; i += 2) {
+                            paramMap.insert(std::make_pair(tmp[i], tmp[i + 1]));
+                        }
+                    }
+                } else {
+                    getParamv2(this->paramMap, data);
+                }
+                // output paramMap
+            } catch (std::exception & e) {
+                LOG_ERROR << "URLHelper::processParamData,exception:" << e.what() << ",data:" << data;
+            }
+        }
+
+        void URLHelper::add(const std::string & paramName, const std::string & paramValue)
+        {
+            paramMap[paramName] = paramValue;
+        }
+
+        bool URLHelper::addNoDuplicate(const std::string & paramName, const std::string & paramValue)
+        {
+            return paramMap.insert(std::make_pair(paramName, paramValue)).second;
+        }
+
+        void URLHelper::addMacro(const std::string & paramName, const std::string & paramValue)
+        {
+            macroParamMap[paramName] = paramValue;
         }
     }
 }

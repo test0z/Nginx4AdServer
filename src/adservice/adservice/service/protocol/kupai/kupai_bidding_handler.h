@@ -5,63 +5,78 @@
 #include "utility/utility.h"
 #include "wk_adx_rtb_ext.pb.h"
 #include <map>
+#include <tuple>
+
+namespace std {
+
+template <>
+struct hash<tuple<int, int, int>> {
+    size_t operator()(tuple<int, int, int> & arg) const noexcept
+    {
+        auto h = std::hash<int>();
+        return h(std::get<0>(arg)) ^ h(std::get<1>(arg)) ^ h(std::get<2>(arg));
+    }
+};
+}
 
 namespace protocol {
 namespace bidding {
 
-    struct KupaiAdplaceStyle {
-        int width, height;
-        KupaiAdplaceStyle()
-        {
-        }
-        KupaiAdplaceStyle(int w, int h)
-            : width(w)
-            , height(h)
-        {
-        }
-    };
+    typedef std::tuple<int, int, int> KupaiAdplaceStyle;
 
     class KupaiAdplaceStyleMap {
     public:
         KupaiAdplaceStyleMap()
         {
-            add(4, 320, 50);
-            add(4, 640, 100);
-            add(5, 120, 120);
-            add(4, 600, 500);
-            add(4, 960, 640);
-            add(4, 1080, 1920);
-            add(4, 768, 1280);
-            add(4, 640, 960);
-            add(2, 1, 1);
-            add(2, 1, 0);
-            add(3, 2, 7);
-            add(3, 2, 2);
-            add(3, 2, 8);
-            add(1, 3, 0);
+            add(4, 320, 50, 320, 50);
+            add(4, 640, 100, 640, 100);
+            add(5, 120, 120, 120, 120);
+            add(4, 600, 500, 600, 500);
+            add(4, 960, 640, 960, 640);
+            add(4, 1080, 1920, 1080, 1920);
+            add(4, 768, 1280, 768, 1280);
+            add(4, 640, 960, 640, 960);
+            add(2, 480, 360, 1, 0);
+            add(3, 1000, 500, 2, 8);
+            add(3, 1920, 1080, 2, 2);
+            add(3, 600, 400, 2, 1);
+            add(1, 480, 360, 3, 0);
         }
-        inline void add(int key, int width, int height)
+        inline void add(int style, int kw, int kh, int mw, int mh)
         {
-            styleMap.insert(std::make_pair(key, KupaiAdplaceStyle(width, height)));
-            sizeStyleMap.insert(std::make_pair(std::make_pair(width, height), key));
-        }
-        inline KupaiAdplaceStyle & get(int key)
-        {
-            return styleMap[key];
-        }
-        inline bool find(int key)
-        {
-            return styleMap.find(key) != styleMap.end();
+            KupaiAdplaceStyle newStyle{ style, kw, kh };
+            auto sizePair = std::make_pair(mw, mh);
+            sizeMap.insert(std::make_pair(newStyle, sizePair));
+            auto iter = sizeStyleMap.find(sizePair);
+            if (iter == sizeStyleMap.end()) {
+                std::vector<KupaiAdplaceStyle> styles{ newStyle };
+                sizeStyleMap.insert({ sizePair, styles });
+            } else {
+                iter->second.push_back(newStyle);
+            }
         }
 
-        const std::unordered_map<std::pair<int, int>, int> & getSizeStyleMap() const
+        inline std::pair<int, int> getMttySize(int style, int w, int h)
+        {
+            std::KupaiAdplaceStyle k{ style, w, h };
+            auto iter = sizeMap.find(k);
+            if (iter == sizeMap.end()) {
+                return std::make_pair(w, h);
+            } else {
+                return iter->second;
+            }
+        }
+
+        const std::unordered_map<std::pair<int, int>, std::vector<KupaiAdplaceStyle>> & getSizeStyleMap() const
         {
             return sizeStyleMap;
         }
 
     private:
-        std::map<int, KupaiAdplaceStyle> styleMap;
-        std::unordered_map<std::pair<int, int>, int> sizeStyleMap;
+        //我方尺寸到kupai的映射
+        std::unordered_map<std::pair<int, int>, std::vector<KupaiAdplaceStyle>> sizeStyleMap;
+        // kupai 尺寸到 我方尺寸的映射
+        std::unordered_map<std::KupaiAdplaceStyle, std::pair<int, int>> sizeMap;
     };
 
     class KupaiBiddingHandler : public AbstractBiddingHandler {

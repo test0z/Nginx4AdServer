@@ -315,7 +315,9 @@ namespace bidding {
             const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
             const cppcms::json::array & assets = adzInfo.find("native.assets").array();
             std::string title = mtlsArray[0]["p0"].str();
-            bidValue["admobject.native.assets"] = cppcms::json::array();
+            cppcms::json::value admObject;
+            cppcms::json::value nativeObject;
+            cppcms::json::array assetsArray;
             for (uint32_t i = 0; i < assets.size(); i++) {
                 const cppcms::json::value & asset = assets[i];
                 int w = asset.get("img.w", 0);
@@ -326,15 +328,23 @@ namespace bidding {
                     assetObj["id"] = 1;
                     assetObj["img.w"] = banner.width;
                     assetObj["img.h"] = banner.height;
-                    bidValue["admobject.native.assets"][0] = assetObj;
+                    assetsArray.push_back(assetObj);
                     break;
                 }
             }
             std::string landingUrl = mtlsArray[0]["p9"].str();
             replace(landingUrl, "{{click}}", "");
-            bidValue["admobject.native.link.url"] = landingUrl;
+            nativeObject["assets"] = assetsArray;
+            nativeObject["link"] = cppcms::json::value();
+            nativeObject["link"]["url"] = landingUrl;
+            admObject["native"] = nativeObject;
+            bidValue["admobject"] = admObject;
         }
-        bidValue["attr"].array().push_back(3);
+        bidValue["adomain"] = cppcms::json::array();
+        bidValue["iurl"] = "";
+        cppcms::json::array attrArray;
+        attrArray.push_back(3);
+        bidValue["attr"] = attrArray;
         int maxCpmPrice = result.bidPrice;
         bidValue["price"] = maxCpmPrice;
         bidArrays.push_back(std::move(bidValue));

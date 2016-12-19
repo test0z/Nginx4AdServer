@@ -117,6 +117,9 @@ namespace corelogic {
         paramMap["bid"] = paramMap[URL_CREATIVE_ID];
         paramMap["sid"] = paramMap[URL_EXEC_ID];
         paramMap["idfa"] = paramMap[URL_DEVICE_IDFA];
+        paramMap["imei"] = paramMap[URL_DEVICE_IMEI];
+        paramMap["mac"] = paramMap[URL_DEVICE_MAC];
+        paramMap["androidid"] = paramMap[URL_DEVICE_ANDROIDID];
         paramMap["ip"] = userIp;
 
         char buffer[1024];

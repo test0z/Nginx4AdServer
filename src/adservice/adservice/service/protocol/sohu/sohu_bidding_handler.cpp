@@ -77,7 +77,7 @@ namespace bidding {
     {
         logItem.userAgent = bidRequest.device().ua();
         logItem.ipInfo.proxy = selectCondition.ip;
-        logItem.referer = bidRequest.has_site() ? (bidRequest.site().has_page() ? bidRequest.site().page() : "") : "";
+        logItem.referer = bidRequest.has_site() && bidRequest.site().has_page() ? bidRequest.site().page() : "";
         if (isAccepted) {
             if (bidRequest.has_device()) {
                 const Request_Device & device = bidRequest.device();

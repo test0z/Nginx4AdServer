@@ -48,7 +48,7 @@ namespace utility {
             urlDecode_f(input.data(), input.length(), output, buffer);
         }
 
-        typedef std::map<adservice::types::string, adservice::types::string> ParamMap;
+        typedef std::map<std::string, std::string> ParamMap;
 
         /**
          * 从buffer中的url query中获取参数,其中url query应该是被url encode的,格式为xxx=xx&xx=xxx
@@ -131,6 +131,157 @@ namespace utility {
         }
 
         bool url_replace(std::string & str, const std::string & from, const std::string & to);
+
+        class URLHelper {
+        public:
+            URLHelper()
+            {
+            }
+
+            URLHelper(const std::string & url, bool encoded);
+
+            URLHelper(const std::string & protocol, const std::string & host, const std::string & port,
+                      const std::string & path);
+
+            URLHelper(const std::string & protocol, const std::string & host, const std::string & port,
+                      const std::string & path, const std::string & data, bool encoded);
+
+            /**
+             * 添加参数
+             * @brief add
+             * @param parmamName
+             * @param paramValue
+             */
+            void add(const std::string & parmamName, const std::string & paramValue);
+
+            /**
+             * 不重复地添加参数，如果已存在返回false,否则返回true
+             * @brief addNoDuplicate
+             * @param paramName
+             * @param paramValue
+             * @return
+             */
+            bool addNoDuplicate(const std::string & paramName, const std::string & paramValue);
+
+            /**
+             * 添加宏
+             * @brief addMacro
+             * @param paramName
+             * @param paramValue
+             */
+            void addMacro(const std::string & paramName, const std::string & paramValue);
+
+            std::string getProtocol()
+            {
+                if (protocolName.empty()) {
+                    return "http";
+                } else
+                    return protocolName;
+            }
+
+            void setProtocol(const std::string & protocol)
+            {
+                protocolName = protocol;
+            }
+
+            std::string getHost()
+            {
+                return host;
+            }
+
+            void setHost(const std::string & h)
+            {
+                host = h;
+            }
+
+            std::string getPort()
+            {
+                if (port.empty()) {
+                    return "80";
+                } else {
+                    return port;
+                }
+            }
+
+            void setPort(const std::string & p)
+            {
+                if (std::isdigit(*p.c_str())) {
+                    port = p;
+                }
+            }
+
+            std::string getPath()
+            {
+                return path;
+            }
+
+            void setPath(const std::string & p)
+            {
+                path = p;
+            }
+
+            ParamMap & getParamMap()
+            {
+                return paramMap;
+            }
+
+            /**
+             * 生成加密链接
+             * @brief cipherUrl
+             * @return
+             */
+            std::string cipherUrl();
+
+            /**
+             * 生成加密参数
+             * @brief cipherParam
+             * @return
+             */
+            std::string cipherParam();
+
+            /**
+             * 从加密链接反向得到真实url
+             * @brief fromCipherUrl
+             * @return
+             */
+            static URLHelper fromCipherUrl(const std::string & cipher);
+
+            /**
+             * 转成url字符串
+             * @brief toUrl
+             * @return
+             */
+            std::string toUrl();
+
+            /**
+             * 转成url参数
+             * @brief toUrlParam
+             * @return
+             */
+            std::string toUrlParam();
+
+            /**
+             * 从url字符串反向解析
+             * @brief fromUrl
+             * @return
+             */
+            static URLHelper fromUrl(const std::string & url);
+
+        private:
+            void processParamData(const std::string & data, bool encoded);
+
+        private:
+            static std::string MACRO_HOLDER;
+            static std::string ENCODE_HOLDER;
+
+        private:
+            ParamMap paramMap;
+            ParamMap macroParamMap;
+            std::string protocolName;
+            std::string host;
+            std::string port;
+            std::string path;
+        };
     }
 }
 }

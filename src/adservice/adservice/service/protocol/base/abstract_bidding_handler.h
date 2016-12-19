@@ -33,9 +33,12 @@ namespace bidding {
     void extractSize(const std::string & size, int & width, int & height);
     std::string makeBidSize(int width, int height);
 
-    struct BiddingFlowInfo {
+    union BiddingFlowInfo {
         // idfa or android id
-        char deviceIdBuf[1024];
+        char idfa[1024];
+        char mac[1024];
+        char imei[1024];
+        char androidId[1024];
     };
 
     class BidCookieMappingInfo {
@@ -140,8 +143,11 @@ namespace bidding {
 
     protected:
         void getShowPara(const std::string & bid, char * showParamBuf, int showBufSize);
+        void getShowPara(adservice::utility::url::URLHelper & url, const std::string & bid);
         void getClickPara(const std::string & bid, char * clickParamBuf, int clickBufSize, const std::string & ref,
                           const std::string & landingurl);
+        void getClickPara(adservice::utility::url::URLHelper & url, const std::string & bid, const std::string & ref,
+                          const std::string & landingUrl);
         int extractRealValue(const std::string & input, int adx);
 
         void fillAdInfo(const AdSelectCondition & selectCondition, const MT::common::SelectResult & result,

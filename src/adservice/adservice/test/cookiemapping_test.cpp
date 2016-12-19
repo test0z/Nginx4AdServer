@@ -5,7 +5,7 @@
 #include <mtty/aerospike.h>
 #include <mtty/constants.h>
 #include <mtty/mtuser.h>
-#include <ostream>
+#include <iostream>
 #include <sstream>
 #include <sys/unistd.h>
 

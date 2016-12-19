@@ -112,6 +112,24 @@ namespace bidding {
         }
     }
 
+    void AbstractBiddingHandler::getShowPara(URLHelper & showUrl, const std::string & bid)
+    {
+        showUrl.add("a", adInfo.areaId);
+        showUrl.add("b", encodePrice(adInfo.offerPrice));
+        showUrl.add("c", std::to_string(adInfo.bannerId));
+        showUrl.add("d", std::to_string(adInfo.advId));
+        showUrl.add("e", std::to_string(adInfo.sid));
+        showUrl.add("s", adInfo.adxpid);
+        showUrl.add("o", adInfo.pid);
+        showUrl.add("x", std::to_string(adInfo.adxid));
+        showUrl.add("r", bid);
+        showUrl.add("u", cmInfo.userMapping.cypherUserId.c_str());
+        showUrl.add("tm", std::to_string(time(NULL)));
+        showUrl.add("pt", std::to_string(adInfo.priceType));
+        showUrl.add("od", std::to_string(adInfo.orderId));
+        showUrl.add("ep", std::to_string(adInfo.ppid));
+    }
+
     void AbstractBiddingHandler::getClickPara(const std::string & bid, char * clickParamBuf, int clickBufSize,
                                               const std::string & ref, const std::string & landingUrl)
     {
@@ -133,6 +151,34 @@ namespace bidding {
                 LOG_WARN << "in AbstractBiddingHandler::getClickPara,clickBufSize too small,actual:" << len;
             }
         }
+    }
+
+    void AbstractBiddingHandler::getClickPara(URLHelper & clickUrl, const std::string & bid, const std::string & ref,
+                                              const std::string & landingUrl)
+    {
+        char buffer[1024];
+        std::string encodedLandingUrl;
+        urlEncode_f(landingUrl, encodedLandingUrl, buffer);
+        std::string encodedReferer;
+        if (ref.size() > 0)
+            urlEncode_f(ref, encodedReferer, buffer);
+        clickUrl.add("s", adInfo.adxpid);
+        clickUrl.add("o", adInfo.pid);
+        clickUrl.add("b", encodePrice(adInfo.offerPrice));
+        clickUrl.add("x", std::to_string(adInfo.adxid));
+        clickUrl.add("r", adInfo.imp_id);
+        clickUrl.add("d", std::to_string(adInfo.advId));
+        clickUrl.add("e", std::to_string(adInfo.sid));
+        clickUrl.add("ep", std::to_string(adInfo.ppid));
+        clickUrl.add("c", std::to_string(adInfo.bannerId));
+        clickUrl.add("f", encodedReferer);
+        clickUrl.add("h", "000");
+        clickUrl.add("a", adInfo.areaId);
+        clickUrl.add("u", cmInfo.userMapping.cypherUserId.c_str());
+        clickUrl.add("pt", std::to_string(adInfo.priceType));
+        clickUrl.add("od", std::to_string(adInfo.orderId));
+        clickUrl.add("url", encodedLandingUrl);
+        return clickUrl.cipherParam();
     }
 
     std::string AbstractBiddingHandler::generateHtmlSnippet(const std::string & bid, int width, int height,

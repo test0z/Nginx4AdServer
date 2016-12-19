@@ -43,6 +43,10 @@ namespace utility {
 
         std::string md5_encode(const std::string & input);
 
+        void base64encode(const std::string & input, std::string & output);
+
+        void base64decode(const std::string & input, std::string & output);
+
         std::string encodePrice(int price, bool useAes = false);
 
         std::string randomId(int field);
