@@ -41,7 +41,7 @@ namespace bidding {
 #define INMOBI_PRIVATE_AUCTION 1
 
 #define INMOBI_PRICE_MACRO "${AUCTION_PRICE}"
-#define AD_INMOBI_FEED "https://show.mtty.com/v?of=3&p=%s&%s"
+#define AD_INMOBI_FEED "http://show.mtty.com/v?of=3&p=%s&%s"
 
     namespace {
         void fromInmobiDevTypeOsType(int devType,

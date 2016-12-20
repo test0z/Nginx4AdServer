@@ -7,18 +7,6 @@
 #include <map>
 #include <tuple>
 
-namespace std {
-
-template <>
-struct hash<tuple<int, int, int>> {
-    size_t operator()(tuple<int, int, int> & arg) const noexcept
-    {
-        auto h = std::hash<int>();
-        return h(std::get<0>(arg)) ^ h(std::get<1>(arg)) ^ h(std::get<2>(arg));
-    }
-};
-}
-
 namespace protocol {
 namespace bidding {
 
@@ -58,7 +46,7 @@ namespace bidding {
 
         inline std::pair<int, int> getMttySize(int style, int w, int h)
         {
-            std::KupaiAdplaceStyle k{ style, w, h };
+            KupaiAdplaceStyle k{ style, w, h };
             auto iter = sizeMap.find(k);
             if (iter == sizeMap.end()) {
                 return std::make_pair(w, h);
@@ -76,7 +64,7 @@ namespace bidding {
         //我方尺寸到kupai的映射
         std::unordered_map<std::pair<int, int>, std::vector<KupaiAdplaceStyle>> sizeStyleMap;
         // kupai 尺寸到 我方尺寸的映射
-        std::unordered_map<std::KupaiAdplaceStyle, std::pair<int, int>> sizeMap;
+        std::unordered_map<KupaiAdplaceStyle, std::pair<int, int>> sizeMap;
     };
 
     class KupaiBiddingHandler : public AbstractBiddingHandler {

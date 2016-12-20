@@ -178,7 +178,6 @@ namespace bidding {
         clickUrl.add("pt", std::to_string(adInfo.priceType));
         clickUrl.add("od", std::to_string(adInfo.orderId));
         clickUrl.add("url", encodedLandingUrl);
-        return clickUrl.cipherParam();
     }
 
     std::string AbstractBiddingHandler::generateHtmlSnippet(const std::string & bid, int width, int height,

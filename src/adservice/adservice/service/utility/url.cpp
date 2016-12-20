@@ -266,7 +266,7 @@ namespace utility {
 
         std::string URLHelper::cipherParam()
         {
-            std::string encodeParam = MT::common::bserializeGzip(paramMap);
+            std::string encodeParam = MT::common::bserialize(paramMap);
             std::string base64Param;
             cypher::base64encode(encodeParam, base64Param);
             char presetBuf[2048];
@@ -347,7 +347,7 @@ namespace utility {
 
         URLHelper::URLHelper(const std::string & url, bool encoded)
         {
-            int pos = 0;
+            std::string::size_type pos = 0;
             const char * cUrl = url.c_str();
             const char * hostBegin = url.c_str();
             while ((pos = url.find(":", pos)) != std::string::npos) {
@@ -417,14 +417,14 @@ namespace utility {
                     boost::split(tmp, safeData, boost::is_any_of("|"));
                     if (tmp.size() > 0) {
                         std::string mainPart = tmp[0];
-                        int pos;
+                        std::string::size_type pos;
                         if ((pos = mainPart.rfind("&", mainPart.length() - 1)) != std::string::npos) {
                             mainPart = std::string(mainPart.begin() + pos + 1, mainPart.end());
                         }
                         std::string base64param;
                         cypher::base64decode(mainPart, base64param);
-                        MT::common::bdeserializeGzip(base64param, this->paramMap);
-                        for (int i = 1; i < tmp.size() - 1; i += 2) {
+                        MT::common::bdeserialize(base64param, this->paramMap);
+                        for (uint i = 1; i < tmp.size() - 1; i += 2) {
                             paramMap.insert(std::make_pair(tmp[i], tmp[i + 1]));
                         }
                     }

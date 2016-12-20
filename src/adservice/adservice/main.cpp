@@ -359,7 +359,7 @@ ngx_int_t build_response(ngx_http_request_t * r, adservice::utility::HttpRespons
     }
 
     ngx_int_t rc = ngx_http_send_header(r);
-    if (rc != NGX_OK) {
+    if (rc != NGX_OK || r->headers_out.status == NGX_HTTP_NO_CONTENT) {
         return rc;
     }
 

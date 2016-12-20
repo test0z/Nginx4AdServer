@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
-SET(CMAKE_CXX_FLAGS "-std=c++11 -g -O2 -march=native -DMUDUO_STD_STRING")
+SET(CMAKE_CXX_FLAGS "-std=c++11 -g -O2 -march=native -DMUDUO_STD_STRING ")
 
 INCLUDE_DIRECTORIES(.
     ..
@@ -7,6 +7,7 @@ INCLUDE_DIRECTORIES(.
     ${MTTY_INCLUDE_DIR})
 
 FIND_LIBRARY(LIB_BOOST_SERIALIZATION NAMES "libboost_serialization.a" boost_serialization)
+FIND_LIBRARY(LIB_BOOST_IOSTREAMS NAMES "libboost_iostreams.a" boost_iostreams)
 FIND_LIBRARY(LIB_BOOST_LOG  NAMES "libboost_log.a" boost_log)
 FIND_LIBRARY(LIB_BOOST_THREAD NAMES "libboost_thread.a" boost_thread)
 FIND_LIBRARY(LIB_BOOST_FILESYSTEM NAMES "libboost_filesystem.a" boost_filesystem)
@@ -39,6 +40,7 @@ SET(LINK_LIBRARY rt
 #    ${LIB_BOOSTER}
     ${LIB_BOOST_SERIALIZATION}
     ${LIB_BOOST_LOG}
+    ${LIB_BOOST_IOSTREAMS}
     ${LIB_BOOST_THREAD}
     ${LIB_BOOST_FILESYSTEM}
     ${LIB_BOOST_SYSTEM}
@@ -47,8 +49,8 @@ SET(LINK_LIBRARY rt
     ${LIB_CRYPTO}
     ${LIB_CRYPTOPP}
     ${LIB_Z}
-    ${LIB_EV})
+    ${LIB_EV}
+    ${LIB_BOOSTER})
 
 #TARGET_LINK_LIBRARIES(cookiemapping_test ${LINK_LIBRARY})
-TARGET_LINK_LIBRARIES(url_test ${LINK_LIBRARY}
-	${LIB_BOOSTER})
+TARGET_LINK_LIBRARIES(url_test ${LINK_LIBRARY})

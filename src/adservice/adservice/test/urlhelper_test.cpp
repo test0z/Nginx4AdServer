@@ -29,16 +29,21 @@ void testUrlInterface(){
     url1.add("b","qqq");
     url1.addMacro("p","${AUCTION_PRICE}");
     url1.addMacro("url","${IURL}");
-    std::cout<<"url1:"<<url1.toUrl()<<std::endl;
-    std::cout<<"encoded url1:"<<url1.cipherUrl()<<std::endl;
+    //std::cout<<"url1:"<<url1.toUrl()<<std::endl;
+    //std::cout<<"encoded url1:"<<url1.cipherUrl()<<std::endl;
     url::URLHelper url2(url1.cipherUrl(),true);
-    std::cout<<"url2:"<<url2.toUrl()<<std::endl;
-    std::cout<<"encoded url2:"<<url2.cipherUrl()<<std::endl;
+    //std::cout<<"url2:"<<url2.toUrl()<<std::endl;
+    //std::cout<<"encoded url2:"<<url2.cipherUrl()<<std::endl;
 }
 
 int main(int argc, char ** argv)
 {
     //testCypherUrl();
-    testUrlInterface();
+    int64_t timeBegin = time::getCurrentTimeStampMs();
+    for(int i=0;i<1000000;i++){
+        testUrlInterface();
+    }
+    int64_t timeEnd = time::getCurrentTimeStampMs();
+    std::cout<<"time collasped:"<<timeEnd-timeBegin<<std::endl;
     return 0;
 }

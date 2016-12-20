@@ -21,8 +21,8 @@ namespace bidding {
     using namespace adservice::server;
 
 #define AD_YOUKU_CM_URL ""
-#define AD_YOUKU_FEED "https://show.mtty.com/v?of=3&p=%s&%s"
-#define AD_YOUKU_CLICK "https://click.mtty.com/c?%s"
+#define AD_YOUKU_FEED "http://show.mtty.com/v?of=3&p=%s&%s"
+#define AD_YOUKU_CLICK "http://click.mtty.com/c?%s"
 #define AD_YOUKU_PRICE "${AUCTION_PRICE}"
 #define YOUKU_DEVICE_HANDPHONE 0
 #define YOUKU_DEVICE_PAD 1
