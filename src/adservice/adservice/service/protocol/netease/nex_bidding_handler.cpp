@@ -293,6 +293,9 @@ namespace bidding {
         if (!tview.empty()) {
             cppcms::json::array & extPmArray = bidValue["pvm"].array();
             extPmArray.push_back(cppcms::json::value(tview));
+        } else {
+            cppcms::json::array & extPmArray = bidValue["pvm"].array();
+            extPmArray.push_back("http://mtty-cdn.mtty.com/1x1.gif");
         }
         int maxCpmPrice = result.bidPrice;
         bidValue["price"] = maxCpmPrice;
