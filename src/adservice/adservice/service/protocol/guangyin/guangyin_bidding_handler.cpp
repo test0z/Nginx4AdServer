@@ -9,6 +9,8 @@
 namespace protocol {
 namespace bidding {
 
+    using namespace adservice::utility::url;
+
     namespace {
 
         // 广告投放后的追踪url，用来统计展现量，SSP在广告展示时访问，需要支持302
@@ -140,10 +142,10 @@ namespace bidding {
             queryCondition.mobileDevice = getDeviceType(device);
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.adxid = ADX_GUANGYIN_MOBILE;
-            //            const std::string & deviceId = device.idfa().empty() ? device.androidid() : device.idfa();
-            //            strncpy(biddingFlowInfo.deviceIdBuf, deviceId.c_str(), deviceId.size());
-
             queryCondition.mobileNetwork = getNetWork(device.connectiontype());
+            queryCondition.idfa = device.has_idfa() ? device.idfa() : "";
+            queryCondition.imei = device.has_imei() ? device.imei() : "";
+            queryCondition.androidId = device.has_androidid() ? device.androidid() : "";
             if (bidRequest_.has_app()) {
                 const App & app = bidRequest_.app();
                 if (app.has_id()) {
@@ -162,6 +164,7 @@ namespace bidding {
             queryCondition.pcOS = adservice::utility::userclient::getOSTypeFromUA(device.ua());
             queryCondition.pcBrowserStr = adservice::utility::userclient::getBrowserTypeFromUA(device.ua());
             queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
+            queryCondition.mac = device.has_mac() ? device.mac() : "";
             if (bidRequest_.has_site()) {
                 const Site & site = bidRequest_.site();
                 if (site.has_publisher()) {
@@ -210,15 +213,18 @@ namespace bidding {
         // const Banner & reqBanner = imp.banner();
         adResult->set_adomain("show.mtty.com");
 
-        char buffer[2048];
-        getShowPara(bidRequest_.id(), buffer, sizeof(buffer));
-        adResult->set_iurl(std::string(SNIPPET_SHOW_URL) + "?" + buffer + "&of=3&p=%%AUCTION_PRICE%%");
+        URLHelper showUrlParam;
+        getShowPara(showUrlParam, bidRequest_.id());
+        showUrlParam.add("of", "3");
+        showUrlParam.addMacro("p", "%%AUCTION_PRICE%%");
+        adResult->set_iurl(std::string(SNIPPET_SHOW_URL) + "?" + showUrlParam.cipherParam());
 
         cppcms::json::value bannerJson;
         std::stringstream ss;
         ss << banner.json; // boost::algorithm::erase_all_copy(banner.json, "\\");
         ss >> bannerJson;
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
+        std::string landingUrl = mtlsArray[0].get("p1", "");
         if (banner.bannerType == BANNER_TYPE_HTML) {
             std::string base64html = mtlsArray[0].get("p0", "");
             std::string html;
@@ -239,13 +245,15 @@ namespace bidding {
             bannerJson["width"] = banner.width;
             bannerJson["height"] = banner.height;
             bannerJson["xcurl"] = CURL_PLACEHOLDER;
+            URLHelper clickUrlParam;
+            getClickPara(clickUrlParam, bidRequest_.id(), "", landingUrl);
+            bannerJson["clickurl"] = std::string(SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
             std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
             char admBuffer[4096];
             snprintf(admBuffer, sizeof(admBuffer), adm_template, mtadInfoStr.data());
             adResult->set_adm(std::string(admBuffer));
         }
-        std::string landingUrl = mtlsArray[0].get("p1", "");
-        // getClickPara(bidRequest_.id(), buffer, sizeof(buffer), "", landingUrl);
+
         adResult->set_curl(landingUrl);
 
         adResult->set_w(banner.width);

@@ -173,6 +173,13 @@ namespace corelogic {
         mtAdInfo["width"] = width;
         mtAdInfo["height"] = height;
         mtAdInfo["oid"] = paramMap[URL_ORDER_ID];
+        URLHelper clickUrl(SNIPPET_CLICK_URL, false);
+        for (auto iter : paramMap) {
+            clickUrl.add(iter.first, iter.second);
+        }
+        clickUrl.add(URL_IMP_OF, OF_DSP);
+        clickUrl.add(URL_ADX_MACRO, adxMacro);
+        mtAdInfo["clickurl"] = clickUrl.cipherUrl();
         std::string jsonResult = utility::json::toJson(mtAdInfo);
         int len = snprintf(buffer, bufferSize - 1, templateFmt, jsonResult.c_str());
         if (len >= bufferSize) {
@@ -218,43 +225,46 @@ namespace corelogic {
         mtAdInfo["price"] = price;
         std::string ppid = to_string(selectResult.ppid);
         mtAdInfo["ppid"] = ppid;
-        // const std::vector<int64_t> & ppids = selectResult.ppids;
-        // mtAdInfo["ppids"] = boost::algorithm::join(
-        //    ppids | boost::adaptors::transformed(static_cast<std::string (*)(int64_t)>(std::to_string)), ",");
         mtAdInfo["oid"] = selectResult.orderId;
         mtAdInfo["ctype"] = banner.bannerType;
         int advId = solution.advId;
         int bId = banner.bId;
         int resultLen = 0;
+        URLHelper clickUrl(SSP_CLICK_URL, false);
+        clickUrl.add(URL_ADPLACE_ID, pid);
+        clickUrl.add(URL_MTTYADPLACE_ID, pid);
+        clickUrl.add(URL_ADX_ID, adxid);
+        clickUrl.add(URL_EXPOSE_ID, impid);
+        clickUrl.add(URL_ADOWNER_ID, std::to_string(advId));
+        clickUrl.add(URL_EXEC_ID, sid);
+        clickUrl.add(URL_PRODUCTPACKAGE_ID, ppid);
+        clickUrl.add(URL_PRICE_TYPE, priceType);
+        clickUrl.add(URL_BID_PRICE, price);
+        clickUrl.add(URL_CREATIVE_ID, std::to_string(bId));
+        clickUrl.add(URL_REFERER, referer);
+        clickUrl.add(URL_CLICK_ID, "000");
+        clickUrl.add(URL_AREA_ID, address);
         //需求http://redmine.mtty.com/redmine/issues/144
+        cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
+        cppcms::json::array & mtls = mtlsArray.array();
+        char landingPageBuffer[1024];
+        std::string landingUrl
+            = banner.bannerType == BANNER_TYPE_PRIMITIVE ? mtls[0].get("p9", "") : mtls[0].get("p1", "");
+        url_replace(landingUrl, "{{click}}", "");
+        std::string encodedLandingUrl;
+        urlEncode_f(landingUrl, encodedLandingUrl, landingPageBuffer);
+        clickUrl.add(URL_LANDING_URL, encodedLandingUrl);
         if (paramMap[URL_IMP_OF] == OF_SSP_MOBILE) {
-            cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
-            cppcms::json::array & mtls = mtlsArray.array();
-            char clickMacroBuffer[2048];
-            char landingPageBuffer[1024];
-            std::string landingUrl
-                = banner.bannerType == BANNER_TYPE_PRIMITIVE ? mtls[0].get("p9", "") : mtls[0].get("p1", "");
-            url_replace(landingUrl, "{{click}}", "");
-            std::string encodedLandingUrl;
-            urlEncode_f(landingUrl, encodedLandingUrl, landingPageBuffer);
-            size_t clickMacroLen = (size_t)snprintf(
-                clickMacroBuffer, sizeof(clickMacroBuffer),
-                SSP_CLICK_URL "?s=%s&o=%s&x=%s&r=%s&d=%d&e=%s&ep=%s&pt=%s&b=%s&c=%d&f=%s&h=000&a=%s&url=%s", pid.data(),
-                pid.data(), adxid.data(), impid.data(), advId, sid.data(), ppid.data(), priceType.data(), price.data(),
-                bId, referer.data(), address.data(), encodedLandingUrl.data());
-            if (clickMacroLen >= sizeof(clickMacroBuffer)) {
-                LOG_WARN << "in buildResponseForSsp,clickMacroLen greater than sizeof clickMacroBuffer,len:"
-                         << clickMacroLen;
-            }
             if (banner.bannerType != BANNER_TYPE_PRIMITIVE) {
-                mtls[0].set("p5", std::string(clickMacroBuffer));
+                mtls[0].set("p5", clickUrl.cipherUrl());
             } else {
-                mtls[0].set("p9", std::string(clickMacroBuffer));
+                mtls[0].set("p9", clickUrl.cipherUrl());
             }
             //只输出标准json
             std::string jsonResult = utility::json::toJson(mtAdInfo);
             resultLen = snprintf(buffer, bufferSize - 1, "%s", jsonResult.c_str());
         } else {
+            mtAdInfo["clickurl"] = clickUrl.cipherUrl();
             std::string jsonResult = utility::json::toJson(mtAdInfo);
             resultLen = snprintf(buffer, bufferSize - 1, templateFmt, paramMap["callback"].c_str(), jsonResult.c_str());
         }

@@ -194,10 +194,11 @@ namespace bidding {
                         adInfo.adxid = ADX_YOUKU_MOBILE;
                     }
                     queryCondition.mobileNetwork = getNetwork(device.get("connectiontype", 0));
-                    cookieMappingKeyMobile(md5_encode(device.get<std::string>("idfa", "")),
-                                           md5_encode(device.get<std::string>("imei", "")),
-                                           md5_encode(device.get<std::string>("androidid", "")),
-                                           md5_encode(device.get<std::string>("mac", "")));
+                    cookieMappingKeyMobile(
+                        md5_encode(queryCondition.idfa = device.get<std::string>("idfa", "")),
+                        md5_encode(queryCondition.imei = device.get<std::string>("imei", "")),
+                        md5_encode(queryCondition.androidId = device.get<std::string>("androidid", "")),
+                        md5_encode(queryCondition.mac = device.get<std::string>("mac", "")));
                 } else {
                     cookieMappingKeyPC(ADX_YOUKU, bidRequest.get("user.id", ""));
                 }
@@ -299,19 +300,15 @@ namespace bidding {
         std::string tview = bannerJson["tview"].str();
 
         cppcms::json::value extValue;
-        char showParam[2048];
-        char clickParam[2048];
-        getShowPara(requestId, showParam, sizeof(showParam));
+        url::URLHelper showUrl;
+        getShowPara(showUrl, requestId);
         if (isDeal && finalSolution.dDealId != "0") { // deal 加特殊参数w
-            char dealParam[256];
-            int dealParamLen
-                = snprintf(dealParam, sizeof(dealParam), "&" URL_DEAL_ID "=%s", finalSolution.dDealId.data());
-            strncat(showParam, dealParam, dealParamLen);
             bidValue["dealid"] = finalSolution.dDealId;
+            showUrl.add(URL_DEAL_ID, finalSolution.dDealId);
         }
-        char buffer[2048];
-        snprintf(buffer, sizeof(buffer), AD_YOUKU_FEED, AD_YOUKU_PRICE, showParam); //包含of=3
-        bidValue["nurl"] = buffer;
+        showUrl.add(URL_IMP_OF, "3");
+        showUrl.addMacro(URL_EXCHANGE_PRICE, AD_YOUKU_PRICE);
+        bidValue["nurl"] = std::string(SNIPPET_SHOW_URL) + "?" + showUrl.cipherParam();
         std::string crid = std::to_string(adInfo.bannerId);
         bidValue["crid"] = crid;
         std::string landingUrl;
@@ -339,10 +336,9 @@ namespace bidding {
             bidValue["adm"] = materialUrl;
             landingUrl = mtlsArray[0]["p1"].str();
         }
-        getClickPara(requestId, clickParam, sizeof(clickParam), "", landingUrl);
-        snprintf(buffer, sizeof(buffer), AD_YOUKU_CLICK, clickParam);
-        std::string cm = buffer;
-        extValue["ldp"] = cm;
+        url::URLHelper clickUrlParam;
+        getClickPara(clickUrlParam, requestId, "", landingUrl);
+        extValue["ldp"] = std::string(SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
         if (!tview.empty()) {
             cppcms::json::array & extPmArray = extValue["pm"].array();
             extPmArray.push_back(cppcms::json::value(tview));

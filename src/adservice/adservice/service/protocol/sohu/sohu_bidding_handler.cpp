@@ -113,9 +113,14 @@ namespace bidding {
                 queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
                 queryCondition.adxid = ADX_SOHU_MOBILE;
                 queryCondition.mobileNetwork = getSohuNeworkType(device.nettype());
+                queryCondition.idfa = device.has_idfa() ? device.idfa() : "";
+                queryCondition.imei = device.has_imei() ? device.imei() : "";
+                queryCondition.androidId = device.has_androidid() ? device.androidid() : "";
+                queryCondition.mac = device.has_mac() ? device.mac() : "";
             } else { // pc
                 queryCondition.pcOS = getOSTypeFromUA(device.ua());
                 queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
+                queryCondition.mac = device.has_mac() ? device.mac() : "";
             }
         }
         if (adzInfo.has_banner()) {
@@ -161,32 +166,13 @@ namespace bidding {
         Response_SeatBid * seatBid = bidResponse.add_seatbid();
         seatBid->set_idx(seq);
         Response_Bid * adResult = seatBid->add_bid();
-        const MT::common::Solution & finalSolution = result.solution;
-        const MT::common::ADPlace & adplace = result.adplace;
         const MT::common::Banner & banner = result.banner;
-        int advId = finalSolution.advId;
         const Request_Impression & adzInfo = bidRequest.impression(seq);
         int maxCpmPrice = result.bidPrice;
         adResult->set_price(maxCpmPrice);
 
         //缓存最终广告结果
-        adInfo.pid = queryCondition.mttyPid;
-        adInfo.adxpid = queryCondition.adxpid;
-        adInfo.sid = finalSolution.sId;
-        adInfo.advId = advId;
-        adInfo.adxid = queryCondition.adxid;
-        adInfo.adxuid = bidRequest.has_user() ? bidRequest.user().suid() : "";
-        adInfo.bannerId = banner.bId;
-        adInfo.cid = adplace.cId;
-        adInfo.mid = adplace.mId;
-        adInfo.cpid = adInfo.advId;
-        adInfo.offerPrice = result.feePrice;
-        adInfo.priceType = finalSolution.priceType;
-        adInfo.ppid = result.ppid;
-        adInfo.bidSize = makeBidSize(banner.width, banner.height);
-        const std::string & userIp = bidRequest.device().ip();
-        IpManager & ipManager = IpManager::getInstance();
-        adInfo.areaId = ipManager.getAreaCodeStrByIp(userIp.data());
+        fillAdInfo(queryCondition, result, bidRequest.has_user() ? bidRequest.user().suid() : "");
 
         char pjson[2048] = { '\0' };
         std::string strBannerJson = banner.json;
@@ -205,16 +191,18 @@ namespace bidding {
             landingUrl = mtlsArray[0].get("p1", "");
         }
         adResult->set_adurl(materialUrl);
-        std::string displayParam = getDisplayPara();
-        std::string clickParam = getSohuClickPara(landingUrl);
+
+        url::URLHelper showUrlParam;
+        getShowPara(showUrlParam, bidRequest.bidid());
+        showUrlParam.add(URL_IMP_OF, "3");
+        url::URLHelper clickUrlParam;
+        getClickPara(clickUrlParam, bidRequest.bidid(), "", landingUrl);
         if (!queryCondition.dealId.empty()) {
-            displayParam += "&" URL_DEAL_ID "=";
-            displayParam += adzInfo.campaignid();
-            clickParam += "&" URL_DEAL_ID "=";
-            clickParam += adzInfo.campaignid();
+            showUrlParam.add(URL_DEAL_ID, adzInfo.campaignid());
+            clickUrlParam.add(URL_DEAL_ID, adzInfo.campaignid());
         }
-        adResult->set_displaypara(displayParam);
-        adResult->set_clickpara(clickParam);
+        adResult->set_displaypara(showUrlParam.cipherParam());
+        adResult->set_clickpara(clickUrlParam.cipherParam());
     }
 
     void SohuBiddingHandler::match(adservice::utility::HttpResponse & response)

@@ -11,6 +11,7 @@ namespace protocol {
 namespace bidding {
 
     using namespace adservice::utility;
+    using namespace adservice::utility::url;
     using namespace adservice::utility::serialize;
     using namespace adservice::utility::json;
     using namespace adservice::server;
@@ -83,9 +84,9 @@ namespace bidding {
         queryCondition.mobileDevice = getNetEaseDeviceType(platform);
         const cppcms::json::value & device = bidRequest.find("device");
         if (!device.is_undefined()) {
-            // std::string deviceId = queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROID ? device.get("imei", "")
-            //                                                                               : device.get("idfa", "");
-            // strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), sizeof(biddingFlowInfo.deviceIdBuf) - 1);
+            queryCondition.idfa = device.get("idfa", "");
+            queryCondition.imei = device.get("imei", "");
+            queryCondition.mac = device.get("mac", "");
             const cppcms::json::value & networkStatus = device.find("network_status");
             if (!networkStatus.is_undefined()) {
                 queryCondition.mobileNetwork = getNetwork(networkStatus.str());
@@ -157,9 +158,6 @@ namespace bidding {
 
         // html snippet相关
         std::string requestId = bidRequest["id"].str();
-        char clickParam[2048];
-        char showParam[2048];
-        char buffer[2048];
 
         int bannerType = banner.bannerType;
         char pjson[2048] = { '\0' };
@@ -171,9 +169,11 @@ namespace bidding {
         std::string mainTitle;
         std::string landingUrl;
         std::string downloadUrl;
-        getShowPara(requestId, showParam, sizeof(showParam));
-        snprintf(buffer, sizeof(buffer), AD_NETEASE_SHOW_URL, showParam);
-        bidResponse["showMonitorUrl"] = buffer;
+        URLHelper showUrlParam;
+        getShowPara(showUrlParam, requestId);
+        showUrlParam.add(URL_IMP_OF, "3");
+        showUrlParam.add(URL_EXCHANGE_PRICE, "1500");
+        bidResponse["showMonitorUrl"] = std::string(SNIPPET_SHOW_URL) + "?" + showUrlParam.cipherParam();
         std::vector<std::string> materialUrls;
         cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         if (bannerType == BANNER_TYPE_PRIMITIVE) {
@@ -210,9 +210,9 @@ namespace bidding {
         }
         bidResponse["mainTitle"] = mainTitle;
         bidResponse["valid_time"] = 86400000;
-        getClickPara(requestId, clickParam, sizeof(clickParam), "", landingUrl);
-        snprintf(buffer, sizeof(buffer), AD_NETEASE_CLICK_URL, clickParam);
-        bidResponse["linkUrl"] = buffer;
+        url::URLHelper clickUrlParam;
+        getClickPara(clickUrlParam, requestId, "", landingUrl);
+        bidResponse["linkUrl"] = std::string(SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
         cppcms::json::array & resArray = bidResponse["resource_url"].array();
         for (auto & murl : materialUrls) {
             if (!murl.empty())

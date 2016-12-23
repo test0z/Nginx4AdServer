@@ -80,21 +80,17 @@ namespace bidding {
     std::string TanxBiddingHandler::generateHtmlSnippet(const std::string & bid, int width, int height,
                                                         const char * extShowBuf, const char * cookieMappingUrl)
     {
-        char showBuf[2048];
-        // char clickBuf[2048];
         char html[4096];
-        getShowPara(bid, showBuf, sizeof(showBuf));
-        size_t len = (size_t)snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s%s&of=3", SNIPPET_SHOW_URL,
-                                      "p=" AD_TX_PRICE_MACRO "&", showBuf);
-        if (len >= sizeof(feedbackUrl)) {
-            LOG_WARN << "feedbackUrl buffer size not enough,needed:" << len;
-        }
-        strncat(showBuf, "&of=2", 5);
-        len = (size_t)snprintf(html, sizeof(html), SNIPPET_IFRAME_SUPPORT_CM, width, height, SNIPPET_SHOW_URL,
-                               "l=" AD_TX_CLICK_MACRO "&", showBuf, cookieMappingUrl);
-        if (len >= sizeof(html)) {
-            LOG_WARN << "generateHtmlSnippet buffer size not enough,needed:" << len;
-        }
+        url::URLHelper showUrlParam;
+        getShowPara(showUrlParam, bid);
+        showUrlParam.add(URL_IMP_OF, "3");
+        showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_TX_PRICE_MACRO);
+        snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s", SNIPPET_SHOW_URL, showUrlParam.cipherParam().c_str());
+        showUrlParam.add(URL_IMP_OF, "2");
+        showUrlParam.removeMacro(URL_EXCHANGE_PRICE);
+        showUrlParam.addMacro(URL_ADX_MACRO, AD_TX_CLICK_MACRO);
+        int len = snprintf(html, sizeof(html), SNIPPET_IFRAME_SUPPORT_CM, width, height, SNIPPET_SHOW_URL, "",
+                           showUrlParam.cipherParam().c_str(), cookieMappingUrl);
         return std::string(html, html + len);
     }
 
@@ -166,10 +162,12 @@ namespace bidding {
             if (device.has_network()) {
                 queryCondition.mobileNetwork = getNetWork(device.network());
             }
-            cookieMappingKeyMobile(md5_encode(device.has_idfa() ? tanxDeviceId(device.idfa()) : ""),
-                                   md5_encode(device.has_imei() ? tanxDeviceId(device.imei()) : ""),
-                                   md5_encode(device.has_android_id() ? tanxDeviceId(device.android_id()) : ""),
-                                   md5_encode(device.has_mac() ? tanxDeviceId(device.mac()) : ""));
+            cookieMappingKeyMobile(
+                md5_encode(device.has_idfa() ? (queryCondition.idfa = tanxDeviceId(device.idfa())) : ""),
+                md5_encode(device.has_imei() ? (queryCondition.imei = tanxDeviceId(device.imei())) : ""),
+                md5_encode(device.has_android_id() ? (queryCondition.androidId = tanxDeviceId(device.android_id()))
+                                                   : ""),
+                md5_encode(device.has_mac() ? (queryCondition.mac = tanxDeviceId(device.mac())) : ""));
         } else {
             queryCondition.pcOS = getOSTypeFromUA(bidRequest.user_agent());
             queryCondition.pcBrowserStr = getBrowserTypeFromUA(bidRequest.user_agent());

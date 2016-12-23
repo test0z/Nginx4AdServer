@@ -44,6 +44,16 @@ record LogItem {
 	int clicky;
 	// trace模块记录的信息
 	TraceInfo traceInfo;
+        // deal id 优酷搜狐
+        array<string> dealIds;
+        // 页面关键词、视频标题等
+        string keyWords;
+        // 媒体分类ID
+        int mediaType;
+        // 内容分类ID
+        array<int> contentTypes;
+        // 设备信息
+        DeviceInfo  device;
 }
 
 }

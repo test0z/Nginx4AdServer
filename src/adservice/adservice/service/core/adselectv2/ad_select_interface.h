@@ -46,6 +46,14 @@ namespace adselectv2 {
         std::string pcBrowserStr;
         //需要匹配的deal,比如优酷的dealid
         std::string dealId;
+        //需要匹配的idfa（暂时没有这个条件,仅供缓存）
+        std::string idfa;
+        //需要匹配的imei (暂时没有这个条件,仅供缓存)
+        std::string imei;
+        //需要匹配的androidid(暂时没有这个条件,仅供缓存)
+        std::string androidId;
+        //需要匹配的mac地址(暂时没有这个条件,仅供缓存)
+        std::string mac;
         //流量底价
         int basePrice{ 0 };
         //需要匹配的adxid

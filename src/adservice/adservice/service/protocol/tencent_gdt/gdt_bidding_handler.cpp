@@ -103,18 +103,23 @@ namespace bidding {
         if (bidRequest.has_device()) { // device
             const BidRequest_Device & device = bidRequest.device();
             BidRequest_DeviceType devType = device.device_type();
-            std::string idfa, imei;
             if (devType == BidRequest_DeviceType::BidRequest_DeviceType_kDeviceTypePC) {
                 queryCondition.pcOS = getGdtOsType(device.os());
                 queryCondition.pcBrowserStr = getBrowserTypeFromUA(device.user_agent());
                 if (queryCondition.pcOS == SOLUTION_OS_OTHER) {
                     queryCondition.pcOS = getOSTypeFromUA(device.user_agent());
                 }
+                queryCondition.mac = device.id();
             } else if (devType == BidRequest_DeviceType::BidRequest_DeviceType_kDeviceTypeMobile) {
                 adplaceInfo.flowType = SOLUTION_FLOWTYPE_MOBILE;
                 queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
                 queryCondition.adxid = ADX_GDT_MOBILE;
                 queryCondition.mobileDevice = getGdtMobileDeviceType(device.os());
+                if (queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE) {
+                    queryCondition.idfa = device.id();
+                } else {
+                    queryCondition.imei = device.id();
+                }
             } else if (devType == BidRequest_DeviceType::BidRequest_DeviceType_kDeviceTypePad) {
                 adplaceInfo.flowType = SOLUTION_FLOWTYPE_MOBILE;
                 queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
@@ -122,6 +127,11 @@ namespace bidding {
                 queryCondition.mobileDevice = device.os() == BidRequest_OperatingSystem_kOSIOS
                                                   ? SOLUTION_DEVICE_IPAD
                                                   : SOLUTION_DEVICE_ANDROIDPAD;
+                if (queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD) {
+                    queryCondition.idfa = device.id();
+                } else {
+                    queryCondition.imei = device.id();
+                }
             } else {
                 queryCondition.mobileDevice = SOLUTION_DEVICE_OTHER;
                 queryCondition.pcOS = SOLUTION_OS_OTHER;
@@ -163,11 +173,13 @@ namespace bidding {
         fillAdInfo(queryCondition, result, bidRequest.has_user() ? bidRequest.user().id() : "");
 
         // html snippet相关
-        char showParam[2048];
-        getShowPara(bidRequest.id(), showParam, sizeof(showParam));
-        strncat(showParam, "&of=3", 5);
-        adResult->set_click_param(showParam);
-        adResult->set_impression_param(showParam);
+        url::URLHelper showUrlParam;
+        getShowPara(showUrlParam, bidRequest.id());
+        showUrlParam.add(URL_IMP_OF, "3");
+        adResult->set_impression_param(showUrlParam.cipherParam());
+        url::URLHelper clickUrlParam;
+        getClickPara(clickUrlParam, bidRequest.id(), "", "");
+        adResult->set_click_param(clickUrlParam.cipherParam());
     }
 
     void GdtBiddingHandler::match(adservice::utility::HttpResponse & response)

@@ -189,7 +189,7 @@ namespace utility {
             }
         }
 
-        void base64decode(const std::string & input, std::string & output)
+        bool base64decode(const std::string & input, std::string & output)
         {
             try {
                 CryptoPP::Base64Decoder encoder;
@@ -198,7 +198,9 @@ namespace utility {
                 encoder.MessageEnd();
             } catch (exception & e) {
                 LOG_ERROR << "base64encode failed,e:" << e.what();
+                return false;
             }
+            return true;
         }
 
         void aes_ecbencode(const uchar_t * key, const std::string & input, std::string & output)

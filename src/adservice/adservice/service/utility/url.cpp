@@ -264,9 +264,236 @@ namespace utility {
         std::string URLHelper::MACRO_HOLDER = "_mh_";
         std::string URLHelper::ENCODE_HOLDER = "_q_";
 
+        int64_t URLParamMap::stringToInt(const std::string & s)
+        {
+            try {
+                return std::stol(s);
+            } catch (...) {
+                return 0;
+            }
+        }
+
+        std::string URLParamMap::intToString(int64_t i)
+        {
+            try {
+                return std::to_string(i);
+            } catch (...) {
+                return "";
+            }
+        }
+
+        URLParamMap URLParamMap::fromParamMap(ParamMap & paramMap)
+        {
+            URLParamMap um;
+            ParamMap::iterator iter;
+            um.urlReferer = ((iter = paramMap.find(URL_REFERER)) != paramMap.end() ? iter->second : "");
+            um.urlAdplace = ((iter = paramMap.find(URL_ADPLACE_ID)) != paramMap.end() ? iter->second : "");
+            um.urlMttyAdplace = ((iter = paramMap.find(URL_MTTYADPLACE_ID)) != paramMap.end() ? iter->second : "");
+            um.urlExposeId = ((iter = paramMap.find(URL_EXPOSE_ID)) != paramMap.end() ? iter->second : "");
+            um.urlAdOwner = ((iter = paramMap.find(URL_ADOWNER_ID)) != paramMap.end() ? stringToInt(iter->second) : 0);
+            um.urlAdPlan = ((iter = paramMap.find(URL_ADPLAN_ID)) != paramMap.end() ? stringToInt(iter->second) : 0);
+            um.urlSolution = ((iter = paramMap.find(URL_EXEC_ID)) != paramMap.end() ? stringToInt(iter->second) : 0);
+            um.urlBanner = ((iter = paramMap.find(URL_CREATIVE_ID)) != paramMap.end() ? stringToInt(iter->second) : 0);
+            um.urlAdx = ((iter = paramMap.find(URL_ADX_ID)) != paramMap.end() ? stringToInt(iter->second) : 0);
+            um.urlClickId = ((iter = paramMap.find(URL_CLICK_ID)) != paramMap.end() ? iter->second : "");
+            um.urlArea = ((iter = paramMap.find(URL_AREA_ID)) != paramMap.end() ? iter->second : "");
+            um.urlClickX = ((iter = paramMap.find(URL_CLICK_X)) != paramMap.end() ? stringToInt(iter->second) : 0);
+            um.urlClickY = ((iter = paramMap.find(URL_CLICK_Y)) != paramMap.end() ? stringToInt(iter->second) : 0);
+            um.urlAdxMacro = ((iter = paramMap.find(URL_ADX_MACRO)) != paramMap.end() ? iter->second : "");
+            um.urlFeePrice = ((iter = paramMap.find(URL_BID_PRICE)) != paramMap.end() ? stringToInt(iter->second) : 0);
+            um.urlExchangePrice = ((iter = paramMap.find(URL_EXCHANGE_PRICE)) != paramMap.end() ? iter->second : "");
+            um.urlMttyUid = ((iter = paramMap.find(URL_MTTY_UID)) != paramMap.end() ? iter->second : "");
+            um.urlPriceType
+                = ((iter = paramMap.find(URL_PRICE_TYPE)) != paramMap.end() ? stringToInt(iter->second) : 0);
+            um.urlPPid
+                = ((iter = paramMap.find(URL_PRODUCTPACKAGE_ID)) != paramMap.end() ? stringToInt(iter->second) : 0);
+            um.urlOrderId = ((iter = paramMap.find(URL_ORDER_ID)) != paramMap.end() ? stringToInt(iter->second) : 0);
+            um.urlOf = ((iter = paramMap.find(URL_IMP_OF)) != paramMap.end() ? stringToInt(iter->second) : 0);
+            um.urlDealId = ((iter = paramMap.find(URL_DEAL_ID)) != paramMap.end() ? stringToInt(iter->second) : 0);
+            um.urlIdfa = ((iter = paramMap.find(URL_DEVICE_IDFA)) != paramMap.end() ? iter->second : "");
+            um.urlImei = ((iter = paramMap.find(URL_DEVICE_IMEI)) != paramMap.end() ? iter->second : "");
+            um.urlMac = ((iter = paramMap.find(URL_DEVICE_MAC)) != paramMap.end() ? iter->second : "");
+            um.urlAndroidId = ((iter = paramMap.find(URL_DEVICE_ANDOROIDID)) != paramMap.end() ? iter->second : "");
+            return um;
+        }
+
+        ParamMap URLParamMap::toParamMap(URLParamMap & um)
+        {
+            ParamMap pm;
+            !um.urlReferer.empty() ? pm[URL_REFERER] = um.urlReferer : "";
+            !um.urlAdplace.empty() ? pm[URL_ADPLACE_ID] = um.urlAdplace : "";
+            !um.urlMttyAdplace.empty() ? pm[URL_MTTYADPLACE_ID] = um.urlMttyAdplace : "";
+            !um.urlExposeId.empty() ? pm[URL_EXPOSE_ID] = um.urlExposeId : "";
+            um.urlAdOwner != 0 ? pm[URL_ADOWNER_ID] = intToString(um.urlAdOwner) : "";
+            um.urlAdPlan != 0 ? pm[URL_ADPLAN_ID] = intToString(um.urlAdPlan) : "";
+            um.urlSolution != 0 ? pm[URL_EXEC_ID] = intToString(um.urlSolution) : "";
+            um.urlBanner != 0 ? pm[URL_CREATIVE_ID] = intToString(um.urlBanner) : "";
+            um.urlAdx != 0 ? pm[URL_ADX_ID] = intToString(um.urlAdx) : "";
+            !um.urlClickId.empty() ? pm[URL_CLICK_ID] = um.urlClickId : "";
+            !um.urlArea.empty() ? pm[URL_AREA_ID] = um.urlArea : "";
+            um.urlClickX != 0 ? pm[URL_CLICK_X] = intToString(um.urlClickX) : "";
+            um.urlClickY != 0 ? pm[URL_CLICK_Y] = intToString(um.urlClickY) : "";
+            !um.urlAdxMacro.empty() ? pm[URL_ADX_MACRO] = um.urlAdxMacro : "";
+            um.urlFeePrice != 0 ? pm[URL_BID_PRICE] = intToString(um.urlFeePrice) : "";
+            !um.urlExchangePrice.empty() ? pm[URL_EXCHANGE_PRICE] = um.urlExchangePrice : "";
+            !um.urlMttyUid.empty() ? pm[URL_MTTY_UID] = um.urlMttyUid : "";
+            um.urlPriceType != 0 ? pm[URL_PRICE_TYPE] = intToString(um.urlPriceType) : "";
+            um.urlPPid != 0 ? pm[URL_PRODUCTPACKAGE_ID] = intToString(um.urlPPid) : "";
+            um.urlOrderId != 0 ? pm[URL_ORDER_ID] = intToString(um.urlOrderId) : "";
+            um.urlOf != 0 ? pm[URL_IMP_OF] = intToString(um.urlOf) : 0;
+            um.urlDealId != 0 ? pm[URL_DEAL_ID] = intToString(um.urlDealId) : "";
+            !um.urlIdfa.empty() ? pm[URL_DEVICE_IDFA] = um.urlIdfa : "";
+            !um.urlImei.empty() ? pm[URL_DEVICE_IMEI] = um.urlImei : "";
+            !um.urlMac.empty() ? pm[URL_DEVICE_MAC] = um.urlMac : "";
+            !um.urlAndroidId.empty() ? pm[URL_DEVICE_ANDOROIDID] = um.urlAndroidId : "";
+            return pm;
+        }
+
+        std::vector<URLHelper::ParamBindingItem> URLHelper::paramBindingTable
+            = { { URL_REFERER, PARAM_STRING },
+                { URL_ADPLACE_ID, PARAM_STRING },
+                { URL_MTTYADPLACE_ID, PARAM_STRING },
+                { URL_EXPOSE_ID, PARAM_STRING },
+                { URL_ADOWNER_ID, PARAM_INT },
+                { URL_ADPLAN_ID, PARAM_INT },
+                { URL_EXEC_ID, PARAM_INT },
+                { URL_CREATIVE_ID, PARAM_INT },
+                { URL_ADX_ID, PARAM_INT },
+                { URL_CLICK_ID, PARAM_STRING },
+                { URL_AREA_ID, PARAM_STRING },
+                { URL_CLICK_X, PARAM_INT },
+                { URL_CLICK_Y, PARAM_INT },
+                { URL_ADX_MACRO, PARAM_STRING },
+                { URL_BID_PRICE, PARAM_INT },
+                { URL_EXCHANGE_PRICE, PARAM_STRING },
+                { URL_MTTY_UID, PARAM_STRING },
+                { URL_PRICE_TYPE, PARAM_INT },
+                { URL_PRODUCTPACKAGE_ID, PARAM_INT },
+                { URL_ORDER_ID, PARAM_INT },
+                { URL_IMP_OF, PARAM_INT },
+                { URL_DEAL_ID, PARAM_INT },
+                { URL_DEVICE_IDFA, PARAM_STRING },
+                { URL_DEVICE_IMEI, PARAM_STRING },
+                { URL_DEVICE_ANDOROIDID, PARAM_STRING },
+                { URL_DEVICE_MAC, PARAM_STRING },
+                { URL_LANDING_URL, PARAM_STRING },
+                { URL_TIME, PARAM_INT } };
+
+        void URLHelper::numberEncode(int64_t number, uchar_t *& buf, int & bufRemainSize)
+        {
+            if (bufRemainSize <= 10) {
+                throw URLException("numberEncode:buffer reach boundary");
+            }
+            int i = 0;
+            while (number > 0) {
+                buf[i] = (number & 0x7F) | 0x80;
+                number >>= 7;
+                i++;
+                bufRemainSize--;
+            }
+            buf[i - 1] &= 0x7F;
+            buf = buf + i;
+        }
+
+        int64_t URLHelper::numberDecode(const uchar_t *& buf, const uchar_t * boundary)
+        {
+            int64_t result = 0;
+            int limit = boundary - buf;
+            int j = 0, i = 0;
+            while (i < limit && buf[i] > 0x7F)
+                i++;
+            if (i >= limit) {
+                throw URLException("numberDecode:reach boundary");
+            }
+            j = i;
+            while (i > 0) {
+                result += buf[i] & 0x7F;
+                result <<= 7;
+                i--;
+            }
+            result += buf[0] & 0x7F;
+            buf += j + 1;
+            return result;
+        }
+
+        void URLHelper::writeStringToBuf(const char * src, uchar_t *& dst, int size, int & bufRemainSize)
+        {
+            if (size > 0) {
+                numberEncode(size, dst, bufRemainSize);
+                if (bufRemainSize < size) {
+                    throw URLException("buffer remained not large enough to hold string ");
+                }
+                memcpy((void *)dst, (const void *)src, size);
+                dst += size;
+                bufRemainSize -= size;
+            } else if (bufRemainSize >= 1) {
+                *dst++ = 0x00;
+                bufRemainSize--;
+            } else {
+                throw URLException(
+                    "writeStringToBuf:url encode invalid status,maybe size invalid or buffer not enough");
+            }
+        }
+
+        void URLHelper::writeIntToBuf(int64_t src, uchar_t *& dst, int & bufRemainSize)
+        {
+            if (src > 0) {
+                numberEncode(src, dst, bufRemainSize);
+            } else if (bufRemainSize >= 1) {
+                *dst++ = 0x00;
+            } else {
+                throw URLException("writeIntToBuf:url encode invalid status,maybe buffer not enough");
+            }
+        }
+
+        std::string URLHelper::urlParamSerialize(ParamMap & paramMap)
+        {
+            uchar_t buf[2048];
+            uchar_t * p = &buf[0];
+            int bufRemain = sizeof(buf);
+            // std::cout << "in urlParamSerialize" << std::endl;
+            for (auto iter : paramBindingTable) {
+                auto fIter = paramMap.find(iter.first);
+                if (fIter != paramMap.end()) {
+                    const std::string & str = fIter->second;
+                    encodeUrlParam(iter.second, str, p, bufRemain);
+                    // std::cout << "binding key:" << iter.first << ",value.length:" << str.length()
+                    //          << ",p:" << int(p - buf) << std::endl;
+                } else {
+                    encodeUrlParam(iter.second, "", p, bufRemain);
+                    // std::cout << "binding key:" << iter.first << ",value.length:" << 0 << ",p:" << int(p - buf)
+                    //          << std::endl;
+                }
+            }
+            return std::string((const char *)buf, (const char *)p);
+        }
+
+        void URLHelper::urlParamDeserialize(const std::string & input, ParamMap & paramMap)
+        {
+            const uchar_t * p = (const uchar_t *)input.c_str();
+            const uchar_t * end = (const uchar_t *)input.c_str() + input.length();
+            // std::cout << "in urlParamDeserialize:" << std::endl;
+            for (auto iter : paramBindingTable) {
+                // std::cout << "binding key:" << iter.first << ",binding type:";
+                if (iter.second == PARAM_INT) {
+                    int64_t num = decodeUrlParamNum(p, end);
+                    // std::cout << "int,decodedValue:" << num << std::endl;
+                    if (num != 0) {
+                        paramMap.insert({ iter.first, std::to_string(num) });
+                    }
+                } else if (iter.second == PARAM_STRING) {
+                    std::string v = decodeUrlParamStr(p, end);
+                    // std::cout << "string,decodedValue:" << v << std::endl;
+                    if (!v.empty()) {
+                        paramMap.insert({ iter.first, v });
+                    }
+                }
+            }
+        }
+
         std::string URLHelper::cipherParam()
         {
-            std::string encodeParam = MT::common::bserialize(paramMap);
+            std::string encodeParam = urlParamSerialize(paramMap);
             std::string base64Param;
             cypher::base64encode(encodeParam, base64Param);
             char presetBuf[2048];
@@ -279,7 +506,7 @@ namespace utility {
                 urlSafeParam += iter.second;
             }
             urlSafeParam += "%7c";
-            return urlSafeParam;
+            return ENCODE_HOLDER + "=" + urlSafeParam;
         }
 
         std::string URLHelper::cipherUrl()
@@ -417,13 +644,18 @@ namespace utility {
                     boost::split(tmp, safeData, boost::is_any_of("|"));
                     if (tmp.size() > 0) {
                         std::string mainPart = tmp[0];
-                        std::string::size_type pos;
+                        /*std::string::size_type pos;
                         if ((pos = mainPart.rfind("&", mainPart.length() - 1)) != std::string::npos) {
                             mainPart = std::string(mainPart.begin() + pos + 1, mainPart.end());
-                        }
+                        }*/
+                        ParamMap cipherQueryMap;
+                        getParamv2(cipherQueryMap, mainPart);
+                        mainPart = cipherQueryMap[ENCODE_HOLDER];
                         std::string base64param;
-                        cypher::base64decode(mainPart, base64param);
-                        MT::common::bdeserialize(base64param, this->paramMap);
+                        if (!cypher::base64decode(mainPart, base64param)) {
+                            return;
+                        }
+                        urlParamDeserialize(base64param, this->paramMap);
                         for (uint i = 1; i < tmp.size() - 1; i += 2) {
                             paramMap.insert(std::make_pair(tmp[i], tmp[i + 1]));
                         }
@@ -433,6 +665,7 @@ namespace utility {
                 }
                 // output paramMap
             } catch (std::exception & e) {
+                this->paramMap.clear();
                 LOG_ERROR << "URLHelper::processParamData,exception:" << e.what() << ",data:" << data;
             }
         }
@@ -450,6 +683,22 @@ namespace utility {
         void URLHelper::addMacro(const std::string & paramName, const std::string & paramValue)
         {
             macroParamMap[paramName] = paramValue;
+        }
+
+        void URLHelper::remove(const std::string & paramName)
+        {
+            auto iter = paramMap.find(paramName);
+            if (iter != paramMap.end()) {
+                paramMap.erase(iter);
+            }
+        }
+
+        void URLHelper::removeMacro(const std::string & paramName)
+        {
+            auto iter = macroParamMap.find(paramName);
+            if (iter != macroParamMap.end()) {
+                macroParamMap.erase(iter);
+            }
         }
     }
 }

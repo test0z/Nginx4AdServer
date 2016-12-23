@@ -149,7 +149,11 @@ namespace bidding {
                            adInfo.priceType, adInfo.orderId, encodedLandingUrl.c_str());
             if (len >= clickBufSize) {
                 LOG_WARN << "in AbstractBiddingHandler::getClickPara,clickBufSize too small,actual:" << len;
+                return;
             }
+            std::string deviceParam = "&";
+            deviceParam += adFlowExtraInfo.deviceIdName + "=" + adFlowExtraInfo.devInfo.deviceID;
+            strncat(clickParamBuf, deviceParam.c_str(), clickBufSize - len - 1);
         }
     }
 
@@ -178,19 +182,18 @@ namespace bidding {
         clickUrl.add("pt", std::to_string(adInfo.priceType));
         clickUrl.add("od", std::to_string(adInfo.orderId));
         clickUrl.add("url", encodedLandingUrl);
+        clickUrl.add(adFlowExtraInfo.deviceIdName, adFlowExtraInfo.devInfo.deviceID);
     }
 
     std::string AbstractBiddingHandler::generateHtmlSnippet(const std::string & bid, int width, int height,
                                                             const char * extShowBuf, const char * cookieMappingUrl)
     {
-        char showBuf[2048];
         char html[4096];
-        getShowPara(bid, showBuf, sizeof(showBuf));
-        size_t len = (size_t)snprintf(html, sizeof(html), SNIPPET_IFRAME, width, height, SNIPPET_SHOW_URL, extShowBuf,
-                                      showBuf, cookieMappingUrl);
-        if (len >= sizeof(html)) {
-            LOG_WARN << "generateHtmlSnippet buffer size not enough,needed:" << len;
-        }
+        URLHelper showUrlParam;
+        getShowPara(showUrlParam, bid);
+        showUrlParam.add("_=&", extShowBuf);
+        int len = snprintf(html, sizeof(html), SNIPPET_IFRAME, width, height, SNIPPET_SHOW_URL, "",
+                           showUrlParam.cipherParam().c_str(), cookieMappingUrl);
         return std::string(html, html + len);
     }
 
@@ -236,6 +239,36 @@ namespace bidding {
         adInfo.orderId = result.orderId;
         adInfo.offerPrice = result.feePrice;
         adInfo.areaId = adservice::server::IpManager::getInstance().getAreaCodeStrByIp(selectCondition.ip.data());
+        adFlowExtraInfo.devInfo.deviceType = selectCondition.mobileDevice;
+        adFlowExtraInfo.devInfo.flowType = selectCondition.flowType;
+        adFlowExtraInfo.devInfo.netWork = selectCondition.mobileNetwork;
+        adFlowExtraInfo.devInfo.os = selectCondition.mobileDevice;
+        adFlowExtraInfo.devInfo.deviceID = "";
+        if (selectCondition.mobileDevice == SOLUTION_DEVICE_ANDROID
+            || selectCondition.mobileDevice == SOLUTION_DEVICE_ANDROIDPAD) {
+            if (selectCondition.imei.empty()) {
+                adFlowExtraInfo.devInfo.deviceID = selectCondition.androidId;
+                adFlowExtraInfo.deviceIdName = URL_DEVICE_ANDOROIDID;
+            } else {
+                adFlowExtraInfo.devInfo.deviceID = selectCondition.imei;
+                adFlowExtraInfo.deviceIdName = URL_DEVICE_IMEI;
+            }
+        } else if (selectCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
+                   || selectCondition.mobileDevice == SOLUTION_DEVICE_IPAD) {
+            adFlowExtraInfo.devInfo.deviceID = selectCondition.idfa;
+            adFlowExtraInfo.deviceIdName = URL_DEVICE_IDFA;
+        }
+        if (adFlowExtraInfo.devInfo.deviceID.empty()) {
+            adFlowExtraInfo.devInfo.deviceID = selectCondition.mac;
+            adFlowExtraInfo.deviceIdName = URL_DEVICE_MAC;
+        }
+        adFlowExtraInfo.contentType.clear();
+        adFlowExtraInfo.contentType.push_back(selectCondition.mttyContentType);
+        adFlowExtraInfo.mediaType = selectCondition.mediaType;
+        if (!selectCondition.dealId.empty() && finalSolution.dDealId != "0") {
+            adFlowExtraInfo.dealIds.clear();
+            adFlowExtraInfo.dealIds.push_back(finalSolution.dDealId);
+        }
     }
 
     const CookieMappingQueryKeyValue & AbstractBiddingHandler::cookieMappingKeyMobile(const std::string & idfa,

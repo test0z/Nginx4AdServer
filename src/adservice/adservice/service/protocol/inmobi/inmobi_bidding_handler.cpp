@@ -202,6 +202,9 @@ namespace bidding {
                                     queryCondition.pcOS,
                                     queryCondition.pcBrowserStr);
             queryCondition.mobileNetwork = getInmobiNetwork(device.get("carrier", 0));
+            queryCondition.idfa = device.get("idfa", "");
+            queryCondition.imei = device.get("didmd5", "");
+            queryCondition.androidId = device.get("dpidmd5", "");
         }
         const cppcms::json::value & siteContent = bidRequest.find("site");
         const cppcms::json::value & appContent = bidRequest.find("app");
@@ -292,18 +295,15 @@ namespace bidding {
         cppcms::json::value bannerJson;
         parseJson(pjson, bannerJson);
 
-        char showParam[2048];
-        getShowPara(requestId, showParam, sizeof(showParam));
+        url::URLHelper showUrl;
+        getShowPara(showUrl, requestId);
         if (!queryCondition.dealId.empty() && finalSolution.dDealId != "0") { // deal 加特殊参数w
-            char dealParam[256];
-            int dealParamLen
-                = snprintf(dealParam, sizeof(dealParam), "&" URL_DEAL_ID "=%s", finalSolution.dDealId.data());
-            strncat(showParam, dealParam, dealParamLen);
             bidValue["dealid"] = finalSolution.dDealId;
+            showUrl.add(URL_DEAL_ID, finalSolution.dDealId);
         }
-        char buffer[2048];
-        snprintf(buffer, sizeof(buffer), AD_INMOBI_FEED, INMOBI_PRICE_MACRO, showParam); //包含of=3
-        bidValue["nurl"] = buffer;
+        showUrl.add(URL_IMP_OF, "3");
+        showUrl.addMacro(URL_EXCHANGE_PRICE, INMOBI_PRICE_MACRO);
+        bidValue["nurl"] = std::string(SNIPPET_SHOW_URL) + "?" + showUrl.cipherParam();
         std::string crid = std::to_string(adInfo.bannerId);
         bidValue["crid"] = crid;
         if (banner.bannerType != BANNER_TYPE_PRIMITIVE) { //非原生创意

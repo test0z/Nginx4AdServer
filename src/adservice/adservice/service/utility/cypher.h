@@ -45,7 +45,7 @@ namespace utility {
 
         void base64encode(const std::string & input, std::string & output);
 
-        void base64decode(const std::string & input, std::string & output);
+        bool base64decode(const std::string & input, std::string & output);
 
         std::string encodePrice(int price, bool useAes = false);
 

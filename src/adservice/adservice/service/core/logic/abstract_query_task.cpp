@@ -155,20 +155,20 @@ namespace corelogic {
             }
             if ((iter = paramMap.find(URL_ADOWNER_ID)) != paramMap.end()) { //广告主Id
                 std::string & d = iter->second;                             // paramMap[URL_ADOWNER_ID];
-                log.adInfo.advId = std::stol(d);
+                log.adInfo.advId = URLParamMap::stringToInt(d);
                 log.adInfo.cpid = log.adInfo.advId;
             }
             if ((iter = paramMap.find(URL_EXEC_ID)) != paramMap.end()) { // 投放单元Id
                 std::string & e = iter->second;                          // paramMap[URL_EXEC_ID];
-                log.adInfo.sid = std::stol(e);
+                log.adInfo.sid = URLParamMap::stringToInt(e);
             }
             if ((iter = paramMap.find(URL_CREATIVE_ID)) != paramMap.end()) { // 创意Id
                 std::string & c = iter->second;                              // paramMap[URL_CREATIVE_ID];
-                log.adInfo.bannerId = std::stol(c);
+                log.adInfo.bannerId = URLParamMap::stringToInt(c);
             }
             if ((iter = paramMap.find(URL_ADX_ID)) != paramMap.end()) { // 平台Id,adxId
                 std::string & x = iter->second;                         // paramMap[URL_ADX_ID];
-                log.adInfo.adxid = std::stoi(x);
+                log.adInfo.adxid = URLParamMap::stringToInt(x);
             }
             if ((iter = paramMap.find(URL_CLICK_ID)) != paramMap.end()) { // clickId
                 std::string & h = iter->second;                           // paramMap[URL_CLICK_ID];
@@ -185,7 +185,7 @@ namespace corelogic {
             }
             if ((iter = paramMap.find(URL_CLICK_X)) != paramMap.end()) { //点击坐标x
                 std::string & sx = iter->second;                         // paramMap[URL_CLICK_X];
-                log.clickx = std::stoi(sx);
+                log.clickx = URLParamMap::stringToInt(sx);
             }
             if ((iter = paramMap.find(URL_CLICK_Y)) != paramMap.end()) { //点击坐标y
                 std::string & sy = iter->second;                         // paramMap[URL_CLICK_Y];
@@ -193,11 +193,11 @@ namespace corelogic {
             }
             if ((iter = paramMap.find(URL_PRICE_TYPE)) != paramMap.end()) { //出价类型
                 std::string & pricetype = iter->second;
-                log.adInfo.priceType = std::stoi(pricetype);
+                log.adInfo.priceType = URLParamMap::stringToInt(pricetype);
             }
             if ((iter = paramMap.find(URL_ORDER_ID)) != paramMap.end()) { //订单id
                 std::string & orderId = iter->second;
-                log.adInfo.orderId = std::stol(orderId);
+                log.adInfo.orderId = URLParamMap::stringToInt(orderId);
             }
             int offerPrice
                 = paramMap.find(URL_BID_PRICE) != paramMap.end() ? decodeOfferPrice(paramMap[URL_BID_PRICE]) : 0;
@@ -213,7 +213,7 @@ namespace corelogic {
             }
             if ((iter = paramMap.find(URL_PRODUCTPACKAGE_ID)) != paramMap.end()) { //产品包id
                 std::string & ppid = iter->second;
-                log.adInfo.ppid = std::stoi(ppid);
+                log.adInfo.ppid = URLParamMap::stringToInt(ppid);
             }
         } catch (std::exception & e) {
             log.reqStatus = 500;
@@ -328,6 +328,11 @@ namespace corelogic {
         log.ipInfo.proxy = userIp;
         if (!isPost) { //对于非POST方法传送的Query
             getParamv2(paramMap, data.c_str());
+            ParamMap::iterator iter;
+            if ((iter = paramMap.find(URLHelper::ENCODE_HOLDER)) != paramMap.end()) {
+                URLHelper urlParam("", "", "", "", data, true);
+                paramMap = urlParam.getParamMap();
+            }
             filterParamMapSafe(paramMap);
             parseObjectToLogItem(paramMap, log, data.c_str());
             log.userId = userCookieLogic(paramMap, resp);

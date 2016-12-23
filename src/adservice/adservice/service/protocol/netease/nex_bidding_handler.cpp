@@ -156,6 +156,9 @@ namespace bidding {
                     adInfo.adxid = ADX_NEX_MOBILE;
                 }
                 queryCondition.mobileNetwork = getNetwork(device.get("connectiontype", ""));
+                queryCondition.idfa = device.get("idfa", "");
+                queryCondition.mac = device.get("mac", "");
+                queryCondition.imei = device.get("imei", "");
             }
             isDeal = false;
             const cppcms::json::value & pmp = adzinfo.find("pmp");
@@ -232,19 +235,15 @@ namespace bidding {
         std::string tview = bannerJson["tview"].str();
 
         cppcms::json::value extValue;
-        char showParam[2048];
-        char clickParam[2048];
-        getShowPara(requestId, showParam, sizeof(showParam));
+        url::URLHelper showUrl;
+        getShowPara(showUrl, requestId);
         if (isDeal && finalSolution.dDealId != "0") { // deal 加特殊参数w
-            char dealParam[256];
-            int dealParamLen
-                = snprintf(dealParam, sizeof(dealParam), "&" URL_DEAL_ID "=%s", finalSolution.dDealId.data());
-            strncat(showParam, dealParam, dealParamLen);
             bidValue["dealid"] = finalSolution.dDealId;
+            showUrl.add(URL_DEAL_ID, finalSolution.dDealId);
         }
-        char buffer[2048];
-        snprintf(buffer, sizeof(buffer), AD_NEX_FEED, AD_NEX_PRICE, showParam); //包含of=3
-        bidValue["nurl"] = buffer;
+        showUrl.add(URL_IMP_OF, "3");
+        showUrl.addMacro(URL_EXCHANGE_PRICE, AD_NEX_PRICE);
+        bidValue["nurl"] = std::string(SNIPPET_SHOW_URL) + "?" + showUrl.cipherParam();
         std::string crid = std::to_string(adInfo.bannerId);
         bidValue["crid"] = crid;
         std::string landingUrl;
@@ -283,9 +282,9 @@ namespace bidding {
             extValue["title"] = mainTitle;
             extValue["style"] = style;
         }
-        getClickPara(requestId, clickParam, sizeof(clickParam), "", landingUrl);
-        snprintf(buffer, sizeof(buffer), AD_NEX_CLICK, clickParam);
-        std::string cm = buffer;
+        url::URLHelper clickUrlParam;
+        getClickPara(clickUrlParam, requestId, "", landingUrl);
+        std::string cm = std::string(SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
         cppcms::json::array clickm = cppcms::json::array();
         clickm.push_back(cm);
         bidValue["clickm"] = clickm;
@@ -293,6 +292,9 @@ namespace bidding {
         if (!tview.empty()) {
             cppcms::json::array & extPmArray = bidValue["pvm"].array();
             extPmArray.push_back(cppcms::json::value(tview));
+        } else {
+            cppcms::json::array & extPmArray = bidValue["pvm"].array();
+            extPmArray.push_back("http://mtty-cdn.mtty.com/1x1.gif");
         }
         int maxCpmPrice = result.bidPrice;
         bidValue["price"] = maxCpmPrice;

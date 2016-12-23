@@ -33,12 +33,14 @@ namespace bidding {
     void extractSize(const std::string & size, int & width, int & height);
     std::string makeBidSize(int width, int height);
 
-    union BiddingFlowInfo {
-        // idfa or android id
-        char idfa[1024];
-        char mac[1024];
-        char imei[1024];
-        char androidId[1024];
+    class BiddingFlowExtraInfo {
+    public:
+        int32_t mediaType;
+        std::string keyWords;
+        std::string deviceIdName;
+        std::vector<std::string> dealIds;
+        std::vector<int32_t> contentType;
+        protocol::log::DeviceInfo devInfo;
     };
 
     class BidCookieMappingInfo {
@@ -158,6 +160,7 @@ namespace bidding {
         bool isBidAccepted;
         protocol::log::AdInfo adInfo;
         BidCookieMappingInfo cmInfo;
+        BiddingFlowExtraInfo adFlowExtraInfo;
     };
 }
 }

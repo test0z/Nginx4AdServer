@@ -11,6 +11,7 @@ namespace bidding {
 
     using namespace com::google::openrtb;
     using namespace adservice::utility;
+    using namespace adservice::utility::url;
 
     static KupaiAdplaceStyleMap adplaceStyleMap;
 
@@ -127,9 +128,13 @@ namespace bidding {
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.adxid = ADX_KUPAI_MOBILE;
             queryCondition.mobileNetwork = getNetWork(device.connectiontype());
+            queryCondition.imei = device.has_didmd5() ? device.didmd5() : "";
+            queryCondition.androidId = device.has_dpidmd5() ? device.dpidmd5() : "";
+            queryCondition.mac = device.has_macmd5() ? device.macmd5() : "";
         } else {
             queryCondition.pcOS = SOLUTION_OS_OTHER;
             queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
+            queryCondition.mac = device.has_macmd5() ? device.macmd5() : "";
         }
 
         if (!filterCb(this, queryConditions)) {
@@ -170,9 +175,11 @@ namespace bidding {
         adResult->SetExtension(com::wk::adx::rtb::tagid, imp.id());
         adResult->SetExtension(com::wk::adx::rtb::creative_id, std::to_string(banner.bId));
 
-        char buffer[2048];
-        getShowPara(bidRequest_.id(), buffer, sizeof(buffer));
-        adResult->set_nurl(std::string(SNIPPET_SHOW_URL) + "?" + buffer + "&of=3&p=${AUCTION_PRICE}");
+        URLHelper showUrlParam;
+        getShowPara(showUrlParam, bidRequest_.id());
+        showUrlParam.add("of", "3");
+        showUrlParam.addMacro("p", "%%AUCTION_PRICE%%");
+        adResult->set_nurl(std::string(SNIPPET_SHOW_URL) + "?" + showUrlParam.cipherParam());
 
         cppcms::json::value bannerJson;
         std::stringstream ss;
@@ -207,8 +214,11 @@ namespace bidding {
         }
         std::string admJson = json::toJson(admObject);
         adResult->set_adm(admJson);
-        getClickPara(bidRequest_.id(), buffer, sizeof(buffer), "", landingUrl);
-        adResult->AddExtension(com::wk::adx::rtb::clktrackers, std::string(SNIPPET_CLICK_URL) + "?" + buffer);
+
+        url::URLHelper clickUrlParam;
+        getClickPara(clickUrlParam, bidRequest_.id(), "", landingUrl);
+        adResult->AddExtension(com::wk::adx::rtb::clktrackers,
+                               std::string(SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam());
 
         adResult->set_w(banner.width);
         adResult->set_h(banner.height);
