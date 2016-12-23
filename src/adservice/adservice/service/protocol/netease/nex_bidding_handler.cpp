@@ -139,6 +139,7 @@ namespace bidding {
                     queryCondition.height = size.height;
                 }
             }
+            queryCondition.pAdplaceInfo = &adplaceInfo;
             cppcms::json::value & device = bidRequest["device"];
             if (!device.is_undefined()) {
                 std::string ip = device.get("ip", "");
@@ -250,18 +251,6 @@ namespace bidding {
         std::string landingUrl;
         std::string mainTitle;
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
-            std::vector<std::string> materialUrls;
-            materialUrls.push_back(mtlsArray[0]["p6"].str());
-            materialUrls.push_back(mtlsArray[0]["p7"].str());
-            materialUrls.push_back(mtlsArray[0]["p8"].str());
-            cppcms::json::array admArray;
-            for (auto & murl : materialUrls) {
-                cppcms::json::value adm;
-                adm["url"] = murl;
-                adm["type"] = 0;
-                admArray.push_back(adm);
-            }
-            extValue["adm"] = admArray;
             landingUrl = mtlsArray[0]["p9"].str();
             replace(landingUrl, "{{click}}", "");
             extValue["linkUrl"] = landingUrl;
@@ -270,7 +259,20 @@ namespace bidding {
             for (auto iter = sizeStyleMap.find(std::make_pair(banner.width, banner.height));
                  iter != sizeStyleMap.end() && (style = iter->second) && false;)
                 ;
-
+            std::vector<std::string> materialUrls;
+            materialUrls.push_back(mtlsArray[0]["p6"].str());
+            if (style == 11) {
+                materialUrls.push_back(mtlsArray[0]["p7"].str());
+                materialUrls.push_back(mtlsArray[0]["p8"].str());
+            }
+            cppcms::json::array admArray;
+            for (auto & murl : materialUrls) {
+                cppcms::json::value adm;
+                adm["url"] = murl;
+                adm["type"] = 0;
+                admArray.push_back(adm);
+            }
+            extValue["adm"] = admArray;
             if (style == 3) {
                 mainTitle = mtlsArray[0]["p1"].str();
                 std::string bakMainTitle = mtlsArray[0]["p0"].str();
