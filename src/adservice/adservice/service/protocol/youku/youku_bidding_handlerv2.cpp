@@ -32,7 +32,7 @@ namespace bidding {
 #define YOUKU_OS_ANDROID "Android"
 #define YOUKU_OS_iPhone "ios"
 #define YOUKU_OS_MAC "Mac"
-#define YOUKU_COOKIEMAPPING_URL "http://c.yes.youku.com?dspid="
+#define YOUKU_COOKIEMAPPING_URL "http://c.yes.youku.com?dspid=11214"
 
     static void fromYoukuDevTypeOsType(int devType,
                                        const std::string & osType,

@@ -169,7 +169,7 @@ namespace bidding {
         BidResponse_SeatBid_Bid * adResult = seatBid->add_bid();
 
         adResult->set_id(bidRequest_.id());
-        adResult->set_impid(bidResponse_.bidid());
+        adResult->set_impid(imp.id());
         adResult->set_price(maxCpmPrice);
         adResult->set_crid(std::to_string(banner.bId));
         adResult->SetExtension(com::wk::adx::rtb::tagid, imp.id());
