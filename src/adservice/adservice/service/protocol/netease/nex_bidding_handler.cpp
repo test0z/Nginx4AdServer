@@ -245,7 +245,11 @@ namespace bidding {
         showUrl.add(URL_IMP_OF, "3");
         showUrl.addMacro(URL_EXCHANGE_PRICE, AD_NEX_PRICE);
         bidValue["nurl"] = std::string(SNIPPET_SHOW_URL) + "?" + showUrl.cipherParam();
-        std::string crid = std::to_string(adInfo.bannerId);
+        cppcms::json::value bannerFeedbackJson;
+        if (!banner.feedback.empty()) {
+            parseJson(banner.feedback.c_str(), bannerFeedbackJson);
+        }
+        std::string crid = bannerFeedbackJson.get("adx_cid", std::to_string(adInfo.bannerId));
         bidValue["crid"] = crid;
         std::string landingUrl;
         std::string mainTitle;
