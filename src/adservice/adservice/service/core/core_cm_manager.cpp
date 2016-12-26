@@ -122,7 +122,7 @@ namespace server {
         adservice::core::model::UserIDEntity idEntity(time);
         try {
             MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "userid-counter", time);
-            MT::common::ASOperation op(2, 60);
+            MT::common::ASOperation op(2, 15);
             op.addRead("id");
             op.addIncr("id", (int64_t)1ll);
             aerospikeClient.operate(key, op, idEntity);
