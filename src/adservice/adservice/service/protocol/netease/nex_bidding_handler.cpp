@@ -246,7 +246,11 @@ namespace bidding {
         char buffer[2048];
         snprintf(buffer, sizeof(buffer), AD_NEX_FEED, AD_NEX_PRICE, showParam); //包含of=3
         bidValue["nurl"] = buffer;
-        std::string crid = std::to_string(adInfo.bannerId);
+        cppcms::json::value bannerFeedbackJson;
+        if (!banner.feedback.empty()) {
+            parseJson(banner.feedback.c_str(), bannerFeedbackJson);
+        }
+        std::string crid = bannerFeedbackJson.get("adx_cid", std::to_string(adInfo.bannerId));
         bidValue["crid"] = crid;
         std::string landingUrl;
         std::string mainTitle;
