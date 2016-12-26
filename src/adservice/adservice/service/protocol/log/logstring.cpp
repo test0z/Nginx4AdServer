@@ -31,6 +31,42 @@ std::string ipv6ToString(const std::vector<int> & v)
     return std::string(output);
 }
 
+static std::string devTypeString(int mobileDevType)
+{
+    switch (mobileDevType) {
+    case SOLUTION_DEVICE_IPHONE:
+        return "iphone";
+    case SOLUTION_DEVICE_IPAD:
+        return "ipad";
+    case SOLUTION_DEVICE_ANDROID:
+        return "androidPhone";
+    case SOLUTION_DEVICE_ANDROIDPAD:
+        return "androidPad";
+    case SOLUTION_DEVICE_WINDOWSPHONE:
+        return "windowsPhone";
+    case SOLUTION_DEVICE_TV:
+        return "TV";
+    default:
+        return "unknown";
+    }
+}
+
+static std::string networkString(int network)
+{
+    switch (network) {
+    case SOLUTION_NETWORK_2G:
+        return "2G";
+    case SOLUTION_NETWORK_3G:
+        return "3G";
+    case SOLUTION_NETWORK_4G:
+        return "4G";
+    case SOLUTION_NETWORK_WIFI:
+        return "wifi";
+    default:
+        return "unknown";
+    }
+}
+
 void printLogPhase(std::stringstream & ss, LogPhaseType & type)
 {
     switch (type) {
@@ -102,13 +138,15 @@ void printLogIpInfo(std::stringstream & ss, protocol::log::IPInfo & ipInfo)
 
 void printLogUserId(std::stringstream & ss, const std::string & userId)
 {
-    CypherResult128 cypherResult;
-    memcpy((void *)cypherResult.bytes, (void *)userId.c_str(), userId.length());
-    DecodeResult64 decodeResult64;
-    cookiesDecode(cypherResult, decodeResult64);
-    ss << "userId:" << userId << ",code:" << decodeResult64.dword
-       << ",first:" << timeStringFromTimeStamp(getMttyTimeBegin() + decodeResult64.words[0])
-       << ",second:" << decodeResult64.words[1] << endl;
+    ss << "userId:" << userId << endl;
+}
+
+void printDeviceInfo(std::stringstream & ss, const protocol::log::DeviceInfo & devInfo)
+{
+    ss << "deviceId:" << devInfo.deviceID << endl;
+    ss << "deviceType:" << devTypeString(devInfo.deviceType) << endl;
+    ss << "flowType:" << devInfo.flowType << endl;
+    ss << "deviceNetwork:" << networkString(devInfo.netWork) << endl;
 }
 
 std::string getLogItemString(protocol::log::LogItem & log)
@@ -133,6 +171,12 @@ std::string getLogItemString(protocol::log::LogItem & log)
     printLogGeoInfo(ss, log.geoInfo);
     printLogUserInfo(ss, log.userInfo);
     printLogIpInfo(ss, log.ipInfo);
+    printDeviceInfo(ss, log.device);
+    ss << "dealIds:";
+    for (auto dealId : log.dealIds) {
+        ss << dealId << ",";
+    }
+    ss << endl;
     ss << "=====================================================================================" << endl;
     return ss.str();
 }
