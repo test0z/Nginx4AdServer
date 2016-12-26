@@ -249,9 +249,14 @@ namespace bidding {
         bidValue["crid"] = crid;
         std::string landingUrl;
         std::string mainTitle;
+        bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
+                     || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
             landingUrl = mtlsArray[0]["p9"].str();
             replace(landingUrl, "{{click}}", "");
+            if (isIOS && landingUrl.find("https") != 0) {
+                replace(landingUrl, "http", "https");
+            }
             extValue["linkUrl"] = landingUrl;
             int style = 0;
             auto & sizeStyleMap = adplaceStyleMap.getSizeStyleMap();
@@ -268,6 +273,9 @@ namespace bidding {
             cppcms::json::array admArray;
             for (auto & murl : materialUrls) {
                 cppcms::json::value adm;
+                if (isIOS && murl.find("https") != 0) {
+                    replace(murl, "http", "https");
+                }
                 adm["url"] = murl;
                 adm["type"] = 0;
                 admArray.push_back(adm);
