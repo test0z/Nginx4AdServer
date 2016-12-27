@@ -20,8 +20,8 @@ namespace bidding {
     static NetEaseAdplaceStyleMap adplaceStyleMap;
 
 #define AD_NEX_CM_URL ""
-#define AD_NEX_FEED "https://show.mtty.com/v?of=3&p=%s&%s"
-#define AD_NEX_CLICK "https://click.mtty.com/c?%s"
+#define AD_NEX_FEED "http://show.mtty.com/v?of=3&p=%s&%s"
+#define AD_NEX_CLICK "http://click.mtty.com/c?%s"
 #define AD_NEX_PRICE "${AUCTION_PRICE}"
 #define NEX_OS_WINDOWS "Windows"
 #define NEX_OS_ANDROID "Android"
