@@ -172,7 +172,7 @@ namespace bidding {
         adResult->set_impid(imp.id());
         adResult->set_price(maxCpmPrice);
         adResult->set_crid(std::to_string(banner.bId));
-        adResult->SetExtension(com::wk::adx::rtb::tagid, imp.id());
+        adResult->SetExtension(com::wk::adx::rtb::tagid, imp.has_tagid() ? imp.tagid() : "");
         adResult->SetExtension(com::wk::adx::rtb::creative_id, std::to_string(banner.bId));
 
         URLHelper showUrlParam;
@@ -195,13 +195,13 @@ namespace bidding {
             imageUrls.push_back(mtlsArray[0]["p6"].str());
             imageUrls.push_back(mtlsArray[0]["p7"].str());
             imageUrls.push_back(mtlsArray[0]["p8"].str());
-            admObject["imageurl"] = imageUrls;
+            admObject["imgurl"] = imageUrls;
             admObject["landingurl"] = landingUrl;
         } else if (banner.bannerType != BANNER_TYPE_HTML) {
             landingUrl = mtlsArray[0]["p1"].str();
             cppcms::json::array imageUrls;
             imageUrls.push_back(mtlsArray[0]["p0"].str());
-            admObject["imageurl"] = imageUrls;
+            admObject["imgurl"] = imageUrls;
             admObject["landingurl"] = landingUrl;
         }
         int style = 0;

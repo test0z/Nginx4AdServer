@@ -1,9 +1,10 @@
 #ifndef USER_H
 #define USER_H
 
-#include <map>
+#include "common/spinlock.h"
 #include <mtty/aerospike.h>
 #include <string>
+#include <unordered_map>
 
 namespace adservice {
 namespace core {
@@ -11,6 +12,11 @@ namespace core {
 
         class MtUserMapping : public MT::common::ASEntity {
         public:
+            MtUserMapping()
+            {
+                spinlock_init(&slock);
+            }
+
             static std::string adxUidKey(int64_t adxId);
 
             static const std::string & idfaKey();
@@ -51,10 +57,11 @@ namespace core {
             as_record * record();
 
         public:
+            struct spinlock slock;
             std::string userId;
             std::string cypherUserId;
-            std::map<int64_t, std::string> adxUids;
-            std::map<std::string, std::string> deviceIds;
+            std::unordered_map<int64_t, std::string> adxUids;
+            std::unordered_map<std::string, std::string> deviceIds;
         };
     }
 }

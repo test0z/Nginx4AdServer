@@ -49,8 +49,12 @@ namespace core {
         {
             userId = "";
             cypherUserId = "";
-            adxUids.clear();
-            deviceIds.clear();
+            if (!adxUids.empty()) {
+                adxUids.clear();
+            }
+            if (!deviceIds.empty()) {
+                deviceIds.clear();
+            }
         }
 
         std::string MtUserMapping::cypherUid()
@@ -125,14 +129,16 @@ namespace core {
                                                 ADX_SOHU_MOBILE,  ADX_TENCENT_GDT,     ADX_YOUKU,
                                                 ADX_YOUKU_MOBILE, ADX_NETEASE_MOBILE,  ADX_INMOBI };
             static std::vector<std::string> deviceKeys = { MAPPING_KEY_IDFA, MAPPING_KEY_IMEI };
-            this->reset();
-            for (auto id : adxIds) {
-                this->adxUids.insert({ id, getStr(record, adxUidKey(id).c_str()) });
+            if (spinlock_trylock(&slock)) {
+                this->reset();
+                for (auto id : adxIds) {
+                    this->adxUids.insert({ id, getStr(record, adxUidKey(id).c_str()) });
+                }
+                for (auto deviceKey : deviceKeys) {
+                    this->deviceIds.insert({ deviceKey, getStr(record, deviceKey.c_str()) });
+                }
+                this->userId = getStr(record, MAPPING_KEY_USER.c_str());
             }
-            for (const auto & deviceKey : deviceKeys) {
-                this->deviceIds.insert({ deviceKey, getStr(record, deviceKey.c_str()) });
-            }
-            this->userId = getStr(record, MAPPING_KEY_USER.c_str());
         }
 
         as_record * MtUserMapping::record()
