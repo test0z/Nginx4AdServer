@@ -86,7 +86,7 @@ namespace corelogic {
                            const std::string & requestTypeStr)
         {
             std::string result
-                = "http://mtty.cn-beijing.log.aliyuncs.com/logstores/mt-log/track.gif?APIVersion=0.6.0&t="
+                = "http://mtty.cn-beijing-vpc.log.aliyuncs.com/logstores/mt-log/track.gif?APIVersion=0.6.0&t="
                   + std::to_string(log.timeStamp);
 
             if (!log.traceInfo.version.empty()) {
