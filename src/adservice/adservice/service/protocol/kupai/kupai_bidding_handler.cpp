@@ -167,7 +167,7 @@ namespace bidding {
         adResult->set_impid(imp.id());
         adResult->set_price(maxCpmPrice);
         adResult->set_crid(std::to_string(banner.bId));
-        adResult->SetExtension(com::wk::adx::rtb::tagid, imp.id());
+        adResult->SetExtension(com::wk::adx::rtb::tagid, imp.has_tagid() ? imp.tagid() : "");
         adResult->SetExtension(com::wk::adx::rtb::creative_id, std::to_string(banner.bId));
 
         char buffer[2048];
