@@ -1,5 +1,6 @@
 #include "trace_task.h"
 
+#include <curl/curl.h>
 #include <mtty/aerospike.h>
 
 #include "core/config_types.h"
@@ -78,17 +79,15 @@ namespace corelogic {
             log.traceInfo.tag10 = paramMap[URL_TAG10];
         }
 
-        std::string aliLog(const std::string & protocol,
-                           const protocol::log::LogItem & log,
+        std::string aliLog(const protocol::log::LogItem & log,
                            const core::model::SourceRecord & sourceRecord,
-                           ParamMap & paramMap,
                            const std::string & ownerId,
                            const std::string & sourceId,
                            const std::string & requestTypeStr)
         {
-            std::string result = std::string(protocol == "1" ? "https" : "http")
-                                 + "://mtty.cn-beijing.log.aliyuncs.com/logstores/mt-log/track.gif?APIVersion=0.6.0&t="
-                                 + std::to_string(log.timeStamp);
+            std::string result
+                = "http://mtty.cn-beijing.log.aliyuncs.com/logstores/mt-log/track.gif?APIVersion=0.6.0&t="
+                  + std::to_string(log.timeStamp);
 
             if (!log.traceInfo.version.empty()) {
                 result += "&v=" + log.traceInfo.version;
@@ -177,6 +176,30 @@ namespace corelogic {
 
             return result;
         }
+        static size_t writeData(void * ptr, size_t size, size_t nmemb, void * userdata)
+        {
+            std::string * result = (std::string *)userdata;
+            result->append((char *)ptr, size * nmemb);
+
+            return (size * nmemb);
+        }
+
+        std::string httpGet(const std::string & url)
+        {
+            std::string content;
+
+            auto * curl = curl_easy_init();
+            if (curl != nullptr) {
+                curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+                curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeData);
+                curl_easy_setopt(curl, CURLOPT_WRITEDATA, &content);
+
+                curl_easy_perform(curl);
+            }
+
+            curl_easy_cleanup(curl);
+            return content;
+        }
 
     } // anonymous namespace
 
@@ -233,13 +256,11 @@ namespace corelogic {
         // 记录TraceInfo日志
         fillLog(log, paramMap, version, device, sourceId);
 
-        std::string protocol = paramMap[URL_PROTOCOL];
-        std::string aliLogUrl = aliLog(protocol, log, sourceRecord, paramMap, ownerId, sourceId, requestTypeStr);
+        std::string aliLogUrl = aliLog(log, sourceRecord, ownerId, sourceId, requestTypeStr);
 
         // 跳转至阿里云日志服务
-        resp.status(302, "OK");
-        resp.set_header("Location", aliLogUrl);
-        resp.set_body("m");
+        resp.status(200, "OK");
+        resp.set_body(httpGet(aliLogUrl));
     }
 
     void HandleTraceTask::onError(std::exception & e, adservice::utility::HttpResponse & resp)
