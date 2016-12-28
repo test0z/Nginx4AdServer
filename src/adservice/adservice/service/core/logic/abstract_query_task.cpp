@@ -189,11 +189,13 @@ namespace corelogic {
             }
             if ((iter = paramMap.find(URL_CLICK_Y)) != paramMap.end()) { //点击坐标y
                 std::string & sy = iter->second;                         // paramMap[URL_CLICK_Y];
-                log.clicky = std::stoi(sy);
+                log.clicky = URLParamMap::stringToInt(sy);
             }
             if ((iter = paramMap.find(URL_PRICE_TYPE)) != paramMap.end()) { //出价类型
                 std::string & pricetype = iter->second;
                 log.adInfo.priceType = URLParamMap::stringToInt(pricetype);
+            } else {
+                log.adInfo.priceType = 0;
             }
             if ((iter = paramMap.find(URL_ORDER_ID)) != paramMap.end()) { //订单id
                 std::string & orderId = iter->second;

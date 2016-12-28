@@ -44,6 +44,7 @@ namespace bidding {
         logItem.adInfo.adxpid = adInfo.adxpid;
         if (!cmInfo.userMapping.userId.empty()) {
             logItem.userId = cmInfo.userMapping.userId;
+            logItem.device = adFlowExtraInfo.devInfo;
         }
         if (isAccepted) {
             logItem.adInfo.sid = adInfo.sid;
@@ -63,6 +64,9 @@ namespace bidding {
                             logItem.geoInfo.city);
             logItem.adInfo.bidSize = adInfo.bidSize;
             logItem.adInfo.orderId = adInfo.orderId;
+            logItem.dealIds = adFlowExtraInfo.dealIds;
+            logItem.contentTypes = adFlowExtraInfo.contentType;
+            logItem.mediaType = adFlowExtraInfo.mediaType;
         } else {
             logItem.adInfo.pid = std::to_string(queryCondition.mttyPid);
             logItem.adInfo.adxpid = queryCondition.adxpid;
