@@ -17,8 +17,8 @@
  */
 
 
-#ifndef LOG_AVRO_LOG_H_2306057633__H_
-#define LOG_AVRO_LOG_H_2306057633__H_
+#ifndef LOG_AVRO_LOG_H_1043125252__H_
+#define LOG_AVRO_LOG_H_1043125252__H_
 
 
 #include <sstream>
@@ -200,6 +200,7 @@ struct LogItem {
     int32_t mediaType;
     std::vector<int32_t > contentTypes;
     DeviceInfo device;
+    int32_t flowRef;
     LogItem() :
         timeStamp(int64_t()),
         logType(LogPhaseType()),
@@ -225,7 +226,8 @@ struct LogItem {
         keyWords(std::string()),
         mediaType(int32_t()),
         contentTypes(std::vector<int32_t >()),
-        device(DeviceInfo())
+        device(DeviceInfo()),
+        flowRef(int32_t())
         { }
 };
 
@@ -798,6 +800,7 @@ template<> struct codec_traits<protocol::log::LogItem> {
         avro::encode(e, v.mediaType);
         avro::encode(e, v.contentTypes);
         avro::encode(e, v.device);
+        avro::encode(e, v.flowRef);
     }
     static void decode(Decoder& d, protocol::log::LogItem& v) {
         if (avro::ResolvingDecoder *rd =
@@ -881,6 +884,9 @@ template<> struct codec_traits<protocol::log::LogItem> {
                 case 24:
                     avro::decode(d, v.device);
                     break;
+                case 25:
+                    avro::decode(d, v.flowRef);
+                    break;
                 default:
                     break;
                 }
@@ -911,6 +917,7 @@ template<> struct codec_traits<protocol::log::LogItem> {
             avro::decode(d, v.mediaType);
             avro::decode(d, v.contentTypes);
             avro::decode(d, v.device);
+            avro::decode(d, v.flowRef);
         }
     }
 };

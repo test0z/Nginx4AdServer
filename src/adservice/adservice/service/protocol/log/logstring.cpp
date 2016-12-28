@@ -167,6 +167,7 @@ std::string getLogItemString(protocol::log::LogItem & log)
     ss << "pageInfo:" << log.pageInfo << endl;
     ss << "traceId:" << log.traceId << endl;
     ss << "click coord:(" << log.clickx << "," << log.clicky << ")" << endl;
+    ss << "flowRef:" << log.flowRef << endl;
     printLogAdInfo(ss, log.adInfo);
     printLogGeoInfo(ss, log.geoInfo);
     printLogUserInfo(ss, log.userInfo);
