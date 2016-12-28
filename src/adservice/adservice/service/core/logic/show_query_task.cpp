@@ -254,12 +254,12 @@ namespace corelogic {
         std::string encodedLandingUrl;
         urlEncode_f(landingUrl, encodedLandingUrl, landingPageBuffer);
         clickUrl.add(URL_LANDING_URL, encodedLandingUrl);
+        if (banner.bannerType != BANNER_TYPE_PRIMITIVE) {
+            mtls[0].set("p5", clickUrl.cipherUrl());
+        } else {
+            mtls[0].set("p9", clickUrl.cipherUrl());
+        }
         if (paramMap[URL_IMP_OF] == OF_SSP_MOBILE) {
-            if (banner.bannerType != BANNER_TYPE_PRIMITIVE) {
-                mtls[0].set("p5", clickUrl.cipherUrl());
-            } else {
-                mtls[0].set("p9", clickUrl.cipherUrl());
-            }
             //只输出标准json
             std::string jsonResult = utility::json::toJson(mtAdInfo);
             resultLen = snprintf(buffer, bufferSize - 1, "%s", jsonResult.c_str());
