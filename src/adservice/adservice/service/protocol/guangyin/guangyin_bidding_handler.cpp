@@ -10,6 +10,7 @@ namespace protocol {
 namespace bidding {
 
     using namespace adservice::utility::url;
+    using namespace adservice::utility::cypher;
 
     namespace {
 

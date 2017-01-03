@@ -562,12 +562,12 @@ template<> struct codec_traits<protocol::log::LogPhaseType> {
     }
     static void decode(Decoder& d, protocol::log::LogPhaseType& v) {
 		size_t index = d.decodeEnum();
-		if (index < protocol::log::BID || index > protocol::log::MAPPING)
+		/*if (index < protocol::log::BID || index > protocol::log::MAPPING)
 		{
 			std::ostringstream error;
 			error << "enum value " << index << " is out of bound for protocol::log::LogPhaseType and cannot be decoded";
 			throw avro::Exception(error.str());
-		}
+		}*/
         v = static_cast<protocol::log::LogPhaseType>(index);
     }
 };

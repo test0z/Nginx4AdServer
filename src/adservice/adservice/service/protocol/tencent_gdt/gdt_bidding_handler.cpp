@@ -16,6 +16,7 @@ namespace bidding {
     using namespace adservice::utility;
     using namespace adservice::utility::serialize;
     using namespace adservice::utility::userclient;
+    using namespace adservice::utility::cypher;
     using namespace adservice::server;
 
     static GdtAdplaceMap gdtAdplaceMap;
