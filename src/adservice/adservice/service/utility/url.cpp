@@ -377,7 +377,8 @@ namespace utility {
                 { URL_DEVICE_ANDOROIDID, PARAM_STRING },
                 { URL_DEVICE_MAC, PARAM_STRING },
                 { URL_LANDING_URL, PARAM_STRING },
-                { URL_TIMEM, PARAM_INT } };
+                { URL_TIMEM, PARAM_INT },
+                { URL_SITE_ID, PARAM_INT } };
 
         void URLHelper::numberEncode(int64_t number, uchar_t *& buf, int & bufRemainSize)
         {

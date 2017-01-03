@@ -40,6 +40,9 @@ namespace bidding {
                                              bool isAccepted)
     {
         logItem.reqStatus = 200;
+        if (!isAccepted) {
+            logItem.adInfo = protocol::log::AdInfo();
+        }
         logItem.adInfo.adxid = adInfo.adxid;
         logItem.adInfo.adxpid = adInfo.adxpid;
         if (!cmInfo.userMapping.userId.empty()) {
@@ -132,6 +135,7 @@ namespace bidding {
         showUrl.add("pt", std::to_string(adInfo.priceType));
         showUrl.add("od", std::to_string(adInfo.orderId));
         showUrl.add("ep", std::to_string(adInfo.ppid));
+        showUrl.add(URL_SITE_ID, std::to_string(adInfo.mid));
     }
 
     void AbstractBiddingHandler::getClickPara(const std::string & bid, char * clickParamBuf, int clickBufSize,
@@ -186,6 +190,7 @@ namespace bidding {
         clickUrl.add("pt", std::to_string(adInfo.priceType));
         clickUrl.add("od", std::to_string(adInfo.orderId));
         clickUrl.add("url", encodedLandingUrl);
+        clickUrl.add(URL_SITE_ID, std::to_string(adInfo.mid));
         clickUrl.add(adFlowExtraInfo.deviceIdName, adFlowExtraInfo.devInfo.deviceID);
     }
 
@@ -195,7 +200,11 @@ namespace bidding {
         char html[4096];
         URLHelper showUrlParam;
         getShowPara(showUrlParam, bid);
-        showUrlParam.add("_=&", extShowBuf);
+        ParamMap extParamMap;
+        getParamv2(extParamMap, extShowBuf);
+        for (auto iter : extParamMap) {
+            showUrlParam.add(iter.first, iter.second);
+        }
         int len = snprintf(html, sizeof(html), SNIPPET_IFRAME, width, height, SNIPPET_SHOW_URL, "",
                            showUrlParam.cipherParam().c_str(), cookieMappingUrl);
         return std::string(html, html + len);
@@ -266,6 +275,10 @@ namespace bidding {
             adFlowExtraInfo.devInfo.deviceID = selectCondition.mac;
             adFlowExtraInfo.deviceIdName = URL_DEVICE_MAC;
         }
+        std::string deviceId;
+        char buffer[1024];
+        adservice::utility::url::urlEncode_f(adFlowExtraInfo.devInfo.deviceID, deviceId, buffer);
+        adFlowExtraInfo.devInfo.deviceID = deviceId;
         adFlowExtraInfo.contentType.clear();
         adFlowExtraInfo.contentType.push_back(selectCondition.mttyContentType);
         adFlowExtraInfo.mediaType = selectCondition.mediaType;

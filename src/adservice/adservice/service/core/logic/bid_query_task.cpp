@@ -179,6 +179,7 @@ namespace corelogic {
                         if (!adSelectClient->search(seqId, false, condition, resp)) {
                             condition.mttyPid = resp.adplace.pId;
                             log.adInfo.mid = resp.adplace.mId;
+                            bAccepted = false;
                         } else {
                             adapter->buildBidResult(condition, resp, conditionIdx);
                             log.adInfo.mid = resp.adplace.mId;

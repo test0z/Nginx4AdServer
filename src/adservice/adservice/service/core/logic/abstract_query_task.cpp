@@ -9,6 +9,7 @@
 #include "protocol/baidu/baidu_price.h"
 #include "protocol/guangyin/guangyin_price.h"
 #include "protocol/kupai/kupai_price_decode.h"
+#include "protocol/netease/nex_price.h"
 #include "protocol/sohu/sohu_price.h"
 #include "protocol/tanx/tanx_price.h"
 #include "protocol/tencent_gdt/tencent_gdt_price.h"
@@ -63,14 +64,15 @@ namespace corelogic {
         case ADX_SOHU_MOBILE:
             return sohu_price_decode(input);
         case ADX_INMOBI:
-        case ADX_NEX_PC:
-        case ADX_NEX_MOBILE:
             try {
                 return std::stoi(input);
             } catch (...) {
                 LOG_ERROR << "adx inmobi/nex price error,input:" << input;
                 return 0;
             }
+        case ADX_NEX_PC:
+        case ADX_NEX_MOBILE:
+            return nex_price_decode(input);
         case ADX_KUPAI_MOBILE:
             return kupai_price_decode(input);
         default:
@@ -152,6 +154,10 @@ namespace corelogic {
             if ((iter = paramMap.find(URL_EXPOSE_ID)) != paramMap.end()) { //曝光Id
                 std::string & r = iter->second;                            // paramMap[URL_EXPOSE_ID];
                 log.adInfo.imp_id = r;
+            }
+            if ((iter = paramMap.find(URL_SITE_ID)) != paramMap.end()) { //网站id
+                std::string & mid = iter->second;
+                log.adInfo.mid = URLParamMap::stringToInt(mid);
             }
             if ((iter = paramMap.find(URL_ADOWNER_ID)) != paramMap.end()) { //广告主Id
                 std::string & d = iter->second;                             // paramMap[URL_ADOWNER_ID];

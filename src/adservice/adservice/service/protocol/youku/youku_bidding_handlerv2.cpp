@@ -341,7 +341,7 @@ namespace bidding {
         extValue["ldp"] = std::string(SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
         if (!tview.empty()) {
             cppcms::json::array & extPmArray = extValue["pm"].array();
-            extPmArray.push_back(cppcms::json::value(tview));
+            extPmArray.push_back(tview);
         }
         if (!cookieMappingUrl.empty()) {
             extValue["pm"].array().push_back(cookieMappingUrl);

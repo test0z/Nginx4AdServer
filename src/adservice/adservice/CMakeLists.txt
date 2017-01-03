@@ -51,6 +51,7 @@ SET(SRC_LIST
     ./service/protocol/log/logstring.cpp
     ./service/protocol/netease/netease_bidding_handlerv2.cpp
     ./service/protocol/netease/nex_bidding_handler.cpp
+    ./service/protocol/netease/nex_price.cpp
     ./service/protocol/kupai/kupai_bidding_handler.cpp
     ./service/protocol/kupai/wk_adx_rtb_ext.pb.cpp
     ./service/protocol/kupai/openrtb.pb.cpp

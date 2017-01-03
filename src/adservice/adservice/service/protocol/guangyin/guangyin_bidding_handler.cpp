@@ -160,6 +160,11 @@ namespace bidding {
                     queryCondition.adxpid = site.publisher().slot();
                 }
             }
+            cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
+                                   md5_encode(queryCondition.imei),
+                                   md5_encode(queryCondition.androidId),
+                                   md5_encode(queryCondition.mac));
+            queryCookieMapping(cmInfo.queryKV, queryCondition);
         } else {
             queryCondition.pcOS = adservice::utility::userclient::getOSTypeFromUA(device.ua());
             queryCondition.pcBrowserStr = adservice::utility::userclient::getBrowserTypeFromUA(device.ua());
@@ -260,6 +265,7 @@ namespace bidding {
         adResult->set_h(banner.height);
         adResult->set_type(AdType::JS);
         adResult->set_admtype(AdmType::HTML);
+        redoCookieMapping(queryCondition.adxid, "");
     }
 
     void GuangyinBiddingHandler::match(adservice::utility::HttpResponse & response)

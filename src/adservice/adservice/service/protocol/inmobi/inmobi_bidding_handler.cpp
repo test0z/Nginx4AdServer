@@ -242,7 +242,7 @@ namespace bidding {
     "bidid":"",
     "seatbid":[
         {
-          "seat":"1",
+          "seat":"56abf687dd6c419886c841240815ceb9",
           "bid":[
                 {
                     "adm":"",

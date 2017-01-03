@@ -212,6 +212,7 @@ namespace bidding {
             }
             bidResponse["id"] = requestId;
             bidResponse["bidid"] = "1";
+            bidResponse["cur"] = "CNY";
         }
         const cppcms::json::value & adzInfo = bidRequest["imp"].array()[seq];
         const MT::common::Solution & finalSolution = result.solution;
@@ -244,7 +245,9 @@ namespace bidding {
         }
         showUrl.add(URL_IMP_OF, "3");
         showUrl.addMacro(URL_EXCHANGE_PRICE, AD_NEX_PRICE);
-        bidValue["nurl"] = std::string(SNIPPET_SHOW_URL) + "?" + showUrl.cipherParam();
+        bidValue["nurl"] = "http://mtty-cdn.mtty.com/1x1.gif";
+        bidValue["pvm"] = cppcms::json::array();
+        bidValue["pvm"].array().push_back(std::string(SNIPPET_SHOW_URL) + "?" + showUrl.cipherParam());
         cppcms::json::value bannerFeedbackJson;
         if (!banner.feedback.empty()) {
             parseJson(banner.feedback.c_str(), bannerFeedbackJson);
@@ -303,7 +306,6 @@ namespace bidding {
         cppcms::json::array clickm = cppcms::json::array();
         clickm.push_back(cm);
         bidValue["clickm"] = clickm;
-        bidValue["pvm"] = cppcms::json::array();
         if (!tview.empty()) {
             cppcms::json::array & extPmArray = bidValue["pvm"].array();
             extPmArray.push_back(cppcms::json::value(tview));

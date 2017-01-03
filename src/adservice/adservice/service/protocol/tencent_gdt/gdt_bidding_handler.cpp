@@ -136,6 +136,11 @@ namespace bidding {
                 queryCondition.mobileDevice = SOLUTION_DEVICE_OTHER;
                 queryCondition.pcOS = SOLUTION_OS_OTHER;
             }
+            cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
+                                   md5_encode(queryCondition.imei),
+                                   md5_encode(queryCondition.androidId),
+                                   md5_encode(queryCondition.mac));
+            queryCookieMapping(cmInfo.queryKV, queryCondition);
         }
         if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE && bidRequest.has_app()) {
             const BidRequest_App & app = bidRequest.app();
@@ -161,6 +166,7 @@ namespace bidding {
             bidResponse.set_request_id(bidRequest.id());
             bidResponse.clear_seat_bids();
         }
+        redoCookieMapping(ADX_GDT_MOBILE, "");
         BidResponse_SeatBid * seatBid = bidResponse.add_seat_bids();
         const MT::common::Banner & banner = result.banner;
         const BidRequest_Impression & adzInfo = bidRequest.impressions(seq);

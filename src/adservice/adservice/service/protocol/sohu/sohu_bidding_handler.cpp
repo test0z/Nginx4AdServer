@@ -117,6 +117,11 @@ namespace bidding {
                 queryCondition.imei = device.has_imei() ? device.imei() : "";
                 queryCondition.androidId = device.has_androidid() ? device.androidid() : "";
                 queryCondition.mac = device.has_mac() ? device.mac() : "";
+                cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
+                                       md5_encode(queryCondition.imei),
+                                       md5_encode(queryCondition.androidId),
+                                       md5_encode(queryCondition.mac));
+                queryCookieMapping(cmInfo.queryKV, queryCondition);
             } else { // pc
                 queryCondition.pcOS = getOSTypeFromUA(device.ua());
                 queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
@@ -203,6 +208,7 @@ namespace bidding {
         }
         adResult->set_displaypara(showUrlParam.cipherParam());
         adResult->set_clickpara(clickUrlParam.cipherParam());
+        redoCookieMapping(queryCondition.adxid, "");
     }
 
     void SohuBiddingHandler::match(adservice::utility::HttpResponse & response)

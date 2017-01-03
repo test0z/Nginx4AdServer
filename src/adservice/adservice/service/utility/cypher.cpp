@@ -203,11 +203,11 @@ namespace utility {
             return true;
         }
 
-        void aes_ecbencode(const uchar_t * key, const std::string & input, std::string & output)
+        void aes_ecbencode(const uchar_t * key, const std::string & input, std::string & output, int keyLen)
         {
             try {
                 CryptoPP::ECB_Mode<CryptoPP::AES>::Encryption e;
-                e.SetKey(key, 16);
+                e.SetKey(key, keyLen);
                 CryptoPP::StringSource(input, true,
                                        new CryptoPP::StreamTransformationFilter(e, new CryptoPP::StringSink(output)));
             } catch (CryptoPP::Exception & e) {
@@ -215,11 +215,11 @@ namespace utility {
             }
         }
 
-        void aes_ecbdecode(const uchar_t * key, const std::string & input, std::string & output)
+        void aes_ecbdecode(const uchar_t * key, const std::string & input, std::string & output, int keyLen)
         {
             try {
                 CryptoPP::ECB_Mode<CryptoPP::AES>::Decryption d;
-                d.SetKey(key, 16);
+                d.SetKey(key, keyLen);
                 CryptoPP::StringSource(input, true,
                                        new CryptoPP::StreamTransformationFilter(d, new CryptoPP::StringSink(output)));
             } catch (CryptoPP::Exception & e) {
@@ -227,16 +227,40 @@ namespace utility {
             }
         }
 
-        void aes_ecbdecode_nopadding(const uchar_t * key, const std::string & input, std::string & output)
+        void aes_ecbdecode_nopadding(const uchar_t * key, const std::string & input, std::string & output, int keyLen)
         {
             try {
                 CryptoPP::ECB_Mode<CryptoPP::AES>::Decryption d;
-                d.SetKey(key, 16);
+                d.SetKey(key, keyLen);
                 CryptoPP::StringSource(
                     input, true, new CryptoPP::StreamTransformationFilter(d, new CryptoPP::StringSink(output),
                                                                           CryptoPP::BlockPaddingSchemeDef::NO_PADDING));
             } catch (CryptoPP::Exception & e) {
                 LOG_ERROR << "aes_ecbdecode failed,e:" << e.what();
+            }
+        }
+
+        void aes_cfbdecode(const uchar_t * key, const uchar_t * iv, const std::string & input, std::string & output)
+        {
+            try {
+                CryptoPP::CFB_Mode<CryptoPP::AES>::Decryption d(key, 16, iv);
+                CryptoPP::StringSource(input, true,
+                                       new CryptoPP::StreamTransformationFilter(d, new CryptoPP::StringSink(output)));
+            } catch (CryptoPP::Exception & e) {
+                LOG_ERROR << "aes_cfbdecode failed,e:" << e.what();
+            }
+        }
+
+        void aes_cbcdecode(const uchar_t * key, const uchar_t * iv, const std::string & input, std::string & output)
+        {
+            try {
+                CryptoPP::CBC_Mode<CryptoPP::AES>::Decryption d;
+                d.SetKeyWithIV(key, 16, iv, 16);
+                CryptoPP::StringSource(input, true, new CryptoPP::StreamTransformationFilter(
+                                                        d, new CryptoPP::StringSink(output),
+                                                        CryptoPP::BlockPaddingSchemeDef::PKCS_PADDING));
+            } catch (CryptoPP::Exception & e) {
+                LOG_ERROR << "aes_cfbdecode failed,e:" << e.what();
             }
         }
 

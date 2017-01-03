@@ -33,6 +33,12 @@ ADD_EXECUTABLE(url_test ./urlhelper_test.cpp
     ../service/utility/url.cpp
     ../service/utility/random.cpp)
 
+ADD_EXECUTABLE(price_test ./price_test.cpp
+    ../service/protocol/netease/nex_price.cpp
+    ../service/utility/cypher.cpp
+    ../service/utility/url.cpp
+    ../service/utility/random.cpp)
+
 SET(LINK_LIBRARY rt
     dl
     pthread
@@ -54,3 +60,4 @@ SET(LINK_LIBRARY rt
 
 #TARGET_LINK_LIBRARIES(cookiemapping_test ${LINK_LIBRARY})
 TARGET_LINK_LIBRARIES(url_test ${LINK_LIBRARY})
+TARGET_LINK_LIBRARIES(price_test ${LINK_LIBRARY})
