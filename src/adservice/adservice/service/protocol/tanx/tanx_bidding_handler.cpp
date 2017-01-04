@@ -62,7 +62,7 @@ namespace bidding {
         }
     }
 
-    std::string TanxBiddingHandler::tanxHtmlSnippet(const std::string & cookieMappingUrl)
+    std::string TanxBiddingHandler::tanxHtmlSnippet(const std::string & cookieMappingUrl, bool useHttps)
     {
         std::string bid = bidRequest.bid();
         // bool isMobile = bidRequest.has_mobile();
@@ -74,23 +74,26 @@ namespace bidding {
         if (!cookieMappingUrl.empty()) {
             cmImage = cmImage + "<img src=\"" + cookieMappingUrl + "\"/>";
         }
-        return generateHtmlSnippet(bid, width, height, NULL, cmImage.c_str());
+        return generateHtmlSnippet(bid, width, height, NULL, cmImage.c_str(), useHttps);
     }
 
     std::string TanxBiddingHandler::generateHtmlSnippet(const std::string & bid, int width, int height,
-                                                        const char * extShowBuf, const char * cookieMappingUrl)
+                                                        const char * extShowBuf, const char * cookieMappingUrl,
+                                                        bool useHttps)
     {
         char html[4096];
         url::URLHelper showUrlParam;
         getShowPara(showUrlParam, bid);
         showUrlParam.add(URL_IMP_OF, "3");
         showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_TX_PRICE_MACRO);
-        snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s", SNIPPET_SHOW_URL, showUrlParam.cipherParam().c_str());
+        snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s", useHttps ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL,
+                 showUrlParam.cipherParam().c_str());
         showUrlParam.add(URL_IMP_OF, "2");
         showUrlParam.removeMacro(URL_EXCHANGE_PRICE);
         showUrlParam.addMacro(URL_ADX_MACRO, AD_TX_CLICK_MACRO);
-        int len = snprintf(html, sizeof(html), SNIPPET_IFRAME_SUPPORT_CM, width, height, SNIPPET_SHOW_URL, "",
-                           showUrlParam.cipherParam().c_str(), cookieMappingUrl);
+        int len = snprintf(html, sizeof(html), SNIPPET_IFRAME_SUPPORT_CM, width, height,
+                           useHttps ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL, "", showUrlParam.cipherParam().c_str(),
+                           cookieMappingUrl);
         return std::string(html, html + len);
     }
 
@@ -209,13 +212,12 @@ namespace bidding {
         fillAdInfo(queryCondition, result, bidRequest.tid());
 
         std::string cookieMappingUrl = redoCookieMapping(ADX_TANX, TANX_COOKIEMAPPING_URL);
-
-        char pjson[2048] = { '\0' };
+        bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
+                     || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         std::string strBannerJson = banner.json;
-        strncat(pjson, strBannerJson.data(), sizeof(pjson));
-        // tripslash2(pjson);
+        urlHttp2HttpsIOS(isIOS, strBannerJson);
         cppcms::json::value bannerJson;
-        parseJson(pjson, bannerJson);
+        parseJson(strBannerJson.c_str(), bannerJson);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string destUrl = mtlsArray[0].get("p1", "");
         if (destUrl.empty()) {
@@ -225,7 +227,7 @@ namespace bidding {
         adResult->add_click_through_url(destUrl);
         adResult->set_creative_id(std::to_string(adInfo.bannerId));
         adResult->add_advertiser_ids(adxAdvId); // adx_advid
-        adResult->set_html_snippet(tanxHtmlSnippet(cookieMappingUrl));
+        adResult->set_html_snippet(tanxHtmlSnippet(cookieMappingUrl, isIOS));
         adResult->set_feedback_address(feedbackUrl);
     }
 

@@ -226,13 +226,14 @@ namespace bidding {
         //缓存最终广告结果
         fillAdInfo(queryCondition, result, bidRequest.get("user.id", ""));
 
+        bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
+                     || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
+
         // html snippet相关
-        char pjson[2048] = { '\0' };
         std::string strBannerJson = banner.json;
-        strncat(pjson, strBannerJson.data(), sizeof(pjson));
-        // tripslash2(pjson);
+        urlHttp2HttpsIOS(isIOS, strBannerJson);
         cppcms::json::value bannerJson;
-        parseJson(pjson, bannerJson);
+        parseJson(strBannerJson.c_str(), bannerJson);
         cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string tview = bannerJson["tview"].str();
 
@@ -247,7 +248,8 @@ namespace bidding {
         showUrl.addMacro(URL_EXCHANGE_PRICE, AD_NEX_PRICE);
         bidValue["nurl"] = "http://mtty-cdn.mtty.com/1x1.gif";
         bidValue["pvm"] = cppcms::json::array();
-        bidValue["pvm"].array().push_back(std::string(SNIPPET_SHOW_URL) + "?" + showUrl.cipherParam());
+        bidValue["pvm"].array().push_back(std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?"
+                                          + showUrl.cipherParam());
         cppcms::json::value bannerFeedbackJson;
         if (!banner.feedback.empty()) {
             parseJson(banner.feedback.c_str(), bannerFeedbackJson);
@@ -256,14 +258,9 @@ namespace bidding {
         bidValue["crid"] = crid;
         std::string landingUrl;
         std::string mainTitle;
-        bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
-                     || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
             landingUrl = mtlsArray[0]["p9"].str();
             replace(landingUrl, "{{click}}", "");
-            if (isIOS && landingUrl.find("https") != 0) {
-                replace(landingUrl, "http", "https");
-            }
             extValue["linkUrl"] = landingUrl;
             int style = 0;
             auto & sizeStyleMap = adplaceStyleMap.getSizeStyleMap();
@@ -280,9 +277,6 @@ namespace bidding {
             cppcms::json::array admArray;
             for (auto & murl : materialUrls) {
                 cppcms::json::value adm;
-                if (isIOS && murl.find("https") != 0) {
-                    replace(murl, "http", "https");
-                }
                 adm["url"] = murl;
                 adm["type"] = 0;
                 admArray.push_back(adm);
@@ -302,7 +296,8 @@ namespace bidding {
         }
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, requestId, "", landingUrl);
-        std::string cm = std::string(SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+        std::string cm
+            = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
         cppcms::json::array clickm = cppcms::json::array();
         clickm.push_back(cm);
         bidValue["clickm"] = clickm;

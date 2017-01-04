@@ -49,14 +49,14 @@ namespace bidding {
         void reject(INOUT adservice::utility::HttpResponse & response);
 
         std::string generateHtmlSnippet(const std::string & bid, int width, int height, const char * extShowBuf,
-                                        const char * cookieMappingUrl = "");
+                                        const char * cookieMappingUrl = "", bool useHttps = false);
 
     private:
         /**
          * 产生tanx的html snippet
          */
 
-        std::string tanxHtmlSnippet(const std::string & cookieMappingUrl = "");
+        std::string tanxHtmlSnippet(const std::string & cookieMappingUrl = "", bool useHttps = false);
 
     private:
         protocol::Tanx::BidRequest bidRequest;

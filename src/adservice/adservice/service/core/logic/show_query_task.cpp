@@ -142,14 +142,11 @@ namespace corelogic {
         }
     }
 
-    int buildResponseForDsp(const MT::common::Banner & banner, ParamMap & paramMap, const char * json,
+    int buildResponseForDsp(const MT::common::Banner & banner, ParamMap & paramMap, std::string & json,
                             const char * templateFmt, char * buffer, int bufferSize)
     {
-        char pjson[2048] = { '\0' };
-        strncat(pjson, json, sizeof(pjson));
-        tripslash2(pjson);
         cppcms::json::value mtAdInfo;
-        utility::json::parseJson(pjson, mtAdInfo);
+        utility::json::parseJson(json.c_str(), mtAdInfo);
         //准备ADX宏
         char adxbuffer[1024];
         std::string adxMacro;
@@ -173,7 +170,7 @@ namespace corelogic {
         mtAdInfo["width"] = width;
         mtAdInfo["height"] = height;
         mtAdInfo["oid"] = paramMap[URL_ORDER_ID];
-        URLHelper clickUrl(SNIPPET_CLICK_URL, false);
+        URLHelper clickUrl(SNIPPET_CLICK_URL_HTTPS, false);
         for (auto iter : paramMap) {
             clickUrl.add(iter.first, iter.second);
         }
@@ -189,18 +186,15 @@ namespace corelogic {
         return len;
     }
 
-    int buildResponseForSsp(const MT::common::SelectResult & selectResult, ParamMap & paramMap, const char * json,
+    int buildResponseForSsp(const MT::common::SelectResult & selectResult, ParamMap & paramMap, string & json,
                             const char * templateFmt, char * buffer, int bufferSize, const std::string & userIp,
                             const std::string & referer)
     {
         const MT::common::Solution & solution = selectResult.solution;
         const MT::common::Banner & banner = selectResult.banner;
         const MT::common::ADPlace & adplace = selectResult.adplace;
-        char pjson[2048] = { '\0' };
-        strncat(pjson, json, sizeof(pjson));
-        tripslash2(pjson);
         cppcms::json::value mtAdInfo;
-        utility::json::parseJson(pjson, mtAdInfo);
+        utility::json::parseJson(json.c_str(), mtAdInfo);
         std::string pid = to_string(adplace.pId);
         mtAdInfo["pid"] = pid;
         mtAdInfo["adxpid"] = pid;
@@ -230,7 +224,7 @@ namespace corelogic {
         int advId = solution.advId;
         int bId = banner.bId;
         int resultLen = 0;
-        URLHelper clickUrl(SSP_CLICK_URL, false);
+        URLHelper clickUrl(SSP_CLICK_URL_HTTPS, false);
         clickUrl.add(URL_ADPLACE_ID, pid);
         clickUrl.add(URL_MTTYADPLACE_ID, pid);
         clickUrl.add(URL_ADX_ID, adxid);
@@ -373,11 +367,14 @@ namespace corelogic {
             }
             log.adInfo.cost = adplace.costPrice;
             ipManager.getAreaCodeByIp(condition.ip.data(), log.geoInfo.country, log.geoInfo.province, log.geoInfo.city);
-            const char * tmp = banner.json.data();
+            std::string bannerJson = banner.json;
+            if (condition.mobileDevice == SOLUTION_DEVICE_IPHONE || condition.mobileDevice == SOLUTION_DEVICE_IPAD) {
+                adservice::utility::url::url_replace_all(bannerJson, "http://", "https://");
+            }
             //返回结果
             char buffer[8192];
-            int len = buildResponseForSsp(selectResult, paramMap, tmp, templateFmt, buffer, sizeof(buffer), userIp,
-                                          referer);
+            int len = buildResponseForSsp(selectResult, paramMap, bannerJson, templateFmt, buffer, sizeof(buffer),
+                                          userIp, referer);
             respBody = std::string(buffer, buffer + len);
             //狗尾续一个bid日志
             doLog(log);
@@ -393,12 +390,10 @@ namespace corelogic {
                     log.reqStatus = 500;
                     return;
                 }
-                const char * tmp = adBanner.json.data();
+                std::string bannerJson = adBanner.json;
                 char buffer[8192];
-                int len = buildResponseForDsp(adBanner, paramMap, tmp, templateFmt, buffer, sizeof(buffer));
+                int len = buildResponseForDsp(adBanner, paramMap, bannerJson, templateFmt, buffer, sizeof(buffer));
                 respBody = std::string(buffer, buffer + len);
-                //用户频次控制逻辑接入
-                // todo:
             }
         }
 

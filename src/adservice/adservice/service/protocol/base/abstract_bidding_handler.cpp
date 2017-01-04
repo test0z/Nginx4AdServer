@@ -195,7 +195,8 @@ namespace bidding {
     }
 
     std::string AbstractBiddingHandler::generateHtmlSnippet(const std::string & bid, int width, int height,
-                                                            const char * extShowBuf, const char * cookieMappingUrl)
+                                                            const char * extShowBuf, const char * cookieMappingUrl,
+                                                            bool useHttps)
     {
         char html[4096];
         URLHelper showUrlParam;
@@ -205,8 +206,9 @@ namespace bidding {
         for (auto iter : extParamMap) {
             showUrlParam.add(iter.first, iter.second);
         }
-        int len = snprintf(html, sizeof(html), SNIPPET_IFRAME, width, height, SNIPPET_SHOW_URL, "",
-                           showUrlParam.cipherParam().c_str(), cookieMappingUrl);
+        int len = snprintf(html, sizeof(html), SNIPPET_IFRAME, width, height,
+                           useHttps ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL, "", showUrlParam.cipherParam().c_str(),
+                           cookieMappingUrl);
         return std::string(html, html + len);
     }
 

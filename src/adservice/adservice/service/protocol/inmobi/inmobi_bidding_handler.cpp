@@ -287,13 +287,15 @@ namespace bidding {
         //缓存最终广告结果
         fillAdInfo(queryCondition, result, bidRequest.get("user.id", ""));
 
+        bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD
+                     || queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE;
+
         // html snippet相关
-        char pjson[2048] = { '\0' };
         std::string strBannerJson = banner.json;
-        strncat(pjson, strBannerJson.data(), sizeof(pjson));
+        urlHttp2HttpsIOS(isIOS, strBannerJson);
         // tripslash2(pjson);
         cppcms::json::value bannerJson;
-        parseJson(pjson, bannerJson);
+        parseJson(strBannerJson.c_str(), bannerJson);
 
         url::URLHelper showUrl;
         getShowPara(showUrl, requestId);
@@ -303,13 +305,13 @@ namespace bidding {
         }
         showUrl.add(URL_IMP_OF, "3");
         showUrl.addMacro(URL_EXCHANGE_PRICE, INMOBI_PRICE_MACRO);
-        bidValue["nurl"] = std::string(SNIPPET_SHOW_URL) + "?" + showUrl.cipherParam();
+        bidValue["nurl"] = std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?" + showUrl.cipherParam();
         std::string crid = std::to_string(adInfo.bannerId);
         bidValue["crid"] = crid;
         if (banner.bannerType != BANNER_TYPE_PRIMITIVE) { //非原生创意
             int w = banner.width;
             int h = banner.height;
-            std::string html = generateHtmlSnippet(requestId, w, h, "of=2&", "");
+            std::string html = generateHtmlSnippet(requestId, w, h, "of=2&", "", isIOS);
             bidValue["adm"] = html;
         } else { //设置admobject
             const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();

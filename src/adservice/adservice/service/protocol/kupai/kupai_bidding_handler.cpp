@@ -175,15 +175,21 @@ namespace bidding {
         adResult->SetExtension(com::wk::adx::rtb::tagid, imp.has_tagid() ? imp.tagid() : "");
         adResult->SetExtension(com::wk::adx::rtb::creative_id, std::to_string(banner.bId));
 
+        bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD
+                     || queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE;
+
         URLHelper showUrlParam;
         getShowPara(showUrlParam, bidRequest_.id());
         showUrlParam.add("of", "3");
         showUrlParam.addMacro("p", "%%AUCTION_PRICE%%");
-        adResult->set_nurl(std::string(SNIPPET_SHOW_URL) + "?" + showUrlParam.cipherParam());
+        adResult->set_nurl(std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?"
+                           + showUrlParam.cipherParam());
 
         cppcms::json::value bannerJson;
+        std::string bJson = banner.json;
+        urlHttp2HttpsIOS(isIOS, bJson);
         std::stringstream ss;
-        ss << banner.json; // boost::algorithm::erase_all_copy(banner.json, "\\");
+        ss << bJson; // boost::algorithm::erase_all_copy(banner.json, "\\");
         ss >> bannerJson;
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string landingUrl;
@@ -218,7 +224,8 @@ namespace bidding {
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, bidRequest_.id(), "", landingUrl);
         adResult->AddExtension(com::wk::adx::rtb::clktrackers,
-                               std::string(SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam());
+                               std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?"
+                                   + clickUrlParam.cipherParam());
 
         adResult->set_w(banner.width);
         adResult->set_h(banner.height);

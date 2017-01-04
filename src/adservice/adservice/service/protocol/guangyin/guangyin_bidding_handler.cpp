@@ -219,18 +219,25 @@ namespace bidding {
         // const Banner & reqBanner = imp.banner();
         adResult->set_adomain("show.mtty.com");
 
+        bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD
+                     || queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE;
+
         URLHelper showUrlParam;
         getShowPara(showUrlParam, bidRequest_.id());
         showUrlParam.add("of", "3");
         showUrlParam.addMacro("p", "%%AUCTION_PRICE%%");
-        adResult->set_iurl(std::string(SNIPPET_SHOW_URL) + "?" + showUrlParam.cipherParam());
+        adResult->set_iurl(std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?"
+                           + showUrlParam.cipherParam());
 
         cppcms::json::value bannerJson;
+        std::string strBannerJson = banner.json;
+        urlHttp2HttpsIOS(isIOS, strBannerJson);
         std::stringstream ss;
-        ss << banner.json; // boost::algorithm::erase_all_copy(banner.json, "\\");
+        ss << strBannerJson; // boost::algorithm::erase_all_copy(banner.json, "\\");
         ss >> bannerJson;
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string landingUrl = mtlsArray[0].get("p1", "");
+        urlHttp2HttpsIOS(isIOS, landingUrl);
         if (banner.bannerType == BANNER_TYPE_HTML) {
             std::string base64html = mtlsArray[0].get("p0", "");
             std::string html;
@@ -253,7 +260,8 @@ namespace bidding {
             bannerJson["xcurl"] = CURL_PLACEHOLDER;
             URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest_.id(), "", landingUrl);
-            bannerJson["clickurl"] = std::string(SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+            bannerJson["clickurl"]
+                = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
             std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
             char admBuffer[4096];
             snprintf(admBuffer, sizeof(admBuffer), adm_template, mtadInfoStr.data());

@@ -134,6 +134,8 @@ namespace utility {
 
         bool url_replace(std::string & str, const std::string & from, const std::string & to);
 
+        void url_replace_all(std::string & str, const std::string & from, const std::string & to);
+
         class URLParamMap {
         public:
             static int64_t stringToInt(const std::string & s);

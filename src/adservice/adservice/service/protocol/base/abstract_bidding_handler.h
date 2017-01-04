@@ -33,6 +33,13 @@ namespace bidding {
     void extractSize(const std::string & size, int & width, int & height);
     std::string makeBidSize(int width, int height);
 
+    inline void urlHttp2HttpsIOS(bool isIOS, std::string & url)
+    {
+        if (isIOS) {
+            adservice::utility::url::url_replace_all(url, "http://", "https://");
+        }
+    }
+
     class BiddingFlowExtraInfo {
     public:
         int32_t mediaType;
@@ -118,7 +125,7 @@ namespace bidding {
          * 产生htmlsnippet
          */
         virtual std::string generateHtmlSnippet(const std::string & bid, int width, int height, const char * extShowBuf,
-                                                const char * cookieMappingUrl = "");
+                                                const char * cookieMappingUrl = "", bool useHttps = false);
 
         virtual std::string generateScript(const std::string & bid, int width, int height, const char * scriptUrl,
                                            const char * clickMacro, const char * extParam);

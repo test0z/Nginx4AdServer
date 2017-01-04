@@ -156,16 +156,16 @@ namespace bidding {
         //缓存最终广告结果
         fillAdInfo(queryCondition, result, "");
 
+        bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
+                     || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         // html snippet相关
         std::string requestId = bidRequest["id"].str();
 
         int bannerType = banner.bannerType;
-        char pjson[2048] = { '\0' };
         std::string strBannerJson = banner.json;
-        strncat(pjson, strBannerJson.data(), sizeof(pjson));
-        // tripslash2(pjson);
+        urlHttp2HttpsIOS(isIOS, strBannerJson);
         cppcms::json::value bannerJson;
-        parseJson(pjson, bannerJson);
+        parseJson(strBannerJson.c_str(), bannerJson);
         std::string mainTitle;
         std::string landingUrl;
         std::string downloadUrl;
@@ -173,7 +173,8 @@ namespace bidding {
         getShowPara(showUrlParam, requestId);
         showUrlParam.add(URL_IMP_OF, "3");
         showUrlParam.add(URL_EXCHANGE_PRICE, "1500");
-        bidResponse["showMonitorUrl"] = std::string(SNIPPET_SHOW_URL) + "?" + showUrlParam.cipherParam();
+        bidResponse["showMonitorUrl"]
+            = std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?" + showUrlParam.cipherParam();
         std::vector<std::string> materialUrls;
         cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         if (bannerType == BANNER_TYPE_PRIMITIVE) {
@@ -212,7 +213,8 @@ namespace bidding {
         bidResponse["valid_time"] = 86400000;
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, requestId, "", landingUrl);
-        bidResponse["linkUrl"] = std::string(SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+        bidResponse["linkUrl"]
+            = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
         cppcms::json::array & resArray = bidResponse["resource_url"].array();
         for (auto & murl : materialUrls) {
             if (!murl.empty())

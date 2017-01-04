@@ -178,7 +178,6 @@ namespace bidding {
         adResult->set_creative_id(std::to_string(banner.bId));
         //缓存最终广告结果
         fillAdInfo(queryCondition, result, bidRequest.has_user() ? bidRequest.user().id() : "");
-
         // html snippet相关
         url::URLHelper showUrlParam;
         getShowPara(showUrlParam, bidRequest.id());

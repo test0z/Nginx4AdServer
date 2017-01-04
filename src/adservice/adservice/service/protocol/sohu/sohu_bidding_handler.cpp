@@ -180,12 +180,12 @@ namespace bidding {
         //缓存最终广告结果
         fillAdInfo(queryCondition, result, bidRequest.has_user() ? bidRequest.user().suid() : "");
 
-        char pjson[2048] = { '\0' };
+        bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
+                     || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         std::string strBannerJson = banner.json;
-        strncat(pjson, strBannerJson.data(), sizeof(pjson));
-        // tripslash2(pjson);
+        urlHttp2HttpsIOS(isIOS, strBannerJson);
         cppcms::json::value bannerJson;
-        parseJson(pjson, bannerJson);
+        parseJson(strBannerJson.c_str(), bannerJson);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string materialUrl;
         std::string landingUrl;

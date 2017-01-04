@@ -289,13 +289,13 @@ namespace bidding {
 
         std::string cookieMappingUrl = redoCookieMapping(ADX_YOUKU, YOUKU_COOKIEMAPPING_URL);
 
+        bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
+                     || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         // html snippet相关
-        char pjson[2048] = { '\0' };
         std::string strBannerJson = banner.json;
-        strncat(pjson, strBannerJson.data(), sizeof(pjson));
-        // tripslash2(pjson);
+        urlHttp2HttpsIOS(isIOS, strBannerJson);
         cppcms::json::value bannerJson;
-        parseJson(pjson, bannerJson);
+        parseJson(strBannerJson.c_str(), bannerJson);
         cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string tview = bannerJson["tview"].str();
 
@@ -308,7 +308,7 @@ namespace bidding {
         }
         showUrl.add(URL_IMP_OF, "3");
         showUrl.addMacro(URL_EXCHANGE_PRICE, AD_YOUKU_PRICE);
-        bidValue["nurl"] = std::string(SNIPPET_SHOW_URL) + "?" + showUrl.cipherParam();
+        bidValue["nurl"] = std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?" + showUrl.cipherParam();
         std::string crid = std::to_string(adInfo.bannerId);
         bidValue["crid"] = crid;
         std::string landingUrl;
@@ -338,7 +338,8 @@ namespace bidding {
         }
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, requestId, "", landingUrl);
-        extValue["ldp"] = std::string(SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+        extValue["ldp"]
+            = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
         if (!tview.empty()) {
             cppcms::json::array & extPmArray = extValue["pm"].array();
             extPmArray.push_back(tview);

@@ -34,14 +34,15 @@ void testUrlInterface(){
     //std::cout<<"encoded url2:"<<url2.cipherUrl()<<std::endl;
 }
 
+void urlReplaceTest(){
+    std::string bannerJson = "{\"a\":\"https://www.baidu.com\",\"b\":\"http://www.google.com\",\"c\":\"http://www.http.com\",\"d\":\"https://www.facebook.com\"}";
+    url::url_replace_all(bannerJson,"http://","https://");
+    std::cout<<"result:"<<bannerJson<<std::endl;
+}
+
 int main(int argc, char ** argv)
 {
     //testCypherUrl();
-    int64_t timeBegin = time::getCurrentTimeStampMs();
-    for(int i=0;i<1000000;i++){
-        testUrlInterface();
-    }
-    int64_t timeEnd = time::getCurrentTimeStampMs();
-    std::cout<<"time collasped:"<<timeEnd-timeBegin<<std::endl;
+    urlReplaceTest();
     return 0;
 }

@@ -261,6 +261,19 @@ namespace utility {
             return true;
         }
 
+        void url_replace_all(std::string & str, const std::string & from, const std::string & to)
+        {
+            size_t start_pos = 0;
+            do {
+                start_pos = str.find(from, start_pos);
+                if (start_pos == std::string::npos) {
+                    break;
+                } else {
+                    str.replace(start_pos, from.length(), to);
+                }
+            } while (true);
+        }
+
         std::string URLHelper::MACRO_HOLDER = "_mh_";
         std::string URLHelper::ENCODE_HOLDER = "_q_";
 
