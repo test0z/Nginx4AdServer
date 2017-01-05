@@ -239,6 +239,7 @@ namespace corelogic {
         clickUrl.add(URL_CLICK_ID, "000");
         clickUrl.add(URL_AREA_ID, address);
         clickUrl.add(URL_SITE_ID, std::to_string(adplace.mId));
+        clickUrl.add(URL_ORDER_ID, std::to_string(selectResult.orderId));
         //需求http://redmine.mtty.com/redmine/issues/144
         cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
         cppcms::json::array & mtls = mtlsArray.array();
