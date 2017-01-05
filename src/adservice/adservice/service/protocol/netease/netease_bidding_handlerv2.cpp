@@ -11,6 +11,7 @@ namespace protocol {
 namespace bidding {
 
     using namespace adservice::utility;
+    using namespace adservice::utility::url;
     using namespace adservice::utility::serialize;
     using namespace adservice::utility::json;
     using namespace adservice::server;
@@ -43,39 +44,16 @@ namespace bidding {
         return parseJson(data.c_str(), bidRequest);
     }
 
-    bool NetEaseBiddingHandler::fillLogItem(protocol::log::LogItem & logItem)
+    bool NetEaseBiddingHandler::fillSpecificLog(const AdSelectCondition & selectCondition,
+                                                protocol::log::LogItem & logItem, bool isAccepted)
     {
-        logItem.logType = protocol::log::LogPhaseType::BID;
-        logItem.reqStatus = 200;
-        const cppcms::json::value & deviceInfo = bidRequest["device"];
-        logItem.adInfo.adxid = ADX_NETEASE_MOBILE;
-        logItem.adInfo.adxpid = adInfo.adxpid;
-        if (isBidAccepted) {
+        logItem.ipInfo.proxy = selectCondition.ip;
+        if (isAccepted) {
+            const cppcms::json::value & deviceInfo = bidRequest["device"];
             cppcms::json::value device;
             device["deviceinfo"] = deviceInfo;
             logItem.deviceInfo = toJson(device);
-            logItem.adInfo.sid = adInfo.sid;
-            logItem.adInfo.advId = adInfo.advId;
-            logItem.adInfo.adxid = adInfo.adxid;
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.adxpid = adInfo.adxpid;
-            logItem.adInfo.adxuid = adInfo.adxuid;
-            logItem.adInfo.bannerId = adInfo.bannerId;
-            logItem.adInfo.cid = adInfo.cid;
-            logItem.adInfo.mid = adInfo.mid;
-            logItem.adInfo.cpid = adInfo.cpid;
-            logItem.adInfo.offerPrice = adInfo.offerPrice;
             logItem.adInfo.cost = 1500;
-            logItem.adInfo.bidPrice = adInfo.offerPrice;
-            logItem.adInfo.priceType = adInfo.priceType;
-            logItem.adInfo.ppid = adInfo.ppid;
-            url::extractAreaInfo(adInfo.areaId.data(), logItem.geoInfo.country, logItem.geoInfo.province,
-                                 logItem.geoInfo.city);
-            logItem.adInfo.bidSize = adInfo.bidSize;
-            logItem.adInfo.orderId = adInfo.orderId;
-        } else {
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.bidSize = adInfo.bidSize;
         }
         return true;
     }
@@ -87,7 +65,8 @@ namespace bidding {
         }
         cppcms::json::value & adzinfo = bidRequest["adunit"];
         std::string pid = adzinfo.get("space_id", "0");
-        AdSelectCondition queryCondition;
+        std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
+        AdSelectCondition & queryCondition = queryConditions[0];
         queryCondition.adxid = ADX_NETEASE_MOBILE;
         queryCondition.adxpid = pid;
         const cppcms::json::value & geo = bidRequest.find("geo");
@@ -105,9 +84,9 @@ namespace bidding {
         queryCondition.mobileDevice = getNetEaseDeviceType(platform);
         const cppcms::json::value & device = bidRequest.find("device");
         if (!device.is_undefined()) {
-            std::string deviceId = queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROID ? device.get("imei", "")
-                                                                                          : device.get("idfa", "");
-            strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), sizeof(biddingFlowInfo.deviceIdBuf) - 1);
+            queryCondition.idfa = device.get("idfa", "");
+            queryCondition.imei = device.get("imei", "");
+            queryCondition.mac = device.get("mac", "");
             const cppcms::json::value & networkStatus = device.find("network_status");
             if (!networkStatus.is_undefined()) {
                 queryCondition.mobileNetwork = getNetwork(networkStatus.str());
@@ -134,11 +113,7 @@ namespace bidding {
         }
         queryCondition.pAdplaceInfo = &adplaceInfo;
 
-        if (!filterCb(this, queryCondition)) {
-            adInfo.pid = std::to_string(queryCondition.mttyPid);
-            adInfo.adxpid = queryCondition.adxpid;
-            adInfo.adxid = queryCondition.adxid;
-            adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
+        if (!filterCb(this, queryConditions)) {
             return bidFailedReturn();
         }
         return isBidAccepted = true;
@@ -167,45 +142,39 @@ namespace bidding {
     }
 
     void NetEaseBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-                                               const MT::common::SelectResult & result)
+                                               const MT::common::SelectResult & result, int seq)
     {
-        const MT::common::ADPlace & adplace = result.adplace;
-        const MT::common::Banner & banner = result.banner;
-        if (queryCondition.adxid != adplace.adxId || queryCondition.adxpid != adplace.adxPId) {
-            LOG_ERROR << "in NetEaseBiddingHandler,query adxid:" << queryCondition.adxid
-                      << ",result adxid:" << adplace.adxId << ",query adxpid:" << queryCondition.adxpid
-                      << ",result adxpid:" << adplace.adxPId;
-            isBidAccepted = false;
-            return;
-        }
-        if (!parseJson(BIDRESPONSE_TEMPLATE, bidResponse)) {
-            LOG_ERROR << "in NetEaseBiddingHandler::buildBidResult parseJson failed";
-            isBidAccepted = false;
-            return;
+        if (seq == 0) {
+            if (!parseJson(BIDRESPONSE_TEMPLATE, bidResponse)) {
+                LOG_ERROR << "in NetEaseBiddingHandler::buildBidResult parseJson failed";
+                isBidAccepted = false;
+                return;
+            }
         }
 
+        const MT::common::Banner & banner = result.banner;
         //缓存最终广告结果
         fillAdInfo(queryCondition, result, "");
 
+        bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
+                     || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         // html snippet相关
         std::string requestId = bidRequest["id"].str();
-        char clickParam[2048];
-        char showParam[2048];
-        char buffer[2048];
 
         int bannerType = banner.bannerType;
-        char pjson[2048] = { '\0' };
         std::string strBannerJson = banner.json;
-        strncat(pjson, strBannerJson.data(), sizeof(pjson));
-        // tripslash2(pjson);
+        urlHttp2HttpsIOS(isIOS, strBannerJson);
         cppcms::json::value bannerJson;
-        parseJson(pjson, bannerJson);
+        parseJson(strBannerJson.c_str(), bannerJson);
         std::string mainTitle;
         std::string landingUrl;
         std::string downloadUrl;
-        getShowPara(requestId, showParam, sizeof(showParam));
-        snprintf(buffer, sizeof(buffer), AD_NETEASE_SHOW_URL, showParam);
-        bidResponse["showMonitorUrl"] = buffer;
+        URLHelper showUrlParam;
+        getShowPara(showUrlParam, requestId);
+        showUrlParam.add(URL_IMP_OF, "3");
+        showUrlParam.add(URL_EXCHANGE_PRICE, "1500");
+        bidResponse["showMonitorUrl"]
+            = std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?" + showUrlParam.cipherParam();
         std::vector<std::string> materialUrls;
         cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         if (bannerType == BANNER_TYPE_PRIMITIVE) {
@@ -242,9 +211,10 @@ namespace bidding {
         }
         bidResponse["mainTitle"] = mainTitle;
         bidResponse["valid_time"] = 86400000;
-        getClickPara(requestId, clickParam, sizeof(clickParam), "", landingUrl);
-        snprintf(buffer, sizeof(buffer), AD_NETEASE_CLICK_URL, clickParam);
-        bidResponse["linkUrl"] = buffer;
+        url::URLHelper clickUrlParam;
+        getClickPara(clickUrlParam, requestId, "", landingUrl);
+        bidResponse["linkUrl"]
+            = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
         cppcms::json::array & resArray = bidResponse["resource_url"].array();
         for (auto & murl : materialUrls) {
             if (!murl.empty())

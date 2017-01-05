@@ -35,11 +35,22 @@ namespace utility {
 
         void urlsafe_base64decode(std::string input, std::string & output);
 
-        void aes_ecbencode(const uchar_t * key, const std::string & input, std::string & output);
+        void aes_ecbencode(const uchar_t * key, const std::string & input, std::string & output, int keyLen = 16);
 
-        void aes_ecbdecode(const uchar_t * key, const std::string & input, std::string & output);
+        void aes_ecbdecode(const uchar_t * key, const std::string & input, std::string & output, int keyLen = 16);
 
-        void aes_ecbdecode_nopadding(const uchar_t * key, const std::string & input, std::string & output);
+        void aes_ecbdecode_nopadding(const uchar_t * key, const std::string & input, std::string & output,
+                                     int keyLen = 16);
+
+        void aes_cfbdecode(const uchar_t * key, const uchar_t * iv, const std::string & input, std::string & output);
+
+        void aes_cbcdecode(const uchar_t * key, const uchar_t * iv, const std::string & input, std::string & output);
+
+        std::string md5_encode(const std::string & input);
+
+        void base64encode(const std::string & input, std::string & output);
+
+        bool base64decode(const std::string & input, std::string & output);
 
         std::string encodePrice(int price, bool useAes = false);
 

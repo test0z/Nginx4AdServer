@@ -12,7 +12,7 @@ namespace bidding {
 
     using namespace protocol::Baidu;
     using namespace adservice::utility::serialize;
-	using namespace adservice::server;
+    using namespace adservice::server;
 
 #define AD_BD_CLICK_MACRO "%%CLICK_URL_ESC%%"
 #define AD_BD_PRICE_MACRO "%%PRICE%%"
@@ -39,7 +39,7 @@ namespace bidding {
         size_t len
             = (size_t)snprintf(extShowBuf, sizeof(extShowBuf), "p=%s&l=%s&", AD_BD_PRICE_MACRO, AD_BD_CLICK_MACRO);
         if (len >= sizeof(extShowBuf)) {
-			LOG_WARN << "BaiduBiddingHandler::baiduHtmlSnippet,extShowBuf buffer size not enough,needed:" << len;
+            LOG_WARN << "BaiduBiddingHandler::baiduHtmlSnippet,extShowBuf buffer size not enough,needed:" << len;
         }
         return generateHtmlSnippet(bid, width, height, extShowBuf);
     }
@@ -56,35 +56,17 @@ namespace bidding {
         return generateScript(bid, width, height, sHtml.data(), AD_BD_CLICK_MACRO, extParam);
     }
 
-    bool BaiduBiddingHandler::fillLogItem(protocol::log::LogItem & logItem)
+    bool BaiduBiddingHandler::fillSpecificLog(const AdSelectCondition & selectCondition,
+                                              protocol::log::LogItem & logItem, bool isAccepted)
     {
-        logItem.reqStatus = 200;
         logItem.userAgent = bidRequest.user_agent();
-        logItem.ipInfo.proxy = bidRequest.ip();
-        logItem.adInfo.adxid = ADX_BAIDU;
-        if (isBidAccepted) {
+        logItem.ipInfo.proxy = selectCondition.ip;
+        logItem.referer = bidRequest.has_referer() ? bidRequest.referer() : "";
+        if (isAccepted) {
             if (bidRequest.has_mobile()) {
                 const BidRequest_Mobile & mobile = bidRequest.mobile();
                 logItem.deviceInfo = mobile.DebugString();
             }
-            logItem.adInfo.sid = adInfo.sid;
-            logItem.adInfo.advId = adInfo.advId;
-            logItem.adInfo.adxid = adInfo.adxid;
-            logItem.adInfo.adxpid = adInfo.adxpid;
-            logItem.adInfo.adxuid = adInfo.adxuid;
-            logItem.adInfo.bannerId = adInfo.bannerId;
-            logItem.adInfo.cid = adInfo.cid;
-            logItem.adInfo.mid = adInfo.mid;
-            logItem.adInfo.cpid = adInfo.cpid;
-            logItem.adInfo.offerPrice = adInfo.offerPrice;
-            logItem.adInfo.priceType = adInfo.priceType;
-            logItem.adInfo.ppid = adInfo.ppid;
-            adservice::utility::url::extractAreaInfo(adInfo.areaId.data(), logItem.geoInfo.country,
-                                                     logItem.geoInfo.province, logItem.geoInfo.city);
-            logItem.adInfo.bidSize = adInfo.bidSize;
-            logItem.referer = bidRequest.has_referer() ? bidRequest.referer() : "";
-		} else {
-            logItem.adInfo.pid = adInfo.pid;
         }
         return true;
     }
@@ -97,46 +79,49 @@ namespace bidding {
         //从BID Request中获取请求的广告位信息,目前只取第一个
         const BidRequest_AdSlot & adSlot = bidRequest.adslot(0);
         long pid = adSlot.ad_block_key();
-        AdSelectCondition queryCondition;
+        std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
+        AdSelectCondition & queryCondition = queryConditions[0];
         queryCondition.adxid = ADX_BAIDU;
         queryCondition.adxpid = std::to_string(pid);
         queryCondition.ip = bidRequest.ip();
-        if (!filterCb(this, queryCondition)) {
-            adInfo.bidSize = makeBidSize(adSlot.width(),adSlot.height());
+        if (!filterCb(this, queryConditions)) {
+            adInfo.bidSize = makeBidSize(adSlot.width(), adSlot.height());
             return bidFailedReturn();
         }
         return isBidAccepted = true;
     }
 
-	void BaiduBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-											 const MT::common::SelectResult & result)
+    void BaiduBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
+                                             const MT::common::SelectResult & result, int seq)
     {
-        bidResponse.Clear();
-        bidResponse.set_id(bidRequest.id());
-        bidResponse.clear_ad();
+        if (seq == 0) {
+            bidResponse.Clear();
+            bidResponse.set_id(bidRequest.id());
+            bidResponse.clear_ad();
+        }
         BidResponse_Ad * adResult = bidResponse.add_ad();
-		const MT::common::Solution & finalSolution = result.solution;
-		const MT::common::ADPlace & adplace = result.adplace;
-		const MT::common::Banner & banner = result.banner;
+        const MT::common::Solution & finalSolution = result.solution;
+        const MT::common::ADPlace & adplace = result.adplace;
+        const MT::common::Banner & banner = result.banner;
         int advId = finalSolution.advId;
-        const BidRequest_AdSlot & adSlot = bidRequest.adslot(0);
+        const BidRequest_AdSlot & adSlot = bidRequest.adslot(seq);
         int maxCpmPrice = max(result.bidPrice, adSlot.minimum_cpm());
         adResult->set_max_cpm(maxCpmPrice);
         adResult->set_advertiser_id(advId);
-		adResult->set_creative_id(banner.bId);
+        adResult->set_creative_id(banner.bId);
         adResult->set_height(banner.height);
         adResult->set_width(banner.width);
         adResult->set_sequence_id(adSlot.sequence_id());
         //缓存最终广告结果
-		adInfo.pid = adplace.pId;
+        adInfo.pid = adplace.pId;
         adInfo.advId = advId;
-		adInfo.sid = finalSolution.sId;
+        adInfo.sid = finalSolution.sId;
         adInfo.adxid = ADX_BAIDU;
-		adInfo.adxpid = adplace.adxPId;
+        adInfo.adxpid = adplace.adxPId;
         adInfo.adxuid = bidRequest.baidu_user_id();
-		adInfo.bannerId = banner.bId;
-		adInfo.cid = adplace.cId;
-		adInfo.mid = adplace.mId;
+        adInfo.bannerId = banner.bId;
+        adInfo.cid = adplace.cId;
+        adInfo.mid = adplace.mId;
         adInfo.cpid = adInfo.advId;
         adInfo.offerPrice = maxCpmPrice;
         adInfo.priceType = finalSolution.priceType;
@@ -152,7 +137,7 @@ namespace bidding {
     {
         std::string result;
         if (!writeProtoBufObject(bidResponse, &result)) {
-			LOG_WARN << "failed to write protobuf object in BaiduBiddingHandler::match";
+            LOG_WARN << "failed to write protobuf object in BaiduBiddingHandler::match";
             reject(response);
             return;
         }
@@ -166,7 +151,7 @@ namespace bidding {
         bidResponse.set_id(bidRequest.id());
         std::string result;
         if (!writeProtoBufObject(bidResponse, &result)) {
-			LOG_WARN << "failed to write protobuf object in BaiduBiddingHandler::reject";
+            LOG_WARN << "failed to write protobuf object in BaiduBiddingHandler::reject";
             return;
         }
         response.status(200);

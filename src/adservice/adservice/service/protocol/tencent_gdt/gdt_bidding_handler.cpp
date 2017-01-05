@@ -16,6 +16,7 @@ namespace bidding {
     using namespace adservice::utility;
     using namespace adservice::utility::serialize;
     using namespace adservice::utility::userclient;
+    using namespace adservice::utility::cypher;
     using namespace adservice::server;
 
     static GdtAdplaceMap gdtAdplaceMap;
@@ -55,36 +56,15 @@ namespace bidding {
         return getProtoBufObject(bidRequest, data);
     }
 
-    bool GdtBiddingHandler::fillLogItem(protocol::log::LogItem & logItem)
+    bool GdtBiddingHandler::fillSpecificLog(const AdSelectCondition & selectCondition, protocol::log::LogItem & logItem,
+                                            bool isAccepted)
     {
-        logItem.reqStatus = 200;
-        logItem.ipInfo.proxy = bidRequest.ip();
-        logItem.adInfo.adxid = adInfo.adxid;
-        logItem.adInfo.adxpid = adInfo.adxpid;
-        if (isBidAccepted) {
+        logItem.ipInfo.proxy = selectCondition.ip;
+        if (isAccepted) {
             if (bidRequest.has_device()) {
                 const BidRequest_Device & device = bidRequest.device();
                 logItem.deviceInfo = device.DebugString();
             }
-            logItem.adInfo.sid = adInfo.sid;
-            logItem.adInfo.advId = adInfo.advId;
-            logItem.adInfo.adxid = adInfo.adxid;
-            logItem.adInfo.adxpid = adInfo.adxpid;
-            logItem.adInfo.adxuid = adInfo.adxuid;
-            logItem.adInfo.bannerId = adInfo.bannerId;
-            logItem.adInfo.cid = adInfo.cid;
-            logItem.adInfo.mid = adInfo.mid;
-            logItem.adInfo.cpid = adInfo.cpid;
-            logItem.adInfo.offerPrice = adInfo.offerPrice;
-            logItem.adInfo.priceType = adInfo.priceType;
-            logItem.adInfo.ppid = adInfo.ppid;
-            url::extractAreaInfo(adInfo.areaId.data(), logItem.geoInfo.country, logItem.geoInfo.province,
-                                 logItem.geoInfo.city);
-            logItem.adInfo.bidSize = adInfo.bidSize;
-            logItem.adInfo.orderId = adInfo.orderId;
-        } else {
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.bidSize = adInfo.bidSize;
         }
         return true;
     }
@@ -96,7 +76,8 @@ namespace bidding {
         }
         //从BID Request中获取请求的广告位信息,目前只取第一个
         const BidRequest_Impression & adzInfo = bidRequest.impressions(0);
-        AdSelectCondition queryCondition;
+        std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
+        AdSelectCondition & queryCondition = queryConditions[0];
         queryCondition.adxid = ADX_TENCENT_GDT;
         queryCondition.ip = bidRequest.ip();
         queryCondition.basePrice = adzInfo.has_bid_floor() ? adzInfo.bid_floor() : 0;
@@ -129,11 +110,17 @@ namespace bidding {
                 if (queryCondition.pcOS == SOLUTION_OS_OTHER) {
                     queryCondition.pcOS = getOSTypeFromUA(device.user_agent());
                 }
+                queryCondition.mac = device.id();
             } else if (devType == BidRequest_DeviceType::BidRequest_DeviceType_kDeviceTypeMobile) {
                 adplaceInfo.flowType = SOLUTION_FLOWTYPE_MOBILE;
                 queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
                 queryCondition.adxid = ADX_GDT_MOBILE;
                 queryCondition.mobileDevice = getGdtMobileDeviceType(device.os());
+                if (queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE) {
+                    queryCondition.idfa = device.id();
+                } else {
+                    queryCondition.imei = device.id();
+                }
             } else if (devType == BidRequest_DeviceType::BidRequest_DeviceType_kDeviceTypePad) {
                 adplaceInfo.flowType = SOLUTION_FLOWTYPE_MOBILE;
                 queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
@@ -141,10 +128,20 @@ namespace bidding {
                 queryCondition.mobileDevice = device.os() == BidRequest_OperatingSystem_kOSIOS
                                                   ? SOLUTION_DEVICE_IPAD
                                                   : SOLUTION_DEVICE_ANDROIDPAD;
+                if (queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD) {
+                    queryCondition.idfa = device.id();
+                } else {
+                    queryCondition.imei = device.id();
+                }
             } else {
                 queryCondition.mobileDevice = SOLUTION_DEVICE_OTHER;
                 queryCondition.pcOS = SOLUTION_OS_OTHER;
             }
+            cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
+                                   md5_encode(queryCondition.imei),
+                                   md5_encode(queryCondition.androidId),
+                                   md5_encode(queryCondition.mac));
+            queryCookieMapping(cmInfo.queryKV, queryCondition);
         }
         if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE && bidRequest.has_app()) {
             const BidRequest_App & app = bidRequest.app();
@@ -155,10 +152,7 @@ namespace bidding {
             queryCondition.adxpid = adzInfo.placement_id();
         }
         queryCondition.pAdplaceInfo = &adplaceInfo;
-        if (!filterCb(this, queryCondition)) {
-            adInfo.pid = std::to_string(queryCondition.mttyPid);
-            adInfo.adxid = queryCondition.adxid;
-            adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
+        if (!filterCb(this, queryConditions)) {
             return bidFailedReturn();
         }
 
@@ -166,15 +160,17 @@ namespace bidding {
     }
 
     void GdtBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-                                           const MT::common::SelectResult & result)
+                                           const MT::common::SelectResult & result, int seq)
     {
-        bidResponse.Clear();
-        bidResponse.set_request_id(bidRequest.id());
-        bidResponse.clear_seat_bids();
+        if (seq == 0) {
+            bidResponse.Clear();
+            bidResponse.set_request_id(bidRequest.id());
+            bidResponse.clear_seat_bids();
+        }
+        redoCookieMapping(ADX_GDT_MOBILE, "");
         BidResponse_SeatBid * seatBid = bidResponse.add_seat_bids();
         const MT::common::Banner & banner = result.banner;
-        // int advId = finalSolution.advId;
-        const BidRequest_Impression & adzInfo = bidRequest.impressions(0);
+        const BidRequest_Impression & adzInfo = bidRequest.impressions(seq);
         seatBid->set_impression_id(adzInfo.id());
         BidResponse_Bid * adResult = seatBid->add_bids();
         int maxCpmPrice = result.bidPrice;
@@ -182,13 +178,14 @@ namespace bidding {
         adResult->set_creative_id(std::to_string(banner.bId));
         //缓存最终广告结果
         fillAdInfo(queryCondition, result, bidRequest.has_user() ? bidRequest.user().id() : "");
-
         // html snippet相关
-        char showParam[2048];
-        getShowPara(bidRequest.id(), showParam, sizeof(showParam));
-        strncat(showParam, "&of=3", 5);
-        adResult->set_click_param(showParam);
-        adResult->set_impression_param(showParam);
+        url::URLHelper showUrlParam;
+        getShowPara(showUrlParam, bidRequest.id());
+        showUrlParam.add(URL_IMP_OF, "3");
+        adResult->set_impression_param(showUrlParam.cipherParam());
+        url::URLHelper clickUrlParam;
+        getClickPara(clickUrlParam, bidRequest.id(), "", "");
+        adResult->set_click_param(clickUrlParam.cipherParam());
     }
 
     void GdtBiddingHandler::match(adservice::utility::HttpResponse & response)

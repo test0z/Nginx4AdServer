@@ -121,39 +121,17 @@ namespace bidding {
         return parseJson(data.c_str(), bidRequest);
     }
 
-    bool InmobiBiddingHandler::fillLogItem(protocol::log::LogItem & logItem)
+    bool InmobiBiddingHandler::fillSpecificLog(const AdSelectCondition & selectCondition,
+                                               protocol::log::LogItem & logItem, bool isAccepted)
     {
-        logItem.reqStatus = 200;
         cppcms::json::value & deviceInfo = bidRequest["device"];
         logItem.userAgent = deviceInfo.get("ua", "");
-        logItem.ipInfo.proxy = deviceInfo.get("ip", "");
-        logItem.adInfo.adxid = adInfo.adxid;
-        logItem.adInfo.adxpid = adInfo.adxpid;
-        if (isBidAccepted) {
+        logItem.ipInfo.proxy = selectCondition.ip;
+        if (isAccepted) {
             cppcms::json::value device;
             device["deviceInfo"] = deviceInfo;
             logItem.deviceInfo = toJson(device);
-            logItem.adInfo.sid = adInfo.sid;
-            logItem.adInfo.advId = adInfo.advId;
-            logItem.adInfo.adxid = adInfo.adxid;
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.adxpid = adInfo.adxpid;
-            logItem.adInfo.adxuid = adInfo.adxuid;
-            logItem.adInfo.bannerId = adInfo.bannerId;
-            logItem.adInfo.cid = adInfo.cid;
-            logItem.adInfo.mid = adInfo.mid;
-            logItem.adInfo.cpid = adInfo.cpid;
-            logItem.adInfo.offerPrice = adInfo.offerPrice;
-            logItem.adInfo.priceType = adInfo.priceType;
-            logItem.adInfo.ppid = adInfo.ppid;
-            url::extractAreaInfo(
-                adInfo.areaId.data(), logItem.geoInfo.country, logItem.geoInfo.province, logItem.geoInfo.city);
-            logItem.adInfo.bidSize = adInfo.bidSize;
             logItem.referer = bidRequest.get("site.ref", "");
-            logItem.adInfo.orderId = adInfo.orderId;
-        } else {
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.bidSize = adInfo.bidSize;
         }
         return true;
     }
@@ -171,7 +149,8 @@ namespace bidding {
 
         const cppcms::json::value & adzinfo = impressions[0];
         std::string pid = adzinfo.get<std::string>("id");
-        AdSelectCondition queryCondition;
+        std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
+        AdSelectCondition & queryCondition = queryConditions[0];
         queryCondition.adxid = ADX_INMOBI;
         queryCondition.adxpid = pid;
         double priceFloor = adzinfo.get<double>("bidfloor", 0.0);
@@ -222,19 +201,10 @@ namespace bidding {
                                     queryCondition.mobileDevice,
                                     queryCondition.pcOS,
                                     queryCondition.pcBrowserStr);
-            if (queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROID
-                || queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROIDPAD) {
-                std::string deviceId = device.get<std::string>("didmd5", "");
-                strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), sizeof(biddingFlowInfo.deviceIdBuf) - 1);
-            } else if (queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD
-                       || queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE) {
-                std::string deviceId = device.get<std::string>("idfamd5", "");
-                strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), sizeof(biddingFlowInfo.deviceIdBuf) - 1);
-            } else {
-                biddingFlowInfo.deviceIdBuf[0] = '\0';
-            }
-
             queryCondition.mobileNetwork = getInmobiNetwork(device.get("carrier", 0));
+            queryCondition.idfa = device.get("idfa", "");
+            queryCondition.imei = device.get("didmd5", "");
+            queryCondition.androidId = device.get("dpidmd5", "");
         }
         const cppcms::json::value & siteContent = bidRequest.find("site");
         const cppcms::json::value & appContent = bidRequest.find("app");
@@ -260,11 +230,7 @@ namespace bidding {
                 queryCondition.dealId = ss.str();
             }
         }
-        if (!filterCb(this, queryCondition)) {
-            adInfo.pid = std::to_string(queryCondition.mttyPid);
-            adInfo.adxpid = queryCondition.adxpid;
-            adInfo.adxid = queryCondition.adxid;
-            adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
+        if (!filterCb(this, queryConditions)) {
             return bidFailedReturn();
         }
         return isBidAccepted = true;
@@ -276,7 +242,7 @@ namespace bidding {
     "bidid":"",
     "seatbid":[
         {
-          "seat":"1",
+          "seat":"56abf687dd6c419886c841240815ceb9",
           "bid":[
                 {
                     "adm":"",
@@ -296,20 +262,24 @@ namespace bidding {
 })";
 
     void InmobiBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-                                              const MT::common::SelectResult & result)
+                                              const MT::common::SelectResult & result, int seq)
     {
-        const cppcms::json::value & adzInfo = bidRequest["imp"].array()[0];
+        std::string requestId = bidRequest["id"].str();
+        if (seq == 0) {
+            if (!parseJson(BIDRESPONSE_TEMPLATE, bidResponse)) {
+                LOG_ERROR << "in InmobiBiddingHandler::buildBidResult parseJson failed";
+                isBidAccepted = false;
+                return;
+            }
+            std::string requestId = bidRequest["id"].str();
+            bidResponse["id"] = requestId;
+            bidResponse["bidid"] = "1";
+        }
+        const cppcms::json::value & adzInfo = bidRequest["imp"].array()[seq];
         const MT::common::Solution & finalSolution = result.solution;
         const MT::common::Banner & banner = result.banner;
-        if (!parseJson(BIDRESPONSE_TEMPLATE, bidResponse)) {
-            LOG_ERROR << "in InmobiBiddingHandler::buildBidResult parseJson failed";
-            isBidAccepted = false;
-            return;
-        }
-        std::string requestId = bidRequest["id"].str();
-        bidResponse["id"] = requestId;
-        bidResponse["bidid"] = "1";
-        cppcms::json::value & bidValue = bidResponse["seatbid"][0]["bid"][0];
+        cppcms::json::array & bidArrays = bidResponse["seatbid"][0]["bid"].array();
+        cppcms::json::value bidValue;
         bidValue["id"] = "1";
         std::string impId = adzInfo["id"].str();
         bidValue["impid"] = impId;
@@ -317,38 +287,39 @@ namespace bidding {
         //缓存最终广告结果
         fillAdInfo(queryCondition, result, bidRequest.get("user.id", ""));
 
+        bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD
+                     || queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE;
+
         // html snippet相关
-        char pjson[2048] = { '\0' };
         std::string strBannerJson = banner.json;
-        strncat(pjson, strBannerJson.data(), sizeof(pjson));
+        urlHttp2HttpsIOS(isIOS, strBannerJson);
         // tripslash2(pjson);
         cppcms::json::value bannerJson;
-        parseJson(pjson, bannerJson);
+        parseJson(strBannerJson.c_str(), bannerJson);
 
-        char showParam[2048];
-        getShowPara(requestId, showParam, sizeof(showParam));
+        url::URLHelper showUrl;
+        getShowPara(showUrl, requestId);
         if (!queryCondition.dealId.empty() && finalSolution.dDealId != "0") { // deal 加特殊参数w
-            char dealParam[256];
-            int dealParamLen
-                = snprintf(dealParam, sizeof(dealParam), "&" URL_DEAL_ID "=%s", finalSolution.dDealId.data());
-            strncat(showParam, dealParam, dealParamLen);
             bidValue["dealid"] = finalSolution.dDealId;
+            showUrl.add(URL_DEAL_ID, finalSolution.dDealId);
         }
-        char buffer[2048];
-        snprintf(buffer, sizeof(buffer), AD_INMOBI_FEED, INMOBI_PRICE_MACRO, showParam); //包含of=3
-        bidValue["nurl"] = buffer;
+        showUrl.add(URL_IMP_OF, "3");
+        showUrl.addMacro(URL_EXCHANGE_PRICE, INMOBI_PRICE_MACRO);
+        bidValue["nurl"] = std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?" + showUrl.cipherParam();
         std::string crid = std::to_string(adInfo.bannerId);
         bidValue["crid"] = crid;
         if (banner.bannerType != BANNER_TYPE_PRIMITIVE) { //非原生创意
             int w = banner.width;
             int h = banner.height;
-            std::string html = generateHtmlSnippet(requestId, w, h, "of=2&", "");
+            std::string html = generateHtmlSnippet(requestId, w, h, "of=2&", "", isIOS);
             bidValue["adm"] = html;
         } else { //设置admobject
             const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
             const cppcms::json::array & assets = adzInfo.find("native.assets").array();
             std::string title = mtlsArray[0]["p0"].str();
-            bidValue["admobject.native.assets"] = cppcms::json::array();
+            cppcms::json::value admObject;
+            cppcms::json::value nativeObject;
+            cppcms::json::array assetsArray;
             for (uint32_t i = 0; i < assets.size(); i++) {
                 const cppcms::json::value & asset = assets[i];
                 int w = asset.get("img.w", 0);
@@ -359,17 +330,26 @@ namespace bidding {
                     assetObj["id"] = 1;
                     assetObj["img.w"] = banner.width;
                     assetObj["img.h"] = banner.height;
-                    bidValue["admobject.native.assets"][0] = assetObj;
+                    assetsArray.push_back(assetObj);
                     break;
                 }
             }
             std::string landingUrl = mtlsArray[0]["p9"].str();
             replace(landingUrl, "{{click}}", "");
-            bidValue["admobject.native.link.url"] = landingUrl;
+            nativeObject["assets"] = assetsArray;
+            nativeObject["link"] = cppcms::json::value();
+            nativeObject["link"]["url"] = landingUrl;
+            admObject["native"] = nativeObject;
+            bidValue["admobject"] = admObject;
         }
-        bidValue["attr"].array().push_back(3);
+        bidValue["adomain"] = cppcms::json::array();
+        bidValue["iurl"] = "";
+        cppcms::json::array attrArray;
+        attrArray.push_back(3);
+        bidValue["attr"] = attrArray;
         int maxCpmPrice = result.bidPrice;
         bidValue["price"] = maxCpmPrice;
+        bidArrays.push_back(std::move(bidValue));
     }
 
     void InmobiBiddingHandler::match(adservice::utility::HttpResponse & response)

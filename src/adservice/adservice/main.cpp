@@ -22,6 +22,7 @@ extern "C" {
 #include "core/core_threadlocal_manager.h"
 #include "core/logic/bid_query_task.h"
 #include "core/logic/click_query_task.h"
+#include "core/logic/mapping_query_task.h"
 #include "core/logic/show_query_task.h"
 #include "core/logic/trace_task.h"
 #include "core/logpusher/log_pusher.h"
@@ -358,7 +359,7 @@ ngx_int_t build_response(ngx_http_request_t * r, adservice::utility::HttpRespons
     }
 
     ngx_int_t rc = ngx_http_send_header(r);
-    if (rc != NGX_OK || r->headers_out.status==NGX_HTTP_NO_CONTENT) {
+    if (rc != NGX_OK || r->headers_out.status == NGX_HTTP_NO_CONTENT) {
         return rc;
     }
 
@@ -405,6 +406,10 @@ void dispatchRequest(adservice::utility::HttpRequest & request, adservice::utili
         task();
     } else if (queryPath == "/c") {
         adservice::corelogic::HandleClickQueryTask task(request, response);
+        task.setLogger(serviceLogger);
+        task();
+    } else if (queryPath == "/m") {
+        adservice::corelogic::HandleMappingQueryTask task(request, response);
         task.setLogger(serviceLogger);
         task();
     } else if (queryPath == "/t") {

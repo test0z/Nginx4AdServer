@@ -22,14 +22,18 @@ SET(SRC_LIST
     ./service/core/core_threadlocal_manager.cpp
     ./service/core/core_typetable.cpp
     ./service/core/core_ad_sizemap.cpp
+    ./service/core/core_cm_manager.cpp
     ./service/core/logic/abstract_query_task.cpp
     ./service/core/logic/bid_query_task.cpp
     ./service/core/logic/click_query_task.cpp
     ./service/core/logic/show_query_task.cpp
     ./service/core/logic/trace_task.cpp
+    ./service/core/logic/mapping_query_task.cpp
     ./service/core/logpusher/kafka_log_producer.cpp
     ./service/core/logpusher/log_pusher.cpp
     ./service/core/model/source_id.cpp
+    ./service/core/model/user.cpp
+    ./service/core/model/idseq.cpp
     ./service/kafka_checker.cpp
     ./service/libutil/AdAcbm.cpp
     ./service/libutil/AdIpc.cpp
@@ -46,18 +50,26 @@ SET(SRC_LIST
     ./service/protocol/log/log.cpp
     ./service/protocol/log/logstring.cpp
     ./service/protocol/netease/netease_bidding_handlerv2.cpp
+    ./service/protocol/netease/nex_bidding_handler.cpp
+    ./service/protocol/netease/nex_price.cpp
+    ./service/protocol/kupai/kupai_bidding_handler.cpp
+    ./service/protocol/kupai/wk_adx_rtb_ext.pb.cpp
+    ./service/protocol/kupai/openrtb.pb.cpp
+    ./service/protocol/kupai/kupai_price_decode.cpp
     ./service/protocol/sohu/sohu_bidding_handler.cpp
     ./service/protocol/sohu/sohu_price.cpp
     ./service/protocol/sohu/sohuRTB.pb.cpp
     ./service/protocol/tanx/tanx_bidding.pb.cpp
     ./service/protocol/tanx/tanx_bidding_handler.cpp
     ./service/protocol/tanx/tanx_price.cpp
+    ./service/protocol/tanx/tanx_device_id.cpp
     ./service/protocol/tencent_gdt/gdt.pb.cpp
     ./service/protocol/tencent_gdt/gdt_bidding_handler.cpp
     ./service/protocol/tencent_gdt/tencent_gdt_price.cpp
     ./service/protocol/youku/youku_bidding_handlerv2.cpp
     ./service/protocol/youku/youku_price.cpp
     ./service/protocol/inmobi/inmobi_bidding_handler.cpp
+    ./service/protocol/liebao/liebao_bidding_handler.cpp
     ./service/utility/cypher.cpp
     ./service/utility/escape.cpp
     ./service/utility/file.cpp
@@ -76,3 +88,5 @@ SET(SRC_LIST
     ./service/utility/http.cpp)
 
 ADD_EXECUTABLE(${PROJECT_NAME} ${SRC_LIST})
+#add_subdirectory(test)
+#add_subdirectory(tool)

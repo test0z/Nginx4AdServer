@@ -119,4 +119,20 @@ record TraceInfo{
     string tag10;
 }
 
+@namespace("com.mtty.protocol")
+record DeviceInfo{
+    // 流量类型:PC或移动
+    int flowType;
+    // 移动设备类型:iphone/AndroidPhone/iPad/等
+    int deviceType;
+    // 网络环境:4G/wifi等
+    int netWork;
+    // 操作系统
+    int os;
+    // 设备ID号：一般为移动设备ID号，IOS取IDFA，安卓优先使用androidid，其次为IMEI
+    string deviceID;
+    // 设备制造商
+    string make;
+}
+
 }

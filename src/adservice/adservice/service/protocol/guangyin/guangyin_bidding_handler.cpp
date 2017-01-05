@@ -9,6 +9,9 @@
 namespace protocol {
 namespace bidding {
 
+    using namespace adservice::utility::url;
+    using namespace adservice::utility::cypher;
+
     namespace {
 
         // 广告投放后的追踪url，用来统计展现量，SSP在广告展示时访问，需要支持302
@@ -99,40 +102,17 @@ namespace bidding {
         return adservice::utility::serialize::getProtoBufObject(bidRequest_, data);
     }
 
-    bool GuangyinBiddingHandler::fillLogItem(protocol::log::LogItem & logItem)
+    bool GuangyinBiddingHandler::fillSpecificLog(const AdSelectCondition & selectCondition,
+                                                 protocol::log::LogItem & logItem, bool isAccepted)
     {
-        logItem.reqStatus = 200;
         logItem.userAgent = bidRequest_.device().ua();
-        logItem.ipInfo.proxy = bidRequest_.device().ip();
-        logItem.adInfo.adxid = adInfo.adxid;
-        logItem.adInfo.adxpid = adInfo.adxpid;
+        logItem.ipInfo.proxy = selectCondition.ip;
         logItem.referer = bidRequest_.has_site() ? bidRequest_.site().page() : "";
-        if (isBidAccepted) {
+        if (isAccepted) {
             if (bidRequest_.device().devicetype() == DeviceType::MOBILE) {
                 logItem.deviceInfo = bidRequest_.device().DebugString();
             }
-            logItem.adInfo.sid = adInfo.sid;
-            logItem.adInfo.advId = adInfo.advId;
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.adxpid = adInfo.adxpid;
-            logItem.adInfo.adxuid = adInfo.adxuid;
-            logItem.adInfo.bannerId = adInfo.bannerId;
-            logItem.adInfo.cid = adInfo.cid;
-            logItem.adInfo.mid = adInfo.mid;
-            logItem.adInfo.cpid = adInfo.cpid;
-            logItem.adInfo.offerPrice = adInfo.offerPrice;
-            logItem.adInfo.areaId = adInfo.areaId;
-            adservice::utility::url::extractAreaInfo(adInfo.areaId.data(), logItem.geoInfo.country,
-                                                     logItem.geoInfo.province, logItem.geoInfo.city);
-            logItem.adInfo.bidSize = adInfo.bidSize;
-            logItem.adInfo.priceType = adInfo.priceType;
-            logItem.adInfo.ppid = adInfo.ppid;
-            logItem.adInfo.orderId = adInfo.orderId;
-        } else {
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.bidSize = adInfo.bidSize;
         }
-
         return true;
     }
 
@@ -150,7 +130,8 @@ namespace bidding {
         Imp imp = bidRequest_.imp(0);
         const Banner & banner = imp.banner();
 
-        AdSelectCondition queryCondition;
+        std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
+        AdSelectCondition & queryCondition = queryConditions[0];
         queryCondition.adxid = ADX_GUANGYIN;
         queryCondition.adxpid = imp.id();
         queryCondition.ip = device.ip();
@@ -162,10 +143,10 @@ namespace bidding {
             queryCondition.mobileDevice = getDeviceType(device);
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.adxid = ADX_GUANGYIN_MOBILE;
-            const std::string & deviceId = device.idfa().empty() ? device.androidid() : device.idfa();
-            strncpy(biddingFlowInfo.deviceIdBuf, deviceId.c_str(), deviceId.size());
-
             queryCondition.mobileNetwork = getNetWork(device.connectiontype());
+            queryCondition.idfa = device.has_idfa() ? device.idfa() : "";
+            queryCondition.imei = device.has_imei() ? device.imei() : "";
+            queryCondition.androidId = device.has_androidid() ? device.androidid() : "";
             if (bidRequest_.has_app()) {
                 const App & app = bidRequest_.app();
                 if (app.has_id()) {
@@ -180,10 +161,16 @@ namespace bidding {
                     queryCondition.adxpid = site.publisher().slot();
                 }
             }
+            cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
+                                   md5_encode(queryCondition.imei),
+                                   md5_encode(queryCondition.androidId),
+                                   md5_encode(queryCondition.mac));
+            queryCookieMapping(cmInfo.queryKV, queryCondition);
         } else {
             queryCondition.pcOS = adservice::utility::userclient::getOSTypeFromUA(device.ua());
             queryCondition.pcBrowserStr = adservice::utility::userclient::getBrowserTypeFromUA(device.ua());
             queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
+            queryCondition.mac = device.has_mac() ? device.mac() : "";
             if (bidRequest_.has_site()) {
                 const Site & site = bidRequest_.site();
                 if (site.has_publisher()) {
@@ -192,7 +179,7 @@ namespace bidding {
             }
         }
 
-        if (!filterCb(this, queryCondition)) {
+        if (!filterCb(this, queryConditions)) {
             adInfo.pid = std::to_string(queryCondition.mttyPid);
             adInfo.adxpid = queryCondition.adxpid;
             adInfo.adxid = queryCondition.adxid;
@@ -204,20 +191,21 @@ namespace bidding {
     }
 
     void GuangyinBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-                                                const MT::common::SelectResult & result)
+                                                const MT::common::SelectResult & result, int seq)
     {
-        bidResponse_.Clear();
-        bidResponse_.set_id(bidRequest_.id());
-        bidResponse_.set_bidid(adservice::utility::cypher::randomId(3));
-        bidResponse_.clear_seatbid();
-
+        if (seq == 0) {
+            bidResponse_.Clear();
+            bidResponse_.set_id(bidRequest_.id());
+            bidResponse_.set_bidid(adservice::utility::cypher::randomId(3));
+            bidResponse_.clear_seatbid();
+        }
         const MT::common::Solution & finalSolution = result.solution;
         const MT::common::Banner & banner = result.banner;
 
         //缓存最终广告结果
         fillAdInfo(queryCondition, result, bidRequest_.user().id());
 
-        const Imp & imp = bidRequest_.imp(0);
+        const Imp & imp = bidRequest_.imp(seq);
         float maxCpmPrice = (float)result.bidPrice;
 
         SeatBid * seatBid = bidResponse_.add_seatbid();
@@ -231,15 +219,25 @@ namespace bidding {
         // const Banner & reqBanner = imp.banner();
         adResult->set_adomain("show.mtty.com");
 
-        char buffer[2048];
-        getShowPara(bidRequest_.id(), buffer, sizeof(buffer));
-        adResult->set_iurl(std::string(SNIPPET_SHOW_URL) + "?" + buffer + "&of=3&p=%%AUCTION_PRICE%%");
+        bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD
+                     || queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE;
+
+        URLHelper showUrlParam;
+        getShowPara(showUrlParam, bidRequest_.id());
+        showUrlParam.add("of", "3");
+        showUrlParam.addMacro("p", "%%AUCTION_PRICE%%");
+        adResult->set_iurl(std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?"
+                           + showUrlParam.cipherParam());
 
         cppcms::json::value bannerJson;
+        std::string strBannerJson = banner.json;
+        urlHttp2HttpsIOS(isIOS, strBannerJson);
         std::stringstream ss;
-        ss << banner.json; // boost::algorithm::erase_all_copy(banner.json, "\\");
+        ss << strBannerJson; // boost::algorithm::erase_all_copy(banner.json, "\\");
         ss >> bannerJson;
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
+        std::string landingUrl = mtlsArray[0].get("p1", "");
+        urlHttp2HttpsIOS(isIOS, landingUrl);
         if (banner.bannerType == BANNER_TYPE_HTML) {
             std::string base64html = mtlsArray[0].get("p0", "");
             std::string html;
@@ -260,19 +258,23 @@ namespace bidding {
             bannerJson["width"] = banner.width;
             bannerJson["height"] = banner.height;
             bannerJson["xcurl"] = CURL_PLACEHOLDER;
+            URLHelper clickUrlParam;
+            getClickPara(clickUrlParam, bidRequest_.id(), "", landingUrl);
+            bannerJson["clickurl"]
+                = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
             std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
             char admBuffer[4096];
             snprintf(admBuffer, sizeof(admBuffer), adm_template, mtadInfoStr.data());
             adResult->set_adm(std::string(admBuffer));
         }
-        std::string landingUrl = mtlsArray[0].get("p1", "");
-        // getClickPara(bidRequest_.id(), buffer, sizeof(buffer), "", landingUrl);
+
         adResult->set_curl(landingUrl);
 
         adResult->set_w(banner.width);
         adResult->set_h(banner.height);
         adResult->set_type(AdType::JS);
         adResult->set_admtype(AdmType::HTML);
+        redoCookieMapping(queryCondition.adxid, "");
     }
 
     void GuangyinBiddingHandler::match(adservice::utility::HttpResponse & response)

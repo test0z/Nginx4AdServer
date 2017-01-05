@@ -9,6 +9,9 @@
 #include <array>
 #include <cryptopp/aes.h>
 #include <cryptopp/base64.h>
+#define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
+#include <cryptopp/hex.h>
+#include <cryptopp/md5.h>
 #include <cryptopp/modes.h>
 #include <mtty/constants.h>
 #include <random>
@@ -174,11 +177,37 @@ namespace utility {
             }
         }
 
-        void aes_ecbencode(const uchar_t * key, const std::string & input, std::string & output)
+        void base64encode(const std::string & input, std::string & output)
+        {
+            try {
+                CryptoPP::Base64Encoder encoder;
+                encoder.Attach(new CryptoPP::StringSink(output));
+                encoder.Put((const uchar_t *)input.c_str(), input.size());
+                encoder.MessageEnd();
+            } catch (exception & e) {
+                LOG_ERROR << "base64encode failed,e:" << e.what();
+            }
+        }
+
+        bool base64decode(const std::string & input, std::string & output)
+        {
+            try {
+                CryptoPP::Base64Decoder encoder;
+                encoder.Attach(new CryptoPP::StringSink(output));
+                encoder.Put((const uchar_t *)input.c_str(), input.size());
+                encoder.MessageEnd();
+            } catch (exception & e) {
+                LOG_ERROR << "base64encode failed,e:" << e.what();
+                return false;
+            }
+            return true;
+        }
+
+        void aes_ecbencode(const uchar_t * key, const std::string & input, std::string & output, int keyLen)
         {
             try {
                 CryptoPP::ECB_Mode<CryptoPP::AES>::Encryption e;
-                e.SetKey(key, 16);
+                e.SetKey(key, keyLen);
                 CryptoPP::StringSource(input, true,
                                        new CryptoPP::StreamTransformationFilter(e, new CryptoPP::StringSink(output)));
             } catch (CryptoPP::Exception & e) {
@@ -186,11 +215,11 @@ namespace utility {
             }
         }
 
-        void aes_ecbdecode(const uchar_t * key, const std::string & input, std::string & output)
+        void aes_ecbdecode(const uchar_t * key, const std::string & input, std::string & output, int keyLen)
         {
             try {
                 CryptoPP::ECB_Mode<CryptoPP::AES>::Decryption d;
-                d.SetKey(key, 16);
+                d.SetKey(key, keyLen);
                 CryptoPP::StringSource(input, true,
                                        new CryptoPP::StreamTransformationFilter(d, new CryptoPP::StringSink(output)));
             } catch (CryptoPP::Exception & e) {
@@ -198,17 +227,62 @@ namespace utility {
             }
         }
 
-        void aes_ecbdecode_nopadding(const uchar_t * key, const std::string & input, std::string & output)
+        void aes_ecbdecode_nopadding(const uchar_t * key, const std::string & input, std::string & output, int keyLen)
         {
             try {
                 CryptoPP::ECB_Mode<CryptoPP::AES>::Decryption d;
-                d.SetKey(key, 16);
+                d.SetKey(key, keyLen);
                 CryptoPP::StringSource(
                     input, true, new CryptoPP::StreamTransformationFilter(d, new CryptoPP::StringSink(output),
                                                                           CryptoPP::BlockPaddingSchemeDef::NO_PADDING));
             } catch (CryptoPP::Exception & e) {
                 LOG_ERROR << "aes_ecbdecode failed,e:" << e.what();
             }
+        }
+
+        void aes_cfbdecode(const uchar_t * key, const uchar_t * iv, const std::string & input, std::string & output)
+        {
+            try {
+                CryptoPP::CFB_Mode<CryptoPP::AES>::Decryption d(key, 16, iv);
+                CryptoPP::StringSource(input, true,
+                                       new CryptoPP::StreamTransformationFilter(d, new CryptoPP::StringSink(output)));
+            } catch (CryptoPP::Exception & e) {
+                LOG_ERROR << "aes_cfbdecode failed,e:" << e.what();
+            }
+        }
+
+        void aes_cbcdecode(const uchar_t * key, const uchar_t * iv, const std::string & input, std::string & output)
+        {
+            try {
+                CryptoPP::CBC_Mode<CryptoPP::AES>::Decryption d;
+                d.SetKeyWithIV(key, 16, iv, 16);
+                CryptoPP::StringSource(input, true, new CryptoPP::StreamTransformationFilter(
+                                                        d, new CryptoPP::StringSink(output),
+                                                        CryptoPP::BlockPaddingSchemeDef::PKCS_PADDING));
+            } catch (CryptoPP::Exception & e) {
+                LOG_ERROR << "aes_cbcdecode failed,e:" << e.what();
+            }
+        }
+
+        std::string md5_encode(const std::string & input)
+        {
+            if (input.empty()) {
+                return input;
+            }
+            try {
+                CryptoPP::Weak::MD5 md5;
+                byte digest[CryptoPP::Weak::MD5::DIGESTSIZE];
+                md5.CalculateDigest(digest, (const byte *)input.c_str(), input.length());
+                CryptoPP::HexEncoder encoder;
+                std::string output;
+                encoder.Attach(new CryptoPP::StringSink(output));
+                encoder.Put(digest, sizeof(digest));
+                encoder.MessageEnd();
+                return output;
+            } catch (CryptoPP::Exception & e) {
+                LOG_ERROR << "md5_encode failed,e:" << e.what();
+            }
+            return input;
         }
 
         std::string encodePrice(int price, bool useAes)

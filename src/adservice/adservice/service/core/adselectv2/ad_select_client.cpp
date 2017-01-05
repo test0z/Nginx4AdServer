@@ -63,6 +63,7 @@ namespace adselectv2 {
         source.insert({ "time", (int64_t)getCurrentTimeStamp() });
         source.insert({ "overflow_hour", (int64_t)(std::stoll(selectCondition.dHour) % 100) });
         source.insert({ "banner_type", (int64_t)selectCondition.bannerType });
+        source.insert({ "mtuser", selectCondition.mtUserId });
         request.fromSSP = isSSP;
         request.mttyPid = selectCondition.mttyPid;
         request.adxId = selectCondition.adxid;

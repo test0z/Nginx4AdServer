@@ -7,7 +7,10 @@
 #include "protocol/baidu/baidu_bidding_handler.h"
 #include "protocol/guangyin/guangyin_bidding_handler.h"
 #include "protocol/inmobi/inmobi_bidding_handler.h"
+#include "protocol/kupai/kupai_bidding_handler.h"
+#include "protocol/liebao/liebao_bidding_handler.h"
 #include "protocol/netease/netease_bidding_handlerv2.h"
+#include "protocol/netease/nex_bidding_handler.h"
 #include "protocol/sohu/sohu_bidding_handler.h"
 #include "protocol/tanx/tanx_bidding_handler.h"
 #include "protocol/tencent_gdt/gdt_bidding_handler.h"
@@ -66,6 +69,12 @@ namespace corelogic {
         ADD_MODULE_ENTRY(BID_QUERY_PATH_GUANGYIN, ADX_GUANGYIN);
         // inmobi ADX
         ADD_MODULE_ENTRY(BID_QUERY_PATH_INMOBI, ADX_INMOBI);
+        //网易NEX
+        ADD_MODULE_ENTRY(BID_QUERY_PATH_NEX, ADX_NEX_PC);
+        //酷派移动
+        ADD_MODULE_ENTRY(BID_QUERY_PATH_KUPAI, ADX_KUPAI_MOBILE);
+        //猎豹移动
+        ADD_MODULE_ENTRY(BID_QUERY_PATH_LIEBAO, ADX_LIEBAO_MOBILE);
 
         std::sort<int *>(moduleIdx, moduleIdx + moduleCnt, [](const int & a, const int & b) {
             return moduleAdx[a].moduleHash < moduleAdx[b].moduleHash;
@@ -111,6 +120,12 @@ namespace corelogic {
             return new GuangyinBiddingHandler();
         case ADX_INMOBI:
             return new InmobiBiddingHandler();
+        case ADX_NEX_PC:
+            return new NexBiddingHandler();
+        case ADX_KUPAI_MOBILE:
+            return new KupaiBiddingHandler();
+        case ADX_LIEBAO_MOBILE:
+            return new LieBaoBiddingHandler();
         default:
             return NULL;
         }
@@ -151,32 +166,44 @@ namespace corelogic {
             resp.status(200);
         } else {
             TaskThreadLocal * localData = threadData;
+            HandleBidQueryTask * task = this;
             bool bidResult = biddingHandler->filter(
-                [localData, &log](AbstractBiddingHandler * adapter, adselectv2::AdSelectCondition & condition) -> bool {
+                [localData, &log, task](AbstractBiddingHandler * adapter,
+                                        std::vector<adselectv2::AdSelectCondition> & conditions) -> bool {
                     int seqId = 0;
                     seqId = localData->seqId;
                     //地域定向接入
                     IpManager & ipManager = IpManager::getInstance();
-                    condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
-                    condition.dHour = adSelectTimeCodeUtc();
-                    MT::common::SelectResult resp;
-                    if (!adSelectClient->search(seqId, false, condition, resp)) {
-                        condition.mttyPid = resp.adplace.pId;
-                        log.adInfo.mid = resp.adplace.mId;
-                        return false;
+                    bool result = false;
+                    int conditionIdx = 0;
+                    for (auto & condition : conditions) {
+                        condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
+                        condition.dHour = adSelectTimeCodeUtc();
+                        MT::common::SelectResult resp;
+                        bool bAccepted = false;
+                        if (!adSelectClient->search(seqId, false, condition, resp)) {
+                            condition.mttyPid = resp.adplace.pId;
+                            log.adInfo.mid = resp.adplace.mId;
+                            bAccepted = false;
+                        } else {
+                            adapter->buildBidResult(condition, resp, conditionIdx);
+                            log.adInfo.mid = resp.adplace.mId;
+                            bAccepted = true;
+                            result = true;
+                        }
+                        if (adapter->fillLogItem(condition, log, bAccepted)) {
+                            task->doLog(log);
+                        }
+                        conditionIdx++;
                     }
-                    adapter->buildBidResult(condition, resp);
-                    log.adInfo.mid = resp.adplace.mId;
-                    return true;
+                    return result;
                 });
             if (bidResult) {
                 biddingHandler->match(resp);
             } else {
                 biddingHandler->reject(resp);
             }
-            if (!biddingHandler->fillLogItem(log)) {
-                needLog = false;
-            }
+            needLog = false;
         }
         handleBidRequests++;
         if (handleBidRequests % 10000 == 1) {

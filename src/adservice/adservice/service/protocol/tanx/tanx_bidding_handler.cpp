@@ -9,6 +9,8 @@
 #include "logging.h"
 #include "utility/utility.h"
 
+extern std::string tanxDeviceId(const std::string & src);
+
 namespace protocol {
 namespace bidding {
 
@@ -17,12 +19,13 @@ namespace bidding {
     using namespace adservice::utility::serialize;
     using namespace adservice::utility::json;
     using namespace adservice::utility::userclient;
+    using namespace adservice::utility::cypher;
     using namespace adservice::server;
 
 #define AD_TX_CLICK_MACRO "%%CLICK_URL_PRE_ENC%%"
 #define AD_TX_CLICK_UNENC_MACRO "%%CLICK_URL_PRE_UNENC%%"
 #define AD_TX_PRICE_MACRO "%%SETTLE_PRICE%%"
-#define AD_COOKIEMAPPING_TANX ""
+#define TANX_COOKIEMAPPING_URL "http://cms.tanx.com/t.gif?tanx_nid=113168313&tanx_cm"
 
     inline int max(const int & a, const int & b)
     {
@@ -59,7 +62,7 @@ namespace bidding {
         }
     }
 
-    std::string TanxBiddingHandler::tanxHtmlSnippet()
+    std::string TanxBiddingHandler::tanxHtmlSnippet(const std::string & cookieMappingUrl, bool useHttps)
     {
         std::string bid = bidRequest.bid();
         // bool isMobile = bidRequest.has_mobile();
@@ -67,27 +70,30 @@ namespace bidding {
         std::string bannerSize = adzInfo.size();
         int width, height;
         extractSize(bannerSize, width, height);
-        return generateHtmlSnippet(bid, width, height, NULL);
+        std::string cmImage;
+        if (!cookieMappingUrl.empty()) {
+            cmImage = cmImage + "<img src=\"" + cookieMappingUrl + "\"/>";
+        }
+        return generateHtmlSnippet(bid, width, height, NULL, cmImage.c_str(), useHttps);
     }
 
     std::string TanxBiddingHandler::generateHtmlSnippet(const std::string & bid, int width, int height,
-                                                        const char * extShowBuf, const char * cookieMappingUrl)
+                                                        const char * extShowBuf, const char * cookieMappingUrl,
+                                                        bool useHttps)
     {
-        char showBuf[2048];
-        // char clickBuf[2048];
         char html[4096];
-        getShowPara(bid, showBuf, sizeof(showBuf));
-        size_t len = (size_t)snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s%s&of=3", SNIPPET_SHOW_URL,
-                                      "p=" AD_TX_PRICE_MACRO "&", showBuf);
-        if (len >= sizeof(feedbackUrl)) {
-            LOG_WARN << "feedbackUrl buffer size not enough,needed:" << len;
-        }
-        strncat(showBuf, "&of=2", 5);
-        len = (size_t)snprintf(html, sizeof(html), SNIPPET_IFRAME, width, height, SNIPPET_SHOW_URL,
-                               "l=" AD_TX_CLICK_MACRO "&", showBuf, cookieMappingUrl);
-        if (len >= sizeof(html)) {
-            LOG_WARN << "generateHtmlSnippet buffer size not enough,needed:" << len;
-        }
+        url::URLHelper showUrlParam;
+        getShowPara(showUrlParam, bid);
+        showUrlParam.add(URL_IMP_OF, "3");
+        showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_TX_PRICE_MACRO);
+        snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s", useHttps ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL,
+                 showUrlParam.cipherParam().c_str());
+        showUrlParam.add(URL_IMP_OF, "2");
+        showUrlParam.removeMacro(URL_EXCHANGE_PRICE);
+        showUrlParam.addMacro(URL_ADX_MACRO, AD_TX_CLICK_MACRO);
+        int len = snprintf(html, sizeof(html), SNIPPET_IFRAME_SUPPORT_CM, width, height,
+                           useHttps ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL, "", showUrlParam.cipherParam().c_str(),
+                           cookieMappingUrl);
         return std::string(html, html + len);
     }
 
@@ -97,15 +103,13 @@ namespace bidding {
         return getProtoBufObject(bidRequest, data);
     }
 
-    bool TanxBiddingHandler::fillLogItem(protocol::log::LogItem & logItem)
+    bool TanxBiddingHandler::fillSpecificLog(const AdSelectCondition & selectCondition,
+                                             protocol::log::LogItem & logItem, bool isAccepted)
     {
-        logItem.reqStatus = 200;
         logItem.userAgent = bidRequest.user_agent();
         logItem.ipInfo.proxy = bidRequest.ip();
-        logItem.adInfo.adxid = adInfo.adxid;
-        logItem.adInfo.adxpid = adInfo.adxpid;
         logItem.referer = bidRequest.has_url() ? bidRequest.url() : "";
-        if (isBidAccepted) {
+        if (isAccepted) {
             if (bidRequest.has_mobile()) {
                 const BidRequest_Mobile & mobile = bidRequest.mobile();
                 if (mobile.has_device()) {
@@ -114,26 +118,6 @@ namespace bidding {
                     adInfo.adxid = logItem.adInfo.adxid = ADX_TANX_MOBILE;
                 }
             }
-            logItem.adInfo.sid = adInfo.sid;
-            logItem.adInfo.advId = adInfo.advId;
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.adxpid = adInfo.adxpid;
-            logItem.adInfo.adxuid = adInfo.adxuid;
-            logItem.adInfo.bannerId = adInfo.bannerId;
-            logItem.adInfo.cid = adInfo.cid;
-            logItem.adInfo.mid = adInfo.mid;
-            logItem.adInfo.cpid = adInfo.cpid;
-            logItem.adInfo.offerPrice = adInfo.offerPrice;
-            logItem.adInfo.areaId = adInfo.areaId;
-            logItem.adInfo.priceType = adInfo.priceType;
-            logItem.adInfo.ppid = adInfo.ppid;
-            url::extractAreaInfo(adInfo.areaId.data(), logItem.geoInfo.country, logItem.geoInfo.province,
-                                 logItem.geoInfo.city);
-            logItem.adInfo.bidSize = adInfo.bidSize;
-            logItem.adInfo.orderId = adInfo.orderId;
-        } else {
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.bidSize = adInfo.bidSize;
         }
         return true;
     }
@@ -149,7 +133,8 @@ namespace bidding {
             return bidFailedReturn();
         const BidRequest_AdzInfo & adzInfo = bidRequest.adzinfo(0);
         const std::string & pid = adzInfo.pid();
-        AdSelectCondition queryCondition;
+        std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
+        AdSelectCondition & queryCondition = queryConditions[0];
         queryCondition.adxid = ADX_TANX;
         queryCondition.adxpid = pid;
         queryCondition.ip = bidRequest.ip();
@@ -177,40 +162,45 @@ namespace bidding {
                         = typeTableManager.getContentType(ADX_TANX, std::to_string(category.id()));
                 }
             }
-            std::string deviceId = device.idfa().empty() ? device.android_id() : device.idfa();
-            strncpy(biddingFlowInfo.deviceIdBuf, deviceId.data(), deviceId.size());
             if (device.has_network()) {
                 queryCondition.mobileNetwork = getNetWork(device.network());
             }
+            cookieMappingKeyMobile(
+                md5_encode(device.has_idfa() ? (queryCondition.idfa = tanxDeviceId(device.idfa())) : ""),
+                md5_encode(device.has_imei() ? (queryCondition.imei = tanxDeviceId(device.imei())) : ""),
+                md5_encode(device.has_android_id() ? (queryCondition.androidId = tanxDeviceId(device.android_id()))
+                                                   : ""),
+                md5_encode(device.has_mac() ? (queryCondition.mac = tanxDeviceId(device.mac())) : ""));
         } else {
             queryCondition.pcOS = getOSTypeFromUA(bidRequest.user_agent());
             queryCondition.pcBrowserStr = getBrowserTypeFromUA(bidRequest.user_agent());
             queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
+            cookieMappingKeyPC(ADX_TANX, bidRequest.has_tid() ? bidRequest.tid() : "");
         }
-        if (!filterCb(this, queryCondition)) {
-            adInfo.pid = std::to_string(queryCondition.mttyPid);
-            adInfo.adxpid = queryCondition.adxpid;
-            adInfo.adxid = queryCondition.adxid;
-            adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
+        queryCookieMapping(cmInfo.queryKV, queryCondition);
+
+        if (!filterCb(this, queryConditions)) {
             return bidFailedReturn();
         }
         return isBidAccepted = true;
     }
 
     void TanxBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-                                            const MT::common::SelectResult & result)
+                                            const MT::common::SelectResult & result, int seq)
     {
-        bidResponse.Clear();
-        bidResponse.set_version(bidRequest.version());
-        bidResponse.set_bid(bidRequest.bid());
-        bidResponse.clear_ads();
+        if (seq == 0) {
+            bidResponse.Clear();
+            bidResponse.set_version(bidRequest.version());
+            bidResponse.set_bid(bidRequest.bid());
+            bidResponse.clear_ads();
+        }
         BidResponse_Ads * adResult = bidResponse.add_ads();
         const MT::common::Banner & banner = result.banner;
         std::string adxAdvIdStr = banner.adxAdvId;
         int adxAdvId = extractRealValue(adxAdvIdStr.data(), ADX_TANX);
         std::string adxIndustryTypeStr = banner.adxIndustryType;
         int adxIndustryType = extractRealValue(adxIndustryTypeStr.data(), ADX_TANX);
-        const BidRequest_AdzInfo & adzInfo = bidRequest.adzinfo(0);
+        const BidRequest_AdzInfo & adzInfo = bidRequest.adzinfo(seq);
         int maxCpmPrice = (int)result.bidPrice;
 
         adResult->set_max_cpm_price(maxCpmPrice);
@@ -221,12 +211,13 @@ namespace bidding {
         //缓存最终广告结果
         fillAdInfo(queryCondition, result, bidRequest.tid());
 
-        char pjson[2048] = { '\0' };
+        std::string cookieMappingUrl = redoCookieMapping(ADX_TANX, TANX_COOKIEMAPPING_URL);
+        bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
+                     || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         std::string strBannerJson = banner.json;
-        strncat(pjson, strBannerJson.data(), sizeof(pjson));
-        // tripslash2(pjson);
+        urlHttp2HttpsIOS(isIOS, strBannerJson);
         cppcms::json::value bannerJson;
-        parseJson(pjson, bannerJson);
+        parseJson(strBannerJson.c_str(), bannerJson);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string destUrl = mtlsArray[0].get("p1", "");
         if (destUrl.empty()) {
@@ -236,37 +227,8 @@ namespace bidding {
         adResult->add_click_through_url(destUrl);
         adResult->set_creative_id(std::to_string(adInfo.bannerId));
         adResult->add_advertiser_ids(adxAdvId); // adx_advid
-        adResult->set_html_snippet(tanxHtmlSnippet());
+        adResult->set_html_snippet(tanxHtmlSnippet(cookieMappingUrl, isIOS));
         adResult->set_feedback_address(feedbackUrl);
-        //        if (adInfo.adxid == ADX_TANX_MOBILE) {
-        //            adResult->set_html_snippet(tanxHtmlSnippet());
-        //            adResult->set_feedback_address(feedbackUrl);
-        //        } else {
-        //            bannerJson["advid"] = finalSolution.advId;
-        //            bannerJson["adxpid"] = adInfo.adxpid;
-        //            bannerJson["arid"] = adInfo.areaId;
-        //            bannerJson["gpid"] = finalSolution.sId;
-        //            bannerJson["pid"] = adInfo.pid;
-        //            bannerJson["ppid"] = adInfo.ppid;
-        //            bannerJson["price"] = adInfo.offerPrice;
-        //            bannerJson["pricetype"] = adInfo.priceType;
-        //            bannerJson["unid"] = adInfo.adxid;
-        //            bannerJson["of"] = "0";
-        //            bannerJson["width"] = banner.width;
-        //            bannerJson["height"] = banner.height;
-        //            bannerJson["xcurl"] = AD_TX_CLICK_UNENC_MACRO;
-        //            std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
-        //            char admBuffer[4096];
-        //            snprintf(admBuffer, sizeof(admBuffer), adservice::corelogic::HandleShowQueryTask::showAdxTemplate,
-        //                     mtadInfoStr.data());
-        //            adResult->set_html_snippet(admBuffer);
-        //            char showBuf[2048];
-        //            getShowPara(bidRequest.bid(), showBuf, sizeof(showBuf));
-        //            snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s%s&of=3", SNIPPET_SHOW_URL, "p="
-        //            AD_TX_PRICE_MACRO "&",
-        //                     showBuf);
-        //            adResult->set_feedback_address(feedbackUrl);
-        //        }
     }
 
     void TanxBiddingHandler::match(adservice::utility::HttpResponse & response)

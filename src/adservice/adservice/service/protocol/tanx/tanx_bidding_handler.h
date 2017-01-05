@@ -11,53 +11,58 @@
 namespace protocol {
 namespace bidding {
 
-	class TanxBiddingHandler : public AbstractBiddingHandler {
-	public:
-		/**
-		 * 从Adx Bid Post请求数据中获取具体的请求信息
-		 */
-		bool parseRequestData(const std::string & data);
+    class TanxBiddingHandler : public AbstractBiddingHandler {
+    public:
+        /**
+         * 从Adx Bid Post请求数据中获取具体的请求信息
+         */
+        bool parseRequestData(const std::string & data);
 
-		/**
-		 * 根据Bid 的相关信息对日志进行信息填充
-		 */
-		bool fillLogItem(protocol::log::LogItem & logItem);
+        /**
+         * @brief fillSpecificLog 各家平台具体日志字段的标准
+         * @param isAccepted
+         * @return
+         */
+        bool fillSpecificLog(const AdSelectCondition & selectCondition, protocol::log::LogItem & logItem,
+                             bool isAccepted = false);
 
-		/**
-		 * 根据ADX的请求进行竞价匹配,决定是否接受这个流量,同时设置isBidAccepted
-		 * @return: true接受流量,false不接受流量
-		 */
-		bool filter(const BiddingFilterCallback & filterCb);
+        /**
+         * 根据ADX的请求进行竞价匹配,决定是否接受这个流量,同时设置isBidAccepted
+         * @return: true接受流量,false不接受流量
+         */
+        bool filter(const BiddingFilterCallback & filterCb);
 
-		/**
-		 * 将匹配结果转换为具体平台的格式的结果
-		 */
-		void buildBidResult(const AdSelectCondition & selectCondition, const MT::common::SelectResult & result);
+        /**
+         * 将匹配结果转换为具体平台的格式的结果
+         */
+        void buildBidResult(const AdSelectCondition & selectCondition, const MT::common::SelectResult & result,
+                            int seq = 0);
 
-		/**
-		 * 当接受流量时装配合适的输出
-		 */
-		void match(INOUT adservice::utility::HttpResponse & response);
+        /**
+         * 当接受流量时装配合适的输出
+         */
+        void match(INOUT adservice::utility::HttpResponse & response);
 
-		/**
-		 * 不接受ADX的流量请求
-		 */
-		void reject(INOUT adservice::utility::HttpResponse & response);
+        /**
+         * 不接受ADX的流量请求
+         */
+        void reject(INOUT adservice::utility::HttpResponse & response);
 
-		std::string generateHtmlSnippet(const std::string & bid, int width, int height, const char * extShowBuf,
-										const char * cookieMappingUrl = "");
+        std::string generateHtmlSnippet(const std::string & bid, int width, int height, const char * extShowBuf,
+                                        const char * cookieMappingUrl = "", bool useHttps = false);
 
-	private:
-		/**
-		 * 产生tanx的html snippet
-		 */
-		std::string tanxHtmlSnippet();
+    private:
+        /**
+         * 产生tanx的html snippet
+         */
 
-	private:
-		protocol::Tanx::BidRequest bidRequest;
-		protocol::Tanx::BidResponse bidResponse;
-		char feedbackUrl[2048];
-	};
+        std::string tanxHtmlSnippet(const std::string & cookieMappingUrl = "", bool useHttps = false);
+
+    private:
+        protocol::Tanx::BidRequest bidRequest;
+        protocol::Tanx::BidResponse bidResponse;
+        char feedbackUrl[2048];
+    };
 }
 }
 

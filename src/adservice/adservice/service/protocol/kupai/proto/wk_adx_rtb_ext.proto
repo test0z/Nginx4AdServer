@@ -1,0 +1,61 @@
+syntax = "proto2";
+package com.wk.adx.rtb;
+option java_outer_classname = "WkAdxExt";
+
+import "openrtb.proto";
+
+extend com.google.openrtb.BidRequest {
+
+    // true标记本次请求是测试请求。当为测试请求时，DSP需要返回一个带有广告的应答，
+    // 该应答广告不会被展现给用户，也不会对该次广告展现计费。适用于联调测试。
+    optional int32 is_debug = 201;
+
+}
+
+extend com.google.openrtb.BidRequest.Imp {
+    // 是否为开屏广告
+    optional int32 is_splash_screen = 200;
+    
+    //屏蔽广告动作类型
+    //0 = 嵌入式，1 = 浏览器打开， 2 = 下载类
+    repeated int32 bitc = 201;
+}
+
+extend com.google.openrtb.BidResponse.SeatBid.Bid {
+  // 曝光追踪地址, 允许使用宏
+  repeated string imptrackers = 200;
+
+  // 点击追踪地址, 允许使用宏
+  repeated string clktrackers = 201;
+  
+  //创意id
+  optional string creative_id = 202;
+  
+  //广告位ID
+  optional string tagid = 203;
+  
+  optional InteractionType interactionType = 204; 
+  
+  repeated string downloadtraceurl = 205;
+	
+  repeated string activetraceurl = 206;
+	
+  repeated string dwnlst = 207;
+  
+  repeated string intltrackers = 208;
+    
+}
+
+//交互类型
+enum InteractionType {
+	NO_INTERACTION = 0;
+	SURFING = 1;
+	DOWNLOAD=2;
+	EXTERNAL = 3;
+}
+
+
+
+
+
+

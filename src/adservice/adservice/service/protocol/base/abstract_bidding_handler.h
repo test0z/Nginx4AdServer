@@ -6,13 +6,15 @@
 #define ADCORE_ABSTRACT_BIDDING_HANDLER_H
 
 #include <functional>
-#include <string>
-
 #include <mtty/types.h>
+#include <string>
+#include <vector>
 
 #include "common/functions.h"
 #include "common/types.h"
 #include "core/adselectv2/ad_select_interface.h"
+#include "core/core_cm_manager.h"
+#include "core/model/user.h"
 #include "protocol/log/log.h"
 #include "utility/utility.h"
 #include <mtty/constants.h>
@@ -21,17 +23,38 @@ namespace protocol {
 namespace bidding {
 
     using namespace adservice::adselectv2;
+    using namespace adservice::server;
+    using namespace adservice::core::model;
 
     class AbstractBiddingHandler;
 
-    typedef std::function<bool(AbstractBiddingHandler *, AdSelectCondition &)> BiddingFilterCallback;
+    typedef std::function<bool(AbstractBiddingHandler *, std::vector<AdSelectCondition> &)> BiddingFilterCallback;
 
     void extractSize(const std::string & size, int & width, int & height);
     std::string makeBidSize(int width, int height);
 
-    struct BiddingFlowInfo {
-        // idfa or android id
-        char deviceIdBuf[1024];
+    inline void urlHttp2HttpsIOS(bool isIOS, std::string & url)
+    {
+        if (isIOS) {
+            adservice::utility::url::url_replace_all(url, "http://", "https://");
+        }
+    }
+
+    class BiddingFlowExtraInfo {
+    public:
+        int32_t mediaType;
+        std::string keyWords;
+        std::string deviceIdName;
+        std::vector<std::string> dealIds;
+        std::vector<int32_t> contentType;
+        protocol::log::DeviceInfo devInfo;
+    };
+
+    class BidCookieMappingInfo {
+    public:
+        CookieMappingQueryKeyValue queryKV;
+        MtUserMapping userMapping;
+        bool needReMapping{ false };
     };
 
     /**
@@ -57,7 +80,16 @@ namespace bidding {
         /**
          * 根据Bid 的相关信息对日志进行信息填充
          */
-        virtual bool fillLogItem(protocol::log::LogItem & logItem)
+        virtual bool fillLogItem(const AdSelectCondition & selectCondition, protocol::log::LogItem & logItem,
+                                 bool isAccepted = false);
+
+        /**
+         * @brief fillSpecificLog 各家平台具体日志字段的标准
+         * @param isAccepted
+         * @return
+         */
+        virtual bool fillSpecificLog(const AdSelectCondition & selectCondition, protocol::log::LogItem & logItem,
+                                     bool isAccepted = false)
         {
             return true;
         }
@@ -75,7 +107,8 @@ namespace bidding {
         /**
          * 将匹配结果转换为具体平台的格式的结果
          */
-        virtual void buildBidResult(const AdSelectCondition & selectCondition, const MT::common::SelectResult & result)
+        virtual void buildBidResult(const AdSelectCondition & selectCondition, const MT::common::SelectResult & result,
+                                    int seq = 0)
             = 0;
 
         /**
@@ -92,10 +125,20 @@ namespace bidding {
          * 产生htmlsnippet
          */
         virtual std::string generateHtmlSnippet(const std::string & bid, int width, int height, const char * extShowBuf,
-                                                const char * cookieMappingUrl = "");
+                                                const char * cookieMappingUrl = "", bool useHttps = false);
 
         virtual std::string generateScript(const std::string & bid, int width, int height, const char * scriptUrl,
                                            const char * clickMacro, const char * extParam);
+
+        const CookieMappingQueryKeyValue & cookieMappingKeyMobile(const std::string & idfa, const std::string & imei,
+                                                                  const std::string & androidId,
+                                                                  const std::string & mac);
+
+        const CookieMappingQueryKeyValue & cookieMappingKeyPC(int64_t adxId, const std::string & cookie);
+
+        void queryCookieMapping(const CookieMappingQueryKeyValue & queryKV, AdSelectCondition & selectCondition);
+
+        std::string redoCookieMapping(int64_t adxId, const std::string & adxCookieMappingUrl);
 
         inline bool bidFailedReturn()
         {
@@ -109,8 +152,11 @@ namespace bidding {
 
     protected:
         void getShowPara(const std::string & bid, char * showParamBuf, int showBufSize);
+        void getShowPara(adservice::utility::url::URLHelper & url, const std::string & bid);
         void getClickPara(const std::string & bid, char * clickParamBuf, int clickBufSize, const std::string & ref,
                           const std::string & landingurl);
+        void getClickPara(adservice::utility::url::URLHelper & url, const std::string & bid, const std::string & ref,
+                          const std::string & landingUrl);
         int extractRealValue(const std::string & input, int adx);
 
         void fillAdInfo(const AdSelectCondition & selectCondition, const MT::common::SelectResult & result,
@@ -120,7 +166,8 @@ namespace bidding {
         //最近一次匹配的结果
         bool isBidAccepted;
         protocol::log::AdInfo adInfo;
-        BiddingFlowInfo biddingFlowInfo;
+        BidCookieMappingInfo cmInfo;
+        BiddingFlowExtraInfo adFlowExtraInfo;
     };
 }
 }

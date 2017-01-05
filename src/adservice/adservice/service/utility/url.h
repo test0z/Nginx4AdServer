@@ -7,11 +7,13 @@
 
 #include "common/types.h"
 #include "muduo/net/http/HttpRequest.h"
+#include <boost/serialization/access.hpp>
 #include <cstring>
 #include <ctime>
 #include <exception>
 #include <iostream>
 #include <map>
+#include <mtty/constants.h>
 #include <random>
 #include <sstream>
 #include <stddef.h>
@@ -48,7 +50,7 @@ namespace utility {
             urlDecode_f(input.data(), input.length(), output, buffer);
         }
 
-        typedef std::map<adservice::types::string, adservice::types::string> ParamMap;
+        typedef std::map<std::string, std::string> ParamMap;
 
         /**
          * 从buffer中的url query中获取参数,其中url query应该是被url encode的,格式为xxx=xx&xx=xxx
@@ -131,6 +133,342 @@ namespace utility {
         }
 
         bool url_replace(std::string & str, const std::string & from, const std::string & to);
+
+        void url_replace_all(std::string & str, const std::string & from, const std::string & to);
+
+        class URLParamMap {
+        public:
+            static int64_t stringToInt(const std::string & s);
+
+            static std::string intToString(int64_t i);
+
+            static URLParamMap fromParamMap(ParamMap & paramMap);
+
+            static ParamMap toParamMap(URLParamMap & um);
+
+        public:
+            URLParamMap()
+            {
+            }
+
+        public:
+            // f
+            std::string urlReferer;
+            // s
+            std::string urlAdplace;
+            // o
+            std::string urlMttyAdplace;
+            // r
+            std::string urlExposeId;
+            // d
+            int64_t urlAdOwner{ 0 };
+            // t
+            int64_t urlAdPlan{ 0 };
+            // e
+            int64_t urlSolution{ 0 };
+            // c
+            int64_t urlBanner{ 0 };
+            // x
+            int64_t urlAdx{ 0 };
+            // h
+            std::string urlClickId;
+            // a
+            std::string urlArea;
+            // sx
+            int64_t urlClickX{ 0 };
+            // sy
+            int64_t urlClickY{ 0 };
+            // l
+            std::string urlAdxMacro;
+            // b
+            int64_t urlFeePrice{ 0 };
+            // p
+            std::string urlExchangePrice;
+            // u
+            std::string urlMttyUid;
+            // pt
+            int64_t urlPriceType{ 0 };
+            // ep
+            int64_t urlPPid{ 0 };
+            // od
+            int64_t urlOrderId{ 0 };
+            // of
+            int64_t urlOf{ 0 };
+            // w
+            int64_t urlDealId{ 0 };
+            // idfa
+            std::string urlIdfa;
+            // imei
+            std::string urlImei;
+            // mac
+            std::string urlMac;
+            // adid
+            std::string urlAndroidId;
+
+        private:
+            friend class boost::serialization::access;
+
+            template <class Archive>
+            void serialize(Archive & ar, const unsigned int version)
+            {
+                ar & urlReferer;
+                ar & urlAdplace;
+                ar & urlMttyAdplace;
+                ar & urlExposeId;
+                ar & urlAdOwner;
+                ar & urlAdPlan;
+                ar & urlSolution;
+                ar & urlBanner;
+                ar & urlAdx;
+                ar & urlClickId;
+                ar & urlArea;
+                ar & urlClickX;
+                ar & urlClickY;
+                ar & urlAdxMacro;
+                ar & urlFeePrice;
+                ar & urlExchangePrice;
+                ar & urlMttyUid;
+                ar & urlPriceType;
+                ar & urlPPid;
+                ar & urlOrderId;
+                ar & urlOf;
+                ar & urlDealId;
+                ar & urlIdfa;
+                ar & urlImei;
+                ar & urlMac;
+                ar & urlAndroidId;
+            }
+        };
+
+        class URLException : public std::exception {
+        public:
+            URLException()
+            {
+            }
+            URLException(const std::string & msg)
+                : message(msg)
+            {
+            }
+            const char * what() const noexcept override
+            {
+                return message.c_str();
+            }
+
+        private:
+            std::string message;
+        };
+
+        class URLHelper {
+        public:
+            typedef enum { PARAM_INT, PARAM_STRING } PARAM_TYPE;
+            typedef std::pair<std::string, PARAM_TYPE> ParamBindingItem;
+            static std::vector<ParamBindingItem> paramBindingTable;
+
+        public:
+            URLHelper()
+            {
+            }
+
+            URLHelper(const std::string & url, bool encoded);
+
+            URLHelper(const std::string & protocol, const std::string & host, const std::string & port,
+                      const std::string & path);
+
+            URLHelper(const std::string & protocol, const std::string & host, const std::string & port,
+                      const std::string & path, const std::string & data, bool encoded);
+
+            /**
+             * 添加参数
+             * @brief add
+             * @param parmamName
+             * @param paramValue
+             */
+            void add(const std::string & parmamName, const std::string & paramValue);
+
+            /**
+             * 删除参数
+             * @brief remove
+             * @param paramName
+             */
+            void remove(const std::string & paramName);
+
+            /**
+             * 不重复地添加参数，如果已存在返回false,否则返回true
+             * @brief addNoDuplicate
+             * @param paramName
+             * @param paramValue
+             * @return
+             */
+            bool addNoDuplicate(const std::string & paramName, const std::string & paramValue);
+
+            /**
+             * 添加宏
+             * @brief addMacro
+             * @param paramName
+             * @param paramValue
+             */
+            void addMacro(const std::string & paramName, const std::string & paramValue);
+
+            /**
+             * 删除宏
+             * @brief removeMacro
+             * @param paramName
+             */
+            void removeMacro(const std::string & paramName);
+
+            std::string getProtocol()
+            {
+                if (protocolName.empty()) {
+                    return "http";
+                } else
+                    return protocolName;
+            }
+
+            void setProtocol(const std::string & protocol)
+            {
+                protocolName = protocol;
+            }
+
+            std::string getHost()
+            {
+                return host;
+            }
+
+            void setHost(const std::string & h)
+            {
+                host = h;
+            }
+
+            std::string getPort()
+            {
+                if (port.empty()) {
+                    return "80";
+                } else {
+                    return port;
+                }
+            }
+
+            void setPort(const std::string & p)
+            {
+                if (std::isdigit(*p.c_str())) {
+                    port = p;
+                }
+            }
+
+            std::string getPath()
+            {
+                return path;
+            }
+
+            void setPath(const std::string & p)
+            {
+                path = p;
+            }
+
+            ParamMap & getParamMap()
+            {
+                return paramMap;
+            }
+
+            /**
+             * 生成加密链接
+             * @brief cipherUrl
+             * @return
+             */
+            std::string cipherUrl();
+
+            /**
+             * 生成加密参数
+             * @brief cipherParam
+             * @return
+             */
+            std::string cipherParam();
+
+            /**
+             * 从加密链接反向得到真实url
+             * @brief fromCipherUrl
+             * @return
+             */
+            static URLHelper fromCipherUrl(const std::string & cipher);
+
+            /**
+             * 转成url字符串
+             * @brief toUrl
+             * @return
+             */
+            std::string toUrl();
+
+            /**
+             * 转成url参数
+             * @brief toUrlParam
+             * @return
+             */
+            std::string toUrlParam();
+
+            /**
+             * 从url字符串反向解析
+             * @brief fromUrl
+             * @return
+             */
+            static URLHelper fromUrl(const std::string & url);
+
+        private:
+            void processParamData(const std::string & data, bool encoded);
+
+        private:
+            static void numberEncode(int64_t number, uchar_t *& buf, int & bufRemainSize);
+
+            static int64_t numberDecode(const uchar_t *& buf, const uchar_t * boundary);
+
+            static void writeStringToBuf(const char * src, uchar_t *& dst, int size, int & bufRemainSize);
+
+            static void writeIntToBuf(int64_t src, uchar_t *& dst, int & bufRemainSize);
+
+            std::string urlParamSerialize(ParamMap & paramMap);
+
+            void urlParamDeserialize(const std::string & input, ParamMap & paramMap);
+
+            static inline void encodeUrlParam(URLHelper::PARAM_TYPE & paramType, const std::string & value,
+                                              uchar_t *& p, int & bufRemainSize)
+            {
+                if (paramType == URLHelper::PARAM_STRING) {
+                    URLHelper::writeStringToBuf(value.c_str(), p, value.length(), bufRemainSize);
+                } else if (paramType == URLHelper::PARAM_INT) {
+                    int64_t num = value.empty() ? 0 : URLParamMap::stringToInt(value);
+                    URLHelper::writeIntToBuf(num, p, bufRemainSize);
+                }
+            }
+
+            static inline std::string decodeUrlParamStr(const uchar_t *& p, const uchar_t * boundary)
+            {
+                int64_t num = URLHelper::numberDecode(p, boundary);
+                if (num > 0 && boundary >= p + num) {
+                    const uchar_t * start = p;
+                    p += num;
+                    return std::string((const char *)start, (const char *)p);
+                } else {
+                    return "";
+                }
+            }
+
+            static inline int64_t decodeUrlParamNum(const uchar_t *& p, const uchar_t * boundary)
+            {
+                int64_t num = URLHelper::numberDecode(p, boundary);
+                return num;
+            }
+
+        public:
+            static std::string MACRO_HOLDER;
+            static std::string ENCODE_HOLDER;
+
+        private:
+            ParamMap paramMap;
+            ParamMap macroParamMap;
+            std::string protocolName;
+            std::string host;
+            std::string port;
+            std::string path;
+        };
     }
 }
 }

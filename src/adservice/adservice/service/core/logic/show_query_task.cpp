@@ -142,14 +142,11 @@ namespace corelogic {
         }
     }
 
-    int buildResponseForDsp(const MT::common::Banner & banner, ParamMap & paramMap, const char * json,
+    int buildResponseForDsp(const MT::common::Banner & banner, ParamMap & paramMap, std::string & json,
                             const char * templateFmt, char * buffer, int bufferSize)
     {
-        char pjson[2048] = { '\0' };
-        strncat(pjson, json, sizeof(pjson));
-        tripslash2(pjson);
         cppcms::json::value mtAdInfo;
-        utility::json::parseJson(pjson, mtAdInfo);
+        utility::json::parseJson(json.c_str(), mtAdInfo);
         //准备ADX宏
         char adxbuffer[1024];
         std::string adxMacro;
@@ -173,6 +170,13 @@ namespace corelogic {
         mtAdInfo["width"] = width;
         mtAdInfo["height"] = height;
         mtAdInfo["oid"] = paramMap[URL_ORDER_ID];
+        URLHelper clickUrl(SNIPPET_CLICK_URL_HTTPS, false);
+        for (auto iter : paramMap) {
+            clickUrl.add(iter.first, iter.second);
+        }
+        clickUrl.add(URL_IMP_OF, OF_DSP);
+        clickUrl.add(URL_ADX_MACRO, adxMacro);
+        mtAdInfo["clickurl"] = clickUrl.cipherUrl();
         std::string jsonResult = utility::json::toJson(mtAdInfo);
         int len = snprintf(buffer, bufferSize - 1, templateFmt, jsonResult.c_str());
         if (len >= bufferSize) {
@@ -182,18 +186,15 @@ namespace corelogic {
         return len;
     }
 
-    int buildResponseForSsp(const MT::common::SelectResult & selectResult, ParamMap & paramMap, const char * json,
+    int buildResponseForSsp(const MT::common::SelectResult & selectResult, ParamMap & paramMap, string & json,
                             const char * templateFmt, char * buffer, int bufferSize, const std::string & userIp,
                             const std::string & referer)
     {
         const MT::common::Solution & solution = selectResult.solution;
         const MT::common::Banner & banner = selectResult.banner;
         const MT::common::ADPlace & adplace = selectResult.adplace;
-        char pjson[2048] = { '\0' };
-        strncat(pjson, json, sizeof(pjson));
-        tripslash2(pjson);
         cppcms::json::value mtAdInfo;
-        utility::json::parseJson(pjson, mtAdInfo);
+        utility::json::parseJson(json.c_str(), mtAdInfo);
         std::string pid = to_string(adplace.pId);
         mtAdInfo["pid"] = pid;
         mtAdInfo["adxpid"] = pid;
@@ -218,43 +219,47 @@ namespace corelogic {
         mtAdInfo["price"] = price;
         std::string ppid = to_string(selectResult.ppid);
         mtAdInfo["ppid"] = ppid;
-        // const std::vector<int64_t> & ppids = selectResult.ppids;
-        // mtAdInfo["ppids"] = boost::algorithm::join(
-        //    ppids | boost::adaptors::transformed(static_cast<std::string (*)(int64_t)>(std::to_string)), ",");
         mtAdInfo["oid"] = selectResult.orderId;
         mtAdInfo["ctype"] = banner.bannerType;
         int advId = solution.advId;
         int bId = banner.bId;
         int resultLen = 0;
+        URLHelper clickUrl(SSP_CLICK_URL, false);
+        clickUrl.add(URL_ADPLACE_ID, pid);
+        clickUrl.add(URL_MTTYADPLACE_ID, pid);
+        clickUrl.add(URL_ADX_ID, adxid);
+        clickUrl.add(URL_EXPOSE_ID, impid);
+        clickUrl.add(URL_ADOWNER_ID, std::to_string(advId));
+        clickUrl.add(URL_EXEC_ID, sid);
+        clickUrl.add(URL_PRODUCTPACKAGE_ID, ppid);
+        clickUrl.add(URL_PRICE_TYPE, priceType);
+        clickUrl.add(URL_BID_PRICE, price);
+        clickUrl.add(URL_CREATIVE_ID, std::to_string(bId));
+        clickUrl.add(URL_REFERER, referer);
+        clickUrl.add(URL_CLICK_ID, "000");
+        clickUrl.add(URL_AREA_ID, address);
+        clickUrl.add(URL_SITE_ID, std::to_string(adplace.mId));
         //需求http://redmine.mtty.com/redmine/issues/144
+        cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
+        cppcms::json::array & mtls = mtlsArray.array();
+        char landingPageBuffer[1024];
+        std::string landingUrl
+            = banner.bannerType == BANNER_TYPE_PRIMITIVE ? mtls[0].get("p9", "") : mtls[0].get("p1", "");
+        url_replace(landingUrl, "{{click}}", "");
+        std::string encodedLandingUrl;
+        urlEncode_f(landingUrl, encodedLandingUrl, landingPageBuffer);
+        clickUrl.add(URL_LANDING_URL, encodedLandingUrl);
+        if (banner.bannerType != BANNER_TYPE_PRIMITIVE) {
+            mtls[0].set("p5", clickUrl.cipherUrl());
+        } else {
+            mtls[0].set("p9", clickUrl.cipherUrl());
+        }
         if (paramMap[URL_IMP_OF] == OF_SSP_MOBILE) {
-            cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
-            cppcms::json::array & mtls = mtlsArray.array();
-            char clickMacroBuffer[2048];
-            char landingPageBuffer[1024];
-            std::string landingUrl
-                = banner.bannerType == BANNER_TYPE_PRIMITIVE ? mtls[0].get("p9", "") : mtls[0].get("p1", "");
-            url_replace(landingUrl, "{{click}}", "");
-            std::string encodedLandingUrl;
-            urlEncode_f(landingUrl, encodedLandingUrl, landingPageBuffer);
-            size_t clickMacroLen = (size_t)snprintf(
-                clickMacroBuffer, sizeof(clickMacroBuffer),
-                SSP_CLICK_URL "?s=%s&o=%s&x=%s&r=%s&d=%d&e=%s&ep=%s&pt=%s&b=%s&c=%d&f=%s&h=000&a=%s&url=%s", pid.data(),
-                pid.data(), adxid.data(), impid.data(), advId, sid.data(), ppid.data(), priceType.data(), price.data(),
-                bId, referer.data(), address.data(), encodedLandingUrl.data());
-            if (clickMacroLen >= sizeof(clickMacroBuffer)) {
-                LOG_WARN << "in buildResponseForSsp,clickMacroLen greater than sizeof clickMacroBuffer,len:"
-                         << clickMacroLen;
-            }
-            if (banner.bannerType != BANNER_TYPE_PRIMITIVE) {
-                mtls[0].set("p5", std::string(clickMacroBuffer));
-            } else {
-                mtls[0].set("p9", std::string(clickMacroBuffer));
-            }
             //只输出标准json
             std::string jsonResult = utility::json::toJson(mtAdInfo);
             resultLen = snprintf(buffer, bufferSize - 1, "%s", jsonResult.c_str());
         } else {
+            mtAdInfo["clickurl"] = clickUrl.cipherUrl();
             std::string jsonResult = utility::json::toJson(mtAdInfo);
             resultLen = snprintf(buffer, bufferSize - 1, templateFmt, paramMap["callback"].c_str(), jsonResult.c_str());
         }
@@ -363,11 +368,14 @@ namespace corelogic {
             }
             log.adInfo.cost = adplace.costPrice;
             ipManager.getAreaCodeByIp(condition.ip.data(), log.geoInfo.country, log.geoInfo.province, log.geoInfo.city);
-            const char * tmp = banner.json.data();
+            std::string bannerJson = banner.json;
+            if (condition.mobileDevice == SOLUTION_DEVICE_IPHONE || condition.mobileDevice == SOLUTION_DEVICE_IPAD) {
+                adservice::utility::url::url_replace_all(bannerJson, "http://", "https://");
+            }
             //返回结果
             char buffer[8192];
-            int len = buildResponseForSsp(selectResult, paramMap, tmp, templateFmt, buffer, sizeof(buffer), userIp,
-                                          referer);
+            int len = buildResponseForSsp(selectResult, paramMap, bannerJson, templateFmt, buffer, sizeof(buffer),
+                                          userIp, referer);
             respBody = std::string(buffer, buffer + len);
             //狗尾续一个bid日志
             doLog(log);
@@ -383,9 +391,9 @@ namespace corelogic {
                     log.reqStatus = 500;
                     return;
                 }
-                const char * tmp = adBanner.json.data();
+                std::string bannerJson = adBanner.json;
                 char buffer[8192];
-                int len = buildResponseForDsp(adBanner, paramMap, tmp, templateFmt, buffer, sizeof(buffer));
+                int len = buildResponseForDsp(adBanner, paramMap, bannerJson, templateFmt, buffer, sizeof(buffer));
                 respBody = std::string(buffer, buffer + len);
             }
         }
@@ -406,6 +414,22 @@ namespace corelogic {
                           << e.trace();
             } catch (std::exception & e) {
                 LOG_ERROR << "记录曝光失败，订单ID无效：" << paramMap[URL_ORDER_ID];
+            }
+        }
+
+        // 用户曝光频次控制
+        if (!log.userId.empty()) {
+            try {
+                std::string userSidKey = log.userId + ":" + std::to_string(log.adInfo.sid);
+                MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "user-freq", userSidKey);
+                MT::common::ASOperation op(1, DAY_SECOND);
+                op.addIncr("s", (int64_t)1);
+                aerospikeClient.operate(key, op);
+            } catch (MT::common::AerospikeExcption & e) {
+                LOG_ERROR << "记录曝光频次失败，userId：" << log.userId << "，sid:" << log.adInfo.sid
+                          << ",e:" << e.what() << "，code:" << e.error().code << e.error().message << "，调用堆栈："
+                          << std::endl
+                          << e.trace();
             }
         }
 

@@ -28,8 +28,30 @@
 #include "file.h"
 #include "userclient.h"
 #include "http.h"
-
+#include <tuple>
 #include "google/protobuf/message.h"
+
+namespace std {
+
+template <>
+struct hash<std::pair<int, int>> {
+    size_t operator()(const std::pair<int, int> & arg) const noexcept
+    {
+        auto h = std::hash<int>();
+        return h(arg.first) ^ h(arg.second);
+    }
+};
+
+template <>
+struct hash<std::tuple<int, int, int>> {
+    size_t operator()(const std::tuple<int, int, int> & arg) const noexcept
+    {
+        auto h = std::hash<int>();
+        return h(std::get<0>(arg)) ^ h(std::get<1>(arg)) ^ h(std::get<2>(arg));
+    }
+};
+
+}
 
 namespace adservice{
    namespace utility{

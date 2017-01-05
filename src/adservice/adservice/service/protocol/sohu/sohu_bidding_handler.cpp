@@ -16,6 +16,7 @@ namespace bidding {
     using namespace adservice::utility::serialize;
     using namespace adservice::utility::json;
     using namespace adservice::utility::userclient;
+    using namespace adservice::utility::cypher;
     using namespace adservice::server;
 
     namespace {
@@ -72,15 +73,13 @@ namespace bidding {
         return getProtoBufObject(bidRequest, data);
     }
 
-    bool SohuBiddingHandler::fillLogItem(protocol::log::LogItem & logItem)
+    bool SohuBiddingHandler::fillSpecificLog(const AdSelectCondition & selectCondition,
+                                             protocol::log::LogItem & logItem, bool isAccepted)
     {
-        logItem.reqStatus = 200;
         logItem.userAgent = bidRequest.device().ua();
-        logItem.ipInfo.proxy = bidRequest.device().ip();
-        logItem.adInfo.adxid = adInfo.adxid;
-        logItem.adInfo.adxpid = adInfo.adxpid;
+        logItem.ipInfo.proxy = selectCondition.ip;
         logItem.referer = bidRequest.has_site() && bidRequest.site().has_page() ? bidRequest.site().page() : "";
-        if (isBidAccepted) {
+        if (isAccepted) {
             if (bidRequest.has_device()) {
                 const Request_Device & device = bidRequest.device();
                 if (!(device.type() == "PC")) {
@@ -88,26 +87,6 @@ namespace bidding {
                     adInfo.adxid = logItem.adInfo.adxid = ADX_SOHU_MOBILE;
                 }
             }
-            logItem.adInfo.sid = adInfo.sid;
-            logItem.adInfo.advId = adInfo.advId;
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.adxpid = adInfo.adxpid;
-            logItem.adInfo.adxuid = adInfo.adxuid;
-            logItem.adInfo.bannerId = adInfo.bannerId;
-            logItem.adInfo.cid = adInfo.cid;
-            logItem.adInfo.mid = adInfo.mid;
-            logItem.adInfo.cpid = adInfo.cpid;
-            logItem.adInfo.offerPrice = adInfo.offerPrice;
-            logItem.adInfo.areaId = adInfo.areaId;
-            logItem.adInfo.priceType = adInfo.priceType;
-            logItem.adInfo.ppid = adInfo.ppid;
-            url::extractAreaInfo(adInfo.areaId.data(), logItem.geoInfo.country, logItem.geoInfo.province,
-                                 logItem.geoInfo.city);
-            logItem.adInfo.bidSize = adInfo.bidSize;
-            logItem.adInfo.orderId = adInfo.orderId;
-        } else {
-            logItem.adInfo.pid = adInfo.pid;
-            logItem.adInfo.bidSize = adInfo.bidSize;
         }
         return true;
     }
@@ -122,7 +101,8 @@ namespace bidding {
             return bidFailedReturn();
         const Request_Impression & adzInfo = bidRequest.impression(0);
         const std::string & pid = adzInfo.pid();
-        AdSelectCondition queryCondition;
+        std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
+        AdSelectCondition & queryCondition = queryConditions[0];
         queryCondition.adxid = ADX_SOHU_PC;
         queryCondition.adxpid = pid;
         queryCondition.basePrice = adzInfo.has_bidfloor() ? adzInfo.bidfloor() : 0;
@@ -134,9 +114,19 @@ namespace bidding {
                 queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
                 queryCondition.adxid = ADX_SOHU_MOBILE;
                 queryCondition.mobileNetwork = getSohuNeworkType(device.nettype());
+                queryCondition.idfa = device.has_idfa() ? device.idfa() : "";
+                queryCondition.imei = device.has_imei() ? device.imei() : "";
+                queryCondition.androidId = device.has_androidid() ? device.androidid() : "";
+                queryCondition.mac = device.has_mac() ? device.mac() : "";
+                cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
+                                       md5_encode(queryCondition.imei),
+                                       md5_encode(queryCondition.androidId),
+                                       md5_encode(queryCondition.mac));
+                queryCookieMapping(cmInfo.queryKV, queryCondition);
             } else { // pc
                 queryCondition.pcOS = getOSTypeFromUA(device.ua());
                 queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
+                queryCondition.mac = device.has_mac() ? device.mac() : "";
             }
         }
         if (adzInfo.has_banner()) {
@@ -164,59 +154,38 @@ namespace bidding {
             const std::string & dealId = adzInfo.campaignid();
             queryCondition.dealId = std::string(",") + dealId + ",";
         }
-        if (!filterCb(this, queryCondition)) {
-            adInfo.pid = std::to_string(queryCondition.mttyPid);
-            adInfo.adxpid = queryCondition.adxpid;
-            adInfo.adxid = queryCondition.adxid;
-            adInfo.bidSize = makeBidSize(queryCondition.width, queryCondition.height);
+        if (!filterCb(this, queryConditions)) {
             return bidFailedReturn();
         }
         return isBidAccepted = true;
     }
 
     void SohuBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
-                                            const MT::common::SelectResult & result)
+                                            const MT::common::SelectResult & result, int seq)
     {
-        bidResponse.Clear();
-        bidResponse.set_version(bidRequest.version());
-        bidResponse.set_bidid(bidRequest.bidid());
-        bidResponse.clear_seatbid();
+        if (seq == 0) {
+            bidResponse.Clear();
+            bidResponse.set_version(bidRequest.version());
+            bidResponse.set_bidid(bidRequest.bidid());
+            bidResponse.clear_seatbid();
+        }
         Response_SeatBid * seatBid = bidResponse.add_seatbid();
-        seatBid->set_idx(0);
+        seatBid->set_idx(seq);
         Response_Bid * adResult = seatBid->add_bid();
-        const MT::common::Solution & finalSolution = result.solution;
-        const MT::common::ADPlace & adplace = result.adplace;
         const MT::common::Banner & banner = result.banner;
-        int advId = finalSolution.advId;
-        const Request_Impression & adzInfo = bidRequest.impression(0);
+        const Request_Impression & adzInfo = bidRequest.impression(seq);
         int maxCpmPrice = result.bidPrice;
         adResult->set_price(maxCpmPrice);
 
         //缓存最终广告结果
-        adInfo.pid = queryCondition.mttyPid;
-        adInfo.adxpid = queryCondition.adxpid;
-        adInfo.sid = finalSolution.sId;
-        adInfo.advId = advId;
-        adInfo.adxid = queryCondition.adxid;
-        adInfo.adxuid = bidRequest.has_user() ? bidRequest.user().suid() : "";
-        adInfo.bannerId = banner.bId;
-        adInfo.cid = adplace.cId;
-        adInfo.mid = adplace.mId;
-        adInfo.cpid = adInfo.advId;
-        adInfo.offerPrice = result.feePrice;
-        adInfo.priceType = finalSolution.priceType;
-        adInfo.ppid = result.ppid;
-        adInfo.bidSize = makeBidSize(banner.width, banner.height);
-        const std::string & userIp = bidRequest.device().ip();
-        IpManager & ipManager = IpManager::getInstance();
-        adInfo.areaId = ipManager.getAreaCodeStrByIp(userIp.data());
+        fillAdInfo(queryCondition, result, bidRequest.has_user() ? bidRequest.user().suid() : "");
 
-        char pjson[2048] = { '\0' };
+        bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
+                     || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         std::string strBannerJson = banner.json;
-        strncat(pjson, strBannerJson.data(), sizeof(pjson));
-        // tripslash2(pjson);
+        urlHttp2HttpsIOS(isIOS, strBannerJson);
         cppcms::json::value bannerJson;
-        parseJson(pjson, bannerJson);
+        parseJson(strBannerJson.c_str(), bannerJson);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string materialUrl;
         std::string landingUrl;
@@ -228,16 +197,19 @@ namespace bidding {
             landingUrl = mtlsArray[0].get("p1", "");
         }
         adResult->set_adurl(materialUrl);
-        std::string displayParam = getDisplayPara();
-        std::string clickParam = getSohuClickPara(landingUrl);
+
+        url::URLHelper showUrlParam;
+        getShowPara(showUrlParam, bidRequest.bidid());
+        showUrlParam.add(URL_IMP_OF, "3");
+        url::URLHelper clickUrlParam;
+        getClickPara(clickUrlParam, bidRequest.bidid(), "", landingUrl);
         if (!queryCondition.dealId.empty()) {
-            displayParam += "&" URL_DEAL_ID "=";
-            displayParam += adzInfo.campaignid();
-            clickParam += "&" URL_DEAL_ID "=";
-            clickParam += adzInfo.campaignid();
+            showUrlParam.add(URL_DEAL_ID, adzInfo.campaignid());
+            clickUrlParam.add(URL_DEAL_ID, adzInfo.campaignid());
         }
-        adResult->set_displaypara(displayParam);
-        adResult->set_clickpara(clickParam);
+        adResult->set_displaypara(showUrlParam.cipherParam());
+        adResult->set_clickpara(clickUrlParam.cipherParam());
+        redoCookieMapping(queryCondition.adxid, "");
     }
 
     void SohuBiddingHandler::match(adservice::utility::HttpResponse & response)
