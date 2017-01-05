@@ -69,6 +69,7 @@ SET(SRC_LIST
     ./service/protocol/youku/youku_bidding_handlerv2.cpp
     ./service/protocol/youku/youku_price.cpp
     ./service/protocol/inmobi/inmobi_bidding_handler.cpp
+    ./service/protocol/liebao/liebao_bidding_handler.cpp
     ./service/utility/cypher.cpp
     ./service/utility/escape.cpp
     ./service/utility/file.cpp

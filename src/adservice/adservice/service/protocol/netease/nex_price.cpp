@@ -6,8 +6,8 @@ using namespace adservice::utility::cypher;
 
 int nex_price_decode(const std::string & input)
 {
-    static const char * key = "OGEyNTQ0Y2U1N2Y0";
-    static const char * iv = "MDE1N2Y0YTlhYjhk";
+    static const char * key = "OGEyNTQ0Zjc1OTI1";//"OGEyNTQ0Y2U1N2Y0";
+    static const char * iv = "MDE1OTI2MGExZjEw";//"MDE1N2Y0YTlhYjhk";
     try {
         std::string decode;
         base64decode(input, decode);

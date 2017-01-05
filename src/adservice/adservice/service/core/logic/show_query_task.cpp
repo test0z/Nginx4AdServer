@@ -224,7 +224,7 @@ namespace corelogic {
         int advId = solution.advId;
         int bId = banner.bId;
         int resultLen = 0;
-        URLHelper clickUrl(SSP_CLICK_URL_HTTPS, false);
+        URLHelper clickUrl(SSP_CLICK_URL, false);
         clickUrl.add(URL_ADPLACE_ID, pid);
         clickUrl.add(URL_MTTYADPLACE_ID, pid);
         clickUrl.add(URL_ADX_ID, adxid);
@@ -238,6 +238,7 @@ namespace corelogic {
         clickUrl.add(URL_REFERER, referer);
         clickUrl.add(URL_CLICK_ID, "000");
         clickUrl.add(URL_AREA_ID, address);
+        clickUrl.add(URL_SITE_ID, std::to_string(adplace.mId));
         //需求http://redmine.mtty.com/redmine/issues/144
         cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
         cppcms::json::array & mtls = mtlsArray.array();

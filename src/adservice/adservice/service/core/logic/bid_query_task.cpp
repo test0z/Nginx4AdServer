@@ -8,6 +8,7 @@
 #include "protocol/guangyin/guangyin_bidding_handler.h"
 #include "protocol/inmobi/inmobi_bidding_handler.h"
 #include "protocol/kupai/kupai_bidding_handler.h"
+#include "protocol/liebao/liebao_bidding_handler.h"
 #include "protocol/netease/netease_bidding_handlerv2.h"
 #include "protocol/netease/nex_bidding_handler.h"
 #include "protocol/sohu/sohu_bidding_handler.h"
@@ -72,6 +73,8 @@ namespace corelogic {
         ADD_MODULE_ENTRY(BID_QUERY_PATH_NEX, ADX_NEX_PC);
         //酷派移动
         ADD_MODULE_ENTRY(BID_QUERY_PATH_KUPAI, ADX_KUPAI_MOBILE);
+        //猎豹移动
+        ADD_MODULE_ENTRY(BID_QUERY_PATH_LIEBAO, ADX_LIEBAO_MOBILE);
 
         std::sort<int *>(moduleIdx, moduleIdx + moduleCnt, [](const int & a, const int & b) {
             return moduleAdx[a].moduleHash < moduleAdx[b].moduleHash;
@@ -121,6 +124,8 @@ namespace corelogic {
             return new NexBiddingHandler();
         case ADX_KUPAI_MOBILE:
             return new KupaiBiddingHandler();
+        case ADX_LIEBAO_MOBILE:
+            return new LieBaoBiddingHandler();
         default:
             return NULL;
         }

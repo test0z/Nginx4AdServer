@@ -260,7 +260,7 @@ namespace utility {
                                                         d, new CryptoPP::StringSink(output),
                                                         CryptoPP::BlockPaddingSchemeDef::PKCS_PADDING));
             } catch (CryptoPP::Exception & e) {
-                LOG_ERROR << "aes_cfbdecode failed,e:" << e.what();
+                LOG_ERROR << "aes_cbcdecode failed,e:" << e.what();
             }
         }
 

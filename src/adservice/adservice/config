@@ -54,6 +54,7 @@ $ngx_addon_dir/service/protocol/tencent_gdt/gdt.pb.cpp
 $ngx_addon_dir/service/protocol/youku/youku_bidding_handlerv2.cpp
 $ngx_addon_dir/service/protocol/youku/youku_price.cpp
 $ngx_addon_dir/service/protocol/inmobi/inmobi_bidding_handler.cpp
+$ngx_addon_dir/service/protocol/liebao/liebao_bidding_handler.cpp
 $ngx_addon_dir/service/protocol/debug/debug.pb.cpp
 $ngx_addon_dir/service/utility/cypher.cpp
 $ngx_addon_dir/service/utility/escape.cpp
