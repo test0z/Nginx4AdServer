@@ -176,6 +176,15 @@ namespace corelogic {
         }
         clickUrl.add(URL_IMP_OF, OF_DSP);
         clickUrl.add(URL_ADX_MACRO, adxMacro);
+        cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
+        cppcms::json::array & mtls = mtlsArray.array();
+        char landingPageBuffer[1024];
+        std::string landingUrl
+            = banner.bannerType == BANNER_TYPE_PRIMITIVE ? mtls[0].get("p9", "") : mtls[0].get("p1", "");
+        url_replace(landingUrl, "{{click}}", "");
+        std::string encodedLandingUrl;
+        urlEncode_f(landingUrl, encodedLandingUrl, landingPageBuffer);
+        clickUrl.add(URL_LANDING_URL, encodedLandingUrl);
         mtAdInfo["clickurl"] = clickUrl.cipherUrl();
         std::string jsonResult = utility::json::toJson(mtAdInfo);
         int len = snprintf(buffer, bufferSize - 1, templateFmt, jsonResult.c_str());

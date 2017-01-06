@@ -465,44 +465,56 @@ namespace utility {
             uchar_t buf[2048];
             uchar_t * p = &buf[0];
             int bufRemain = sizeof(buf);
+            uint64_t vc = 0xFFFFFFFF;
             // std::cout << "in urlParamSerialize" << std::endl;
             for (auto iter : paramBindingTable) {
                 auto fIter = paramMap.find(iter.first);
                 if (fIter != paramMap.end()) {
                     const std::string & str = fIter->second;
-                    encodeUrlParam(iter.second, str, p, bufRemain);
+                    encodeUrlParam(iter.second, str, p, bufRemain, vc);
                     // std::cout << "binding key:" << iter.first << ",value.length:" << str.length()
                     //          << ",p:" << int(p - buf) << std::endl;
                 } else {
-                    encodeUrlParam(iter.second, "", p, bufRemain);
+                    encodeUrlParam(iter.second, "", p, bufRemain, vc);
                     // std::cout << "binding key:" << iter.first << ",value.length:" << 0 << ",p:" << int(p - buf)
                     //          << std::endl;
                 }
             }
+            std::stringstream ss;
+            ss << std::hex << vc;
+            macroParamMap[URLHelper::MACRO_HOLDER] = ss.str();
             return std::string((const char *)buf, (const char *)p);
         }
 
-        void URLHelper::urlParamDeserialize(const std::string & input, ParamMap & paramMap)
+        uint64_t URLHelper::urlParamDeserialize(const std::string & input, ParamMap & paramMap)
         {
             const uchar_t * p = (const uchar_t *)input.c_str();
             const uchar_t * end = (const uchar_t *)input.c_str() + input.length();
+            uint64_t vc = 0XFFFFFFFF;
             // std::cout << "in urlParamDeserialize:" << std::endl;
             for (auto iter : paramBindingTable) {
+                if (p == end) { // reach end but met with lately added field
+                    continue;
+                }
                 // std::cout << "binding key:" << iter.first << ",binding type:";
                 if (iter.second == PARAM_INT) {
                     int64_t num = decodeUrlParamNum(p, end);
+                    vc ^= (uint64_t)num;
                     // std::cout << "int,decodedValue:" << num << std::endl;
                     if (num != 0) {
                         paramMap.insert({ iter.first, std::to_string(num) });
                     }
                 } else if (iter.second == PARAM_STRING) {
                     std::string v = decodeUrlParamStr(p, end);
+                    uint64_t len = v.length();
+                    vc ^= len;
                     // std::cout << "string,decodedValue:" << v << std::endl;
                     if (!v.empty()) {
                         paramMap.insert({ iter.first, v });
                     }
                 }
             }
+            return vc;
         }
 
         std::string URLHelper::cipherParam()
@@ -613,7 +625,7 @@ namespace utility {
                 const char * pathBegin = cUrl + pos;
                 if ((pos = url.find("?", pos)) != std::string::npos) {
                     path = std::string(pathBegin, cUrl + pos);
-                    processParamData(std::string(cUrl + pos + 1, cUrl + url.length()), encoded);
+                    processParamDataWithRetry(std::string(cUrl + pos + 1, cUrl + url.length()), encoded);
                     return;
                 } else {
                     path = std::string(pathBegin, cUrl + url.length());
@@ -643,10 +655,29 @@ namespace utility {
             if (*this->path.begin() != '/') {
                 this->path = std::string("/") + this->path;
             }
-            processParamData(data, encoded);
+            processParamDataWithRetry(data, encoded);
         }
 
-        void URLHelper::processParamData(const std::string & data, bool encoded)
+        void URLHelper::processParamDataWithRetry(const std::string & data, bool encoded)
+        {
+            if (!processParamData(data, encoded)) {
+                try {
+                    std::string escapeData = data;
+                    if (escapeData.rfind("-7c") != std::string::npos) {
+                        url_replace_all(escapeData, "-", "%");
+                    }
+                    char presetBuf[2048];
+                    char * buf = &presetBuf[0];
+                    std::string safeData;
+                    urlDecode_f(escapeData, safeData, buf);
+                    processParamData(safeData, encoded);
+                } catch (std::exception & e) {
+                    LOG_ERROR << "processParamDataWithRetry,retry failed,input:" << data;
+                }
+            }
+        }
+
+        bool URLHelper::processParamData(const std::string & data, bool encoded)
         {
             try {
                 if (encoded) { // data是编码数据，解码
@@ -658,30 +689,38 @@ namespace utility {
                     boost::split(tmp, safeData, boost::is_any_of("|"));
                     if (tmp.size() > 0) {
                         std::string mainPart = tmp[0];
-                        /*std::string::size_type pos;
-                        if ((pos = mainPart.rfind("&", mainPart.length() - 1)) != std::string::npos) {
-                            mainPart = std::string(mainPart.begin() + pos + 1, mainPart.end());
-                        }*/
                         ParamMap cipherQueryMap;
                         getParamv2(cipherQueryMap, mainPart);
                         mainPart = cipherQueryMap[ENCODE_HOLDER];
                         std::string base64param;
                         if (!cypher::base64decode(mainPart, base64param)) {
-                            return;
+                            return false;
                         }
-                        urlParamDeserialize(base64param, this->paramMap);
+                        uint64_t vc = urlParamDeserialize(base64param, this->paramMap);
                         for (uint i = 1; i < tmp.size() - 1; i += 2) {
                             paramMap.insert(std::make_pair(tmp[i], tmp[i + 1]));
+                        }
+                        std::string inputVc = paramMap.find(URLHelper::MACRO_HOLDER) != paramMap.end()
+                                                  ? paramMap[URLHelper::MACRO_HOLDER]
+                                                  : "";
+                        std::stringstream ss;
+                        ss << std::hex << vc;
+                        std::string outputVc = ss.str();
+                        if (!inputVc.empty() && inputVc != outputVc) {
+                            LOG_ERROR << "verification code check error,inputVc:" << inputVc << ",got:" << outputVc;
+                            this->paramMap.clear();
                         }
                     }
                 } else {
                     getParamv2(this->paramMap, data);
                 }
                 // output paramMap
+                return true;
             } catch (std::exception & e) {
                 this->paramMap.clear();
                 LOG_ERROR << "URLHelper::processParamData,exception:" << e.what() << ",data:" << data;
             }
+            return false;
         }
 
         void URLHelper::add(const std::string & paramName, const std::string & paramValue)

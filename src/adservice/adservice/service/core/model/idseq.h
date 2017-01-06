@@ -26,7 +26,7 @@ namespace core {
 
             void setId(int16_t id)
             {
-                id_ = id;
+                id_ = id > 0 ? id : -id;
             }
 
             void setTime(int64_t t)

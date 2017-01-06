@@ -413,7 +413,8 @@ namespace utility {
             static URLHelper fromUrl(const std::string & url);
 
         private:
-            void processParamData(const std::string & data, bool encoded);
+            void processParamDataWithRetry(const std::string & data, bool encoded);
+            bool processParamData(const std::string & data, bool encoded);
 
         private:
             static void numberEncode(int64_t number, uchar_t *& buf, int & bufRemainSize);
@@ -426,16 +427,18 @@ namespace utility {
 
             std::string urlParamSerialize(ParamMap & paramMap);
 
-            void urlParamDeserialize(const std::string & input, ParamMap & paramMap);
+            uint64_t urlParamDeserialize(const std::string & input, ParamMap & paramMap);
 
             static inline void encodeUrlParam(URLHelper::PARAM_TYPE & paramType, const std::string & value,
-                                              uchar_t *& p, int & bufRemainSize)
+                                              uchar_t *& p, int & bufRemainSize, uint64_t & vc)
             {
                 if (paramType == URLHelper::PARAM_STRING) {
                     URLHelper::writeStringToBuf(value.c_str(), p, value.length(), bufRemainSize);
+                    vc ^= value.length();
                 } else if (paramType == URLHelper::PARAM_INT) {
                     int64_t num = value.empty() ? 0 : URLParamMap::stringToInt(value);
                     URLHelper::writeIntToBuf(num, p, bufRemainSize);
+                    vc ^= (uint64_t)num;
                 }
             }
 
