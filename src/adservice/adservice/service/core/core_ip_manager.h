@@ -60,6 +60,7 @@ namespace server {
         IpManager(const IpManager &) = delete;
         int getAreaByIp(const char * ip);
         std::string getAreaCodeStrByIp(const char * ip);
+        std::string getAreaNameByIp(const char * ip);
         void getAreaCodeByIp(const char * ip, int & country, int & province, int & city);
     };
 }

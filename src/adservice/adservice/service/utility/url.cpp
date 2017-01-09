@@ -466,18 +466,13 @@ namespace utility {
             uchar_t * p = &buf[0];
             int bufRemain = sizeof(buf);
             uint64_t vc = 0xFFFFFFFF;
-            // std::cout << "in urlParamSerialize" << std::endl;
             for (auto iter : paramBindingTable) {
                 auto fIter = paramMap.find(iter.first);
                 if (fIter != paramMap.end()) {
                     const std::string & str = fIter->second;
                     encodeUrlParam(iter.second, str, p, bufRemain, vc);
-                    // std::cout << "binding key:" << iter.first << ",value.length:" << str.length()
-                    //          << ",p:" << int(p - buf) << std::endl;
                 } else {
                     encodeUrlParam(iter.second, "", p, bufRemain, vc);
-                    // std::cout << "binding key:" << iter.first << ",value.length:" << 0 << ",p:" << int(p - buf)
-                    //          << std::endl;
                 }
             }
             std::stringstream ss;
@@ -491,16 +486,13 @@ namespace utility {
             const uchar_t * p = (const uchar_t *)input.c_str();
             const uchar_t * end = (const uchar_t *)input.c_str() + input.length();
             uint64_t vc = 0XFFFFFFFF;
-            // std::cout << "in urlParamDeserialize:" << std::endl;
             for (auto iter : paramBindingTable) {
                 if (p == end) { // reach end but met with lately added field
                     continue;
                 }
-                // std::cout << "binding key:" << iter.first << ",binding type:";
                 if (iter.second == PARAM_INT) {
                     int64_t num = decodeUrlParamNum(p, end);
                     vc ^= (uint64_t)num;
-                    // std::cout << "int,decodedValue:" << num << std::endl;
                     if (num != 0) {
                         paramMap.insert({ iter.first, std::to_string(num) });
                     }
@@ -508,7 +500,6 @@ namespace utility {
                     std::string v = decodeUrlParamStr(p, end);
                     uint64_t len = v.length();
                     vc ^= len;
-                    // std::cout << "string,decodedValue:" << v << std::endl;
                     if (!v.empty()) {
                         paramMap.insert({ iter.first, v });
                     }
@@ -661,9 +652,10 @@ namespace utility {
         void URLHelper::processParamDataWithRetry(const std::string & data, bool encoded)
         {
             if (!processParamData(data, encoded)) {
-                try {
+                try { //失败了一次，进行重试
                     std::string escapeData = data;
-                    if (escapeData.rfind("-7c") != std::string::npos) {
+                    if (escapeData.rfind("-7c")
+                        != std::string::npos) { //部分媒体会将url的％换成-导致无法decode,因此换回来再试一次
                         url_replace_all(escapeData, "-", "%");
                     }
                     char presetBuf[2048];
@@ -685,6 +677,12 @@ namespace utility {
                     char * buf = &presetBuf[0];
                     std::string safeData;
                     urlDecode_f(data, safeData, buf);
+                    if (safeData.rfind("%7c")
+                        != std::string::npos) { //部分媒体会将url做多次encode,因此若仍然包含％7c继续decode
+                        std::string safeData2;
+                        urlDecode_f(safeData, safeData2, buf);
+                        safeData = safeData2;
+                    }
                     std::vector<std::string> tmp;
                     boost::split(tmp, safeData, boost::is_any_of("|"));
                     if (tmp.size() > 0) {
@@ -706,7 +704,7 @@ namespace utility {
                         std::stringstream ss;
                         ss << std::hex << vc;
                         std::string outputVc = ss.str();
-                        if (!inputVc.empty() && inputVc != outputVc) {
+                        if (!inputVc.empty() && inputVc != outputVc) { //检查校验码
                             LOG_ERROR << "verification code check error,inputVc:" << inputVc << ",got:" << outputVc;
                             this->paramMap.clear();
                         }
@@ -714,7 +712,6 @@ namespace utility {
                 } else {
                     getParamv2(this->paramMap, data);
                 }
-                // output paramMap
                 return true;
             } catch (std::exception & e) {
                 this->paramMap.clear();
