@@ -340,7 +340,11 @@ namespace corelogic {
             ParamMap::iterator iter;
             if ((iter = paramMap.find(URLHelper::ENCODE_HOLDER)) != paramMap.end()) {
                 URLHelper urlParam("", "", "", "", data, true);
-                paramMap = urlParam.getParamMap();
+                auto & newParamMap = urlParam.getParamMap();
+                if (newParamMap.find(URL_EXCHANGE_PRICE) == newParamMap.end() && log.logType == protocol::log::SHOW) {
+                    newParamMap[URL_EXCHANGE_PRICE] = paramMap[URL_EXCHANGE_PRICE];
+                }
+                paramMap = newParamMap;
             }
             filterParamMapSafe(paramMap);
             parseObjectToLogItem(paramMap, log, data.c_str());
@@ -371,6 +375,9 @@ namespace corelogic {
             if (logPusher.use_count() > 0) {
                 logPusher->push(logString);
             }
+        }
+        if (log.logType == protocol::log::SHOW && (log.adInfo.adxid == 4 || log.adInfo.adxid > 99)) { //脏数据来源检测
+            LOG_ERROR << "captured suspicious input:" << data;
         }
     }
 

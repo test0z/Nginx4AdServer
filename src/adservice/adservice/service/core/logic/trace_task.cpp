@@ -60,6 +60,7 @@ namespace corelogic {
 
         void fillLog(protocol::log::LogItem & log,
                      ParamMap & paramMap,
+                     const core::model::SourceRecord & sourceRecord,
                      const std::string & version,
                      const std::string & device,
                      const std::string & sourceId)
@@ -77,6 +78,19 @@ namespace corelogic {
             log.traceInfo.tag8 = paramMap[URL_PRODUCT_URL];
             log.traceInfo.tag9 = paramMap[URL_TAG9];
             log.traceInfo.tag10 = paramMap[URL_TAG10];
+            try {
+                log.adInfo.adxpid = sourceRecord.adxPid();
+                log.adInfo.pid = sourceRecord.pid();
+                log.adInfo.areaId = sourceRecord.geoId();
+                log.adInfo.bannerId = sourceRecord.createId().empty() ? 0 : stol(sourceRecord.createId());
+                log.adInfo.sid = sourceRecord.sid().empty() ? 0 : stoi(sourceRecord.sid());
+                log.adInfo.bidPrice = sourceRecord.bidPrice().empty() ? 0 : stoi(sourceRecord.bidPrice());
+                log.adInfo.adxid = sourceRecord.adxId().empty() ? 0 : stoi(sourceRecord.adxId());
+                log.adInfo.ppid = sourceRecord.ppId().empty() ? 0 : stoi(sourceRecord.ppId());
+                log.adInfo.orderId = sourceRecord.oId().empty() ? 0 : stoi(sourceRecord.oId());
+                log.adInfo.priceType = sourceRecord.priceType().empty() ? 0 : stoi(sourceRecord.priceType());
+            } catch (std::exception & e) {
+            }
         }
 
         std::string aliLog(const protocol::log::LogItem & log,
@@ -217,7 +231,7 @@ namespace corelogic {
                                       protocol::log::LogItem & log,
                                       adservice::utility::HttpResponse & resp)
     {
-        needLog = false;
+        // needLog = false;
         std::string userId = log.userId, ownerId = paramMap[URL_ADOWNER_ID],
                     requestTypeStr = paramMap[URL_REQUEST_TYPE], version = paramMap[URL_VERSION],
                     device = paramMap[URL_DEVICE_TYPE];
@@ -254,7 +268,7 @@ namespace corelogic {
         }
 
         // 记录TraceInfo日志
-        fillLog(log, paramMap, version, device, sourceId);
+        fillLog(log, paramMap, sourceRecord, version, device, sourceId);
 
         std::string aliLogUrl = aliLog(log, sourceRecord, ownerId, sourceId, requestTypeStr);
 

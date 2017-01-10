@@ -122,13 +122,18 @@ namespace bidding {
                                        md5_encode(queryCondition.imei),
                                        md5_encode(queryCondition.androidId),
                                        md5_encode(queryCondition.mac));
-                queryCookieMapping(cmInfo.queryKV, queryCondition);
             } else { // pc
                 queryCondition.pcOS = getOSTypeFromUA(device.ua());
                 queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
                 queryCondition.mac = device.has_mac() ? device.mac() : "";
+                cookieMappingKeyPC(
+                    ADX_SOHU_PC, bidRequest.has_user() && bidRequest.user().has_suid() ? bidRequest.user().suid() : "");
             }
+        } else {
+            cookieMappingKeyPC(ADX_SOHU_PC,
+                               bidRequest.has_user() && bidRequest.user().has_suid() ? bidRequest.user().suid() : "");
         }
+        queryCookieMapping(cmInfo.queryKV, queryCondition);
         if (adzInfo.has_banner()) {
             const Request_Impression_Banner & banner = adzInfo.banner();
             queryCondition.width = banner.width();
@@ -209,7 +214,7 @@ namespace bidding {
         }
         adResult->set_displaypara(showUrlParam.cipherParam());
         adResult->set_clickpara(clickUrlParam.cipherParam());
-        redoCookieMapping(queryCondition.adxid, "");
+        redoCookieMapping(queryCondition.adxid, "http://t.go.sohu.com/cm.gif?ver=1&mid=10123");
     }
 
     void SohuBiddingHandler::match(adservice::utility::HttpResponse & response)

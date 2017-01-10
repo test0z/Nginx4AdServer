@@ -71,14 +71,16 @@ void printLogPhase(std::stringstream & ss, LogPhaseType & type)
 {
     switch (type) {
     case LogPhaseType::CLICK:
-        ss << "click" << endl;
+        ss << "phase:click" << endl;
         break;
     case LogPhaseType::BID:
-        ss << "bid" << endl;
+        ss << "phase:bid" << endl;
         break;
     case LogPhaseType::SHOW:
-        ss << "show" << endl;
+        ss << "phase:show" << endl;
         break;
+    case LogPhaseType::TRACK:
+        ss << "phase:trace" << endl;
     default:
         break;
     }
@@ -143,10 +145,28 @@ void printLogUserId(std::stringstream & ss, const std::string & userId)
 
 void printDeviceInfo(std::stringstream & ss, const protocol::log::DeviceInfo & devInfo)
 {
+    ss << "devinceInfo:" << endl;
     ss << "deviceId:" << devInfo.deviceID << endl;
     ss << "deviceType:" << devTypeString(devInfo.deviceType) << endl;
     ss << "flowType:" << devInfo.flowType << endl;
     ss << "deviceNetwork:" << networkString(devInfo.netWork) << endl;
+}
+
+void printTraceInfo(std::stringstream & ss, const protocol::log::TraceInfo & traceInfo)
+{
+    ss << "traceInfo:" << endl;
+    ss << "trace.sourceid:" << traceInfo.sourceid << endl;
+    ss << "trace.deviceType:" << traceInfo.deviceType << endl;
+    ss << "trace.tag1:" << traceInfo.tag1 << endl;
+    ss << "trace.tag2:" << traceInfo.tag2 << endl;
+    ss << "trace.tag3:" << traceInfo.tag3 << endl;
+    ss << "trace.tag4:" << traceInfo.tag4 << endl;
+    ss << "trace.tag5:" << traceInfo.tag5 << endl;
+    ss << "trace.tag6:" << traceInfo.tag6 << endl;
+    ss << "trace.tag7" << traceInfo.tag7 << endl;
+    ss << "trace.tag8" << traceInfo.tag8 << endl;
+    ss << "trace.tag9" << traceInfo.tag9 << endl;
+    ss << "trace.tag10" << traceInfo.tag10 << endl;
 }
 
 std::string getLogItemString(protocol::log::LogItem & log)
@@ -173,6 +193,9 @@ std::string getLogItemString(protocol::log::LogItem & log)
     printLogUserInfo(ss, log.userInfo);
     printLogIpInfo(ss, log.ipInfo);
     printDeviceInfo(ss, log.device);
+    if (log.logType == protocol::log::LogPhaseType::TRACK) {
+        printTraceInfo(ss, log.traceInfo);
+    }
     ss << "dealIds:";
     for (auto dealId : log.dealIds) {
         ss << dealId << ",";

@@ -21,6 +21,9 @@ namespace corelogic {
             case ADX_YOUKU:
             case ADX_YOUKU_MOBILE:
                 return "mzid";
+            case ADX_SOHU_PC:
+            case ADX_SOHU_MOBILE:
+                return "suid";
             }
             return "";
         }

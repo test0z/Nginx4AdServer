@@ -5,6 +5,7 @@
 #include "click_query_task.h"
 
 #include "core/config_types.h"
+#include "core/core_ip_manager.h"
 #include "core/model/source_id.h"
 #include "logging.h"
 #include "utility/url.h"
@@ -207,6 +208,12 @@ namespace corelogic {
             }
         } else {
             resp.status(400, "Error,empty landing url");
+        }
+        std::string clickIpArea = adservice::server::IpManager::getInstance().getAreaCodeStrByIp(userIp.c_str());
+        std::string paramArea = paramMap[URL_AREA_ID];
+        if (!paramArea.empty() && clickIpArea != paramArea) {
+            LOG_ERROR << "click ip area not equal to url param area,sid:" << log.adInfo.sid << ",clickip:" << userIp
+                      << ",clickArea:" << clickIpArea << ",paramArea:" << paramArea;
         }
     }
 

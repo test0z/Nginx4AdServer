@@ -20,14 +20,15 @@ FIND_LIBRARY(LIB_AEROSPIKE NAMES "libaerospike.a" aerospike)
 FIND_LIBRARY(LIB_EV NAMES "libev.a" ev)
 FIND_LIBRARY(LIB_MTTY mtty)
 FIND_LIBRARY(LIB_TBB tbb)
+FIND_LIBRARY(LIB_CPPCMS NAMES "libcppcms.a" cppcms)
 
-#ADD_EXECUTABLE(cookiemapping_test ./cookiemapping_test.cpp
-#    ../service/core/core_cm_manager.cpp
-#    ../service/core/model/user.cpp
-#    ../service/utility/mttytime.cpp
-#    ../service/utility/cypher.cpp
-#    ../service/utility/url.cpp
-#    ../service/utility/random.cpp)
+ADD_EXECUTABLE(cookiemapping_test ./cookiemapping_test.cpp
+    ../service/core/core_cm_manager.cpp
+    ../service/core/model/user.cpp
+    ../service/utility/mttytime.cpp
+    ../service/utility/cypher.cpp
+    ../service/utility/url.cpp
+    ../service/utility/random.cpp)
 
 ADD_EXECUTABLE(url_test ./urlhelper_test.cpp
     ../service/utility/cypher.cpp
@@ -43,6 +44,9 @@ ADD_EXECUTABLE(price_test ./price_test.cpp
 
 ADD_EXECUTABLE(ip_test ./ip_test.cpp
     ../service/core/core_ip_manager.cpp)
+
+ADD_EXECUTABLE(json_test ./json_test.cpp
+    ../service/utility/json.cpp)
 
 SET(LINK_LIBRARY rt
     dl
@@ -63,7 +67,8 @@ SET(LINK_LIBRARY rt
     ${LIB_EV}
     ${LIB_BOOSTER})
 
-#TARGET_LINK_LIBRARIES(cookiemapping_test ${LINK_LIBRARY})
+TARGET_LINK_LIBRARIES(cookiemapping_test ${LINK_LIBRARY})
 TARGET_LINK_LIBRARIES(url_test ${LINK_LIBRARY})
 TARGET_LINK_LIBRARIES(price_test ${LINK_LIBRARY})
 TARGET_LINK_LIBRARIES(ip_test ${LINK_LIBRARY} ${LIB_TBB})
+TARGET_LINK_LIBRARIES(json_test ${LINK_LIBRARY} ${LIB_CPPCMS})

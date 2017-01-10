@@ -15,7 +15,7 @@ int main(int argc,char** argv){
     IpManager::init();
     IpManager& ipManager = IpManager::getInstance();
     if(argc>=2){
-        std::cout<<argv[1]<<":"<<ipManager.getAreaNameByIp(argv[1])<<std::endl;
+        std::cout<<argv[1]<<":"<<ipManager.getAreaByIp(argv[1])<<std::endl;
     }
     return 0;
 }

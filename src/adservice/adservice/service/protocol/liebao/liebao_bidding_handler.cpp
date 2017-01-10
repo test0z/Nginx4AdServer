@@ -63,7 +63,14 @@ namespace bidding {
         if (!bidRequest.find("test").is_undefined() && bidRequest.get("test", 0) == 1) {
             return false;
         }
-        const cppcms::json::array & impArray = bidRequest.find("imp").array();
+        const cppcms::json::value & imp = bidRequest.find("imp");
+        if (imp.is_undefined()) {
+            return false;
+        }
+        const cppcms::json::array & impArray = imp.array();
+        if (impArray.empty()) {
+            return false;
+        }
         std::vector<AdSelectCondition> queryConditions(impArray.size());
         std::vector<PreSetAdplaceInfo> adplaceInfos(impArray.size());
         for (uint32_t i = 0; i < impArray.size(); i++) {
@@ -79,8 +86,7 @@ namespace bidding {
                 queryCondition.idfa = queryCondition.androidId = device.get("dpidmd5", "");
                 queryCondition.imei = device.get("imei", "");
                 queryCondition.mobileNetwork = getNetwork(device.get("connnectiontype", 0));
-                IpManager & ipManager = IpManager::getInstance();
-                queryCondition.ip = ipManager.getAreaByIp(device.get("ip", "").c_str());
+                queryCondition.ip = device.get("ip", "");
             }
             PreSetAdplaceInfo & adplaceInfo = adplaceInfos[i];
             adplaceInfo.flowType = SOLUTION_FLOWTYPE_MOBILE;
@@ -89,7 +95,7 @@ namespace bidding {
             if (!native.is_undefined()) {
                 std::string request = native.get("request", "{\"native\":{\"assets\":[]}}");
                 cppcms::json::value nativeReq;
-                json::parseJson(request.c_str(), nativeReq);
+                parseJson(request.c_str(), nativeReq);
                 const cppcms::json::array & assetArray = nativeReq.find("native.assets").array();
                 const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
                 for (size_t j = 0; j < assetArray.size(); j++) {

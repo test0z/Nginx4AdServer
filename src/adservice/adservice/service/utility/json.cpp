@@ -27,11 +27,14 @@ namespace utility {
 
         bool parseJson(const char * json, cppcms::json::value & doc)
         {
-            std::stringstream ss;
-            ss << json;
-            ss >> doc;
-
-            return ss;
+            try {
+                std::stringstream ss;
+                ss << json;
+                ss >> doc;
+                return !doc.is_undefined();
+            } catch (std::exception & e) {
+                return false;
+            }
         }
 
         bool parseJsonFile(const char * filePath, cppcms::json::value & doc)
@@ -44,7 +47,7 @@ namespace utility {
 
             fs >> doc;
 
-            return fs;
+            return true;
         }
 
         std::string toJson(const cppcms::json::value & doc)

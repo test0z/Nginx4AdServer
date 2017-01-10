@@ -211,18 +211,25 @@ void testMd5(){
     std::cout<<"md5 of CC7D4D04-C75A-41CC-8705-8C5880BD89C6:"<<output<<std::endl;
 }
 
+void testAsKey(){
+	std::string userId="absa";
+	std::string ownerId="109";
+	MT::common::ASKey indexKey("test", "source_id_index",(userId + ownerId).c_str());
+}
+
 int main(int argc, char ** argv)
 {
     std::vector<MT::common::ASConnection> connections{ MT::common::ASConnection("192.168.2.31", 3000) };
     aerospikeClient.setConnection(connections);
-    aerospikeClient.connect();
+    //aerospikeClient.connect();
     globalConfig.aerospikeConfig.connections = connections;
     globalConfig.aerospikeConfig.nameSpace = "test";
     // testGetAndSetCookieMapping();
-    testQueryWhere();
-    testUpdateAsyncPressure();
-    testIdSeq();
-    testAerospikeBatch();
-    testMd5();
+    //testQueryWhere();
+    //testUpdateAsyncPressure();
+    //testIdSeq();
+    //testAerospikeBatch();
+    //testMd5();
+    testAsKey();
     return 0;
 }

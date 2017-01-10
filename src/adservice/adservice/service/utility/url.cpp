@@ -651,6 +651,10 @@ namespace utility {
 
         void URLHelper::processParamDataWithRetry(const std::string & data, bool encoded)
         {
+            if (data.length() >= 2048) { //超长url
+                LOG_ERROR << "url data too long,input:" << data;
+                return;
+            }
             if (!processParamData(data, encoded)) {
                 try { //失败了一次，进行重试
                     std::string escapeData = data;
@@ -704,7 +708,7 @@ namespace utility {
                         std::stringstream ss;
                         ss << std::hex << vc;
                         std::string outputVc = ss.str();
-                        if (!inputVc.empty() && inputVc != outputVc) { //检查校验码
+                        if (inputVc != outputVc) { //检查校验码
                             LOG_ERROR << "verification code check error,inputVc:" << inputVc << ",got:" << outputVc;
                             this->paramMap.clear();
                         }
