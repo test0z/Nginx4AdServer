@@ -122,7 +122,7 @@ namespace core {
          * @brief MtUserMapping::record
          * @param record
          */
-        void MtUserMapping::record(const as_record * record) override
+        void MtUserMapping::record(const as_record * record)
         {
             static std::vector<int64_t> adxIds{ ADX_TANX,         ADX_TANX_MOBILE,     ADX_BAIDU,
                                                 ADX_GUANGYIN,     ADX_GUANGYIN_MOBILE, ADX_SOHU_PC,
@@ -142,7 +142,7 @@ namespace core {
             }
         }
 
-        as_record * MtUserMapping::record() override
+        as_record * MtUserMapping::record()
         {
             int size = adxUids.size() + deviceIds.size() + 1;
             if (record_ == nullptr) {
