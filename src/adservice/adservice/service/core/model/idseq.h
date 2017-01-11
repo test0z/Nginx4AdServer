@@ -9,36 +9,18 @@ namespace core {
 
         class UserIDEntity : public MT::common::ASEntity {
         public:
-            explicit UserIDEntity(int64_t t)
-                : time_(t)
-            {
-            }
+            explicit UserIDEntity(int64_t t);
 
-            int16_t id() const
-            {
-                return id_;
-            }
+            int16_t id() const;
 
-            int64_t time() const
-            {
-                return time_;
-            }
+            int64_t time() const;
 
-            void setId(int16_t id)
-            {
-                id_ = id > 0 ? id : -id;
-            }
+            void setId(int16_t id);
 
-            void setTime(int64_t t)
-            {
-                time_ = t;
-            }
+            void setTime(int64_t t);
 
         protected:
-            virtual void record(const as_record * record) override
-            {
-                id_ = as_record_get_int64(record, "id", 0);
-            }
+            virtual void record(const as_record * record) override;
 
         private:
             int16_t id_{ 0 };

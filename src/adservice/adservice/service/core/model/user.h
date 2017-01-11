@@ -53,8 +53,8 @@ namespace core {
             std::string cypherUid();
 
         protected:
-            void record(const as_record * record);
-            as_record * record();
+            virtual void record(const as_record * record) override;
+            virtual as_record * record() override;
 
         public:
             struct spinlock slock;
