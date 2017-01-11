@@ -30,6 +30,7 @@ namespace utility {
             add(std::make_pair(656, 324), std::make_pair(2, 10));
             add(std::make_pair(228, 162), std::make_pair(1, 3));
             add(std::make_pair(750, 350), std::make_pair(2, 11));
+            add(std::make_pair(900, 450), std::make_pair(2, 12));
         }
         void add(const std::pair<int, int> & k, const std::pair<int, int> & v)
         {

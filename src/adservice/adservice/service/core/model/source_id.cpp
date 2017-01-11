@@ -32,7 +32,7 @@ namespace core {
 
         SourceRecord::SourceRecord(utility::url::ParamMap & paramMap, protocol::log::LogItem & log)
         {
-            record_ = as_record_new(15);
+            record_ = as_record_new(16);
 
             as_record_set_int64(record_, "latest_time", log.timeStamp);
             as_record_set_str(record_, "adv_id", paramMap[URL_ADOWNER_ID].c_str());
@@ -49,6 +49,7 @@ namespace core {
             as_record_set_str(record_, "ppid", paramMap[URL_PRODUCTPACKAGE_ID].c_str());
             as_record_set_str(record_, "oid", paramMap[URL_ORDER_ID].c_str());
             as_record_set_str(record_, "pricetype", paramMap[URL_PRICE_TYPE].c_str());
+            as_record_set_str(record_, "mid", paramMap[URL_SITE_ID].c_str());
         }
 
         void SourceRecord::record(const as_record * record)
@@ -68,6 +69,7 @@ namespace core {
             ppId_ = getStr(record, "ppid");
             oId_ = getStr(record, "oid");
             priceType_ = getStr(record, "pricetype");
+            mId_ = getStr(record, "mid");
         }
 
         int64_t SourceRecord::time() const
@@ -129,6 +131,11 @@ namespace core {
         const std::string & SourceRecord::priceType() const
         {
             return priceType_;
+        }
+
+        const std::string & SourceRecord::mId() const
+        {
+            return mId_;
         }
 
     } // namespace model

@@ -5,6 +5,7 @@
 #include <mtty/aerospike.h>
 #include <mtty/constants.h>
 #include <mtty/mtuser.h>
+#include <mtty/entities.h>
 #include <iostream>
 #include <sstream>
 #include <sys/unistd.h>
@@ -211,17 +212,40 @@ void testMd5(){
     std::cout<<"md5 of CC7D4D04-C75A-41CC-8705-8C5880BD89C6:"<<output<<std::endl;
 }
 
-void testAsKey(){
-	std::string userId="absa";
-	std::string ownerId="109";
-	MT::common::ASKey indexKey("test", "source_id_index",(userId + ownerId).c_str());
+void testMapPut(){
+    try{
+        MT::common::ASKey asKey(globalConfig.aerospikeConfig.nameSpace,"users-favorits","201701110832000000000");
+        MT::common::ASMapOperation mapOp;
+        std::map<int64_t,int64_t> testMap{{109,1484094624},{8,1484090000}};
+        mapOp.addMapPut("vadvids",testMap);
+        aerospikeClient.operate(asKey,mapOp);
+    }catch(MT::common::AerospikeExcption& e){
+        std::cout<<"as exception:"<<e.what()<<std::endl;
+    }
 }
+
+void testMapRead(){
+    try {
+        int64_t currentTime = MT::common::now() / 1000;
+        MT::common::ASKey userFavouriteKey(globalConfig.aerospikeConfig.nameSpace,"users-favorits","201701110832000000000");
+        MT::common::UserAdvFavoriteMap userAdvMap;
+        MT::common::ASMapOperation mapOp;
+        mapOp.addMapReadByValueRange("vadvids", 0, currentTime);
+        aerospikeClient.operate(userFavouriteKey, mapOp, userAdvMap);
+        for(auto iter:userAdvMap.advs){
+            std::cout<<"key:"<<iter.first<<",value:"<<iter.second<<std::endl;
+        }
+    } catch (MT::common::AerospikeExcption & e) {
+        std::cout << "aerospike query user favourite error," << e.what() <<std::endl;
+    }
+}
+
 
 int main(int argc, char ** argv)
 {
     std::vector<MT::common::ASConnection> connections{ MT::common::ASConnection("192.168.2.31", 3000) };
     aerospikeClient.setConnection(connections);
-    //aerospikeClient.connect();
+    aerospikeClient.connect();
     globalConfig.aerospikeConfig.connections = connections;
     globalConfig.aerospikeConfig.nameSpace = "test";
     // testGetAndSetCookieMapping();
@@ -230,6 +254,5 @@ int main(int argc, char ** argv)
     //testIdSeq();
     //testAerospikeBatch();
     //testMd5();
-    testAsKey();
     return 0;
 }

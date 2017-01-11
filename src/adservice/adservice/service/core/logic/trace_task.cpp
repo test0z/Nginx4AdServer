@@ -89,6 +89,7 @@ namespace corelogic {
                 log.adInfo.ppid = sourceRecord.ppId().empty() ? 0 : stoi(sourceRecord.ppId());
                 log.adInfo.orderId = sourceRecord.oId().empty() ? 0 : stoi(sourceRecord.oId());
                 log.adInfo.priceType = sourceRecord.priceType().empty() ? 0 : stoi(sourceRecord.priceType());
+                log.adInfo.mid = sourceRecord.mId().empty() ? 0 : stoi(sourceRecord.mId());
             } catch (std::exception & e) {
             }
         }
