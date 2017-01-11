@@ -447,20 +447,27 @@ namespace corelogic {
                     adservice::core::model::UserShowCounter counter(log.bannerId, bgid, log.sid,
                                                                     (todayEnd - now).total_seconds());
                     aerospikeClient.put(dailyKey, counter);
+                } else {
+                    MT::common::ASMapOperation mapOP(3);
+                    mapOP.addMapIncr("banners", log.bannerId, 1);
+                    mapOP.addMapIncr("bannergroups", bgId, 1);
+                    mapOP.addMapIncr("solutions", log.sid, 1);
+
+                    aerospikeClient.operate(dailyKey, mapOP);
                 }
 
                 if (!aerospikeClient.exists(hourlyKey)) {
                     adservice::core::model::UserShowCounter counter(log.bannerId, bgid, log.sid, 60 * 60);
                     aerospikeClient.put(hourlyKey, counter);
+                } else {
+                    MT::common::ASMapOperation mapOP(3);
+                    mapOP.addMapIncr("banners", log.bannerId, 1);
+                    mapOP.addMapIncr("bannergroups", bgId, 1);
+                    mapOP.addMapIncr("solutions", log.sid, 1);
+
+                    aerospikeClient.operate(hourlyKey, mapOP);
                 }
 
-                MT::common::ASMapOperation mapOP(3);
-                mapOP.addMapIncr("banners", log.bannerId, 1);
-                mapOP.addMapIncr("bannergroups", bgId, 1);
-                mapOP.addMapIncr("solutions", log.sid, 1);
-
-                aerospikeClient.operate(dailyKey, mapOP);
-                aerospikeClient.operate(hourlyKey, mapOP);
             } catch (MT::common::AerospikeExcption & e) {
                 LOG_ERROR << "记录曝光频次失败，userId：" << log.userId << "，sid:" << log.adInfo.sid
                           << ",bannerID:" << log.bannerId << ",bgid:" << bgId << ",e:" << e.what()
