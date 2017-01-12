@@ -448,7 +448,7 @@ namespace corelogic {
                                                                     (todayEnd - now).total_seconds());
                     aerospikeClient.put(dailyKey, counter);
                 } else {
-                    MT::common::ASMapOperation mapOP(3);
+                    MT::common::ASMapOperation mapOP(3, -2);
                     mapOP.addMapIncr("banners", log.adInfo.bannerId, 1);
                     mapOP.addMapIncr("bannergroups", bgid, 1);
                     mapOP.addMapIncr("solutions", log.adInfo.sid, 1);
@@ -460,7 +460,7 @@ namespace corelogic {
                     adservice::core::model::UserShowCounter counter(log.adInfo.bannerId, bgid, log.adInfo.sid, 60 * 60);
                     aerospikeClient.put(hourlyKey, counter);
                 } else {
-                    MT::common::ASMapOperation mapOP(3);
+                    MT::common::ASMapOperation mapOP(3, -2);
                     mapOP.addMapIncr("banners", log.adInfo.bannerId, 1);
                     mapOP.addMapIncr("bannergroups", bgid, 1);
                     mapOP.addMapIncr("solutions", log.adInfo.sid, 1);
