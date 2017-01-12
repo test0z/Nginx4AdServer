@@ -343,6 +343,7 @@ namespace corelogic {
             condition.flowType
                 = condition.mobileDevice != SOLUTION_DEVICE_OTHER ? SOLUTION_FLOWTYPE_MOBILE : SOLUTION_FLOWTYPE_PC;
             condition.dHour = adSelectTimeCodeUtc();
+            condition.mtUserId = log.userId;
             if (condition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
                 condition.adxid = ADX_SSP_MOBILE;
             } else {

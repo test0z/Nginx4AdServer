@@ -5,6 +5,7 @@
 #include <mtty/aerospike.h>
 #include <mtty/constants.h>
 #include <mtty/mtuser.h>
+#include <mtty/usershowcounter.h>
 #include <iostream>
 #include <sstream>
 #include <sys/unistd.h>
@@ -211,17 +212,17 @@ void testMd5(){
     std::cout<<"md5 of CC7D4D04-C75A-41CC-8705-8C5880BD89C6:"<<output<<std::endl;
 }
 
-void testAsKey(){
-	std::string userId="absa";
-	std::string ownerId="109";
-	MT::common::ASKey indexKey("test", "source_id_index",(userId + ownerId).c_str());
+void testUserCount(){
+    MT::common::ASKey asKey(asNamespace, "user-freq", "2017011204172978700001d");
+    adservice::core::model::UserShowCounter dShowCounter;
+    aerospikeClient.get(asKey, dShowCounter);
 }
 
 int main(int argc, char ** argv)
 {
     std::vector<MT::common::ASConnection> connections{ MT::common::ASConnection("192.168.2.31", 3000) };
     aerospikeClient.setConnection(connections);
-    //aerospikeClient.connect();
+    aerospikeClient.connect();
     globalConfig.aerospikeConfig.connections = connections;
     globalConfig.aerospikeConfig.nameSpace = "test";
     // testGetAndSetCookieMapping();
@@ -230,6 +231,7 @@ int main(int argc, char ** argv)
     //testIdSeq();
     //testAerospikeBatch();
     //testMd5();
-    testAsKey();
+    //testAsKey();
+    testUserCount();
     return 0;
 }
