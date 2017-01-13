@@ -9,8 +9,8 @@ namespace utility {
     class AdSizeMap {
     public:
         static const AdSizeMap & getInstance();
-        const int MATERIAL_TYPE_PIC = 0;
-        const int MATERIAL_TYPE_VIDEO = 1;
+#define MATERIAL_TYPE_PIC 0
+#define MATERIAL_TYPE_VIDEO 1
 
     public:
         AdSizeMap()
