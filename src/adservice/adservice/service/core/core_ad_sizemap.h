@@ -9,8 +9,8 @@ namespace utility {
     class AdSizeMap {
     public:
         static const AdSizeMap & getInstance();
-        static const int MATERIAL_TYPE_PIC = 0;
-        static const int MATERIAL_TYPE_VIDEO = 1;
+        const int MATERIAL_TYPE_PIC = 0;
+        const int MATERIAL_TYPE_VIDEO = 1;
 
     public:
         AdSizeMap()
@@ -44,9 +44,13 @@ namespace utility {
 
         std::pair<int, int> get(const std::pair<int, int> & k, int type = MATERIAL_TYPE_PIC) const
         {
-            auto & typeSizeMap = sizemap[type];
+            auto it = sizemap.find(type);
+            if (it == sizemap.end()) {
+                return k;
+            }
+            auto & typeSizeMap = it->second;
             auto iter = typeSizeMap.find(k);
-            if (iter != sizemap.end()) {
+            if (iter != typeSizeMap.end()) {
                 return iter->second;
             } else {
                 return k;
