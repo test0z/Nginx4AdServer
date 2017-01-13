@@ -94,7 +94,7 @@ namespace bidding {
         }
         PreSetAdplaceInfo adplaceInfo;
         adplaceInfo.flowType = SOLUTION_FLOWTYPE_MOBILE;
-        const std::string & strStyles = adzinfo.get("style", "3,10,11");
+        const std::string & strStyles = adzinfo.get("style", "3,10,11,13");
         std::vector<int64_t> styles;
         MT::common::string2vecint(strStyles, styles);
         if (styles.empty()) {
