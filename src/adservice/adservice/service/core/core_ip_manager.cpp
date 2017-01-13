@@ -280,7 +280,7 @@ namespace server {
             AreaItem areaItem = acc->second;
             country = areaItem.country;
             province = areaItem.province;
-            city = areaItem.province;
+            city = areaItem.city;
         } else {
             country = 86;
             province = 0;
