@@ -32,6 +32,7 @@ namespace bidding {
             add(3, 1, 0);
             add(10, 2, 0);
             add(11, 3, 0);
+            add(13, 4, 0);
         }
         inline void add(int key, int width, int height)
         {
