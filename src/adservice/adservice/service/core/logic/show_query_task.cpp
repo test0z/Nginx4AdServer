@@ -436,9 +436,9 @@ namespace corelogic {
         if (needLog && !log.userId.empty() && bgid > 0) {
             try {
                 MT::common::ASKey dailyKey(globalConfig.aerospikeConfig.nameSpace.c_str(), "user-freq",
-                                           (log.userId + "d").c_str());
+                                           log.userId + "d");
                 MT::common::ASKey hourlyKey(globalConfig.aerospikeConfig.nameSpace.c_str(), "user-freq",
-                                            (log.userId + "h").c_str());
+                                            log.userId + "h");
 
                 if (!aerospikeClient.exists(dailyKey)) {
                     boost::posix_time::ptime now = boost::posix_time::second_clock::universal_time();
