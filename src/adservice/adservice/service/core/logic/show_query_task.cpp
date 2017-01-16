@@ -434,7 +434,7 @@ namespace corelogic {
         }
 
         // 用户曝光频次控制
-        if (needLog && !log.userId.empty() && bgid > 0) {
+        if (!log.userId.empty() && bgid > 0) {
             try {
                 MT::common::ASKey dailyKey(globalConfig.aerospikeConfig.nameSpace.c_str(), "user-freq",
                                            log.userId + "d");
