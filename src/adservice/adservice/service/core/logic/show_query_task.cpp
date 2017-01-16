@@ -5,6 +5,7 @@
 #include "show_query_task.h"
 
 #include <mtty/aerospike.h>
+#include <mtty/usershowcounter.h>
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/range/adaptor/transformed.hpp>
@@ -343,6 +344,7 @@ namespace corelogic {
             condition.flowType
                 = condition.mobileDevice != SOLUTION_DEVICE_OTHER ? SOLUTION_FLOWTYPE_MOBILE : SOLUTION_FLOWTYPE_PC;
             condition.dHour = adSelectTimeCodeUtc();
+            condition.mtUserId = log.userId;
             if (condition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
                 condition.adxid = ADX_SSP_MOBILE;
             } else {
@@ -405,7 +407,7 @@ namespace corelogic {
                     log.reqStatus = 500;
                     return;
                 }
-                bgid = banner.bgId;
+                bgid = adBanner.bgId;
                 std::string bannerJson = adBanner.json;
                 char buffer[8192];
                 int len = buildResponseForDsp(adBanner, paramMap, bannerJson, templateFmt, buffer, sizeof(buffer));
@@ -433,37 +435,44 @@ namespace corelogic {
         }
 
         // 用户曝光频次控制
-        if (!log.userId.empty() && bgId > 0) {
+        if (!log.userId.empty() && bgid > 0) {
             try {
                 MT::common::ASKey dailyKey(globalConfig.aerospikeConfig.nameSpace.c_str(), "user-freq",
-                                           (log.userId + "d").c_str());
+                                           log.userId + "d");
                 MT::common::ASKey hourlyKey(globalConfig.aerospikeConfig.nameSpace.c_str(), "user-freq",
-                                            (log.userId + "h").c_str());
+                                            log.userId + "h");
 
                 if (!aerospikeClient.exists(dailyKey)) {
                     boost::posix_time::ptime now = boost::posix_time::second_clock::universal_time();
                     boost::posix_time::ptime todayEnd(now.date(), boost::posix_time::time_duration(24, 0, 0));
 
-                    adservice::core::model::UserShowCounter counter(log.bannerId, bgid, log.sid,
+                    adservice::core::model::UserShowCounter counter(log.adInfo.bannerId, bgid, log.adInfo.sid,
                                                                     (todayEnd - now).total_seconds());
                     aerospikeClient.put(dailyKey, counter);
+                } else {
+                    MT::common::ASMapOperation mapOP(3, -2);
+                    mapOP.addMapIncr("banners", log.adInfo.bannerId, 1);
+                    mapOP.addMapIncr("bannergroups", bgid, 1);
+                    mapOP.addMapIncr("solutions", log.adInfo.sid, 1);
+
+                    aerospikeClient.operate(dailyKey, mapOP);
                 }
 
                 if (!aerospikeClient.exists(hourlyKey)) {
-                    adservice::core::model::UserShowCounter counter(log.bannerId, bgid, log.sid, 60 * 60);
+                    adservice::core::model::UserShowCounter counter(log.adInfo.bannerId, bgid, log.adInfo.sid, 60 * 60);
                     aerospikeClient.put(hourlyKey, counter);
+                } else {
+                    MT::common::ASMapOperation mapOP(3, -2);
+                    mapOP.addMapIncr("banners", log.adInfo.bannerId, 1);
+                    mapOP.addMapIncr("bannergroups", bgid, 1);
+                    mapOP.addMapIncr("solutions", log.adInfo.sid, 1);
+
+                    aerospikeClient.operate(hourlyKey, mapOP);
                 }
 
-                MT::common::ASMapOperation mapOP(3);
-                mapOP.addMapIncr("banners", log.bannerId, 1);
-                mapOP.addMapIncr("bannergroups", bgId, 1);
-                mapOP.addMapIncr("solutions", log.sid, 1);
-
-                aerospikeClient.operate(dailyKey, mapOP);
-                aerospikeClient.operate(hourlyKey, mapOP);
             } catch (MT::common::AerospikeExcption & e) {
                 LOG_ERROR << "记录曝光频次失败，userId：" << log.userId << "，sid:" << log.adInfo.sid
-                          << ",bannerID:" << log.bannerId << ",bgid:" << bgId << ",e:" << e.what()
+                          << ",bannerID:" << log.adInfo.bannerId << ",bgid:" << bgid << ",e:" << e.what()
                           << "，code:" << e.error().code << e.error().message << "，调用堆栈：" << std::endl
                           << e.trace();
             }

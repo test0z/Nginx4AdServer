@@ -148,11 +148,9 @@ namespace bidding {
         }
 
         const cppcms::json::value & adzinfo = impressions[0];
-        std::string pid = adzinfo.get<std::string>("id");
         std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
         AdSelectCondition & queryCondition = queryConditions[0];
         queryCondition.adxid = ADX_INMOBI;
-        queryCondition.adxpid = pid;
         double priceFloor = adzinfo.get<double>("bidfloor", 0.0);
         queryCondition.basePrice = (int)std::ceil(priceFloor);
         PreSetAdplaceInfo adplaceInfo;
@@ -210,6 +208,7 @@ namespace bidding {
         const cppcms::json::value & appContent = bidRequest.find("app");
         const cppcms::json::value & contentExt = siteContent.is_undefined() ? appContent : siteContent;
         if (!contentExt.is_undefined()) {
+            queryCondition.adxpid = contentExt.get("id", "");
             const cppcms::json::array & cats = contentExt.find("cat").array();
             if (!cats.empty()) {
                 TypeTableManager & typeTableManager = TypeTableManager::getInstance();

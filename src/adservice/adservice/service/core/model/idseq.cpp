@@ -29,7 +29,7 @@ namespace core {
             time_ = t;
         }
 
-        void UserIDEntity::record(const as_record * record) override
+        void UserIDEntity::record(const as_record * record)
         {
             id_ = as_record_get_int64(record, "id", 0);
         }

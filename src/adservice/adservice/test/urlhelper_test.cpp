@@ -34,18 +34,31 @@ void testUrlInterface(){
     //std::cout<<"encoded url2:"<<url2.cipherUrl()<<std::endl;
 }
 
-void urlEncodeTest(const std::string& input){
-	char buf[2048];
-	std::string output;
-        url::urlEncode_f(input, output, buf);
-	std::cout<<"result:"<<output<<std::endl;
+void encodeUrl(const std::string& uri){
+    url::URLHelper url1(uri,false);
+    std::cout<<url1.cipherUrl()<<std::endl;
+}
+
+void decodeUrl(const std::string& uri){
+    url::URLHelper url1(uri,true);
+    std::cout<<url1.toUrl()<<std::endl;
+    auto& paramMap = url1.getParamMap();
+    for(auto& iter:paramMap){
+        std::cout<<iter.first<<":"<<iter.second<<std::endl;
+    }
 }
 
 int main(int argc, char ** argv)
 {
-    //testCypherUrl();
-    if(argc==2){
-	urlEncodeTest(argv[1]);
-    }
-    return 0;
+     if(argc==3){
+         std::string op = argv[1];
+         if(op == "encode"){
+                encodeUrl(argv[2]);
+         }else{
+                decodeUrl(argv[2]);
+         }
+     }else{
+        testCypherUrl();
+     }
+     return 0;
 }
