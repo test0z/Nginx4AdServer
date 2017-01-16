@@ -204,6 +204,9 @@ namespace bidding {
                 mainTitle = mtlsArray[0]["p0"].str();
             }
             bidResponse["style"] = std::to_string(style);
+            if (style == 13) {
+                bidResponse["videoUrl"] = mtlsArray[0]["p16"].str();
+            }
         } else {
             std::string materialUrl = mtlsArray[0]["p0"].str();
             materialUrls.push_back(materialUrl);
