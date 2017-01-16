@@ -16,9 +16,9 @@
 #include "core/adselectv2/ad_select_interface.h"
 #include "core/config_types.h"
 #include "core/core_ip_manager.h"
-#include "core/model/usershowcounter.h"
 #include "logging.h"
 #include "utility/utility.h"
+#include <mtty/usershowcounter.h>
 
 extern adservice::adselectv2::AdSelectClientPtr adSelectClient;
 
