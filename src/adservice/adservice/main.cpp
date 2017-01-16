@@ -7,6 +7,9 @@
 
 #include <boost/algorithm/string.hpp>
 
+#include <mtty/constants.h>
+#include <mtty/requestcounter.h>
+
 extern "C" {
 #include <ngx_config.h>
 #include <ngx_core.h>
@@ -30,7 +33,6 @@ extern "C" {
 #include "protocol/debug/debug.pb.h"
 #include "protocol/guangyin/guangyin_bidding_handler.h"
 #include "utility/utility.h"
-#include <mtty/constants.h>
 
 struct LocationConf {
     //运行日志级别
@@ -206,6 +208,7 @@ ngx_log_t * globalLog;
 bool inDebugSession = false;
 void * debugSession = nullptr;
 MT::common::Aerospike aerospikeClient;
+MT::common::RequestCounter requestCounter;
 
 #define NGX_STR_2_STD_STR(str) std::string((const char *)str.data, (const char *)str.data + str.len)
 #define NGX_BOOL(b) (b == TRUE)

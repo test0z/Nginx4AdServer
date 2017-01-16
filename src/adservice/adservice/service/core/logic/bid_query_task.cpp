@@ -3,6 +3,7 @@
 //
 
 #include "bid_query_task.h"
+
 #include "common/atomic.h"
 #include "protocol/baidu/baidu_bidding_handler.h"
 #include "protocol/guangyin/guangyin_bidding_handler.h"
@@ -164,6 +165,8 @@ namespace corelogic {
         if (!isPost || biddingHandler == NULL) {
             log.reqStatus = 500;
             resp.status(200);
+
+            requestCounter.increaseBidFailed();
         } else {
             TaskThreadLocal * localData = threadData;
             HandleBidQueryTask * task = this;
@@ -200,8 +203,12 @@ namespace corelogic {
                 });
             if (bidResult) {
                 biddingHandler->match(resp);
+
+                requestCounter.increaseBidSuccess();
             } else {
                 biddingHandler->reject(resp);
+
+                requestCounter.increaseBidFailed();
             }
             needLog = false;
         }

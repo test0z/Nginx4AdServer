@@ -5,6 +5,7 @@
 #include "show_query_task.h"
 
 #include <mtty/aerospike.h>
+#include <mtty/requestcounter.h>
 #include <mtty/usershowcounter.h>
 
 #include <boost/algorithm/string/join.hpp>
@@ -24,6 +25,8 @@ extern adservice::adselectv2::AdSelectClientPtr adSelectClient;
 
 extern MT::common::Aerospike aerospikeClient;
 extern GlobalConfig globalConfig;
+
+extern MT::common::RequestCounter requestCounter;
 
 namespace adservice {
 namespace corelogic {
@@ -325,6 +328,8 @@ namespace corelogic {
             if (queryPid.empty() || queryPid == "0") {
                 queryPid = paramMap[URL_SSP_ADX_PID];
                 if (queryPid.empty()) { // URL 参数有问题
+                    requestCounter.increaseShowForSSPFailed();
+
                     LOG_ERROR << "in show module,ssp url pid is empty";
                     return;
                 }
@@ -351,6 +356,8 @@ namespace corelogic {
             }
             MT::common::SelectResult selectResult;
             if (!adSelectClient->search(seqId, true, condition, selectResult)) {
+                requestCounter.increaseShowForSSPFailed();
+
                 LOG_DEBUG << "ssp module:adselect failed";
                 const MT::common::ADPlace & tmpadplace = selectResult.adplace;
                 log.logType = protocol::log::LogPhaseType::BID;
@@ -395,6 +402,8 @@ namespace corelogic {
             //狗尾续一个bid日志
             doLog(log);
             log.logType = protocol::log::LogPhaseType::BID;
+
+            requestCounter.increaseShowForSSPSuccess();
         } else { // DSP of=0,of=2,of=3
             bool showCreative = true;
             dspSetParam(paramMap, showCreative, needLog);
@@ -412,6 +421,8 @@ namespace corelogic {
                 int len = buildResponseForDsp(adBanner, paramMap, bannerJson, templateFmt, buffer, sizeof(buffer));
                 respBody = std::string(buffer, buffer + len);
             }
+
+            requestCounter.increaseShowForDSP();
         }
 
         if (needLog && log.adInfo.ppid != DEFAULT_PRODUCT_PACKAGE_ID) {

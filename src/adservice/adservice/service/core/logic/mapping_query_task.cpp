@@ -1,9 +1,15 @@
 #include "mapping_query_task.h"
+
+#include <tuple>
+
+#include <mtty/mtuser.h>
+#include <mtty/requestcounter.h>
+
 #include "core/core_cm_manager.h"
 #include "core/model/user.h"
 #include "utility/utility.h"
-#include <mtty/mtuser.h>
-#include <tuple>
+
+extern MT::common::RequestCounter requestCounter;
 
 namespace adservice {
 namespace corelogic {
@@ -61,6 +67,8 @@ namespace corelogic {
     void HandleMappingQueryTask::customLogic(ParamMap & paramMap, protocol::log::LogItem & log,
                                              adservice::utility::HttpResponse & resp)
     {
+        requestCounter.increaseMapping();
+
         try {
             const std::string & uId = log.userId;
             // todo:获取url中和cookiemapping相关的参数,更新到这个uid对应的记录中，并且设置映射表条目的过期时间
