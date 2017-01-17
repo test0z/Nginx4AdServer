@@ -15,6 +15,7 @@ namespace bidding {
     using namespace adservice::utility::url;
     using namespace adservice::utility::serialize;
     using namespace adservice::utility::json;
+    using namespace adservice::utility::cypher;
     using namespace adservice::server;
 
 #define AD_LIEBAO_SHOW_URL "http://show.mtty.com/v?of=3&p=1500&%s"
@@ -80,13 +81,33 @@ namespace bidding {
             queryCondition.adxpid = adzInfo.get("tagid", "");
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.basePrice = 1500;
-            const cppcms::json::value & device = bidRequest.find("device");
-            if (!device.is_undefined()) {
-                queryCondition.mobileDevice = getLiebaoDeviceType(device.get("os", ""));
-                queryCondition.idfa = queryCondition.androidId = device.get("dpidmd5", "");
-                queryCondition.imei = device.get("imei", "");
-                queryCondition.mobileNetwork = getNetwork(device.get("connnectiontype", 0));
-                queryCondition.ip = device.get("ip", "");
+            if (i == 0) {
+                const cppcms::json::value & device = bidRequest.find("device");
+                if (!device.is_undefined()) {
+                    queryCondition.mobileDevice = getLiebaoDeviceType(device.get("os", ""));
+                    queryCondition.idfa = queryCondition.androidId = device.get("dpidmd5", "");
+                    queryCondition.imei = device.get("imei", "");
+                    queryCondition.mobileNetwork = getNetwork(device.get("connnectiontype", 0));
+                    queryCondition.ip = device.get("ip", "");
+                    cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
+                                           md5_encode(queryCondition.imei),
+                                           md5_encode(queryCondition.androidId),
+                                           md5_encode(queryCondition.mac));
+                    queryCookieMapping(cmInfo.queryKV, queryCondition);
+                }
+            } else {
+                AdSelectCondition & firstQueryCondition = queryConditions[0];
+                queryCondition.mtUserId = firstQueryCondition.mtUserId;
+                queryCondition.ip = firstQueryCondition.ip;
+                queryCondition.flowType = firstQueryCondition.flowType;
+                queryCondition.mobileDevice = firstQueryCondition.mobileDevice;
+                queryCondition.pcOS = firstQueryCondition.pcOS;
+                queryCondition.pcBrowserStr = firstQueryCondition.pcBrowserStr;
+                queryCondition.mobileNetwork = firstQueryCondition.mobileNetwork;
+                queryCondition.adxid = firstQueryCondition.adxid;
+                queryCondition.idfa = firstQueryCondition.idfa;
+                queryCondition.mac = firstQueryCondition.mac;
+                queryCondition.imei = firstQueryCondition.imei;
             }
             PreSetAdplaceInfo & adplaceInfo = adplaceInfos[i];
             adplaceInfo.flowType = SOLUTION_FLOWTYPE_MOBILE;
@@ -246,6 +267,7 @@ namespace bidding {
         bidValue["price"] = maxCpmPrice;
         bidValue["bundle"] = "com.liebao.hell";
         bidArrays.push_back(std::move(bidValue));
+        redoCookieMapping(queryCondition.adxid, "");
     }
 
     void LieBaoBiddingHandler::match(adservice::utility::HttpResponse & response)

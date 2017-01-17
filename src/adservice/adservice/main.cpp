@@ -60,6 +60,8 @@ struct LocationConf {
     ngx_str_t asnamespace;
     // working directory
     ngx_str_t workdir;
+    // disable cookiemapping
+    ngx_str_t disabledCookieMapping;
 };
 
 static ngx_int_t adservice_init(ngx_conf_t * cf);
@@ -95,6 +97,7 @@ static ngx_command_t commands[] = { COMMAND_ITEM("logging_level", LocationConf, 
                                     COMMAND_ITEM("as_node", LocationConf, asnode, parseConfStr),
                                     COMMAND_ITEM("as_namespace", LocationConf, asnamespace, parseConfStr),
                                     COMMAND_ITEM("workdir", LocationConf, workdir, parseConfStr),
+                                    COMMAND_ITEM("disable_cm", LocationConf, disabledCookieMapping, parseConfStr),
                                     ngx_null_command };
 
 #define INIT_NGX_STR(str, initvalue)                                 \
@@ -122,6 +125,7 @@ static void * createLocationConf(ngx_conf_t * cf)
     ngx_str_null(&conf->asnode);
     ngx_str_null(&conf->asnamespace);
     ngx_str_null(&conf->workdir);
+    ngx_str_null(&conf->disabledCookieMapping);
     return conf;
 }
 
@@ -142,6 +146,7 @@ static char * mergeLocationConf(ngx_conf_t * cf, void * parent, void * child)
     ngx_conf_merge_str_value(conf->asnode, prev->asnode, "");
     ngx_conf_merge_str_value(conf->asnamespace, prev->asnamespace, "mtty");
     ngx_conf_merge_str_value(conf->workdir, prev->workdir, "/usr/local/nginx/sbin/");
+    ngx_conf_merge_str_value(conf->disabledCookieMapping, prev->disabledCookieMapping, "no");
     return NGX_CONF_OK;
 }
 
@@ -260,6 +265,8 @@ static void global_init(LocationConf * conf)
     globalConfig.logConfig.kafkaLogEnable = NGX_BOOL(conf->kafkaloggerenable);
     globalConfig.logConfig.localLoggerThreads = conf->localloggerthreads;
     globalConfig.adselectConfig.adselectNode = NGX_STR_2_STD_STR(conf->adselectentry);
+    std::string disableCM = NGX_STR_2_STD_STR(conf->disabledCookieMapping);
+    globalConfig.cmConfig.disabledCookieMapping = disableCM == "yes";
     parseConfigAdselectTimeout(NGX_STR_2_STD_STR(conf->adselecttimeout), globalConfig.adselectConfig.adselectTimeout);
 
     globalConfig.aerospikeConfig.nameSpace = NGX_STR_2_STD_STR(conf->asnamespace);

@@ -213,6 +213,9 @@ namespace bidding {
                 queryCondition.pcBrowserStr = firstQueryCondition.pcBrowserStr;
                 queryCondition.mobileNetwork = firstQueryCondition.mobileNetwork;
                 queryCondition.adxid = firstQueryCondition.adxid;
+                queryCondition.idfa = firstQueryCondition.idfa;
+                queryCondition.mac = firstQueryCondition.mac;
+                queryCondition.imei = firstQueryCondition.imei;
             }
 
             const cppcms::json::value & siteContent = bidRequest.find("site.content.ext");
@@ -340,6 +343,7 @@ namespace bidding {
         getClickPara(clickUrlParam, requestId, "", landingUrl);
         extValue["ldp"]
             = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+        extValue["pm"] = cppcms::json::array();
         if (!tview.empty()) {
             cppcms::json::array & extPmArray = extValue["pm"].array();
             extPmArray.push_back(tview);

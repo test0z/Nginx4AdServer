@@ -15,6 +15,7 @@ namespace bidding {
     using namespace adservice::utility::serialize;
     using namespace adservice::utility::json;
     using namespace adservice::utility::userclient;
+    using namespace adservice::utility::cypher;
     using namespace adservice::server;
 
     static NetEaseAdplaceStyleMap adplaceStyleMap;
@@ -140,26 +141,46 @@ namespace bidding {
                 }
             }
             queryCondition.pAdplaceInfo = &adplaceInfo;
-            cppcms::json::value & device = bidRequest["device"];
-            if (!device.is_undefined()) {
-                std::string ip = device.get("ip", "");
-                queryCondition.ip = ip;
-                std::string osType = device.get("os", "");
-                std::string ua = device.get("ua", "");
-                fromNexDevTypeOsType(osType,
-                                     ua,
-                                     queryCondition.flowType,
-                                     queryCondition.mobileDevice,
-                                     queryCondition.pcOS,
-                                     queryCondition.pcBrowserStr);
-                if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
-                    queryCondition.adxid = ADX_NEX_MOBILE;
-                    adInfo.adxid = ADX_NEX_MOBILE;
+            if (i == 0) {
+                cppcms::json::value & device = bidRequest["device"];
+                if (!device.is_undefined()) {
+                    std::string ip = device.get("ip", "");
+                    queryCondition.ip = ip;
+                    std::string osType = device.get("os", "");
+                    std::string ua = device.get("ua", "");
+                    fromNexDevTypeOsType(osType,
+                                         ua,
+                                         queryCondition.flowType,
+                                         queryCondition.mobileDevice,
+                                         queryCondition.pcOS,
+                                         queryCondition.pcBrowserStr);
+                    if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
+                        queryCondition.adxid = ADX_NEX_MOBILE;
+                        adInfo.adxid = ADX_NEX_MOBILE;
+                    }
+                    queryCondition.mobileNetwork = getNetwork(device.get("connectiontype", ""));
+                    queryCondition.idfa = device.get("idfa", "");
+                    queryCondition.mac = device.get("mac", "");
+                    queryCondition.imei = device.get("imei", "");
+                    cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
+                                           md5_encode(queryCondition.imei),
+                                           md5_encode(queryCondition.androidId),
+                                           md5_encode(queryCondition.mac));
+                    queryCookieMapping(cmInfo.queryKV, queryCondition);
                 }
-                queryCondition.mobileNetwork = getNetwork(device.get("connectiontype", ""));
-                queryCondition.idfa = device.get("idfa", "");
-                queryCondition.mac = device.get("mac", "");
-                queryCondition.imei = device.get("imei", "");
+            } else {
+                AdSelectCondition & firstQueryCondition = queryConditions[0];
+                queryCondition.mtUserId = firstQueryCondition.mtUserId;
+                queryCondition.ip = firstQueryCondition.ip;
+                queryCondition.flowType = firstQueryCondition.flowType;
+                queryCondition.mobileDevice = firstQueryCondition.mobileDevice;
+                queryCondition.pcOS = firstQueryCondition.pcOS;
+                queryCondition.pcBrowserStr = firstQueryCondition.pcBrowserStr;
+                queryCondition.mobileNetwork = firstQueryCondition.mobileNetwork;
+                queryCondition.adxid = firstQueryCondition.adxid;
+                queryCondition.idfa = firstQueryCondition.idfa;
+                queryCondition.mac = firstQueryCondition.mac;
+                queryCondition.imei = firstQueryCondition.imei;
             }
             isDeal = false;
             const cppcms::json::value & pmp = adzinfo.find("pmp");
@@ -312,6 +333,7 @@ namespace bidding {
         bidValue["price"] = maxCpmPrice;
         bidValue["ext"] = extValue;
         bidArrays.push_back(std::move(bidValue));
+        redoCookieMapping(queryCondition.adxid, "");
     }
 
     void NexBiddingHandler::match(adservice::utility::HttpResponse & response)

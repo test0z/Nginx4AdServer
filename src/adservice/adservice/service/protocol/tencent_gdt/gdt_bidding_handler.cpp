@@ -186,6 +186,7 @@ namespace bidding {
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, bidRequest.id(), "", "");
         adResult->set_click_param(clickUrlParam.cipherParam());
+        redoCookieMapping(queryCondition.adxid, "");
     }
 
     void GdtBiddingHandler::match(adservice::utility::HttpResponse & response)

@@ -43,8 +43,12 @@ struct AdDataConfig {
 };
 
 struct AerospikeConfig {
-	std::vector<MT::common::ASConnection> connections;
+    std::vector<MT::common::ASConnection> connections;
     std::string nameSpace;
+};
+
+struct CookieMappingConfig {
+    bool disabledCookieMapping{ false };
 };
 
 struct GlobalConfig {
@@ -53,6 +57,7 @@ struct GlobalConfig {
     ADSelectConfig adselectConfig;
     AdDataConfig addataConfig;
     AerospikeConfig aerospikeConfig;
+    CookieMappingConfig cmConfig;
 };
 
 #endif // ADCORE_CONFIG_TYPES_H

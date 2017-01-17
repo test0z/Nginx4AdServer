@@ -3,10 +3,13 @@
 //
 
 #include "abstract_bidding_handler.h"
+#include "core/config_types.h"
 #include "core/core_ip_manager.h"
 #include "logging.h"
 #include "utility/utility.h"
 #include <mtty/mtuser.h>
+
+extern GlobalConfig globalConfig;
 
 namespace protocol {
 namespace bidding {
@@ -320,6 +323,10 @@ namespace bidding {
     void AbstractBiddingHandler::queryCookieMapping(const CookieMappingQueryKeyValue & queryKV,
                                                     AdSelectCondition & selectCondition)
     {
+        if (globalConfig.cmConfig.disabledCookieMapping) {
+            cmInfo.needReMapping = false;
+            return;
+        }
         cmInfo.needReMapping = false;
         cmInfo.userMapping.reset();
         if (!queryKV.isNull()) { //查询键值非空
@@ -364,6 +371,7 @@ namespace bidding {
                 cmInfo.userMapping.addDeviceMapping(cmInfo.queryKV.key, cmInfo.queryKV.value);
                 cmManager.updateUserMappingAsync(cmInfo.userMapping);
             }
+            cmInfo.needReMapping = false;
         }
         return "";
     }

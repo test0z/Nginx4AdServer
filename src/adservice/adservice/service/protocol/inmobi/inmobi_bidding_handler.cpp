@@ -15,6 +15,7 @@ namespace bidding {
     using namespace adservice::utility::serialize;
     using namespace adservice::utility::json;
     using namespace adservice::utility::userclient;
+    using namespace adservice::utility::cypher;
     using namespace adservice::server;
 
 #define INMOBI_DEV_MOBILEORPAD 1
@@ -203,6 +204,11 @@ namespace bidding {
             queryCondition.idfa = device.get("idfa", "");
             queryCondition.imei = device.get("didmd5", "");
             queryCondition.androidId = device.get("dpidmd5", "");
+            cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
+                                   md5_encode(queryCondition.imei),
+                                   md5_encode(queryCondition.androidId),
+                                   md5_encode(queryCondition.mac));
+            queryCookieMapping(cmInfo.queryKV, queryCondition);
         }
         const cppcms::json::value & siteContent = bidRequest.find("site");
         const cppcms::json::value & appContent = bidRequest.find("app");
@@ -349,6 +355,7 @@ namespace bidding {
         int maxCpmPrice = result.bidPrice;
         bidValue["price"] = maxCpmPrice;
         bidArrays.push_back(std::move(bidValue));
+        redoCookieMapping(queryCondition.adxid, "");
     }
 
     void InmobiBiddingHandler::match(adservice::utility::HttpResponse & response)

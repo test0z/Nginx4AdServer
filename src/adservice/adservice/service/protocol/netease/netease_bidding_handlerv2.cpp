@@ -14,6 +14,7 @@ namespace bidding {
     using namespace adservice::utility::url;
     using namespace adservice::utility::serialize;
     using namespace adservice::utility::json;
+    using namespace adservice::utility::cypher;
     using namespace adservice::server;
 
 #define AD_NETEASE_SHOW_URL "http://show.mtty.com/v?of=3&p=1500&%s"
@@ -91,6 +92,11 @@ namespace bidding {
             if (!networkStatus.is_undefined()) {
                 queryCondition.mobileNetwork = getNetwork(networkStatus.str());
             }
+            cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
+                                   md5_encode(queryCondition.imei),
+                                   md5_encode(queryCondition.androidId),
+                                   md5_encode(queryCondition.mac));
+            queryCookieMapping(cmInfo.queryKV, queryCondition);
         }
         PreSetAdplaceInfo adplaceInfo;
         adplaceInfo.flowType = SOLUTION_FLOWTYPE_MOBILE;
@@ -223,6 +229,7 @@ namespace bidding {
             if (!murl.empty())
                 resArray.push_back(cppcms::json::value(murl));
         }
+        redoCookieMapping(queryCondition.adxid, "");
     }
 
     void NetEaseBiddingHandler::match(adservice::utility::HttpResponse & response)
