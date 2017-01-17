@@ -195,6 +195,7 @@ namespace bidding {
             bidResponse.clear_ads();
         }
         BidResponse_Ads * adResult = bidResponse.add_ads();
+        const MT::common::Solution & finalSolution = result.solution;
         const MT::common::Banner & banner = result.banner;
         std::string adxAdvIdStr = banner.adxAdvId;
         int adxAdvId = extractRealValue(adxAdvIdStr.data(), ADX_TANX);
@@ -227,8 +228,40 @@ namespace bidding {
         adResult->add_click_through_url(destUrl);
         adResult->set_creative_id(std::to_string(adInfo.bannerId));
         adResult->add_advertiser_ids(adxAdvId); // adx_advid
-        adResult->set_html_snippet(tanxHtmlSnippet(cookieMappingUrl, isIOS));
-        adResult->set_feedback_address(feedbackUrl);
+        if (queryCondition.adxid != ADX_TANX_MOBILE) {
+            adResult->set_html_snippet(tanxHtmlSnippet(cookieMappingUrl, isIOS));
+            adResult->set_feedback_address(feedbackUrl);
+        } else {
+            bannerJson["advid"] = finalSolution.advId;
+            bannerJson["adxpid"] = adInfo.adxpid;
+            bannerJson["arid"] = adInfo.areaId;
+            bannerJson["gpid"] = finalSolution.sId;
+            bannerJson["pid"] = adInfo.pid;
+            bannerJson["ppid"] = adInfo.ppid;
+            bannerJson["price"] = adInfo.offerPrice;
+            bannerJson["pricetype"] = adInfo.priceType;
+            bannerJson["unid"] = adInfo.adxid;
+            bannerJson["of"] = "0";
+            bannerJson["width"] = banner.width;
+            bannerJson["height"] = banner.height;
+            bannerJson["xcurl"] = AD_TX_CLICK_UNENC_MACRO;
+            url::URLHelper clickUrlParam;
+            getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
+            bannerJson["clickurl"]
+                = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+            std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
+            char admBuffer[4096];
+            snprintf(admBuffer, sizeof(admBuffer), adservice::corelogic::HandleShowQueryTask::showAdxTemplate,
+                     mtadInfoStr.data());
+            adResult->set_html_snippet(admBuffer);
+            url::URLHelper showUrlParam;
+            getShowPara(showUrlParam, bidRequest.bid());
+            showUrlParam.add(URL_IMP_OF, "3");
+            showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_TX_PRICE_MACRO);
+            snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s", (isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL),
+                     showUrlParam.cipherParam().c_str());
+            adResult->set_feedback_address(feedbackUrl);
+        }
     }
 
     void TanxBiddingHandler::match(adservice::utility::HttpResponse & response)
