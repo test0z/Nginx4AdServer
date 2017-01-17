@@ -1,7 +1,7 @@
 #ifndef CORE_TYPETABLE_H
 #define CORE_TYPETABLE_H
 
-#include "tbb/concurrent_hash_map.h"
+#include <map>
 #include <mtty/constants.h>
 
 namespace adservice {
@@ -14,8 +14,7 @@ namespace server {
         int mttyContentType;
     };
 
-    typedef tbb::concurrent_hash_map<std::string, ContenttypeItem> ContentTypeDict;
-    typedef ContentTypeDict::accessor ContentTypeDictAccessor;
+    typedef std::map<std::string, ContenttypeItem> ContentTypeDict;
 
     class TypeTableManager {
     public:

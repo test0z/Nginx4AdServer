@@ -13,7 +13,7 @@
 //#include "aliyun_log_producer.h"
 #include "kafka_log_producer.h"
 #include "logging.h"
-#include <tbb/concurrent_hash_map.h>
+#include <map>
 
 namespace adservice {
 namespace log {
@@ -27,8 +27,7 @@ namespace log {
     class LogPusher;
     typedef std::shared_ptr<LogPusher> LogPusherPtr;
 
-    typedef tbb::concurrent_hash_map<std::string, LogPusherPtr> LogPusherMap;
-    typedef LogPusherMap::accessor LogPusherMapAccessor;
+    typedef std::map<std::string, LogPusherPtr> LogPusherMap;
 
     class LogPusher {
     public:

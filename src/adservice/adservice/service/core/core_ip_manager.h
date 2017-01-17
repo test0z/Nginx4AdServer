@@ -5,7 +5,7 @@
 #ifndef ADCORE_CORE_IP_MANAGER_H
 #define ADCORE_CORE_IP_MANAGER_H
 
-#include "tbb/concurrent_hash_map.h"
+#include <map>
 #include <mtty/constants.h>
 
 namespace adservice {
@@ -35,8 +35,7 @@ namespace server {
         }
     };
 
-    typedef tbb::concurrent_hash_map<std::string, AreaItem> AreaDict;
-    typedef AreaDict::accessor AreaDictAccessor;
+    typedef std::map<std::string, AreaItem> AreaDict;
 
     class IpManager {
     public:

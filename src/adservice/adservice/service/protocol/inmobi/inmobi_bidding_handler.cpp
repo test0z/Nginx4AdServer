@@ -248,19 +248,7 @@ namespace bidding {
     "seatbid":[
         {
           "seat":"56abf687dd6c419886c841240815ceb9",
-          "bid":[
-                {
-                    "adm":"",
-                    "id":"",
-                    "impid":"",
-                    "nurl":"",
-                    "price":"",
-                    "crid":"",
-                    "adomain":[],
-                    "iurl":"",
-                    "attr":[]
-                }
-            ]
+          "bid":[]
         }
     ],
     "cur":"CNY"
@@ -348,12 +336,13 @@ namespace bidding {
             bidValue["admobject"] = admObject;
         }
         bidValue["adomain"] = cppcms::json::array();
+        bidValue["adomain"].array().push_back("http://mtty.com");
         bidValue["iurl"] = "";
         cppcms::json::array attrArray;
         attrArray.push_back(3);
         bidValue["attr"] = attrArray;
         int maxCpmPrice = result.bidPrice;
-        bidValue["price"] = maxCpmPrice;
+        bidValue["price"] = maxCpmPrice / 100.0;
         bidArrays.push_back(std::move(bidValue));
         redoCookieMapping(queryCondition.adxid, "");
     }

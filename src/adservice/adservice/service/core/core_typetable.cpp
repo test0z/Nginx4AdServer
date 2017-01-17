@@ -42,9 +42,7 @@ namespace server {
             key += ":";
             key += item.adxContentType;
             // LOG_DEBUG << key;
-            ContentTypeDictAccessor acc;
-            contentTypeDict.insert(acc, key);
-            acc->second = item;
+            contentTypeDict.insert({ key, item });
         }
         fclose(file);
     }
@@ -69,9 +67,9 @@ namespace server {
         std::string key = std::to_string(adxId);
         key += ":";
         key += adxContentType;
-        ContentTypeDict::const_accessor acc;
-        if (contentTypeDict.find(acc, key)) {
-            const ContenttypeItem & item = acc->second;
+        auto iter = contentTypeDict.find(key);
+        if (iter != contentTypeDict.end()) {
+            const ContenttypeItem & item = iter->second;
             return item.mttyContentType;
         } else {
             return 0;

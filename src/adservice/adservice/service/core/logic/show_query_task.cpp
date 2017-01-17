@@ -10,8 +10,6 @@
 #include <boost/algorithm/string/join.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 
-#include <tbb/concurrent_hash_map.h>
-
 #include "common/atomic.h"
 #include "core/adselectv2/ad_select_client.h"
 #include "core/adselectv2/ad_select_interface.h"
@@ -40,13 +38,6 @@ namespace corelogic {
     int HandleShowQueryTask::initialized = 0;
     char HandleShowQueryTask::showAdxTemplate[1024];
     char HandleShowQueryTask::showSspTemplate[1024];
-
-    typedef tbb::concurrent_hash_map<int, int> AdStatusHashMap;
-    typedef AdStatusHashMap::accessor AdStatusHashMapAccessor;
-    // 投放单ID-花费 状态表
-    static AdStatusHashMap adCostHashMap;
-    // 投放单ID-利润 状态表
-    static AdStatusHashMap adPriceHashMap;
 
     // static long adStatusShowTime = 0;
 
@@ -501,10 +492,6 @@ namespace corelogic {
             } else {
                 LOG_INFO << "handleShowRequests:" << handleShowRequests;
             }
-        }
-        if (log.adInfo.cost != 0) { //更新花费表状态
-        }
-        if (log.adInfo.bidPrice != 0) { //更新BidPrice表状态
         }
     }
 }

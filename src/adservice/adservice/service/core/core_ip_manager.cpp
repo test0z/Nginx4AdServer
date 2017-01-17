@@ -157,22 +157,13 @@ namespace server {
             }
         }
         for (auto iter = countryMap.begin(); iter != countryMap.end(); iter++) {
-            AreaDictAccessor acc;
-            areaDict.insert(acc, iter->second.name);
-            acc->second = iter->second;
-            acc.release();
+            areaDict.insert({ iter->second.name, iter->second });
         }
         for (auto iter = provinceMap.begin(); iter != provinceMap.end(); iter++) {
-            AreaDictAccessor acc;
-            areaDict.insert(acc, iter->second.name);
-            acc->second = iter->second;
-            acc.release();
+            areaDict.insert({ iter->second.name, iter->second });
         }
         for (auto iter = cityMap.begin(); iter != cityMap.end(); iter++) {
-            AreaDictAccessor acc;
-            areaDict.insert(acc, iter->second.name);
-            acc->second = iter->second;
-            acc.release();
+            areaDict.insert({ iter->second.name, iter->second });
         }
         fclose(file);
     }
@@ -231,14 +222,13 @@ namespace server {
         length = trim(name);
         std::string areaName = std::string(name, name + length);
         int code = 0;
-        AreaDictAccessor acc;
-        if (areaDict.find(acc, areaName)) {
-            AreaItem areaItem = acc->second;
+        auto iter = areaDict.find(areaName);
+        if (iter != areaDict.end()) {
+            AreaItem & areaItem = iter->second;
             code = getAreaShortCode(areaItem);
         } else {
             code = IP_UNKNOWN;
         }
-        acc.release();
         return code;
     }
 
@@ -258,14 +248,13 @@ namespace server {
         length = trim(name);
         std::string areaName = std::string(name, name + length);
         char code[64] = { '\0' };
-        AreaDictAccessor acc;
-        if (areaDict.find(acc, areaName)) {
-            AreaItem areaItem = acc->second;
+        auto iter = areaDict.find(areaName);
+        if (iter != areaDict.end()) {
+            AreaItem & areaItem = iter->second;
             snprintf(code, sizeof(code), "%04d-%d-%d", areaItem.country, areaItem.province, areaItem.city);
         } else {
             strcat(code, "0086-0-0");
         }
-        acc.release();
         return std::string(code);
     }
 
@@ -275,9 +264,9 @@ namespace server {
         int length = ipDataFind(ip, name);
         length = trim(name);
         std::string areaName = std::string(name, name + length);
-        AreaDictAccessor acc;
-        if (areaDict.find(acc, areaName)) {
-            AreaItem areaItem = acc->second;
+        auto iter = areaDict.find(areaName);
+        if (iter != areaDict.end()) {
+            AreaItem & areaItem = iter->second;
             country = areaItem.country;
             province = areaItem.province;
             city = areaItem.city;
@@ -286,7 +275,6 @@ namespace server {
             province = 0;
             city = 0;
         }
-        acc.release();
     }
 }
 }
