@@ -165,8 +165,10 @@ namespace log {
             spinlock_lock(&lock);
             iter = logMap.find(name);
             if (iter == logMap.end()) {
-                logMap.insert(
-                    { name, std::make_shared<LogPusher>(name.c_str(), ifnodefineThreads, logLocal, logConfigKey) });
+                iter = logMap
+                           .insert({ name, std::make_shared<LogPusher>(name.c_str(), ifnodefineThreads, logLocal,
+                                                                       logConfigKey) })
+                           .first;
             }
             spinlock_unlock(&lock);
         }
