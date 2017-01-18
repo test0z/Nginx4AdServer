@@ -479,7 +479,6 @@ namespace corelogic {
 
                     aerospikeClient.operate(hourlyKey, mapOP);
                 }
-
             } catch (MT::common::AerospikeExcption & e) {
                 LOG_ERROR << "记录曝光频次失败，userId：" << log.userId << "，sid:" << log.adInfo.sid
                           << ",bannerID:" << log.adInfo.bannerId << ",bgid:" << bgid << ",e:" << e.what()

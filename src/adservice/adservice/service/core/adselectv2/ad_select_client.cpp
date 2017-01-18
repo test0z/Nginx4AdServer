@@ -198,8 +198,19 @@ namespace adselectv2 {
     void AdSelectClient::pushRequestCounter()
     {
         while (!stopPushRequestCounterThread_) {
-            std::this_thread::sleep_for(std::chrono::seconds(60));
-            std::string content = requestCounter.serialize();
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch())
+                        .count()
+                    % 60
+                != 0) {
+                continue;
+            }
+
+            std::stringstream ss;
+            boost::archive::text_oarchive archive(ss);
+            archive << requestCounter;
+            std::string content = ss.str();
+
             zmq::message_t message(content.length() + 1);
             uint8_t flag = (uint8_t)MT::common::MessageType::PUSH_REQUEST_COUNT;
             memcpy(static_cast<char *>(message.data()), &flag, 1);
@@ -207,7 +218,11 @@ namespace adselectv2 {
 
             try {
                 socket_.send(message);
-            } catch (...) {
+
+                zmq::message_t reply;
+                socket_.recv(&reply);
+            } catch (std::exception & e) {
+                LOG_ERROR << e.what();
             }
         }
     }

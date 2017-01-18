@@ -166,7 +166,7 @@ namespace corelogic {
             log.reqStatus = 500;
             resp.status(200);
 
-            requestCounter.increaseBidFailed();
+            requestCounter.increaseBidFailed(log.adInfo.adxid);
         } else {
             TaskThreadLocal * localData = threadData;
             HandleBidQueryTask * task = this;
@@ -204,11 +204,11 @@ namespace corelogic {
             if (bidResult) {
                 biddingHandler->match(resp);
 
-                requestCounter.increaseBidSuccess();
+                requestCounter.increaseBidSuccess(log.adInfo.adxid);
             } else {
                 biddingHandler->reject(resp);
 
-                requestCounter.increaseBidFailed();
+                requestCounter.increaseBidFailed(log.adInfo.adxid);
             }
             needLog = false;
         }
