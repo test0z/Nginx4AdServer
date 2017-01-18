@@ -153,7 +153,7 @@ namespace bidding {
         AdSelectCondition & queryCondition = queryConditions[0];
         queryCondition.adxid = ADX_INMOBI;
         double priceFloor = adzinfo.get<double>("bidfloor", 0.0);
-        queryCondition.basePrice = (int)std::ceil(priceFloor);
+        queryCondition.basePrice = (int)std::ceil(priceFloor * 100);
         PreSetAdplaceInfo adplaceInfo;
         bool isNative = false;
         cppcms::json::value adTypeObj = adzinfo.find("banner");

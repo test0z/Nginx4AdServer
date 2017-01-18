@@ -194,11 +194,15 @@ namespace bidding {
                         adInfo.adxid = ADX_YOUKU_MOBILE;
                     }
                     queryCondition.mobileNetwork = getNetwork(device.get("connectiontype", 0));
-                    cookieMappingKeyMobile(
-                        md5_encode(queryCondition.idfa = device.get<std::string>("idfa", "")),
-                        md5_encode(queryCondition.imei = device.get<std::string>("imei", "")),
-                        md5_encode(queryCondition.androidId = device.get<std::string>("androidid", "")),
-                        md5_encode(queryCondition.mac = device.get<std::string>("mac", "")));
+                    if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
+                        cookieMappingKeyMobile(
+                            md5_encode(queryCondition.idfa = device.get<std::string>("idfa", "")),
+                            md5_encode(queryCondition.imei = device.get<std::string>("imei", "")),
+                            md5_encode(queryCondition.androidId = device.get<std::string>("androidid", "")),
+                            md5_encode(queryCondition.mac = device.get<std::string>("mac", "")));
+                    } else {
+                        cookieMappingKeyPC(ADX_YOUKU, bidRequest.get("user.id", ""));
+                    }
                 } else {
                     cookieMappingKeyPC(ADX_YOUKU, bidRequest.get("user.id", ""));
                 }

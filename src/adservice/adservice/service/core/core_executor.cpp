@@ -11,6 +11,90 @@
 namespace adservice {
 namespace server {
 
+    void threadpool_thread_run(void * data)
+    {
+        try {
+            ThreadPool * threadPool = (ThreadPool *)data;
+            threadPool->runInitCallback();
+            while (threadPool->isRunning()) {
+                Task task(threadPool->take());
+                if (task) {
+                    task();
+                }
+            }
+        } catch (std::exception & e) {
+            LOG_ERROR << "threadpool_thread_run encounter with exception,e:" << e.what();
+        }
+    }
+
+    ThreadPool::ThreadPool(size_t threads, size_t queueSize)
+        : mutex_()
+        , threadSize_(threads)
+        , maxQueueSize_(queueSize)
+        , nofull_(mutex_)
+        , noempty_(mutex_)
+    {
+    }
+
+    void ThreadPool::start()
+    {
+        running_ = true;
+        for (uint32_t i = 0; i < threadSize_; i++) {
+            pthread_t threadId;
+            if (pthread_create(&threadId, NULL, threadpool_thread_run, this)) {
+                LOG_ERROR << "ThreadPool start pthread_create failed";
+            } else {
+                threads_.push_back(threadId);
+            }
+        }
+    }
+
+    void ThreadPool::stop()
+    {
+        running_ = false;
+        noempty_.notifyAll();
+        for (pthread_t t : threads_) {
+            pthread_join(t, nullptr);
+        }
+        threads_.clear();
+    }
+
+    void ThreadPool::runInitCallback()
+    {
+        if (threadInitCallback_) {
+            threadInitCallback_();
+        }
+    }
+
+    Task ThreadPool::take()
+    {
+        mutex_.lock();
+        while (queue_.empty() && running_) {
+            noempty_.wait();
+        }
+        Task task;
+        if (!queue_.empty()) {
+            task = queue_.front();
+            queue_.pop_front();
+            if (maxQueueSize_ > 0) {
+                nofull_.notify();
+            }
+        }
+        mutex_.unlock();
+        return task;
+    }
+
+    void ThreadPool::run(const Task & t)
+    {
+        mutex_.lock();
+        while (maxQueueSize_ > 0 && queue_.size() >= maxQueueSize_) {
+            nofull_.wait();
+        }
+        queue_.push_back(t);
+        noempty_.notify();
+        mutex_.unlock();
+    }
+
     struct RunInCore {
         /**
          * tc: 所有核心数
@@ -61,14 +145,14 @@ namespace server {
 
     void Executor::start()
     {
-        //		if (pureCompute) {
-        //			configureForCompute();
-        //			threadpool.setThreadInitCallback(std::bind(RunInCore(coreNum, threadMappingTable,
-        // threadNum)));
-        //		} else {
-        //			threadpool.setThreadInitCallback(std::bind(DefaultThreadInitializer()));
-        //        }
-        //		threadpool.start(threadNum);
+        if (pureCompute) {
+            configureForCompute();
+            threadpool.setInitCallback(std::bind(RunInCore(coreNum, threadMappingTable, threadNum)));
+        } else {
+            threadpool.setInitCallback(std::bind(DefaultThreadInitializer()));
+        }
+        threadpool.setThreadSize(threadNum);
+        threadpool.start();
     }
 
     void Executor::configureForCompute()
@@ -84,18 +168,17 @@ namespace server {
 
     int Executor::getThreadSeqId()
     {
-        //        long key = (long)pthread_self();
-        //        int l = 0, h = threadNum - 1;
-        //        while (l <= h) {
-        //            int mid = l + ((h - l) >> 1);
-        //            if (key <= threadMappingTable[mid])
-        //                h = mid - 1;
-        //            else
-        //                l = mid + 1;
-        //        }
-        //        assert(l >= 0 && l < threadNum && threadMappingTable[l] == key);
-        //        return l;
-        return 0;
+        long key = (long)pthread_self();
+        int l = 0, h = threadNum - 1;
+        while (l <= h) {
+            int mid = l + ((h - l) >> 1);
+            if (key <= threadMappingTable[mid])
+                h = mid - 1;
+            else
+                l = mid + 1;
+        }
+        assert(l >= 0 && l < threadNum && threadMappingTable[l] == key);
+        return l;
     }
 }
 }
