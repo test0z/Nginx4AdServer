@@ -1,13 +1,16 @@
 #include "trace_task.h"
 
 #include <curl/curl.h>
+
 #include <mtty/aerospike.h>
+#include <mtty/requestcounter.h>
 
 #include "core/config_types.h"
 #include "core/model/source_id.h"
 
 extern MT::common::Aerospike aerospikeClient;
 extern GlobalConfig globalConfig;
+extern MT::common::RequestCounter requestCounter;
 
 namespace adservice {
 namespace corelogic {
@@ -266,6 +269,10 @@ namespace corelogic {
                 LOG_ERROR << "获取source record失败！sourceId:" << sourceId << "，code:" << e.error().code
                           << ", error:" << e.error().message;
             }
+
+            requestCounter.increaseTraceSuccess();
+        } else {
+            requestCounter.increaseTraceFailed();
         }
 
         // 记录TraceInfo日志
