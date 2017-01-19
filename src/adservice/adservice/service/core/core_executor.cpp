@@ -94,6 +94,14 @@ namespace server {
         mutex_.unlock();
     }
 
+    size_t ThreadPool::pendingTasks()
+    {
+        mutex_.lock();
+        size_t remain = queue_.size();
+        mutex_.unlock();
+        return remain;
+    }
+
     struct RunInCore {
         /**
          * tc: 所有核心数

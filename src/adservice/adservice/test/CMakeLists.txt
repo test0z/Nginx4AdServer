@@ -25,6 +25,7 @@ FIND_LIBRARY(LIB_CPPCMS NAMES "libcppcms.a" cppcms)
 ADD_EXECUTABLE(cookiemapping_test ./cookiemapping_test.cpp
     ../service/core/core_cm_manager.cpp
     ../service/core/model/user.cpp
+    ../service/core/model/idseq.cpp
     ../service/utility/mttytime.cpp
     ../service/utility/cypher.cpp
     ../service/utility/url.cpp
@@ -46,6 +47,11 @@ ADD_EXECUTABLE(ip_test ./ip_test.cpp
     ../service/core/core_ip_manager.cpp)
 
 ADD_EXECUTABLE(json_test ./json_test.cpp
+    ../service/utility/json.cpp)
+
+ADD_EXECUTABLE(executor_test ./executor_test.cpp
+    ../service/core/core_executor.cpp
+    ../service/utility/random.cpp
     ../service/utility/json.cpp)
 
 SET(LINK_LIBRARY rt
@@ -72,3 +78,4 @@ TARGET_LINK_LIBRARIES(url_test ${LINK_LIBRARY})
 TARGET_LINK_LIBRARIES(price_test ${LINK_LIBRARY})
 TARGET_LINK_LIBRARIES(ip_test ${LINK_LIBRARY} ${LIB_TBB})
 TARGET_LINK_LIBRARIES(json_test ${LINK_LIBRARY} ${LIB_CPPCMS})
+TARGET_LINK_LIBRARIES(executor_test ${LINK_LIBRARY} ${LIB_CPPCMS})

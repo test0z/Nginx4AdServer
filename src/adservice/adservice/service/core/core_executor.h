@@ -94,6 +94,8 @@ namespace server {
             return running_;
         }
 
+        size_t pendingTasks();
+
     private:
         std::vector<pthread_t> threads_;
         std::deque<Task> queue_;
@@ -142,6 +144,11 @@ namespace server {
         }
 
         int getThreadSeqId();
+
+        size_t pendingTasks()
+        {
+            return threadpool.pendingTasks();
+        }
 
     private:
         void configureForCompute();
