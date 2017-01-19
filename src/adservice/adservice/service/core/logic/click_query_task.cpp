@@ -4,6 +4,8 @@
 
 #include "click_query_task.h"
 
+#include <mtty/requestcounter.h>
+
 #include "core/config_types.h"
 #include "core/core_ip_manager.h"
 #include "core/model/source_id.h"
@@ -12,6 +14,7 @@
 
 extern MT::common::Aerospike aerospikeClient;
 extern GlobalConfig globalConfig;
+extern MT::common::RequestCounter requestCounter;
 
 namespace adservice {
 namespace corelogic {
@@ -165,6 +168,8 @@ namespace corelogic {
     void HandleClickQueryTask::customLogic(ParamMap & paramMap, protocol::log::LogItem & log,
                                            adservice::utility::HttpResponse & resp)
     {
+        requestCounter.increaseClick();
+
         if (!log.adInfo.landingUrl.empty()) {
             // 记录访问信息到缓存
             recordSource(paramMap, log);

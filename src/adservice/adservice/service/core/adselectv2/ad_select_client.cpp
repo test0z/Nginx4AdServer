@@ -3,6 +3,7 @@
 
 #include <mtty/zmq.h>
 
+#include <chrono>
 #include <tuple>
 
 #include <boost/archive/text_iarchive.hpp>
@@ -99,6 +100,20 @@ namespace adselectv2 {
         }
     }
 
+    AdSelectClient::AdSelectClient(const std::string & url)
+        : serverUrl_(url)
+        , pushRequestCounterThread_(std::bind(&AdSelectClient::pushRequestCounter, this))
+    {
+        socket_.connect(url);
+
+        pushRequestCounterThread_.detach();
+    }
+
+    AdSelectClient::~AdSelectClient()
+    {
+        stopPushRequestCounterThread_ = true;
+    }
+
     bool AdSelectClient::search(int seqId, bool isSSP, AdSelectCondition & selectCondition,
                                 MT::common::SelectResult & result)
     {
@@ -177,6 +192,38 @@ namespace adselectv2 {
         } catch (std::exception & e) {
             LOG_ERROR << "AdSelectClient::getBannerById error,e:" << e.what() << ",bannerId:" << bannerId;
             return false;
+        }
+    }
+
+    void AdSelectClient::pushRequestCounter()
+    {
+        while (!stopPushRequestCounterThread_) {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch())
+                        .count()
+                    % 60
+                != 0) {
+                continue;
+            }
+
+            std::stringstream ss;
+            boost::archive::text_oarchive archive(ss);
+            archive << requestCounter;
+            std::string content = ss.str();
+
+            zmq::message_t message(content.length() + 1);
+            uint8_t flag = (uint8_t)MT::common::MessageType::PUSH_REQUEST_COUNT;
+            memcpy(static_cast<char *>(message.data()), &flag, 1);
+            memcpy(static_cast<char *>(message.data()) + 1, content.c_str(), content.length());
+
+            try {
+                socket_.send(message);
+
+                zmq::message_t reply;
+                socket_.recv(&reply);
+            } catch (std::exception & e) {
+                LOG_ERROR << e.what();
+            }
         }
     }
 }
