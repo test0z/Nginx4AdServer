@@ -15,10 +15,10 @@
 namespace adservice {
 namespace server {
 
-    static const int EXECUTOR_MAX_TASK = 5000;
-    static const int DEFAULT_CORE_NUM = 1;
+#define EXECUTOR_MAX_TASK 5000
+#define DEFAULT_CORE_NUM 1
 
-    class Condition : boost::noncopyable {
+    class Condition {
     public:
         explicit Condition(std::mutex & mutex)
             : mutex_(mutex)
@@ -55,7 +55,7 @@ namespace server {
 
     class ThreadPool {
     public:
-        explicit ThreadPool(size_t threads, size_t queueSize);
+        explicit ThreadPool();
 
         ~ThreadPool()
         {
@@ -117,12 +117,13 @@ namespace server {
          * forCompute: 是否用于计算密集任务
          * threads: 如果forcompute=true,那么线程数等于机器核心数,否则线程池线程数为threads指定
          */
-        Executor(const char * name, bool forCompute = true, int threads = 0, int taskQueueSize = 0)
+        explicit Executor(const char * name, bool forCompute = true, int threads = 0, int taskQueueSize = 0)
             : coreNum(DEFAULT_CORE_NUM)
             , pureCompute(forCompute)
-            , threadNum(threads == 0 ? 1 : threads)
-            , threadpool(threadNum, taskQueueSize == 0 ? EXECUTOR_MAX_TASK : taskQueueSize)
         {
+            threadNum = threads == 0 ? 1 : threads;
+            threadpool.setThreadSize(threadNum);
+            threadpool.setQueueSize(taskQueueSize == 0 ? EXECUTOR_MAX_TASK : taskQueueSize);
         }
 
         void start();

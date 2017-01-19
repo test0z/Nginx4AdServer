@@ -11,7 +11,7 @@
 namespace adservice {
 namespace server {
 
-    void threadpool_thread_run(void * data)
+    void * threadpool_thread_run(void * data)
     {
         try {
             ThreadPool * threadPool = (ThreadPool *)data;
@@ -25,12 +25,11 @@ namespace server {
         } catch (std::exception & e) {
             LOG_ERROR << "threadpool_thread_run encounter with exception,e:" << e.what();
         }
+        return nullptr;
     }
 
-    ThreadPool::ThreadPool(size_t threads, size_t queueSize)
+    ThreadPool::ThreadPool()
         : mutex_()
-        , threadSize_(threads)
-        , maxQueueSize_(queueSize)
         , nofull_(mutex_)
         , noempty_(mutex_)
     {
