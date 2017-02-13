@@ -28,6 +28,7 @@ namespace utility {
         bool parseJson(const char * json, cppcms::json::value & doc)
         {
             try {
+                doc.undefined();
                 std::stringstream ss;
                 ss << json;
                 ss >> doc;

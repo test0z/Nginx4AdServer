@@ -85,6 +85,9 @@ namespace bidding {
                 const cppcms::json::value & device = bidRequest.find("device");
                 if (!device.is_undefined()) {
                     queryCondition.mobileDevice = getLiebaoDeviceType(device.get("os", ""));
+                    if (queryCondition.mobileDevice == SOLUTION_DEVICE_OTHER) {
+                        queryCondition.mobileDevice = userclient::getMobileTypeFromUA(device.get("ua", ""));
+                    }
                     queryCondition.idfa = queryCondition.androidId = device.get("dpidmd5", "");
                     queryCondition.imei = device.get("imei", "");
                     queryCondition.mobileNetwork = getNetwork(device.get("connnectiontype", 0));
