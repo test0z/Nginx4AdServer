@@ -197,6 +197,9 @@ namespace adselectv2 {
 
     void AdSelectClient::pushRequestCounter()
     {
+        zmq::socket_t socket(context_, ZMQ_REQ);
+        socket.connect(serverUrl_);
+
         while (!stopPushRequestCounterThread_) {
             std::this_thread::sleep_for(std::chrono::seconds(1));
             if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch())
@@ -217,10 +220,10 @@ namespace adselectv2 {
             memcpy(static_cast<char *>(message.data()) + 1, content.c_str(), content.length());
 
             try {
-                socket_.send(message);
+                socket.send(message);
 
                 zmq::message_t reply;
-                socket_.recv(&reply);
+                socket.recv(&reply);
             } catch (std::exception & e) {
                 LOG_ERROR << e.what();
             }
