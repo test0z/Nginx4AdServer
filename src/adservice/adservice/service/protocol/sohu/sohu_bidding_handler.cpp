@@ -109,7 +109,7 @@ namespace bidding {
         if (bidRequest.has_device()) {
             auto & device = bidRequest.device();
             queryCondition.ip = device.has_ip() ? device.ip() : "";
-            if (strcasecmp(device.type().data(), "PC")) { // mobile
+            if (strcasecmp(device.type().data(), "Mobile") == 0) { // mobile
                 queryCondition.mobileDevice = getSohuDeviceType(device.mobiletype());
                 queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
                 queryCondition.adxid = ADX_SOHU_MOBILE;
@@ -122,6 +122,14 @@ namespace bidding {
                                        md5_encode(queryCondition.imei),
                                        md5_encode(queryCondition.androidId),
                                        md5_encode(queryCondition.mac));
+            } else if (strcasecmp(device.type().data(), "Wap") == 0) { // wap
+                queryCondition.mobileDevice = getSohuDeviceType(device.mobiletype());
+                queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
+                queryCondition.adxid = ADX_SOHU_MOBILE;
+                queryCondition.mobileNetwork = getSohuNeworkType(device.nettype());
+                cookieMappingKeyWap(ADX_SOHU_MOBILE, bidRequest.has_user() && bidRequest.user().has_suid()
+                                                         ? bidRequest.user().suid()
+                                                         : "");
             } else { // pc
                 queryCondition.pcOS = getOSTypeFromUA(device.ua());
                 queryCondition.flowType = SOLUTION_FLOWTYPE_PC;

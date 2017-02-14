@@ -34,7 +34,6 @@ SET(SRC_LIST
     ./service/core/model/source_id.cpp
     ./service/core/model/user.cpp
     ./service/core/model/idseq.cpp
-    ./service/kafka_checker.cpp
     ./service/libutil/AdAcbm.cpp
     ./service/libutil/AdIpc.cpp
     ./service/libutil/AdMd5.cpp
@@ -70,6 +69,9 @@ SET(SRC_LIST
     ./service/protocol/youku/youku_price.cpp
     ./service/protocol/inmobi/inmobi_bidding_handler.cpp
     ./service/protocol/liebao/liebao_bidding_handler.cpp
+    ./service/protocol/360/360max_bidding_handler.cpp
+    ./service/protocol/360/max-bidding.pb.cpp
+    ./service/protocol/360/360max_price.cpp
     ./service/utility/cypher.cpp
     ./service/utility/escape.cpp
     ./service/utility/file.cpp

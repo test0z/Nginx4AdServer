@@ -214,8 +214,21 @@ void testMd5(){
 }
 
 
+void testTranslateUser(const char* user){
+    MT::User::UserID u(user,true);
+    if(u.isValid()){
+        std::cout<<u.text()<<std::endl;
+    }else{
+        std::cout<<"invalid userId"<<std::endl;
+    }
+}
+
 int main(int argc, char ** argv)
 {
+    if(argc>1){
+        testTranslateUser(argv[1]);
+        return 0;
+    }
     std::vector<MT::common::ASConnection> connections{ MT::common::ASConnection("192.168.2.31", 3000) };
     aerospikeClient.setConnection(connections);
     aerospikeClient.connect();

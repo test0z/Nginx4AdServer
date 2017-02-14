@@ -134,6 +134,9 @@ namespace adselectv2 {
         } catch (zmq::error_t & e) {
             LOG_ERROR << "search请求发送失败：" << e.what();
             return false;
+        } catch (std::exception & e) {
+            LOG_ERROR << "search 请求发送失败，可能是未知zmq 异常，e:" << e.what();
+            return false;
         }
 
         zmq::message_t reply;
@@ -141,6 +144,9 @@ namespace adselectv2 {
             socket_.recv(&reply);
         } catch (zmq::error_t & e) {
             LOG_ERROR << "接收search响应失败：" << e.what();
+            return false;
+        } catch (std::exception & e) {
+            LOG_ERROR << "接收search 响应失败，可能是未知zmq 异常，e:" << e.what();
             return false;
         }
         std::string response((char *)reply.data() + 1, reply.size() - 1);

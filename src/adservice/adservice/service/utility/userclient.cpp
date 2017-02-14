@@ -50,6 +50,21 @@ namespace utility {
             return SOLUTION_OS_OTHER;
         }
 
+        int getMobileTypeFromUA(const std::string & userAgent)
+        {
+            if (userAgent.find("iPad") != std::string::npos) { // pad
+                return SOLUTION_DEVICE_IPAD;
+            } else if (userAgent.find("iPhone ") != std::string::npos) { // iphone
+                return SOLUTION_DEVICE_IPHONE;
+            } else if (userAgent.find("Android") != std::string::npos) { // anroid
+                if (userAgent.find("Mobile") != std::string::npos) {
+                    return SOLUTION_DEVICE_ANDROID;
+                }
+                return SOLUTION_DEVICE_ANDROIDPAD;
+            }
+            return SOLUTION_DEVICE_OTHER;
+        }
+
         std::string getBrowserTypeFromUA(const std::string & userAgent)
         {
             static AdUserAgentParser parser;

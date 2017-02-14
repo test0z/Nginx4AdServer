@@ -7,16 +7,17 @@
 
 #include <string>
 
-namespace adservice{
-    namespace utility{
-        namespace userclient{
+namespace adservice {
+namespace utility {
+    namespace userclient {
 
-            int getOSTypeFromUA(const std::string& userAgent);
+        int getOSTypeFromUA(const std::string & userAgent);
 
-            std::string getBrowserTypeFromUA(const std::string& userAgent);
+        std::string getBrowserTypeFromUA(const std::string & userAgent);
 
-        }
+        int getMobileTypeFromUA(const std::string & userAgent);
     }
 }
+}
 
-#endif //ADCORE_USERCLIENT_H
+#endif // ADCORE_USERCLIENT_H

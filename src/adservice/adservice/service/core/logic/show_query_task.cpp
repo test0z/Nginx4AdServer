@@ -336,6 +336,9 @@ namespace corelogic {
             server::IpManager & ipManager = IpManager::getInstance();
             condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
             condition.mobileDevice = getDeviceTypeForSsp(paramMap);
+            if (condition.mobileDevice == SOLUTION_DEVICE_OTHER) {
+                condition.mobileDevice = utility::userclient::getMobileTypeFromUA(userAgent);
+            }
             condition.pcOS = utility::userclient::getOSTypeFromUA(userAgent);
             condition.flowType
                 = condition.mobileDevice != SOLUTION_DEVICE_OTHER ? SOLUTION_FLOWTYPE_MOBILE : SOLUTION_FLOWTYPE_PC;

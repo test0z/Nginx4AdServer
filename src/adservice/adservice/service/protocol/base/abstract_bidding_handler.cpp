@@ -133,7 +133,7 @@ namespace bidding {
         showUrl.add("o", adInfo.pid);
         showUrl.add("x", std::to_string(adInfo.adxid));
         showUrl.add("r", bid);
-        showUrl.add("u", cmInfo.userMapping.cypherUserId.c_str());
+        showUrl.add("u", cmInfo.userMapping.cypherUid());
         showUrl.add("tm", std::to_string(time(NULL)));
         showUrl.add("pt", std::to_string(adInfo.priceType));
         showUrl.add("od", std::to_string(adInfo.orderId));
@@ -189,7 +189,7 @@ namespace bidding {
         clickUrl.add("f", encodedReferer);
         clickUrl.add("h", "000");
         clickUrl.add("a", adInfo.areaId);
-        clickUrl.add("u", cmInfo.userMapping.cypherUserId.c_str());
+        clickUrl.add("u", cmInfo.userMapping.cypherUserId);
         clickUrl.add("pt", std::to_string(adInfo.priceType));
         clickUrl.add("od", std::to_string(adInfo.orderId));
         clickUrl.add("url", encodedLandingUrl);

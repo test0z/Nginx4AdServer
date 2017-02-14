@@ -201,12 +201,12 @@ namespace bidding {
                                     queryCondition.pcOS,
                                     queryCondition.pcBrowserStr);
             queryCondition.mobileNetwork = getInmobiNetwork(device.get("carrier", 0));
-            queryCondition.idfa = device.get("idfa", "");
+            queryCondition.idfa = device.get("ext.idfa", "");
             queryCondition.imei = device.get("didmd5", "");
             queryCondition.androidId = device.get("dpidmd5", "");
             cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
-                                   md5_encode(queryCondition.imei),
-                                   md5_encode(queryCondition.androidId),
+                                   queryCondition.imei,
+                                   queryCondition.androidId,
                                    md5_encode(queryCondition.mac));
             queryCookieMapping(cmInfo.queryKV, queryCondition);
         }
