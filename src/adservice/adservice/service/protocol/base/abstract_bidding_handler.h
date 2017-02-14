@@ -136,6 +136,11 @@ namespace bidding {
 
         const CookieMappingQueryKeyValue & cookieMappingKeyPC(int64_t adxId, const std::string & cookie);
 
+        const CookieMappingQueryKeyValue & cookieMappingKeyWap(int64_t adxId, const std::string & cookie)
+        {
+            return cookieMappingKeyPC(adxId, cookie);
+        }
+
         void queryCookieMapping(const CookieMappingQueryKeyValue & queryKV, AdSelectCondition & selectCondition);
 
         std::string redoCookieMapping(int64_t adxId, const std::string & adxCookieMappingUrl);

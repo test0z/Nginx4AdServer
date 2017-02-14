@@ -151,7 +151,10 @@ namespace bidding {
             queryCondition.mobileDevice = getDeviceType(device.platform());
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.adxid = ADX_TANX_MOBILE;
-            if (mobile.has_is_app() && mobile.is_app()) {
+            if (device.has_network()) {
+                queryCondition.mobileNetwork = getNetWork(device.network());
+            }
+            if (mobile.has_is_app() && mobile.is_app()) { // app
                 if (mobile.has_package_name()) {
                     queryCondition.adxpid = mobile.package_name();
                 }
@@ -161,16 +164,15 @@ namespace bidding {
                     queryCondition.mttyContentType
                         = typeTableManager.getContentType(ADX_TANX, std::to_string(category.id()));
                 }
+                cookieMappingKeyMobile(
+                    md5_encode(device.has_idfa() ? (queryCondition.idfa = tanxDeviceId(device.idfa())) : ""),
+                    md5_encode(device.has_imei() ? (queryCondition.imei = tanxDeviceId(device.imei())) : ""),
+                    md5_encode(device.has_android_id() ? (queryCondition.androidId = tanxDeviceId(device.android_id()))
+                                                       : ""),
+                    md5_encode(device.has_mac() ? (queryCondition.mac = tanxDeviceId(device.mac())) : ""));
+            } else { // wap
+                cookieMappingKeyWap(ADX_TANX_MOBILE, bidRequest.has_tid() ? bidRequest.tid() : "");
             }
-            if (device.has_network()) {
-                queryCondition.mobileNetwork = getNetWork(device.network());
-            }
-            cookieMappingKeyMobile(
-                md5_encode(device.has_idfa() ? (queryCondition.idfa = tanxDeviceId(device.idfa())) : ""),
-                md5_encode(device.has_imei() ? (queryCondition.imei = tanxDeviceId(device.imei())) : ""),
-                md5_encode(device.has_android_id() ? (queryCondition.androidId = tanxDeviceId(device.android_id()))
-                                                   : ""),
-                md5_encode(device.has_mac() ? (queryCondition.mac = tanxDeviceId(device.mac())) : ""));
         } else {
             queryCondition.pcOS = getOSTypeFromUA(bidRequest.user_agent());
             queryCondition.pcBrowserStr = getBrowserTypeFromUA(bidRequest.user_agent());
