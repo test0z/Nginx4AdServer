@@ -30,8 +30,21 @@ namespace corelogic {
             case ADX_SOHU_PC:
             case ADX_SOHU_MOBILE:
                 return "suid";
+            case ADX_360_MAX_PC:
+            case ADX_360_MAX_MOBILE:
+                return "mvuid";
             }
             return "";
+        }
+
+        bool isAdxUidValid(int64_t adxId, const std::string & uid)
+        {
+            if (adxId == ADX_360_MAX_PC || adxId == ADX_360_MAX_MOBILE) {
+                if (uid == "E0") {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 
@@ -76,7 +89,7 @@ namespace corelogic {
             int64_t adxId = log.adInfo.adxid;
             std::string adxUidKey = getAdxMappingKey(adxId);
             std::string adxUid = paramMap.find(adxUidKey) != paramMap.end() ? paramMap[adxUidKey] : "";
-            if (!adxUid.empty()) {
+            if (!adxUid.empty() && isAdxUidValid(adxId, adxUid)) {
                 char buf[1024];
                 std::string decodeAdxUid;
                 utility::url::urlDecode_f(adxUid, decodeAdxUid, buf);

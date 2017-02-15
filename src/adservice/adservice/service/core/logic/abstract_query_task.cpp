@@ -6,6 +6,7 @@
 #include "common/spinlock.h"
 #include "core/core_cm_manager.h"
 #include "logging.h"
+#include "protocol/360/360max_price.h"
 #include "protocol/baidu/baidu_price.h"
 #include "protocol/guangyin/guangyin_price.h"
 #include "protocol/kupai/kupai_price_decode.h"
@@ -82,6 +83,9 @@ namespace corelogic {
             return nex_price_decode(input);
         case ADX_KUPAI_MOBILE:
             return kupai_price_decode(input);
+        case ADX_360_MAX_PC:
+        case ADX_360_MAX_MOBILE:
+            return max360_price_decode(input);
         default:
             return 0;
         }

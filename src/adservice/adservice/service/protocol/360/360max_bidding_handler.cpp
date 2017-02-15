@@ -16,26 +16,25 @@ namespace bidding {
     using namespace adservice::utility::cypher;
     using namespace adservice::server;
 
-#define AD_TX_CLICK_MACRO "%%CLICK_URL_UNESC%%"
-#define AD_TX_CLICK_UNENC_MACRO "%%CLICK_URL_UNESC%%"
-#define AD_TX_PRICE_MACRO "%%SETTLE_PRICE%%"
-#define TANX_COOKIEMAPPING_URL "http://cms.tanx.com/t.gif?tanx_nid=113168313&tanx_cm"
+#define AD_MAX_CLICK_MACRO "%%CLICK_URL_ESC%%"
+#define AD_MAX_CLICK_UNENC_MACRO "%%CLICK_URL_UNESC%%"
+#define AD_MAX_PRICE_MACRO "%%WIN_PRICE%%"
+#define MAX_COOKIEMAPPING_URL "http://ck.adserver.com/mvdid=1"
 
     inline int max(const int & a, const int & b)
     {
         return a > b ? a : b;
     }
 
-    static int getDeviceType(const std::string & deviceInfo)
+    static int getDeviceTypeByOS(const std::string & os)
     {
-        if (deviceInfo.find("iphone") != std::string::npos) {
+        if (os.find("ios") != std::string::npos) {
             return SOLUTION_DEVICE_IPHONE;
-        } else if (deviceInfo.find("android") != std::string::npos) {
+        } else if (os.find("android") != std::string::npos) {
             return SOLUTION_DEVICE_ANDROID;
-        } else if (deviceInfo.find("ipad") != std::string::npos) {
-            return SOLUTION_DEVICE_IPAD;
-        } else
+        } else {
             return SOLUTION_DEVICE_OTHER;
+        }
     }
 
     static int getNetWork(int network)
@@ -56,6 +55,38 @@ namespace bidding {
         }
     }
 
+    std::string JuxiaoMaxBiddingHandler::juxiaoHtmlSnippet(const std::string & cookieMappingUrl, bool useHttps)
+    {
+        std::string bid = bidRequest.bid();
+        // bool isMobile = bidRequest.has_mobile();
+        const BidRequest_AdSlot & adzInfo = bidRequest.adslot(0);
+        std::string cmImage;
+        if (!cookieMappingUrl.empty()) {
+            cmImage = cmImage + "<img src=\"" + cookieMappingUrl + "\"/>";
+        }
+        return generateHtmlSnippet(bid, adzInfo.width(), adzInfo.height(), NULL, cmImage.c_str(), useHttps);
+    }
+
+    std::string JuxiaoMaxBiddingHandler::generateHtmlSnippet(const std::string & bid, int width, int height,
+                                                             const char * extShowBuf, const char * cookieMappingUrl,
+                                                             bool useHttps)
+    {
+        char html[4096];
+        url::URLHelper showUrlParam;
+        getShowPara(showUrlParam, bid);
+        showUrlParam.add(URL_IMP_OF, "3");
+        showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_MAX_PRICE_MACRO);
+        snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s", useHttps ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL,
+                 showUrlParam.cipherParam().c_str());
+        showUrlParam.add(URL_IMP_OF, "2");
+        showUrlParam.removeMacro(URL_EXCHANGE_PRICE);
+        showUrlParam.addMacro(URL_ADX_MACRO, AD_MAX_CLICK_MACRO);
+        int len = snprintf(html, sizeof(html), SNIPPET_IFRAME_SUPPORT_CM, width, height,
+                           useHttps ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL, "", showUrlParam.cipherParam().c_str(),
+                           cookieMappingUrl);
+        return std::string(html, html + len);
+    }
+
     bool JuxiaoMaxBiddingHandler::parseRequestData(const std::string & data)
     {
         bidRequest.Clear();
@@ -74,7 +105,7 @@ namespace bidding {
                 if (mobile.has_device()) {
                     const BidRequest_Mobile_Device & device = mobile.device();
                     logItem.deviceInfo = device.DebugString();
-                    adInfo.adxid = logItem.adInfo.adxid = ADX_TANX_MOBILE;
+                    adInfo.adxid = logItem.adInfo.adxid = ADX_360_MAX_MOBILE;
                 }
             }
         }
@@ -83,58 +114,56 @@ namespace bidding {
 
     bool JuxiaoMaxBiddingHandler::filter(const BiddingFilterCallback & filterCb)
     {
-        if (bidRequest.is_ping() != 0) {
-            return bidFailedReturn();
-        }
-
         //从BID Request中获取请求的广告位信息,目前只取第一个
-        if (bidRequest.adzinfo_size() <= 0)
+        if (bidRequest.adslot_size() <= 0)
             return bidFailedReturn();
-        const BidRequest_AdzInfo & adzInfo = bidRequest.adzinfo(0);
+        const BidRequest_AdSlot & adzInfo = bidRequest.adslot(0);
         const std::string & pid = adzInfo.pid();
         std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
         AdSelectCondition & queryCondition = queryConditions[0];
-        queryCondition.adxid = ADX_TANX;
+        queryCondition.adxid = ADX_360_MAX_PC;
         queryCondition.adxpid = pid;
         queryCondition.ip = bidRequest.ip();
-        queryCondition.basePrice = adzInfo.has_min_cpm_price() ? adzInfo.min_cpm_price() : 0;
-        extractSize(adzInfo.size(), queryCondition.width, queryCondition.height);
-        if (bidRequest.content_categories().size() > 0) {
-            const BidRequest_ContentCategory & category = bidRequest.content_categories(0);
+        queryCondition.basePrice = (adzInfo.has_min_cpm_price() ? adzInfo.min_cpm_price() : 0) / 1000;
+        queryCondition.width = adzInfo.width();
+        queryCondition.height = adzInfo.height();
+        if (bidRequest.content_category_size() > 0) {
+            const BidRequest_ContentCategory & category = bidRequest.content_category(0);
             TypeTableManager & typeTableManager = TypeTableManager::getInstance();
-            queryCondition.mttyContentType = typeTableManager.getContentType(ADX_TANX, std::to_string(category.id()));
+            queryCondition.mttyContentType
+                = typeTableManager.getContentType(ADX_360_MAX_PC, std::to_string(category.id()));
         }
         if (bidRequest.has_mobile()) {
             const BidRequest_Mobile & mobile = bidRequest.mobile();
             const BidRequest_Mobile_Device & device = mobile.device();
-            queryCondition.mobileDevice = getDeviceType(device.platform());
+            queryCondition.mobileDevice = getDeviceTypeByOS(device.os());
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
-            queryCondition.adxid = ADX_TANX_MOBILE;
-            if (mobile.has_is_app() && mobile.is_app()) {
-                if (mobile.has_package_name()) {
-                    queryCondition.adxpid = mobile.package_name();
-                }
-                if (mobile.app_categories().size() > 0) {
-                    const BidRequest_Mobile_AppCategory & category = mobile.app_categories(0);
-                    TypeTableManager & typeTableManager = TypeTableManager::getInstance();
-                    queryCondition.mttyContentType
-                        = typeTableManager.getContentType(ADX_TANX, std::to_string(category.id()));
-                }
-            }
+            queryCondition.adxid = ADX_360_MAX_MOBILE;
             if (device.has_network()) {
                 queryCondition.mobileNetwork = getNetWork(device.network());
             }
-            cookieMappingKeyMobile(
-                md5_encode(device.has_idfa() ? (queryCondition.idfa = tanxDeviceId(device.idfa())) : ""),
-                md5_encode(device.has_imei() ? (queryCondition.imei = tanxDeviceId(device.imei())) : ""),
-                md5_encode(device.has_android_id() ? (queryCondition.androidId = tanxDeviceId(device.android_id()))
-                                                   : ""),
-                md5_encode(device.has_mac() ? (queryCondition.mac = tanxDeviceId(device.mac())) : ""));
+            if (mobile.has_is_app() && mobile.is_app()) { // app
+                if (mobile.has_package_name()) {
+                    queryCondition.adxpid = mobile.package_name();
+                }
+                if (mobile.app_category_size() > 0) {
+                    TypeTableManager & typeTableManager = TypeTableManager::getInstance();
+                    queryCondition.mttyContentType
+                        = typeTableManager.getContentType(ADX_TANX, std::to_string(mobile.app_category(0)));
+                }
+                cookieMappingKeyMobile(
+                    md5_encode(device.has_idfa() ? (queryCondition.idfa = device.idfa()) : ""),
+                    md5_encode(device.has_imei() ? (queryCondition.imei = device.imei()) : ""),
+                    md5_encode(device.has_android_id() ? (queryCondition.androidId = device.android_id()) : ""),
+                    md5_encode(device.has_mac() ? (queryCondition.mac = device.mac()) : ""));
+            } else { // wap
+                cookieMappingKeyWap(ADX_360_MAX_MOBILE, bidRequest.has_mv_user_id() ? bidRequest.mv_user_id() : "");
+            }
         } else {
             queryCondition.pcOS = getOSTypeFromUA(bidRequest.user_agent());
             queryCondition.pcBrowserStr = getBrowserTypeFromUA(bidRequest.user_agent());
             queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
-            cookieMappingKeyPC(ADX_TANX, bidRequest.has_tid() ? bidRequest.tid() : "");
+            cookieMappingKeyPC(ADX_360_MAX_PC, bidRequest.has_mv_user_id() ? bidRequest.mv_user_id() : "");
         }
         queryCookieMapping(cmInfo.queryKV, queryCondition);
 
@@ -149,7 +178,6 @@ namespace bidding {
     {
         if (seq == 0) {
             bidResponse.Clear();
-            bidResponse.set_version(bidRequest.version());
             bidResponse.set_bid(bidRequest.bid());
             bidResponse.clear_ads();
         }
@@ -157,21 +185,20 @@ namespace bidding {
         const MT::common::Solution & finalSolution = result.solution;
         const MT::common::Banner & banner = result.banner;
         std::string adxAdvIdStr = banner.adxAdvId;
-        int adxAdvId = extractRealValue(adxAdvIdStr.data(), ADX_TANX);
+        int adxAdvId = extractRealValue(adxAdvIdStr.data(), ADX_360_MAX_PC);
         std::string adxIndustryTypeStr = banner.adxIndustryType;
-        int adxIndustryType = extractRealValue(adxIndustryTypeStr.data(), ADX_TANX);
-        const BidRequest_AdzInfo & adzInfo = bidRequest.adzinfo(seq);
-        int maxCpmPrice = (int)result.bidPrice;
+        int adxIndustryType = extractRealValue(adxIndustryTypeStr.data(), ADX_360_MAX_PC);
+        const BidRequest_AdSlot & adzInfo = bidRequest.adslot(seq);
+        int maxCpmPrice = (int)result.bidPrice * 1000;
 
         adResult->set_max_cpm_price(maxCpmPrice);
-        adResult->set_adzinfo_id(adzInfo.id());
-        adResult->set_ad_bid_count_idx(0);
+        adResult->set_adslot_id(adzInfo.id());
         adResult->add_creative_type(banner.bannerType);
         adResult->add_category(adxIndustryType);
         //缓存最终广告结果
-        fillAdInfo(queryCondition, result, bidRequest.tid());
+        fillAdInfo(queryCondition, result, bidRequest.has_mv_user_id() ? bidRequest.mv_user_id() : "");
 
-        std::string cookieMappingUrl = redoCookieMapping(ADX_TANX, TANX_COOKIEMAPPING_URL);
+        std::string cookieMappingUrl = redoCookieMapping(ADX_360_MAX_PC, MAX_COOKIEMAPPING_URL);
         bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
                      || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         std::string strBannerJson = banner.json;
@@ -184,12 +211,11 @@ namespace bidding {
             LOG_WARN << "destUrl should not be empty!!";
         }
         adResult->add_destination_url(destUrl);
-        adResult->add_click_through_url(destUrl);
         adResult->set_creative_id(std::to_string(adInfo.bannerId));
-        adResult->add_advertiser_ids(adxAdvId); // adx_advid
-        if (queryCondition.adxid != ADX_TANX_MOBILE) {
-            adResult->set_html_snippet(tanxHtmlSnippet(cookieMappingUrl, isIOS));
-            adResult->set_feedback_address(feedbackUrl);
+        adResult->set_advertiser_id(std::to_string(adxAdvId)); // adx_advid
+        if (queryCondition.adxid != ADX_360_MAX_MOBILE) {
+            adResult->set_html_snippet(juxiaoHtmlSnippet(cookieMappingUrl, isIOS));
+            adResult->set_nurl(feedbackUrl);
         } else {
             bannerJson["advid"] = finalSolution.advId;
             bannerJson["adxpid"] = adInfo.adxpid;
@@ -203,7 +229,7 @@ namespace bidding {
             bannerJson["of"] = "0";
             bannerJson["width"] = banner.width;
             bannerJson["height"] = banner.height;
-            bannerJson["xcurl"] = AD_TX_CLICK_UNENC_MACRO;
+            bannerJson["xcurl"] = AD_MAX_CLICK_UNENC_MACRO;
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
             bannerJson["clickurl"]
@@ -216,10 +242,9 @@ namespace bidding {
             url::URLHelper showUrlParam;
             getShowPara(showUrlParam, bidRequest.bid());
             showUrlParam.add(URL_IMP_OF, "3");
-            showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_TX_PRICE_MACRO);
-            snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s", (isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL),
-                     showUrlParam.cipherParam().c_str());
-            adResult->set_feedback_address(feedbackUrl);
+            showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_MAX_PRICE_MACRO);
+            adResult->set_nurl(std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?"
+                               + showUrlParam.cipherParam());
         }
     }
 
@@ -227,7 +252,7 @@ namespace bidding {
     {
         std::string result;
         if (!writeProtoBufObject(bidResponse, &result)) {
-            LOG_ERROR << "failed to write protobuf object in TanxBiddingHandler::match";
+            LOG_ERROR << "failed to write protobuf object in JuxiaoMaxBiddingHandler::match";
             reject(response);
             return;
         }
@@ -239,7 +264,6 @@ namespace bidding {
     void JuxiaoMaxBiddingHandler::reject(adservice::utility::HttpResponse & response)
     {
         bidResponse.Clear();
-        bidResponse.set_version(bidRequest.version());
         bidResponse.set_bid(bidRequest.bid());
         std::string result;
         if (!writeProtoBufObject(bidResponse, &result)) {

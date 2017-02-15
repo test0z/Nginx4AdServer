@@ -5,6 +5,7 @@
 #include "bid_query_task.h"
 
 #include "common/atomic.h"
+#include "protocol/360/360max_bidding_handler.h"
 #include "protocol/baidu/baidu_bidding_handler.h"
 #include "protocol/guangyin/guangyin_bidding_handler.h"
 #include "protocol/inmobi/inmobi_bidding_handler.h"
@@ -76,6 +77,8 @@ namespace corelogic {
         ADD_MODULE_ENTRY(BID_QUERY_PATH_KUPAI, ADX_KUPAI_MOBILE);
         //猎豹移动
         ADD_MODULE_ENTRY(BID_QUERY_PATH_LIEBAO, ADX_LIEBAO_MOBILE);
+        // 360MAX
+        ADD_MODULE_ENTRY(BID_QUERY_PATH_360MAX, ADX_360_MAX_PC);
 
         std::sort<int *>(moduleIdx, moduleIdx + moduleCnt, [](const int & a, const int & b) {
             return moduleAdx[a].moduleHash < moduleAdx[b].moduleHash;
@@ -127,6 +130,8 @@ namespace corelogic {
             return new KupaiBiddingHandler();
         case ADX_LIEBAO_MOBILE:
             return new LieBaoBiddingHandler();
+        case ADX_360_MAX_PC:
+            return new JuxiaoMaxBiddingHandler();
         default:
             return NULL;
         }

@@ -46,9 +46,16 @@ namespace bidding {
          */
         void reject(INOUT adservice::utility::HttpResponse & response);
 
+        std::string generateHtmlSnippet(const std::string & bid, int width, int height, const char * extShowBuf,
+                                        const char * cookieMappingUrl, bool useHttps);
+
+    private:
+        std::string juxiaoHtmlSnippet(const std::string & cookieMappingUrl, bool useHttps);
+
     private:
         protocol::MAX::BidRequest bidRequest;
         protocol::MAX::BidResponse bidResponse;
+        char feedbackUrl[2048];
     };
 }
 }
