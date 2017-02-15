@@ -52,8 +52,10 @@ namespace adselectv2 {
             source.insert({ "height", (int64_t)selectCondition.height });
             source.insert({ "width", (int64_t)selectCondition.width });
             source.insert({ "sizes", makeSize(selectCondition.width, selectCondition.height) });
+            request.nativeAdFlow = false;
         } else {
             source.insert({ "sizes", makeSize(selectCondition.pAdplaceInfo->sizeArray) });
+            request.nativeAdFlow = selectCondition.pAdplaceInfo->isAdFlow;
         }
         source.insert({ "d_device", (int64_t)selectCondition.mobileDevice });
         source.insert({ "d_mediatype", (int64_t)selectCondition.mediaType });

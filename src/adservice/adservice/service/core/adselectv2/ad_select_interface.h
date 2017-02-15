@@ -15,6 +15,7 @@ namespace adselectv2 {
      */
     class PreSetAdplaceInfo {
     public:
+        bool isAdFlow{ false };
         std::vector<std::pair<int64_t, int64_t>> sizeArray;
         int flowType{ 0 };
     };
