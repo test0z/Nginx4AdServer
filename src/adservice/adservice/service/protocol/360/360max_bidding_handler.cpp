@@ -195,6 +195,8 @@ namespace bidding {
         adResult->set_adslot_id(adzInfo.id());
         adResult->add_creative_type(banner.bannerType);
         adResult->add_category(adxIndustryType);
+        adResult->set_width(banner.width);
+        adResult->set_height(banner.height);
         //缓存最终广告结果
         fillAdInfo(queryCondition, result, bidRequest.has_mv_user_id() ? bidRequest.mv_user_id() : "");
 
@@ -230,6 +232,7 @@ namespace bidding {
             bannerJson["width"] = banner.width;
             bannerJson["height"] = banner.height;
             bannerJson["xcurl"] = AD_MAX_CLICK_UNENC_MACRO;
+            bannerJson["rs"] = true;
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
             bannerJson["clickurl"]

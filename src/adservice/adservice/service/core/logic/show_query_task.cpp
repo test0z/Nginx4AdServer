@@ -15,6 +15,7 @@
 #include "core/adselectv2/ad_select_client.h"
 #include "core/adselectv2/ad_select_interface.h"
 #include "core/config_types.h"
+#include "core/core_cm_manager.h"
 #include "core/core_ip_manager.h"
 #include "logging.h"
 #include "utility/utility.h"
@@ -166,6 +167,11 @@ namespace corelogic {
         mtAdInfo["width"] = width;
         mtAdInfo["height"] = height;
         mtAdInfo["oid"] = paramMap[URL_ORDER_ID];
+        int32_t flowType = paramMap.find(URL_FLOWTYPE) != paramMap.end() ? std::stoi(paramMap[URL_FLOWTYPE])
+                                                                         : SOLUTION_FLOWTYPE_UNKNOWN;
+        if (flowType == SOLUTION_FLOWTYPE_MOBILE) {
+            mtAdInfo["rs"] = true;
+        }
         URLHelper clickUrl(SNIPPET_CLICK_URL_HTTPS, false);
         for (auto iter : paramMap) {
             clickUrl.add(iter.first, iter.second);
@@ -193,7 +199,7 @@ namespace corelogic {
 
     int buildResponseForSsp(const MT::common::SelectResult & selectResult, ParamMap & paramMap, string & json,
                             const char * templateFmt, char * buffer, int bufferSize, const std::string & userIp,
-                            const std::string & referer)
+                            const std::string & referer, const std::string & impId)
     {
         const MT::common::Solution & solution = selectResult.solution;
         const MT::common::Banner & banner = selectResult.banner;
@@ -203,8 +209,7 @@ namespace corelogic {
         std::string pid = to_string(adplace.pId);
         mtAdInfo["pid"] = pid;
         mtAdInfo["adxpid"] = pid;
-        std::string impid = cypher::randomId(3);
-        mtAdInfo["impid"] = impid;
+        mtAdInfo["impid"] = impId;
         std::string adxid = to_string(adplace.adxId);
         mtAdInfo["unid"] = adxid;
         mtAdInfo["plid"] = "";
@@ -233,7 +238,7 @@ namespace corelogic {
         clickUrl.add(URL_ADPLACE_ID, pid);
         clickUrl.add(URL_MTTYADPLACE_ID, pid);
         clickUrl.add(URL_ADX_ID, adxid);
-        clickUrl.add(URL_EXPOSE_ID, impid);
+        clickUrl.add(URL_EXPOSE_ID, impId);
         clickUrl.add(URL_ADOWNER_ID, std::to_string(advId));
         clickUrl.add(URL_EXEC_ID, sid);
         clickUrl.add(URL_PRODUCTPACKAGE_ID, ppid);
@@ -389,10 +394,12 @@ namespace corelogic {
             if (condition.mobileDevice == SOLUTION_DEVICE_IPHONE || condition.mobileDevice == SOLUTION_DEVICE_IPAD) {
                 adservice::utility::url::url_replace_all(bannerJson, "http://", "https://");
             }
+            auto idSeq = CookieMappingManager::IdSeq();
+            log.adInfo.imp_id = std::to_string(idSeq.time()) + std::to_string(idSeq.id());
             //返回结果
             char buffer[8192];
             int len = buildResponseForSsp(selectResult, paramMap, bannerJson, templateFmt, buffer, sizeof(buffer),
-                                          userIp, referer);
+                                          userIp, referer, log.adInfo.imp_id);
             respBody = std::string(buffer, buffer + len);
             //狗尾续一个bid日志
             doLog(log);

@@ -247,6 +247,7 @@ namespace bidding {
             bannerJson["width"] = banner.width;
             bannerJson["height"] = banner.height;
             bannerJson["xcurl"] = AD_TX_CLICK_UNENC_MACRO;
+            bannerJson["rs"] = queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE;
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
             bannerJson["clickurl"]
