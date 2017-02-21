@@ -101,7 +101,7 @@ namespace corelogic {
             cost = decodePrice;
             bidPrice = std::ceil(decodePrice * AD_OWNER_COST_FACTOR);
         }
-        if (priceType == PRICETYPE_RRTB_CPC) {
+        if (priceType == PRICETYPE_RRTB_CPC || priceType == PRICETYPE_RCPC) {
             if (logPhase != protocol::log::LogPhaseType::CLICK) {
                 bidPrice = 0;
             } else {
