@@ -43,6 +43,7 @@ namespace bidding {
     class BiddingFlowExtraInfo {
     public:
         int32_t mediaType;
+        int32_t flowType;
         std::string keyWords;
         std::string deviceIdName;
         std::vector<std::string> dealIds;

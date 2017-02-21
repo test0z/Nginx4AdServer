@@ -132,13 +132,14 @@ namespace bidding {
         showUrl.add("s", adInfo.adxpid);
         showUrl.add("o", adInfo.pid);
         showUrl.add("x", std::to_string(adInfo.adxid));
-        showUrl.add("r", bid);
+        showUrl.add("r", adInfo.imp_id);
         showUrl.add("u", cmInfo.userMapping.cypherUid());
         showUrl.add("tm", std::to_string(time(NULL)));
         showUrl.add("pt", std::to_string(adInfo.priceType));
         showUrl.add("od", std::to_string(adInfo.orderId));
         showUrl.add("ep", std::to_string(adInfo.ppid));
         showUrl.add(URL_SITE_ID, std::to_string(adInfo.mid));
+        showUrl.add(URL_FLOWTYPE, std::to_string(adFlowExtraInfo.flowType));
     }
 
     void AbstractBiddingHandler::getClickPara(const std::string & bid, char * clickParamBuf, int clickBufSize,
@@ -257,6 +258,8 @@ namespace bidding {
         adInfo.orderId = result.orderId;
         adInfo.offerPrice = result.feePrice;
         adInfo.areaId = adservice::server::IpManager::getInstance().getAreaCodeStrByIp(selectCondition.ip.data());
+        auto idSeq = CookieMappingManager::IdSeq();
+        adInfo.imp_id = std::to_string(idSeq.time()) + std::to_string(idSeq.id());
         adFlowExtraInfo.devInfo.deviceType = selectCondition.mobileDevice;
         adFlowExtraInfo.devInfo.flowType = selectCondition.flowType;
         adFlowExtraInfo.devInfo.netWork = selectCondition.mobileNetwork;
@@ -291,6 +294,7 @@ namespace bidding {
             adFlowExtraInfo.dealIds.clear();
             adFlowExtraInfo.dealIds.push_back(finalSolution.dDealId);
         }
+        adFlowExtraInfo.flowType = selectCondition.flowType;
     }
 
     const CookieMappingQueryKeyValue & AbstractBiddingHandler::cookieMappingKeyMobile(const std::string & idfa,

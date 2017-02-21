@@ -187,6 +187,9 @@ namespace corelogic {
                 std::string & x = iter->second;                         // paramMap[URL_ADX_ID];
                 log.adInfo.adxid = URLParamMap::stringToInt(x);
             }
+            if ((iter = paramMap.find(URL_EXPOSE_ID)) != paramMap.end()) { //曝光Id
+                log.adInfo.imp_id = iter->second;
+            }
             if ((iter = paramMap.find(URL_CLICK_ID)) != paramMap.end()) { // clickId
                 std::string & h = iter->second;                           // paramMap[URL_CLICK_ID];
                 log.adInfo.clickId = h;

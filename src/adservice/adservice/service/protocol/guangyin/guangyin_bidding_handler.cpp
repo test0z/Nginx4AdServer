@@ -258,6 +258,7 @@ namespace bidding {
             bannerJson["width"] = banner.width;
             bannerJson["height"] = banner.height;
             bannerJson["xcurl"] = CURL_PLACEHOLDER;
+            bannerJson["rs"] = queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE;
             URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest_.id(), "", landingUrl);
             bannerJson["clickurl"]
