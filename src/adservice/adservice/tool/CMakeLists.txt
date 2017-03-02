@@ -42,6 +42,8 @@ ADD_EXECUTABLE(locallog_collector ./locallog_collector.cpp
     ../service/core/config_types.cpp
     )
 
+ADD_EXECUTABLE(update_from_db ./update_from_db.cpp)
+
 SET(LINK_LIBRARY
     rt
     dl
@@ -68,3 +70,7 @@ TARGET_LINK_LIBRARIES(locallog_collector ${LINK_LIBRARY}
     ${LIB_MUDUO_BASE11}
     ${LIB_TBB}
     pthread)
+
+TARGET_LINK_LIBRARIES(update_from_db ${LINK_LIBRARY}
+    mysql
+)

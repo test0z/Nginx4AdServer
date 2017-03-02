@@ -257,6 +257,7 @@ namespace corelogic {
         std::string landingUrl
             = banner.bannerType == BANNER_TYPE_PRIMITIVE ? mtls[0].get("p9", "") : mtls[0].get("p1", "");
         url_replace(landingUrl, "{{click}}", "");
+        url_replace(landingUrl, "https://", "http://");
         std::string encodedLandingUrl;
         urlEncode_f(landingUrl, encodedLandingUrl, landingPageBuffer);
         clickUrl.add(URL_LANDING_URL, encodedLandingUrl);

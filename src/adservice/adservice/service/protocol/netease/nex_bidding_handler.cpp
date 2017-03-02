@@ -134,10 +134,12 @@ namespace bidding {
             for (auto & allowStyle : allowstyles) {
                 int64_t style = allowStyle.number();
                 if (adplaceStyleMap.find(style)) {
-                    const auto & size = adplaceStyleMap.get(style);
-                    adplaceInfo.sizeArray.push_back(std::make_pair(size.width, size.height));
-                    queryCondition.width = size.width;
-                    queryCondition.height = size.height;
+                    const auto & sizeStyle = adplaceStyleMap.get(style);
+                    for (auto size : sizeStyle.sizes) {
+                        adplaceInfo.sizeArray.push_back(std::make_pair(size.first, size.second));
+                        queryCondition.width = size.first;
+                        queryCondition.height = size.second;
+                    }
                 }
             }
             queryCondition.pAdplaceInfo = &adplaceInfo;
@@ -282,6 +284,7 @@ namespace bidding {
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
             landingUrl = mtlsArray[0]["p9"].str();
             replace(landingUrl, "{{click}}", "");
+            adservice::utility::url::url_replace(landingUrl, "https://", "http://");
             extValue["linkUrl"] = landingUrl;
             int style = 0;
             auto & sizeStyleMap = adplaceStyleMap.getSizeStyleMap();

@@ -93,8 +93,8 @@ namespace log {
         }
         void startRemoteMonitor(const Message & msg);
 
-        void push(std::shared_ptr<adservice::types::string> & logstring);
-        void push(std::shared_ptr<adservice::types::string> && logstring);
+        void push(std::shared_ptr<adservice::types::string> & logstring, bool important = true);
+        void push(std::shared_ptr<adservice::types::string> && logstring, bool important = true);
 
         static void setLocalLogFilePrefix(const std::string & prefix)
         {

@@ -9,19 +9,23 @@
 
 #include "protocol/base/abstract_bidding_handler.h"
 #include "utility/utility.h"
+#include <unordered_set>
 
 namespace protocol {
 namespace bidding {
 
     struct NetEaseAdplaceStyle {
-        int width, height;
+        std::unordered_set<std::pair<int, int>> sizes;
         NetEaseAdplaceStyle()
         {
         }
         NetEaseAdplaceStyle(int w, int h)
-            : width(w)
-            , height(h)
         {
+            sizes.insert({ w, h });
+        }
+        void addSize(int w, int h)
+        {
+            sizes.insert({ w, h });
         }
     };
 
@@ -31,12 +35,19 @@ namespace bidding {
         {
             add(3, 1, 0);
             add(10, 2, 0);
+            add(10, 2, 12);
             add(11, 3, 0);
             add(13, 4, 0);
         }
         inline void add(int key, int width, int height)
         {
-            styleMap.insert(std::make_pair(key, NetEaseAdplaceStyle(width, height)));
+            auto iter = styleMap.find(key);
+            if (iter == styleMap.end()) {
+                styleMap.insert(std::make_pair(key, NetEaseAdplaceStyle(width, height)));
+            } else {
+                auto & style = iter->second;
+                style.addSize(width, height);
+            }
             sizeStyleMap.insert(std::make_pair(std::make_pair(width, height), key));
         }
         inline NetEaseAdplaceStyle & get(int key)

@@ -82,6 +82,7 @@ namespace corelogic {
             log.traceInfo.tag9 = paramMap[URL_TAG9];
             log.traceInfo.tag10 = paramMap[URL_TAG10];
             try {
+                log.adInfo.advId = std::stoi(sourceRecord.advId());
                 log.adInfo.adxpid = sourceRecord.adxPid();
                 log.adInfo.pid = sourceRecord.pid();
                 log.adInfo.areaId = sourceRecord.geoId();

@@ -149,7 +149,7 @@ namespace bidding {
                 queryCondition.adxpid = app.app_bundle_id();
             }
         } else if (adzInfo.has_placement_id()) {
-            queryCondition.adxpid = adzInfo.placement_id();
+            queryCondition.adxpid = std::to_string(adzInfo.placement_id());
         }
         queryCondition.pAdplaceInfo = &adplaceInfo;
         if (!filterCb(this, queryConditions)) {
@@ -178,13 +178,28 @@ namespace bidding {
         adResult->set_creative_id(std::to_string(banner.bId));
         //缓存最终广告结果
         fillAdInfo(queryCondition, result, bidRequest.has_user() ? bidRequest.user().id() : "");
+        bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
+                     || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
+        std::string strBannerJson = banner.json;
+        urlHttp2HttpsIOS(isIOS, strBannerJson);
+        cppcms::json::value bannerJson;
+        adservice::utility::json::parseJson(strBannerJson.c_str(), bannerJson);
+        const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
+        std::string landingUrl;
+        if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
+            landingUrl = mtlsArray[0].get("p9", "");
+        } else {
+            landingUrl = mtlsArray[0].get("p1", "");
+        }
+        adservice::utility::url::url_replace(landingUrl, "{{click}}", "");
+        adservice::utility::url::url_replace(landingUrl, "https://", "http://");
         // html snippet相关
         url::URLHelper showUrlParam;
         getShowPara(showUrlParam, bidRequest.id());
         showUrlParam.add(URL_IMP_OF, "3");
         adResult->set_impression_param(showUrlParam.cipherParam());
         url::URLHelper clickUrlParam;
-        getClickPara(clickUrlParam, bidRequest.id(), "", "");
+        getClickPara(clickUrlParam, bidRequest.id(), "", landingUrl);
         adResult->set_click_param(clickUrlParam.cipherParam());
         redoCookieMapping(queryCondition.adxid, "");
     }

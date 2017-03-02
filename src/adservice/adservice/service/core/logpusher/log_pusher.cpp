@@ -104,6 +104,7 @@ namespace log {
         }
         void operator()()
         {
+            pid_t pid = getpid();
             pthread_t thread = pthread_self();
             LogPushLocalThreadData * data = (LogPushLocalThreadData *)ThreadLocalManager::getInstance().get(thread);
             if (data == NULL) {
@@ -113,7 +114,7 @@ namespace log {
             FILE * fp = data->fp;
             long curTime = utility::time::getCurrentTimeStamp();
             bool expired = false;
-            if (fp == NULL || (expired = data->lastTime < curTime - HOUR_SECOND)) {
+            if (fp == NULL || (expired = (data->lastTime < curTime - HOUR_SECOND))) {
                 if (expired) {
                     fclose(fp);
                     fp = NULL;
@@ -139,7 +140,7 @@ namespace log {
                     }
                 }
                 char filename[1024];
-                sprintf(filename, "%s/click.%lu.log", dirname, thread);
+                sprintf(filename, "%s/bussiness.%d.%lu.%lu.log", dirname, pid, thread, curTime);
                 fp = fopen(filename, "wb+");
                 if (fp == NULL) {
                     LOG_ERROR << "file " << filename << " can not be opened!";
@@ -180,7 +181,7 @@ namespace log {
         logMap.erase(name);
     }
 
-    void LogPusher::push(std::shared_ptr<adservice::types::string> & logstring)
+    void LogPusher::push(std::shared_ptr<adservice::types::string> & logstring, bool important)
     {
         if (!modeLocal) {
             //由于现在使用的kafka client api有自己的消息队列机制,所以不需要走logpusher内部消息队列
@@ -190,11 +191,13 @@ namespace log {
                 this->startRemoteMonitor(Message(DEFAULT_KAFKA_TOPIC, *(logstring.get())));
             }
         } else {
-            executor.run(std::bind(LogPushLocalTask(logstring)));
+            if (important) {
+                executor.run(std::bind(LogPushLocalTask(logstring)));
+            }
         }
     }
 
-    void LogPusher::push(std::shared_ptr<adservice::types::string> && logstring)
+    void LogPusher::push(std::shared_ptr<adservice::types::string> && logstring, bool important)
     {
         if (!modeLocal) {
             SendResult sendResult = producer->send(Message(DEFAULT_KAFKA_TOPIC, *(logstring.get())));
@@ -203,7 +206,9 @@ namespace log {
                 this->startRemoteMonitor(Message(DEFAULT_KAFKA_TOPIC, *(logstring.get())));
             }
         } else {
-            executor.run(std::bind(LogPushLocalTask(logstring)));
+            if (important) {
+                executor.run(std::bind(LogPushLocalTask(logstring)));
+            }
         }
     }
 

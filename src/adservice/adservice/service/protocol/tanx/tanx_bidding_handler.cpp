@@ -3,6 +3,7 @@
 //
 
 #include "tanx_bidding_handler.h"
+#include "core/core_ad_sizemap.h"
 #include "core/core_ip_manager.h"
 #include "core/core_typetable.h"
 #include "core/logic/show_query_task.h"
@@ -155,6 +156,13 @@ namespace bidding {
                 queryCondition.mobileNetwork = getNetWork(device.network());
             }
             if (mobile.has_is_app() && mobile.is_app()) { // app
+                if (adzInfo.view_type() == 104) {         //无线墙原生
+                    const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
+                    auto sizePair = adSizeMap.get(queryCondition.width, queryCondition.height);
+                    queryCondition.width = sizePair.first;
+                    queryCondition.height = sizePair.second;
+                    queryCondition.bannerType = BANNER_TYPE_PRIMITIVE;
+                }
                 if (mobile.has_package_name()) {
                     queryCondition.adxpid = mobile.package_name();
                 }
@@ -222,41 +230,36 @@ namespace bidding {
         cppcms::json::value bannerJson;
         parseJson(strBannerJson.c_str(), bannerJson);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
-        std::string destUrl = mtlsArray[0].get("p1", "");
-        if (destUrl.empty()) {
-            LOG_WARN << "destUrl should not be empty!!";
-        }
-        adResult->add_destination_url(destUrl);
-        adResult->add_click_through_url(destUrl);
+
         adResult->set_creative_id(std::to_string(adInfo.bannerId));
         adResult->add_advertiser_ids(adxAdvId); // adx_advid
-        if (queryCondition.adxid != ADX_TANX_MOBILE) {
-            adResult->set_html_snippet(tanxHtmlSnippet(cookieMappingUrl, isIOS));
-            adResult->set_feedback_address(feedbackUrl);
-        } else {
-            bannerJson["advid"] = finalSolution.advId;
-            bannerJson["adxpid"] = adInfo.adxpid;
-            bannerJson["arid"] = adInfo.areaId;
-            bannerJson["gpid"] = finalSolution.sId;
-            bannerJson["pid"] = adInfo.pid;
-            bannerJson["ppid"] = adInfo.ppid;
-            bannerJson["price"] = adInfo.offerPrice;
-            bannerJson["pricetype"] = adInfo.priceType;
-            bannerJson["unid"] = adInfo.adxid;
-            bannerJson["of"] = "0";
-            bannerJson["width"] = banner.width;
-            bannerJson["height"] = banner.height;
-            bannerJson["xcurl"] = AD_TX_CLICK_UNENC_MACRO;
-            bannerJson["rs"] = queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE;
+        if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE
+            && banner.bannerType == BANNER_TYPE_PRIMITIVE) { //移动原生广告
+            std::string destUrl = mtlsArray[0].get("p9", "");
+            url::url_replace(destUrl, "{{click}}", "");
+            adservice::utility::url::url_replace(destUrl, "https://", "http://");
+            adResult->add_destination_url(destUrl);
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
-            bannerJson["clickurl"]
+            std::string clickUrl
                 = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
-            std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
-            char admBuffer[4096];
-            snprintf(admBuffer, sizeof(admBuffer), adservice::corelogic::HandleShowQueryTask::showAdxTemplate,
-                     mtadInfoStr.data());
-            adResult->set_html_snippet(admBuffer);
+            adResult->add_click_through_url(clickUrl);
+            if (bidRequest.mobile().ad_num() > 1) {
+                std::string resourceAddress = mtlsArray[0]["p6"].str();
+                adResult->set_resource_address(resourceAddress);
+            } else {
+                auto & mobileCreative = adResult->mobile_creative();
+                mobileCreative.set_version(bidRequest.version());
+                mobileCreative.set_bid(bidRequest.bid());
+                auto creative = mobileCreative.add_creatives();
+                creative->set_img_url(mtlsArray[0].get("p6", ""));
+                creative->set_img_size(adzInfo.size());
+                creative->set_title(mtlsArray[0].get("p0", ""));
+                creative->set_click_url(clickUrl);
+                creative->set_destination_url(destUrl);
+                creative->set_creative_id(std::to_string(banner.bId));
+                mobileCreative.set_native_template_id(bidRequest.mobile().native_template_id(0));
+            }
             url::URLHelper showUrlParam;
             getShowPara(showUrlParam, bidRequest.bid());
             showUrlParam.add(URL_IMP_OF, "3");
@@ -264,6 +267,47 @@ namespace bidding {
             snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s", (isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL),
                      showUrlParam.cipherParam().c_str());
             adResult->set_feedback_address(feedbackUrl);
+        } else { //非移动原生广告
+            std::string destUrl = mtlsArray[0].get("p1", "");
+            adservice::utility::url::url_replace(destUrl, "https://", "http://");
+            adResult->add_destination_url(destUrl);
+            adResult->add_click_through_url(destUrl);
+            if (queryCondition.flowType == SOLUTION_FLOWTYPE_PC) {
+                adResult->set_html_snippet(tanxHtmlSnippet(cookieMappingUrl, isIOS));
+                adResult->set_feedback_address(feedbackUrl);
+            } else {
+                bannerJson["advid"] = finalSolution.advId;
+                bannerJson["adxpid"] = adInfo.adxpid;
+                bannerJson["arid"] = adInfo.areaId;
+                bannerJson["gpid"] = finalSolution.sId;
+                bannerJson["pid"] = adInfo.pid;
+                bannerJson["ppid"] = adInfo.ppid;
+                bannerJson["price"] = adInfo.offerPrice;
+                bannerJson["pricetype"] = adInfo.priceType;
+                bannerJson["unid"] = adInfo.adxid;
+                bannerJson["of"] = "0";
+                bannerJson["width"] = banner.width;
+                bannerJson["height"] = banner.height;
+                bannerJson["xcurl"] = AD_TX_CLICK_UNENC_MACRO;
+                bannerJson["rs"] = queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE;
+                url::URLHelper clickUrlParam;
+                getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
+                std::string clickUrl = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?"
+                                       + clickUrlParam.cipherParam();
+                bannerJson["clickurl"] = clickUrl;
+                std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
+                char admBuffer[4096];
+                snprintf(admBuffer, sizeof(admBuffer), adservice::corelogic::HandleShowQueryTask::showAdxTemplate,
+                         mtadInfoStr.data());
+                adResult->set_html_snippet(admBuffer);
+                url::URLHelper showUrlParam;
+                getShowPara(showUrlParam, bidRequest.bid());
+                showUrlParam.add(URL_IMP_OF, "3");
+                showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_TX_PRICE_MACRO);
+                snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s", (isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL),
+                         showUrlParam.cipherParam().c_str());
+                adResult->set_feedback_address(feedbackUrl);
+            }
         }
     }
 

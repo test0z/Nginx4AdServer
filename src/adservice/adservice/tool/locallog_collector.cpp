@@ -149,6 +149,9 @@ void readFile(const char * filename, const SyncLogCallback & logCallback = SyncL
         }
         fileOffset = ftell(fp);
         counter++;
+        if(counter%10000==1){
+            sleep(1);
+        }
     }
     fclose(fp);
     // printf("fileOffset:%d,counter:%d\n",fileOffset,counter);
@@ -220,7 +223,7 @@ int main(int argc, const char ** argv)
         syncCB = std::bind(&verifydata, std::placeholders::_1, std::placeholders::_2);
     } else if (strcmp(operation, "sync") == 0) {
         globalConfig.logConfig.kafkaBroker = "192.168.2.52";
-        globalConfig.logConfig.kafkaMQMaxSize = "10000";
+        globalConfig.logConfig.kafkaMQMaxSize = "100000";
         globalConfig.logConfig.kafkaTopic = "mt-log";
         globalConfig.logConfig.localLoggerThreads = 3;
         globalConfig.logConfig.kafkaLogEnable = true;
@@ -258,6 +261,7 @@ int main(int argc, const char ** argv)
     } catch (std::exception & e) {
         LOG_DEBUG << "error occured:" << e.what();
     }
+    LOG_INFO<<"why stop?";
     if (logProducer != NULL) {
         serviceLogger->stop();
     }

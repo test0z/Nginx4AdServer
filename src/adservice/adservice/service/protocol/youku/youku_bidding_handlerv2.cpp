@@ -347,6 +347,7 @@ namespace bidding {
             bidValue["adm"] = materialUrl;
             landingUrl = mtlsArray[0]["p1"].str();
         }
+        adservice::utility::url::url_replace(landingUrl, "https://", "http://");
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, requestId, "", landingUrl);
         extValue["ldp"]

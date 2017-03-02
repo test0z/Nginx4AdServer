@@ -108,10 +108,12 @@ namespace bidding {
         }
         for (int64_t style : styles) {
             if (adplaceStyleMap.find(style)) {
-                const auto & size = adplaceStyleMap.get(style);
-                adplaceInfo.sizeArray.push_back(std::make_pair(size.width, size.height));
-                queryCondition.width = size.width;
-                queryCondition.height = size.height;
+                const auto & sizeStyle = adplaceStyleMap.get(style);
+                for (auto size : sizeStyle.sizes) {
+                    adplaceInfo.sizeArray.push_back(std::make_pair(size.first, size.second));
+                    queryCondition.width = size.first;
+                    queryCondition.height = size.second;
+                }
             }
         }
         if (adplaceInfo.sizeArray.empty()) {
@@ -189,6 +191,7 @@ namespace bidding {
             materialUrls.push_back(mtlsArray[0]["p8"].str());
             landingUrl = mtlsArray[0]["p9"].str();
             replace(landingUrl, "{{click}}", "");
+            replace(landingUrl, "https://", "http://");
             if (queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE) {
                 downloadUrl = mtlsArray[0]["p10"].str();
             } else if (queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROID) {
@@ -217,6 +220,7 @@ namespace bidding {
             std::string materialUrl = mtlsArray[0]["p0"].str();
             materialUrls.push_back(materialUrl);
             landingUrl = mtlsArray[0]["p1"].str();
+            replace(landingUrl, "https://", "http://");
         }
         bidResponse["mainTitle"] = mainTitle;
         bidResponse["valid_time"] = 86400000;

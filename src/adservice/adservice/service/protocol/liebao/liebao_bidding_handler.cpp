@@ -255,6 +255,7 @@ namespace bidding {
 
             landingUrl = mtlsArray[0]["p9"].str();
             url_replace(landingUrl, "{{click}}", "");
+            adservice::utility::url::url_replace(landingUrl, "https://", "http://");
             admAssetsArray.push_back(outputAsset);
             admObj["link"]["url"] = landingUrl;
             admObj["link"]["clicktrackers"] = cppcms::json::array();

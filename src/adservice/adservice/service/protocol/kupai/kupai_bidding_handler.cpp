@@ -197,6 +197,7 @@ namespace bidding {
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
             landingUrl = mtlsArray[0]["p9"].str();
             replace(landingUrl, "{{click}}", "");
+            adservice::utility::url::url_replace(landingUrl, "https://", "http://");
             cppcms::json::array imageUrls;
             imageUrls.push_back(mtlsArray[0]["p6"].str());
             imageUrls.push_back(mtlsArray[0]["p7"].str());
@@ -205,6 +206,7 @@ namespace bidding {
             admObject["landingurl"] = landingUrl;
         } else if (banner.bannerType != BANNER_TYPE_HTML) {
             landingUrl = mtlsArray[0]["p1"].str();
+            adservice::utility::url::url_replace(landingUrl, "https://", "http://");
             cppcms::json::array imageUrls;
             imageUrls.push_back(mtlsArray[0]["p0"].str());
             admObject["imgurl"] = imageUrls;

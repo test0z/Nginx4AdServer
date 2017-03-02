@@ -187,9 +187,6 @@ namespace corelogic {
                 std::string & x = iter->second;                         // paramMap[URL_ADX_ID];
                 log.adInfo.adxid = URLParamMap::stringToInt(x);
             }
-            if ((iter = paramMap.find(URL_EXPOSE_ID)) != paramMap.end()) { //曝光Id
-                log.adInfo.imp_id = iter->second;
-            }
             if ((iter = paramMap.find(URL_CLICK_ID)) != paramMap.end()) { // clickId
                 std::string & h = iter->second;                           // paramMap[URL_CLICK_ID];
                 log.adInfo.clickId = h;
@@ -297,6 +294,16 @@ namespace corelogic {
             cookieString += ";Domain=." COOKIES_MTTY_DOMAIN ";Max-Age=2617488000;";
             resp.set("Set-Cookie", cookieString);
         }
+
+        bool isBussinessLogImportant(protocol::log::LogPhaseType & phaseType)
+        {
+            if (phaseType == protocol::log::CLICK || phaseType == protocol::log::SHOW
+                || phaseType == protocol::log::TRACK) { //点击，曝光，跟踪都是重要日志
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     /**
@@ -379,14 +386,15 @@ namespace corelogic {
         checkAliEscapeSafe(log, *(logString.get()));
 #endif
         // 将日志对象推送到日志队列
+        bool isImportant = isBussinessLogImportant(log.logType);
         if (serviceLogger.use_count() > 0) {
-            serviceLogger->push(logString);
+            serviceLogger->push(logString, isImportant);
         } else {
             std::string loggerName = usedLoggerName();
             std::string logConfigKey = usedLoggerConfig();
             adservice::log::LogPusherPtr logPusher = adservice::log::LogPusher::getLogger(loggerName, logConfigKey);
             if (logPusher.use_count() > 0) {
-                logPusher->push(logString);
+                logPusher->push(logString, isImportant);
             }
         }
         if (log.logType == protocol::log::SHOW && (log.adInfo.adxid == 4 || log.adInfo.adxid > 99)) { //脏数据来源检测

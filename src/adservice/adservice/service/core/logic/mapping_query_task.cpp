@@ -99,6 +99,7 @@ namespace corelogic {
                              << ",adxUid:" << adxUid;
                 }
             }
+            needLog = false;
             //生成1x1图片
             resp.status(302, "OK");
             resp.set_header("Location", "http://mtty-cdn.mtty.com/1x1.gif");

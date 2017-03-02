@@ -237,7 +237,7 @@ namespace bidding {
         ss >> bannerJson;
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string landingUrl = mtlsArray[0].get("p1", "");
-        urlHttp2HttpsIOS(isIOS, landingUrl);
+        adservice::utility::url::url_replace(landingUrl, "https://", "http://");
         if (banner.bannerType == BANNER_TYPE_HTML) {
             std::string base64html = mtlsArray[0].get("p0", "");
             std::string html;
