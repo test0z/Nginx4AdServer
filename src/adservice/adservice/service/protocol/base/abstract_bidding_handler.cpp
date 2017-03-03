@@ -48,6 +48,7 @@ namespace bidding {
         }
         logItem.adInfo.adxid = adInfo.adxid;
         logItem.adInfo.adxpid = adInfo.adxpid;
+        logItem.adInfo.bidBasePrice = queryCondition.basePrice;
         if (!cmInfo.userMapping.userId.empty()) {
             logItem.userId = cmInfo.userMapping.userId;
             logItem.device = adFlowExtraInfo.devInfo;
@@ -73,6 +74,7 @@ namespace bidding {
             logItem.dealIds = adFlowExtraInfo.dealIds;
             logItem.contentTypes = adFlowExtraInfo.contentType;
             logItem.mediaType = adFlowExtraInfo.mediaType;
+            logItem.adInfo.bidEcpmPrice = adInfo.bidEcpmPrice;
         } else {
             logItem.adInfo.pid = std::to_string(queryCondition.mttyPid);
             logItem.adInfo.adxpid = queryCondition.adxpid;
@@ -257,6 +259,8 @@ namespace bidding {
         adInfo.ppid = result.ppid;
         adInfo.orderId = result.orderId;
         adInfo.offerPrice = result.feePrice;
+        adInfo.bidEcpmPrice = result.bidPrice;
+        adInfo.bidBasePrice = selectCondition.basePrice;
         adInfo.areaId = adservice::server::IpManager::getInstance().getAreaCodeStrByIp(selectCondition.ip.data());
         auto idSeq = CookieMappingManager::IdSeq();
         adInfo.imp_id = std::to_string(idSeq.time()) + std::to_string(idSeq.id());

@@ -62,6 +62,10 @@ record AdInfo{
     int ppid;
     // 订单id
     long orderId;
+    // 广告位底价
+    int bidBasePrice;
+    // 真实的出价价格,不乘利润率,通过高级出价器和CTR计算得来的
+    int bidEcpmPrice;
 }
 
 @namespace("com.mtty.protocol")

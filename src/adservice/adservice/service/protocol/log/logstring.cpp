@@ -109,6 +109,8 @@ void printLogAdInfo(std::stringstream & ss, protocol::log::AdInfo & adInfo)
     ss << "\tbidSize:" << adInfo.bidSize << endl;
     ss << "\tppid:" << adInfo.ppid << endl;
     ss << "\torderId:" << adInfo.orderId << endl;
+    ss << "\tbidbasePrice:" << adInfo.bidBasePrice << endl;
+    ss << "\tbidEcpmPrice:" << adInfo.bidEcpmPrice << endl;
 }
 
 void printLogGeoInfo(std::stringstream & ss, protocol::log::GeoInfo & geoInfo)

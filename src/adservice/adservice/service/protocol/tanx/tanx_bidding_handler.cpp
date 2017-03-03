@@ -156,9 +156,9 @@ namespace bidding {
                 queryCondition.mobileNetwork = getNetWork(device.network());
             }
             if (mobile.has_is_app() && mobile.is_app()) { // app
-                if (adzInfo.view_type() == 104) {         //无线墙原生
+                if (adzInfo.view_type(0) == 104) {        //无线墙原生
                     const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
-                    auto sizePair = adSizeMap.get(queryCondition.width, queryCondition.height);
+                    auto sizePair = adSizeMap.get({ queryCondition.width, queryCondition.height });
                     queryCondition.width = sizePair.first;
                     queryCondition.height = sizePair.second;
                     queryCondition.bannerType = BANNER_TYPE_PRIMITIVE;
@@ -248,17 +248,17 @@ namespace bidding {
                 std::string resourceAddress = mtlsArray[0]["p6"].str();
                 adResult->set_resource_address(resourceAddress);
             } else {
-                auto & mobileCreative = adResult->mobile_creative();
-                mobileCreative.set_version(bidRequest.version());
-                mobileCreative.set_bid(bidRequest.bid());
-                auto creative = mobileCreative.add_creatives();
+                auto mobileCreative = adResult->mutable_mobile_creative();
+                mobileCreative->set_version(bidRequest.version());
+                mobileCreative->set_bid(bidRequest.bid());
+                auto creative = mobileCreative->add_creatives();
                 creative->set_img_url(mtlsArray[0].get("p6", ""));
                 creative->set_img_size(adzInfo.size());
                 creative->set_title(mtlsArray[0].get("p0", ""));
                 creative->set_click_url(clickUrl);
                 creative->set_destination_url(destUrl);
                 creative->set_creative_id(std::to_string(banner.bId));
-                mobileCreative.set_native_template_id(bidRequest.mobile().native_template_id(0));
+                mobileCreative->set_native_template_id(bidRequest.mobile().native_template_id(0));
             }
             url::URLHelper showUrlParam;
             getShowPara(showUrlParam, bidRequest.bid());

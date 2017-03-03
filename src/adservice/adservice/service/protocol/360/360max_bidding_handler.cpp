@@ -127,7 +127,7 @@ namespace bidding {
         queryCondition.ip = bidRequest.ip();
         queryCondition.basePrice = (adzInfo.has_min_cpm_price() ? adzInfo.min_cpm_price() : 0) / 1000;
         if (adzInfo.has_native()) { //原生请求
-            AdSizeMap & adSizeMap = AdSizeMap::getInstance();
+            const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
             auto sizePair = adSizeMap.get({ adzInfo.width(), adzInfo.height() });
             queryCondition.width = sizePair.first;
             queryCondition.height = sizePair.second;
@@ -178,7 +178,7 @@ namespace bidding {
         if (deals.size() > 0) {
             std::stringstream ss;
             ss << ",";
-            for (size_t i = 0; i < deals.size(); ++i) {
+            for (int i = 0; i < deals.size(); ++i) {
                 const auto & deal = deals.Get(i);
                 ss << deal.deal_id() << ",";
             }
@@ -230,7 +230,7 @@ namespace bidding {
             std::string destUrl = mtlsArray[0].get("p9", "");
             adservice::utility::url::url_replace(destUrl, "https://", "http://");
             adResult->add_destination_url(destUrl);
-            AdSizeMap & adSizeMap = AdSizeMap::getInstance();
+            const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
             auto sizePair = adSizeMap.rget({ banner.width, banner.height });
             adResult->set_width(sizePair.first);
             adResult->set_height(sizePair.second);
@@ -240,22 +240,22 @@ namespace bidding {
             auto creative = nativeAd->add_creatives();
             creative->set_title(mtlsArray[0].get("p0", ""));
             creative->set_template_id(adzInfo.native().template_id(0));
-            auto & contentImage = creative->content_image();
-            contentImage.set_image_url(mtlsArray[0].get("p6", ""));
-            contentImage.set_image_width(sizePair.first);
-            contentImage.set_image_height(sizePair.second);
+            auto contentImage = creative->mutable_content_image();
+            contentImage->set_image_url(mtlsArray[0].get("p6", ""));
+            contentImage->set_image_width(sizePair.first);
+            contentImage->set_image_height(sizePair.second);
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
             std::string linkUrl
                 = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
-            creative->link().set_click_url(linkUrl);
+            creative->mutable_link()->set_click_url(linkUrl);
             url::URLHelper showUrlParam;
             getShowPara(showUrlParam, bidRequest.bid());
             showUrlParam.add(URL_IMP_OF, "3");
             showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_MAX_PRICE_MACRO);
             if (queryCondition.dealId != "0") {
                 nativeAd->set_deal_id(std::stoi(finalSolution.dDealId));
-                showUrl.add(URL_DEAL_ID, finalSolution.dDealId);
+                showUrlParam.add(URL_DEAL_ID, finalSolution.dDealId);
             }
             adResult->set_nurl(std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?"
                                + showUrlParam.cipherParam());

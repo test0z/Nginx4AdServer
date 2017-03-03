@@ -384,6 +384,8 @@ namespace corelogic {
             log.adInfo.priceType = finalSolution.priceType;
             log.adInfo.ppid = selectResult.ppid;
             log.adInfo.orderId = selectResult.orderId;
+            log.adInfo.bidEcpmPrice = selectResult.bidPrice;
+            log.adInfo.bidBasePrice = adplace.basePrice;
             if (finalSolution.priceType == PRICETYPE_RRTB_CPC || finalSolution.priceType == PRICETYPE_RCPC) {
                 log.adInfo.bidPrice = 0;
             } else {
