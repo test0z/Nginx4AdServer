@@ -377,7 +377,7 @@ namespace bidding {
             } else { // device id
                 CookieMappingManager & cmManager = CookieMappingManager::getInstance();
                 cmInfo.userMapping.addDeviceMapping(cmInfo.queryKV.key, cmInfo.queryKV.value);
-                cmManager.updateUserMappingAsync(cmInfo.userMapping);
+                cmManager.updateMappingDeviceAsync(cmInfo.userMapping.userId, cmInfo.queryKV.key, cmInfo.queryKV.value);
             }
             cmInfo.needReMapping = false;
         }

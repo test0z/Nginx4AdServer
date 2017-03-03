@@ -59,9 +59,9 @@ namespace core {
         public:
             struct spinlock slock;
             std::string userId;
+            std::string outerUserKey;
+            std::string outerUserId; // device id或者是平台uid
             std::string cypherUserId;
-            std::unordered_map<int64_t, std::string> adxUids;
-            std::unordered_map<std::string, std::string> deviceIds;
         };
     }
 }

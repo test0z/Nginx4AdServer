@@ -50,17 +50,17 @@ namespace server {
         }
 
     public:
-        adservice::core::model::MtUserMapping getUserMapping(const std::string & userId);
-
         adservice::core::model::MtUserMapping getUserMappingByKey(const std::string & key, const std::string & value);
-
-        bool updateUserMapping(adservice::core::model::MtUserMapping & mapping);
 
         bool updateMappingAdxUid(const std::string & userId, int64_t adxId, const std::string & value);
 
         bool updateUserMappingAsync(adservice::core::model::MtUserMapping & mapping);
 
         bool updateMappingAdxUidAsync(const std::string & userId, int64_t adxId, const std::string & value);
+
+        bool updateMappingDeviceAsync(const std::string & userId,
+                                      const std::string & deviceIdType,
+                                      const std::string & value);
 
         adservice::core::model::UserIDEntity newIdSeq();
 

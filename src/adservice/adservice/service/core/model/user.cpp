@@ -124,39 +124,24 @@ namespace core {
          */
         void MtUserMapping::record(const as_record * record)
         {
-            static std::vector<int64_t> adxIds{ ADX_TANX,         ADX_TANX_MOBILE,     ADX_BAIDU,
-                                                ADX_GUANGYIN,     ADX_GUANGYIN_MOBILE, ADX_SOHU_PC,
-                                                ADX_SOHU_MOBILE,  ADX_TENCENT_GDT,     ADX_YOUKU,
-                                                ADX_YOUKU_MOBILE, ADX_NETEASE_MOBILE,  ADX_INMOBI };
-            static std::vector<std::string> deviceKeys
-                = { MAPPING_KEY_IDFA, MAPPING_KEY_IMEI, MAPPING_KEY_ANDROIDID, MAPPING_KEY_MAC };
             if (spinlock_trylock(&slock)) {
                 this->reset();
-                for (auto id : adxIds) {
-                    this->adxUids.insert({ id, getStr(record, adxUidKey(id).c_str()) });
-                }
-                for (const auto & deviceKey : deviceKeys) {
-                    this->deviceIds.insert({ deviceKey, getStr(record, deviceKey.c_str()) });
-                }
                 this->userId = getStr(record, MAPPING_KEY_USER.c_str());
+                this->outerUserId = getStr(record, outerUserKey.c_str());
             }
         }
 
         as_record * MtUserMapping::record()
         {
-            int size = adxUids.size() + deviceIds.size() + 1;
+            int size = 2;
             if (record_ == nullptr) {
                 record_ = as_record_new(size);
             }
-            for (auto & iter : adxUids) {
-                int64_t adxId = iter.first;
-                as_record_set_str(record_, adxUidKey(adxId).c_str(), iter.second.c_str());
-            }
-            for (auto & iter : deviceIds) {
-                as_record_set_str(record_, iter.first.c_str(), iter.second.c_str());
-            }
             if (!userId.empty()) {
                 as_record_set_str(record_, MAPPING_KEY_USER.c_str(), userId.c_str());
+            }
+            if (!outerUserId.empty()) {
+                as_record_set_str(record_, outerUserKey.c_str(), outerUserId.c_str());
             }
             return record_;
         }
