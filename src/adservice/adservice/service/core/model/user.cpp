@@ -75,10 +75,8 @@ namespace core {
          */
         void MtUserMapping::record(const as_record * record)
         {
-            if (spinlock_trylock(&slock)) {
-                this->userId = getStr(record, MAPPING_KEY_USER.c_str());
-                this->outerUserId = getStr(record, outerUserKey.c_str());
-            }
+            this->userId = getStr(record, MAPPING_KEY_USER.c_str());
+            this->outerUserId = getStr(record, outerUserKey.c_str());
         }
 
         as_record * MtUserMapping::record()
