@@ -34,20 +34,6 @@ namespace core {
                 return !userId.empty();
             }
 
-            void addMapping(int64_t adxId, const std::string & adxUid);
-
-            void addDeviceMapping(const std::string & deviceKey, const std::string & deviceId);
-
-            bool hasAdxUid(int64_t adxId) const;
-
-            std::string getAdxUid(int adxId) const;
-
-            std::string getDeviceId(const std::string & id) const;
-
-            std::string getIdfa() const;
-
-            std::string getIMei() const;
-
             void reset();
 
             std::string cypherUid();

@@ -49,12 +49,8 @@ namespace core {
         {
             userId = "";
             cypherUserId = "";
-            if (!adxUids.empty()) {
-                adxUids.clear();
-            }
-            if (!deviceIds.empty()) {
-                deviceIds.clear();
-            }
+            outerUserId = "";
+            outerUserKey = "";
         }
 
         std::string MtUserMapping::cypherUid()
@@ -70,51 +66,6 @@ namespace core {
             }
         }
 
-        void MtUserMapping::addMapping(int64_t adxId, const std::string & adxUid)
-        {
-            adxUids[adxId] = adxUid;
-        }
-
-        void MtUserMapping::addDeviceMapping(const std::string & deviceKey, const std::string & deviceId)
-        {
-            deviceIds[deviceKey] = deviceId;
-        }
-
-        bool MtUserMapping::hasAdxUid(int64_t adxId) const
-        {
-            return adxUids.find(adxId) != adxUids.end();
-        }
-
-        std::string MtUserMapping::getAdxUid(int adxId) const
-        {
-            const auto & iter = adxUids.find(adxId);
-            if (iter != adxUids.end()) {
-                return iter->second;
-            } else {
-                return "";
-            }
-        }
-
-        std::string MtUserMapping::getDeviceId(const std::string & id) const
-        {
-            const auto & iter = deviceIds.find(id);
-            if (iter != deviceIds.end()) {
-                return iter->second;
-            } else {
-                return "";
-            }
-        }
-
-        std::string MtUserMapping::getIdfa() const
-        {
-            return getDeviceId(MAPPING_KEY_IDFA);
-        }
-
-        std::string MtUserMapping::getIMei() const
-        {
-            return getDeviceId(MAPPING_KEY_IMEI);
-        }
-
         /**
          *insert into test.CookieMapping
          *(PK,adxuid_1,adxuid_15,adxuid_6,adxuid_14,adxuid_21,adxuid_8,adxuid_19,adxuid_13,adxuid_5,adxuid_20,adxuid_10,idfa,imei,user_id)
@@ -125,7 +76,6 @@ namespace core {
         void MtUserMapping::record(const as_record * record)
         {
             if (spinlock_trylock(&slock)) {
-                this->reset();
                 this->userId = getStr(record, MAPPING_KEY_USER.c_str());
                 this->outerUserId = getStr(record, outerUserKey.c_str());
             }

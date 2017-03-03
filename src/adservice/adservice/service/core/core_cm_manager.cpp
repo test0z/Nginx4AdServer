@@ -35,7 +35,7 @@ namespace server {
     {
         core::model::MtUserMapping mapping;
         mapping.userId = userId;
-        std::string k = MtUserMapping::adxUidKey(adxId);
+        std::string k = core::model::MtUserMapping::adxUidKey(adxId);
         mapping.outerUserKey = k;
         mapping.outerUserId = value;
         MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), k, value);
@@ -55,7 +55,7 @@ namespace server {
     {
         core::model::MtUserMapping mapping;
         mapping.userId = userId;
-        std::string k = MtUserMapping::adxUidKey(adxId);
+        std::string k = core::model::MtUserMapping::adxUidKey(adxId);
         mapping.outerUserKey = k;
         mapping.outerUserId = value;
         MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), k, value);

@@ -25,7 +25,8 @@ void printUserMapping(model::MtUserMapping & userMapping)
     std::stringstream ss;
     ss << "usermapping userId:" << userMapping.userId;
     ss << ",cypher userId:" << userMapping.cypherUid();
-    ss << ",adxuid_tanx:" << userMapping.adxUids[ADX_TANX];
+    ss << ",outeridkey:"<<userMapping.outerUserKey;
+    ss<<",outerid:"<<userMapping.outerUserId;
     std::cout << ss.str() << std::endl;
 }
 
@@ -220,6 +221,54 @@ void testTranslateUser(const char* user){
         std::cout<<u.text()<<std::endl;
     }else{
         std::cout<<"invalid userId"<<std::endl;
+    }
+}
+
+void testGetAndSetCookieMapping()
+{
+    MT::User::UserID userId(int16_t(rng::randomInt() & 0x0000FFFF));
+    std::string userIdPublic = userId.text();
+    CookieMappingManager & cmManager = CookieMappingManager::getInstance();
+    model::MtUserMapping userMapping = cmManager.getUserMappingByKey("adxuid_1","mynameistom");
+    if (userMapping.isValid()) {
+        printUserMapping(userMapping);
+    } else {
+        userMapping.reset();
+        userMapping.userId = userIdPublic;
+        cmManager.updateMappingAdxUid(userIdPublic,1,"mynameistom");
+        std::cout << "insert new userId:" << userIdPublic << std::endl;
+        model::MtUserMapping anotherUserMapping
+            = cmManager.getUserMappingByKey(userMapping.adxUidKey(1), "mynameistom");
+        if (!anotherUserMapping.isValid()) {
+            std::cout << "failed to fetch new inserted usermapping of userId " << userIdPublic << std::endl;
+        } else {
+            std::cout << "get usermapping successfully:" << std::endl;
+            printUserMapping(anotherUserMapping);
+        }
+    }
+}
+
+void testUpdateAsync()
+{
+    auto idSeq = CookieMappingManager::IdSeq();
+    MT::User::UserID userId(idSeq.id(),idSeq.time());
+    std::string userIdPublic = userId.text();
+    model::MtUserMapping userMapping;
+    userMapping.userId = userIdPublic;
+    CookieMappingManager & cmManager = CookieMappingManager::getInstance();
+    cmManager.updateMappingDeviceAsync(userIdPublic,model::MtUserMapping::idfaKey(),"1094ADD26D8AD9F21E92F67F9ACC9DA1");
+    model::MtUserMapping readUserMapping = cmManager.getUserMappingByKey(model::MtUserMapping::idfaKey(), "1094ADD26D8AD9F21E92F67F9ACC9DA1");
+    if (readUserMapping.isValid()) {
+        printUserMapping(readUserMapping);
+    } else {
+        std::cout << "failed to fetch userMapping by key:" << userMapping.userId;
+    }
+    sleep(1);
+    readUserMapping = cmManager.getUserMappingByKey(model::MtUserMapping::idfaKey(), "1094ADD26D8AD9F21E92F67F9ACC9DA1");
+    if (readUserMapping.isValid()) {
+        printUserMapping(readUserMapping);
+    } else {
+        std::cout << "failed to fetch userMapping by key:" << userMapping.userId;
     }
 }
 
