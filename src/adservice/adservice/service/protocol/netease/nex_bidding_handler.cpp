@@ -269,7 +269,7 @@ namespace bidding {
         }
         showUrl.add(URL_IMP_OF, "3");
         showUrl.addMacro(URL_EXCHANGE_PRICE, AD_NEX_PRICE);
-        bidValue["nurl"] = "https://mtty-cdn.mtty.com/1x1.gif";
+        bidValue["nurl"] = "http://mtty-cdn.mtty.com/1x1.gif";
         bidValue["pvm"] = cppcms::json::array();
         bidValue["pvm"].array().push_back(std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?"
                                           + showUrl.cipherParam());

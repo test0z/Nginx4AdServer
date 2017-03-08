@@ -21,32 +21,52 @@ namespace bidding {
 
     static GdtAdplaceMap gdtAdplaceMap;
 
-    inline int max(const int & a, const int & b)
-    {
-        return a > b ? a : b;
-    }
+    namespace {
 
-    int getGdtOsType(BidRequest_OperatingSystem os)
-    {
-        switch (os) {
-        case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSWindows:
-            return SOLUTION_OS_WINDOWS;
-        default:
-            return SOLUTION_OS_OTHER;
+        inline int max(const int & a, const int & b)
+        {
+            return a > b ? a : b;
         }
-    }
 
-    int getGdtMobileDeviceType(BidRequest_OperatingSystem os)
-    {
-        switch (os) {
-        case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSWindows:
-            return SOLUTION_DEVICE_WINDOWSPHONE;
-        case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSAndroid:
-            return SOLUTION_DEVICE_ANDROID;
-        case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSIOS:
-            return SOLUTION_DEVICE_IPHONE;
-        default:
-            return SOLUTION_DEVICE_OTHER;
+        int getGdtOsType(BidRequest_OperatingSystem os)
+        {
+            switch (os) {
+            case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSWindows:
+                return SOLUTION_OS_WINDOWS;
+            default:
+                return SOLUTION_OS_OTHER;
+            }
+        }
+
+        int getGdtMobileDeviceType(BidRequest_OperatingSystem os)
+        {
+            switch (os) {
+            case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSWindows:
+                return SOLUTION_DEVICE_WINDOWSPHONE;
+            case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSAndroid:
+                return SOLUTION_DEVICE_ANDROID;
+            case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSIOS:
+                return SOLUTION_DEVICE_IPHONE;
+            default:
+                return SOLUTION_DEVICE_OTHER;
+            }
+        }
+
+        int getGdtNetWork(const BidRequest_ConnectionType & connectionType)
+        {
+            switch (connectionType) {
+            case BidRequest_ConnectionType_kConnTypeWifi:
+                return SOLUTION_NETWORK_WIFI;
+            case BidRequest_ConnectionType_kConnType2G:
+                return SOLUTION_NETWORK_2G;
+            case BidRequest_ConnectionType_kConnType3G:
+                return SOLUTION_NETWORK_3G;
+            case BidRequest_ConnectionType_kConnType4G:
+                return SOLUTION_NETWORK_4G;
+            case BidRequest_ConnectionType_kConnTypeUnknown:
+            default:
+                return SOLUTION_NETWORK_ALL;
+            }
         }
     }
 
@@ -103,6 +123,7 @@ namespace bidding {
         }
         if (bidRequest.has_device()) { // device
             const BidRequest_Device & device = bidRequest.device();
+            queryCondition.mobileNetwork = getGdtNetWork(device.connection_type());
             BidRequest_DeviceType devType = device.device_type();
             if (devType == BidRequest_DeviceType::BidRequest_DeviceType_kDeviceTypePC) {
                 queryCondition.pcOS = getGdtOsType(device.os());

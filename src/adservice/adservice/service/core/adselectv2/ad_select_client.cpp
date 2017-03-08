@@ -135,6 +135,11 @@ namespace adselectv2 {
             socket_.send(message);
         } catch (zmq::error_t & e) {
             LOG_ERROR << "search请求发送失败：" << e.what();
+            if (e.num() == 88) {
+                socket_.close();
+                socket_ = zmq::socket_t(context_, ZMQ_REQ);
+                socket_.connect(this->serverUrl_);
+            }
             return false;
         } catch (std::exception & e) {
             LOG_ERROR << "search 请求发送失败，可能是未知zmq 异常，e:" << e.what();
@@ -143,7 +148,13 @@ namespace adselectv2 {
 
         zmq::message_t reply;
         try {
-            socket_.recv(&reply);
+            if (!socket_.pollAndRecv(&reply, 5000)) {
+                LOG_WARN << "adselect timeout";
+                socket_.close();
+                socket_ = zmq::socket_t(context_, ZMQ_REQ);
+                socket_.connect(this->serverUrl_);
+                return false;
+            }
         } catch (zmq::error_t & e) {
             LOG_ERROR << "接收search响应失败：" << e.what();
             return false;

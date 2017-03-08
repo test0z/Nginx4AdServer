@@ -184,6 +184,7 @@ namespace bidding {
             }
             queryCondition.dealId = ss.str();
         }
+
         if (!filterCb(this, queryConditions)) {
             return bidFailedReturn();
         }

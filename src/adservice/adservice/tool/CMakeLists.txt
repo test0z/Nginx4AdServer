@@ -22,6 +22,12 @@ FIND_LIBRARY(LIB_CRYPT NAMES "libcrypt.a" crypt)
 FIND_LIBRARY(LIB_AVRO NAMES "libavrocpp_s.a" avrocpp_s)
 FIND_LIBRARY(LIB_MUDUO_BASE11 NAMES "libmuduo_base_cpp11.a" muduo_base_cpp11)
 FIND_LIBRARY(LIB_TBB NAMES "libtbb.a" tbb)
+FIND_LIBRARY(LIB_BOOST_IOSTREAMS NAMES "libboost_iostreams.a" boost_iostreams)
+FIND_LIBRARY(LIB_BOOSTER NAMES "libbooster.a" booster)
+FIND_LIBRARY(LIB_AEROSPIKE NAMES "libaerospike.a" aerospike)
+FIND_LIBRARY(LIB_EV NAMES "libev.a" ev)
+FIND_LIBRARY(LIB_MTTY mtty)
+FIND_LIBRARY(LIB_CPPCMS NAMES "libcppcms.a" cppcms)
 
 SET(COMMON_DEPEND_SRC ../service/protocol/log/logstring.cpp
     ../service/protocol/log/log.cpp
@@ -43,6 +49,17 @@ ADD_EXECUTABLE(locallog_collector ./locallog_collector.cpp
     )
 
 ADD_EXECUTABLE(update_from_db ./update_from_db.cpp)
+
+ADD_EXECUTABLE(track_user ./track_user.cpp
+    ../service/core/core_cm_manager.cpp
+    ../service/core/model/user.cpp
+    ../service/core/model/idseq.cpp
+    ../service/utility/mttytime.cpp
+    ../service/utility/cypher.cpp
+    ../service/utility/url.cpp
+    ../service/utility/random.cpp
+    ../logging.cpp
+)
 
 SET(LINK_LIBRARY
     rt
@@ -73,4 +90,12 @@ TARGET_LINK_LIBRARIES(locallog_collector ${LINK_LIBRARY}
 
 TARGET_LINK_LIBRARIES(update_from_db ${LINK_LIBRARY}
     mysql
+)
+
+TARGET_LINK_LIBRARIES(track_user  ${LIB_BOOST_IOSTREAMS}
+    ${LIB_MTTY}
+    ${LIB_AEROSPIKE}
+    ${LIB_EV}
+    ${LIB_BOOSTER}    
+    ${LINK_LIBRARY}
 )

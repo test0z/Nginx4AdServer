@@ -168,6 +168,8 @@ namespace bidding {
         void fillAdInfo(const AdSelectCondition & selectCondition, const MT::common::SelectResult & result,
                         const std::string & adxUser);
 
+        void buildFlowExtraInfo(const AdSelectCondition & selectCondition);
+
     protected:
         //最近一次匹配的结果
         bool isBidAccepted;

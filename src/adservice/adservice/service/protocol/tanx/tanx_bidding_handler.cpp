@@ -35,12 +35,22 @@ namespace bidding {
 
     static int getDeviceType(const std::string & deviceInfo)
     {
-        if (deviceInfo.find("iphone") != std::string::npos) {
+        if (!strcasecmp(deviceInfo.c_str(), "iphone")) {
             return SOLUTION_DEVICE_IPHONE;
-        } else if (deviceInfo.find("android") != std::string::npos) {
+        } else if (!strcasecmp(deviceInfo.c_str(), "android")) {
             return SOLUTION_DEVICE_ANDROID;
-        } else if (deviceInfo.find("ipad") != std::string::npos) {
+        } else if (!strcasecmp(deviceInfo.c_str(), "ipad")) {
             return SOLUTION_DEVICE_IPAD;
+        } else
+            return SOLUTION_DEVICE_OTHER;
+    }
+
+    static int getDeviceTypeFromOs(const std::string & os)
+    {
+        if (!strcasecmp(os.c_str(), "ios")) {
+            return SOLUTION_DEVICE_IPHONE;
+        } else if (!strcasecmp(os.c_str(), "android")) {
+            return SOLUTION_DEVICE_ANDROID;
         } else
             return SOLUTION_DEVICE_OTHER;
     }
@@ -150,13 +160,20 @@ namespace bidding {
             const BidRequest_Mobile & mobile = bidRequest.mobile();
             const BidRequest_Mobile_Device & device = mobile.device();
             queryCondition.mobileDevice = getDeviceType(device.platform());
+            if (queryCondition.mobileDevice == SOLUTION_DEVICE_OTHER) {
+                queryCondition.mobileDevice = getDeviceTypeFromOs(device.os());
+                if (queryCondition.mobileDevice == SOLUTION_DEVICE_OTHER) {
+                    queryCondition.mobileDevice
+                        = adservice::utility::userclient::getMobileTypeFromUA(bidRequest.user_agent());
+                }
+            }
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.adxid = ADX_TANX_MOBILE;
             if (device.has_network()) {
                 queryCondition.mobileNetwork = getNetWork(device.network());
             }
-            if (mobile.has_is_app() && mobile.is_app()) { // app
-                if (adzInfo.view_type(0) == 104) {        //无线墙原生
+            if (mobile.has_is_app() && mobile.is_app()) {                          // app
+                if (adzInfo.view_type_size() > 0 && adzInfo.view_type(0) == 104) { //无线墙原生
                     const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
                     auto sizePair = adSizeMap.get({ queryCondition.width, queryCondition.height });
                     queryCondition.width = sizePair.first;

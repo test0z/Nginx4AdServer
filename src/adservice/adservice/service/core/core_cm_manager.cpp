@@ -23,9 +23,9 @@ namespace server {
             MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), k, v.c_str());
             aerospikeClient.get(key, mapping);
         } catch (MT::common::AerospikeExcption & e) {
-            LOG_ERROR << " 查询cookie mapping 失败，" << e.what() << ",code: " << e.error().code
-                      << ",msg:" << e.error().message << ",调用堆栈：" << std::endl
-                      << e.trace();
+            //            LOG_DEBUG << " 查询cookie mapping 失败，" << e.what() << ",code: " << e.error().code
+            //                      << ",msg:" << e.error().message << ",调用堆栈：" << std::endl
+            //                      << e.trace();
         }
         return mapping;
     }
