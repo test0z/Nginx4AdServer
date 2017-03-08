@@ -158,10 +158,8 @@ namespace bidding {
                 queryCondition.mobileDevice = SOLUTION_DEVICE_OTHER;
                 queryCondition.pcOS = SOLUTION_OS_OTHER;
             }
-            cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
-                                   md5_encode(queryCondition.imei),
-                                   md5_encode(queryCondition.androidId),
-                                   md5_encode(queryCondition.mac));
+            cookieMappingKeyMobile(
+                queryCondition.idfa, queryCondition.imei, queryCondition.androidId, queryCondition.mac);
             queryCookieMapping(cmInfo.queryKV, queryCondition);
         }
         if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE && bidRequest.has_app()) {
