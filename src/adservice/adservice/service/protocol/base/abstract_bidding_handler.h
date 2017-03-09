@@ -56,6 +56,7 @@ namespace bidding {
         CookieMappingQueryKeyValue queryKV;
         MtUserMapping userMapping;
         bool needReMapping{ false };
+        bool needTouchMapping{ false };
     };
 
     /**

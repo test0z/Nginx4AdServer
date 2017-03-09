@@ -295,9 +295,11 @@ namespace bidding {
     {
         if (globalConfig.cmConfig.disabledCookieMapping) {
             cmInfo.needReMapping = false;
+            cmInfo.needTouchMapping = false;
             return;
         }
         cmInfo.needReMapping = false;
+        cmInfo.needTouchMapping = false;
         cmInfo.userMapping.reset();
         if (!queryKV.isNull()) { //查询键值非空
             CookieMappingManager & cmManager = CookieMappingManager::getInstance();
@@ -306,6 +308,7 @@ namespace bidding {
             if (cmInfo.userMapping.isValid()) {
                 // todo: 填充selectCondition的对应字段
                 selectCondition.mtUserId = cmInfo.userMapping.userId;
+                cmInfo.needTouchMapping = true;
                 return;
             } else { //服务端找不到对应记录，需要重新mapping
                 cmInfo.needReMapping = true;
@@ -331,6 +334,9 @@ namespace bidding {
                 cmManager.updateMappingDeviceAsync(cmInfo.userMapping.userId, cmInfo.queryKV.key, cmInfo.queryKV.value);
             }
             cmInfo.needReMapping = false;
+        } else if (cmInfo.needTouchMapping) { //更新mapping ttl
+            CookieMappingManager & cmManager = CookieMappingManager::getInstance();
+            cmManager.touchMapping(cmInfo.queryKV.key, cmInfo.queryKV.value);
         }
         return "";
     }

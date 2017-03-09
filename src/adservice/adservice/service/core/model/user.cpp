@@ -85,6 +85,7 @@ namespace core {
             if (record_ == nullptr) {
                 record_ = as_record_new(size);
             }
+            record_->ttl = DAY_SECOND * 30;
             if (!userId.empty()) {
                 as_record_set_str(record_, MAPPING_KEY_USER.c_str(), userId.c_str());
             }

@@ -342,6 +342,10 @@ namespace corelogic {
             server::IpManager & ipManager = IpManager::getInstance();
             condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
             condition.mobileDevice = getDeviceTypeForSsp(paramMap);
+            if (userAgent.empty() && paramMap.find(SSP_URL_USERAGENT) != paramMap.end()) {
+                char buffer[1024];
+                utility::url::urlDecode_f(paramMap[SSP_URL_USERAGENT], userAgent, buffer);
+            }
             if (condition.mobileDevice == SOLUTION_DEVICE_OTHER) {
                 condition.mobileDevice = utility::userclient::getMobileTypeFromUA(userAgent);
             }

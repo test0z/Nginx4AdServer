@@ -108,5 +108,16 @@ namespace server {
         }
         return idEntity;
     }
+
+    void CookieMappingManager::touchMapping(const std::string & k, const std::string & value)
+    {
+        MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), k, value);
+        MT::common::ASOperation touchOperation(1, DAY_SECOND * 30);
+        touchOperation.addTouch();
+        try {
+            aerospikeClient.operateAsync(key, touchOperation);
+        } catch (MT::common::AerospikeExcption & e) {
+        }
+    }
 }
 }

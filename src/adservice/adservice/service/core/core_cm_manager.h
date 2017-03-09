@@ -62,6 +62,8 @@ namespace server {
                                       const std::string & deviceIdType,
                                       const std::string & value);
 
+        void touchMapping(const std::string & key, const std::string & value);
+
         adservice::core::model::UserIDEntity newIdSeq();
 
         static adservice::core::model::UserIDEntity IdSeq()
