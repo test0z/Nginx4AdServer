@@ -312,7 +312,6 @@ namespace bidding {
         } else { //设置admobject
             const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
             const cppcms::json::array & assets = adzInfo.find("native.requestobj.assets").array();
-            std::string title = mtlsArray[0]["p0"].str();
             cppcms::json::value admObject;
             cppcms::json::value nativeObject;
             cppcms::json::array assetsArray;

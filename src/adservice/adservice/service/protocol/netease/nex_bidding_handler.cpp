@@ -64,7 +64,7 @@ namespace bidding {
     static int getNetwork(const std::string & network)
     {
         if (!strcasecmp(network.c_str(), NEX_CONN_WIFI)) {
-            return SOLUTION_NETWORK_ALL;
+            return SOLUTION_NETWORK_WIFI;
         } else if (!strcasecmp(network.c_str(), NEX_CONN_2G)) {
             return SOLUTION_NETWORK_2G;
         } else if (!strcasecmp(network.c_str(), NEX_CONN_3G)) {
@@ -277,7 +277,8 @@ namespace bidding {
         if (!banner.feedback.empty()) {
             parseJson(banner.feedback.c_str(), bannerFeedbackJson);
         }
-        std::string crid = bannerFeedbackJson.get("adx_cid", std::to_string(adInfo.bannerId));
+        std::string crid = bannerFeedbackJson.get(std::to_string(queryCondition.adxid) + ".adx_cid",
+                                                  bannerFeedbackJson.get("adx_cid", std::to_string(adInfo.bannerId)));
         bidValue["crid"] = crid;
         std::string landingUrl;
         std::string mainTitle;

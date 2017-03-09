@@ -87,7 +87,7 @@ namespace bidding {
         /**
          * @brief fillSpecificLog 各家平台具体日志字段的标准
          * @param isAccepted
-         * @return
+         * @return 返回true需要记录日志，false不需要记录日志
          */
         virtual bool fillSpecificLog(const AdSelectCondition & selectCondition, protocol::log::LogItem & logItem,
                                      bool isAccepted = false)
@@ -131,19 +131,38 @@ namespace bidding {
         virtual std::string generateScript(const std::string & bid, int width, int height, const char * scriptUrl,
                                            const char * clickMacro, const char * extParam);
 
+        /**
+         * 准备移动设备进行cookie mapping的key
+         */
         const CookieMappingQueryKeyValue & cookieMappingKeyMobile(const std::string & idfa, const std::string & imei,
                                                                   const std::string & androidId,
                                                                   const std::string & mac);
 
+        /**
+         * 准备pc平台进行cookie mapping的key
+         */
         const CookieMappingQueryKeyValue & cookieMappingKeyPC(int64_t adxId, const std::string & cookie);
 
+        /**
+         * 准备wap平台进行cookie mapping的key
+         */
         const CookieMappingQueryKeyValue & cookieMappingKeyWap(int64_t adxId, const std::string & cookie)
         {
             return cookieMappingKeyPC(adxId, cookie);
         }
 
+        /**
+         * 查询cookie mapping
+         */
         void queryCookieMapping(const CookieMappingQueryKeyValue & queryKV, AdSelectCondition & selectCondition);
 
+        /**
+         * 进行cookie mapping
+         * @brief redoCookieMapping
+         * @param adxId
+         * @param adxCookieMappingUrl pc平台或wap平台用到的cookiemapping url,将在iframe中的image标签嵌入
+         * @return
+         */
         std::string redoCookieMapping(int64_t adxId, const std::string & adxCookieMappingUrl);
 
         inline bool bidFailedReturn()
@@ -157,17 +176,21 @@ namespace bidding {
         }
 
     protected:
-        void getShowPara(const std::string & bid, char * showParamBuf, int showBufSize);
         void getShowPara(adservice::utility::url::URLHelper & url, const std::string & bid);
-        void getClickPara(const std::string & bid, char * clickParamBuf, int clickBufSize, const std::string & ref,
-                          const std::string & landingurl);
+
         void getClickPara(adservice::utility::url::URLHelper & url, const std::string & bid, const std::string & ref,
                           const std::string & landingUrl);
+
         int extractRealValue(const std::string & input, int adx);
 
+        /**
+         * search结束后，准备广告返回前调用，用于收集关键信息到adInfo
+         */
         void fillAdInfo(const AdSelectCondition & selectCondition, const MT::common::SelectResult & result,
                         const std::string & adxUser);
-
+        /**
+         * 收集流量的额外信息到adFlowExtraInfo，目前主要是设备信息等
+         */
         void buildFlowExtraInfo(const AdSelectCondition & selectCondition);
 
     protected:

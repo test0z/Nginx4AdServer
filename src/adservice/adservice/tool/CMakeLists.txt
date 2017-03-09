@@ -50,6 +50,9 @@ ADD_EXECUTABLE(locallog_collector ./locallog_collector.cpp
 
 ADD_EXECUTABLE(update_from_db ./update_from_db.cpp)
 
+ADD_EXECUTABLE(translate_user ./translate_user.cpp)
+
+
 ADD_EXECUTABLE(track_user ./track_user.cpp
     ../service/core/core_cm_manager.cpp
     ../service/core/model/user.cpp
@@ -97,5 +100,13 @@ TARGET_LINK_LIBRARIES(track_user  ${LIB_BOOST_IOSTREAMS}
     ${LIB_AEROSPIKE}
     ${LIB_EV}
     ${LIB_BOOSTER}    
+    ${LINK_LIBRARY}
+)
+
+TARGET_LINK_LIBRARIES(translate_user
+    ${LIB_MTTY}
+    ${LIB_AEROSPIKE}
+    ${LIB_EV}
+    ${LIB_BOOSTER}
     ${LINK_LIBRARY}
 )
