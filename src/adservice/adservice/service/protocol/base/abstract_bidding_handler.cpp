@@ -180,12 +180,16 @@ namespace bidding {
                                                        const char * scriptUrl, const char * clickMacro,
                                                        const char * extParam)
     {
-        char showBuf[2048] = { "\0" };
-        char clickBuf[2048] = { "\0" };
         char script[4096];
-        getShowPara(bid, showBuf, sizeof(showBuf));
-        int len = snprintf(script, sizeof(script), SNIPPET_SCRIPT, width, height, scriptUrl, showBuf, clickBuf,
-                           clickBuf, extParam, clickMacro);
+        URLHelper showUrlParam;
+        getShowPara(showUrlParam, bid);
+        ParamMap extParamMap;
+        getParamv2(extParamMap, extParam);
+        for (auto iter : extParamMap) {
+            showUrlParam.add(iter.first, iter.second);
+        }
+        int len = snprintf(script, sizeof(script), SNIPPET_SCRIPT, width, height, scriptUrl,
+                           showUrlParam.cipherParam().c_str(), "", "", "", clickMacro);
         if (len >= (int)sizeof(script)) {
             LOG_WARN << "generateScript buffer size not enough,needed:" << len;
         }

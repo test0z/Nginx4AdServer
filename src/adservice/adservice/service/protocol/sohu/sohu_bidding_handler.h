@@ -48,10 +48,6 @@ namespace bidding {
         void reject(INOUT adservice::utility::HttpResponse & response);
 
     private:
-        std::string getDisplayPara();
-        std::string getSohuClickPara(const std::string & url);
-
-    private:
         protocol::sohuadx::Request bidRequest;
         protocol::sohuadx::Response bidResponse;
     };

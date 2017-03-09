@@ -50,23 +50,6 @@ namespace bidding {
         }
     }
 
-    std::string SohuBiddingHandler::getDisplayPara()
-    {
-        char showBuf[1024];
-        getShowPara(bidRequest.bidid(), showBuf, sizeof(showBuf));
-        const char * extShowBuf = "&of=3";
-        strncat(showBuf, extShowBuf, strlen(extShowBuf));
-        return std::string(showBuf);
-    }
-
-    std::string SohuBiddingHandler::getSohuClickPara(const std::string & url)
-    {
-        char clickBuf[1024];
-        std::string ref = bidRequest.has_site() ? bidRequest.site().page() : "";
-        getClickPara(bidRequest.bidid(), clickBuf, sizeof(clickBuf), ref, url);
-        return std::string(clickBuf);
-    }
-
     bool SohuBiddingHandler::parseRequestData(const std::string & data)
     {
         bidRequest.Clear();
