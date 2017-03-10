@@ -46,8 +46,8 @@ namespace bidding {
         if (!isAccepted) {
             logItem.adInfo = protocol::log::AdInfo();
         }
-        logItem.adInfo.adxid = adInfo.adxid;
-        logItem.adInfo.adxpid = adInfo.adxpid;
+        logItem.adInfo.adxid = queryCondition.adxid;
+        logItem.adInfo.adxpid = queryCondition.adxpid;
         logItem.adInfo.bidBasePrice = queryCondition.basePrice;
         if (!cmInfo.userMapping.userId.empty()) {
             logItem.userId = cmInfo.userMapping.userId;

@@ -92,6 +92,7 @@ namespace bidding {
         if (bidRequest.has_device()) {
             auto & device = bidRequest.device();
             queryCondition.ip = device.has_ip() ? device.ip() : "";
+            queryCondition.mobileDevice = getMobileTypeFromUA(device.ua());
             if (strcasecmp(device.type().data(), "Mobile") == 0) { // mobile
                 queryCondition.mobileDevice = getSohuDeviceType(device.mobiletype());
                 queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
@@ -105,8 +106,11 @@ namespace bidding {
                                        md5_encode(queryCondition.imei),
                                        md5_encode(queryCondition.androidId),
                                        md5_encode(queryCondition.mac));
-            } else if (strcasecmp(device.type().data(), "Wap") == 0) { // wap
-                queryCondition.mobileDevice = getSohuDeviceType(device.mobiletype());
+            } else if (queryCondition.mobileDevice != SOLUTION_DEVICE_OTHER
+                       || strcasecmp(device.type().data(), "Wap") == 0) { // wap
+                queryCondition.mobileDevice = queryCondition.mobileDevice == SOLUTION_DEVICE_OTHER
+                                                  ? getSohuDeviceType(device.mobiletype())
+                                                  : queryCondition.mobileDevice;
                 queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
                 queryCondition.adxid = ADX_SOHU_MOBILE;
                 queryCondition.mobileNetwork = getSohuNeworkType(device.nettype());

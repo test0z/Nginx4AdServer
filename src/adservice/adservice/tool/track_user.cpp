@@ -89,7 +89,7 @@ int main(int argc, char ** argv)
 {
     if(argc<3){
         std::cerr<<"usage: "<<argv[0]<<" [file] [advid]"<<std::endl;
-        return;
+        return 0;
     }
     int advId = std::stoi(std::string(argv[2]));
     std::vector<MT::common::ASConnection> connections{ MT::common::ASConnection("192.168.2.112", 3000) };

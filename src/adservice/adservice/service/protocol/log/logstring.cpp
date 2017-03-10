@@ -86,13 +86,22 @@ void printLogPhase(std::stringstream & ss, LogPhaseType & type)
     }
 }
 
+std::string padAdxId(int adxId)
+{
+    if (adxid < 10) {
+        return std::string("0") + std::to_string(adxId);
+    } else {
+        return std::to_string(adxId);
+    }
+}
+
 void printLogAdInfo(std::stringstream & ss, protocol::log::AdInfo & adInfo)
 {
     ss << "adInfo:" << endl;
     ss << "\tbannerId:" << adInfo.bannerId << endl;
     ss << "\tareaId:" << adInfo.areaId << endl;
     ss << "\tadvId:" << adInfo.advId << endl;
-    ss << "\tadxId:" << adInfo.adxid << endl;
+    ss << "\tadxId:" << padAdxId(adInfo.adxid) << endl;
     ss << "\tcid:" << adInfo.cid << endl;
     ss << "\tcpid:" << (adInfo.cpid == 0 ? adInfo.advId : adInfo.cpid) << endl;
     ss << "\timpId:" << adInfo.imp_id << endl;

@@ -24,6 +24,7 @@ extern "C" {
 #include "utility/utility.h"
 #include <algorithm>
 #include <string>
+#include <vector>
 
 using namespace adservice::utility::serialize;
 
@@ -34,7 +35,7 @@ extern std::string getLogItemString(protocol::log::LogItem & log);
 bool inDebugSession = false;
 void * debugSession = nullptr;
 
-static std::string filterCond;
+static std::vector<std::string> filterConds;
 
 static int run = 1;
 static int forever = 1;
@@ -56,6 +57,20 @@ static void stop(int sig)
     if (!run)
         exit(0);
     run = 0;
+}
+
+static std::vector<std::string> splitFilterConditions(const std::string& condition){
+    std::vector<std::string> result;
+    const char* p = condition.c_str(),*p0 = p;
+    while(*p!='\0'){
+        while(*p!=' '&&*p!='\0')
+            p++;
+        result.push_back(std::string(p0,p));
+        while(*p==' ')
+            p++;
+        p0 = p;
+    }
+    return result;
 }
 
 static long int msgs_wait_cnt = 0;
@@ -234,11 +249,18 @@ static void msg_consume(rd_kafka_message_t * rkmessage, void * opaque)
                 try {
                     getAvroObject(logItem, (const uint8_t *)rkmessage->payload, rkmessage->len);
                     std::string str = getLogItemString(logItem);
-                    if (!filterCond.empty()) {
-                        if (std::string::npos != str.find(filterCond)) {
-                            printf("%s", str.c_str());
-                        } else {
-                            cnt.msgs--;
+                    if (filterConds.size()>0) {
+                        bool filtered = false;
+                        for(auto filterCond:filterConds){
+                            if (std::string::npos == str.find(filterCond)) {
+                                filtered = true;
+                                break;
+                            }
+                        }
+                        if(filtered){
+                            cnt.msgs --;
+                        }else{
+                            printf("%s",str.c_str());
                         }
                     } else {
                         printf("%s", str.c_str());
@@ -603,7 +625,7 @@ int main(int argc, char ** argv)
             verbosity = atoi(optarg);
             break;
         case 'f':
-            filterCond = optarg;
+            filterConds = splitFilterConditions(optarg);
             break;
         case 'q':
             nostatus = 1;

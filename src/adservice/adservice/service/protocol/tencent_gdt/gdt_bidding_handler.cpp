@@ -158,8 +158,8 @@ namespace bidding {
                 queryCondition.mobileDevice = SOLUTION_DEVICE_OTHER;
                 queryCondition.pcOS = SOLUTION_OS_OTHER;
             }
-            cookieMappingKeyMobile(
-                queryCondition.idfa, queryCondition.imei, queryCondition.androidId, queryCondition.mac);
+            cookieMappingKeyMobile(queryCondition.idfa, queryCondition.imei, queryCondition.androidId,
+                                   queryCondition.mac);
             queryCookieMapping(cmInfo.queryKV, queryCondition);
         }
         if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE && bidRequest.has_app()) {
@@ -216,9 +216,11 @@ namespace bidding {
         url::URLHelper showUrlParam;
         getShowPara(showUrlParam, bidRequest.id());
         showUrlParam.add(URL_IMP_OF, "3");
+        showUrlParam.add(URL_IP, queryCondition.ip);
         adResult->set_impression_param(showUrlParam.cipherParam());
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, bidRequest.id(), "", landingUrl);
+        clickUrlParam.add(URL_IP, queryCondition.ip);
         adResult->set_click_param(clickUrlParam.cipherParam());
         redoCookieMapping(queryCondition.adxid, "");
     }

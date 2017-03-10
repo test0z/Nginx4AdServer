@@ -199,10 +199,17 @@ namespace bidding {
                 cookieMappingKeyWap(ADX_TANX_MOBILE, bidRequest.has_tid() ? bidRequest.tid() : "");
             }
         } else {
-            queryCondition.pcOS = getOSTypeFromUA(bidRequest.user_agent());
-            queryCondition.pcBrowserStr = getBrowserTypeFromUA(bidRequest.user_agent());
-            queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
-            cookieMappingKeyPC(ADX_TANX, bidRequest.has_tid() ? bidRequest.tid() : "");
+            queryCondition.mobileDevice = getMobileTypeFromUA(bidRequest.user_agent());
+            if (mobileDevice != SOLUTION_DEVICE_OTHER) { // wap
+                queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
+                queryCondition.adxid = ADX_TANX_MOBILE;
+                cookieMappingKeyWap(ADX_TANX_MOBILE, bidRequest.has_tid() ? bidRequest.tid() : "");
+            } else { // pc
+                queryCondition.pcOS = getOSTypeFromUA(bidRequest.user_agent());
+                queryCondition.pcBrowserStr = getBrowserTypeFromUA(bidRequest.user_agent());
+                queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
+                cookieMappingKeyPC(ADX_TANX, bidRequest.has_tid() ? bidRequest.tid() : "");
+            }
         }
         queryCookieMapping(cmInfo.queryKV, queryCondition);
 

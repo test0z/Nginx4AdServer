@@ -71,6 +71,13 @@ namespace bidding {
                     pcOs = SOLUTION_OS_OTHER;
             }
             pcBrowser = getBrowserTypeFromUA(ua);
+        } else {
+            mobileDev = getMobileTypeFromUA(ua);
+            if (mobileDev != SOLUTION_DEVICE_OTHER) {
+                flowType = SOLUTION_FLOWTYPE_MOBILE;
+            } else {
+                pcOs = getOSTypeFromUA(ua);
+            }
         }
     }
 

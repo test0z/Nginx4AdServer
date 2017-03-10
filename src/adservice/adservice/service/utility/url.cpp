@@ -325,7 +325,8 @@ namespace utility {
                 { URL_LANDING_URL, PARAM_STRING },
                 { URL_TIMEM, PARAM_INT },
                 { URL_SITE_ID, PARAM_INT },
-                { URL_FLOWTYPE, PARAM_INT } };
+                { URL_FLOWTYPE, PARAM_INT },
+                { URL_IP, PARAM_STRING } };
 
         void URLHelper::numberEncode(int64_t number, uchar_t *& buf, int & bufRemainSize)
         {

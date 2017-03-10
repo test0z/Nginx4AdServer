@@ -57,6 +57,7 @@ ADD_EXECUTABLE(track_user ./track_user.cpp
     ../service/core/core_cm_manager.cpp
     ../service/core/model/user.cpp
     ../service/core/model/idseq.cpp
+    ../service/core/model/source_id.cpp
     ../service/utility/mttytime.cpp
     ../service/utility/cypher.cpp
     ../service/utility/url.cpp
@@ -92,7 +93,7 @@ TARGET_LINK_LIBRARIES(locallog_collector ${LINK_LIBRARY}
     pthread)
 
 TARGET_LINK_LIBRARIES(update_from_db ${LINK_LIBRARY}
-    mysql
+    mysqlcppconn
 )
 
 TARGET_LINK_LIBRARIES(track_user  ${LIB_BOOST_IOSTREAMS}
