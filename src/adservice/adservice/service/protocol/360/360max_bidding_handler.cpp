@@ -91,6 +91,7 @@ namespace bidding {
     bool JuxiaoMaxBiddingHandler::parseRequestData(const std::string & data)
     {
         bidRequest.Clear();
+        bidResponse.Clear();
         return getProtoBufObject(bidRequest, data);
     }
 
@@ -194,7 +195,7 @@ namespace bidding {
     void JuxiaoMaxBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
                                                  const MT::common::SelectResult & result, int seq)
     {
-        if (seq == 0) {
+        if (!bidResponse.has_bid()) {
             bidResponse.Clear();
             bidResponse.set_bid(bidRequest.bid());
             bidResponse.clear_ads();

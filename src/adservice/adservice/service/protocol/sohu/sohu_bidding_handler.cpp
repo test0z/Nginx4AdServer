@@ -53,6 +53,7 @@ namespace bidding {
     bool SohuBiddingHandler::parseRequestData(const std::string & data)
     {
         bidRequest.Clear();
+        bidResponse.Clear();
         return getProtoBufObject(bidRequest, data);
     }
 
@@ -163,7 +164,7 @@ namespace bidding {
     void SohuBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
                                             const MT::common::SelectResult & result, int seq)
     {
-        if (seq == 0) {
+        if (!bidResponse.has_bidid()) {
             bidResponse.Clear();
             bidResponse.set_version(bidRequest.version());
             bidResponse.set_bidid(bidRequest.bidid());

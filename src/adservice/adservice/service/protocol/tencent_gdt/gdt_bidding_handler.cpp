@@ -73,6 +73,7 @@ namespace bidding {
     bool GdtBiddingHandler::parseRequestData(const std::string & data)
     {
         bidRequest.Clear();
+        bidResponse.Clear();
         return getProtoBufObject(bidRequest, data);
     }
 
@@ -181,7 +182,7 @@ namespace bidding {
     void GdtBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
                                            const MT::common::SelectResult & result, int seq)
     {
-        if (seq == 0) {
+        if (!bidResponse.has_request_id()) {
             bidResponse.Clear();
             bidResponse.set_request_id(bidRequest.id());
             bidResponse.clear_seat_bids();

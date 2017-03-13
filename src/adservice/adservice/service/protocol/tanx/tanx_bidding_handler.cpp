@@ -111,6 +111,7 @@ namespace bidding {
     bool TanxBiddingHandler::parseRequestData(const std::string & data)
     {
         bidRequest.Clear();
+        bidResponse.Clear();
         return getProtoBufObject(bidRequest, data);
     }
 
@@ -200,7 +201,7 @@ namespace bidding {
             }
         } else {
             queryCondition.mobileDevice = getMobileTypeFromUA(bidRequest.user_agent());
-            if (mobileDevice != SOLUTION_DEVICE_OTHER) { // wap
+            if (queryCondition.mobileDevice != SOLUTION_DEVICE_OTHER) { // wap
                 queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
                 queryCondition.adxid = ADX_TANX_MOBILE;
                 cookieMappingKeyWap(ADX_TANX_MOBILE, bidRequest.has_tid() ? bidRequest.tid() : "");
@@ -222,7 +223,7 @@ namespace bidding {
     void TanxBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
                                             const MT::common::SelectResult & result, int seq)
     {
-        if (seq == 0) {
+        if (!bidResponse.has_bid()) {
             bidResponse.Clear();
             bidResponse.set_version(bidRequest.version());
             bidResponse.set_bid(bidRequest.bid());

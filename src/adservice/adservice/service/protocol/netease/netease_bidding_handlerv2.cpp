@@ -42,6 +42,7 @@ namespace bidding {
 
     bool NetEaseBiddingHandler::parseRequestData(const std::string & data)
     {
+        bidResponse.undefined();
         return parseJson(data.c_str(), bidRequest);
     }
 
@@ -152,7 +153,7 @@ namespace bidding {
     void NetEaseBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
                                                const MT::common::SelectResult & result, int seq)
     {
-        if (seq == 0) {
+        if (bidResponse.is_undefined()) {
             if (!parseJson(BIDRESPONSE_TEMPLATE, bidResponse)) {
                 LOG_ERROR << "in NetEaseBiddingHandler::buildBidResult parseJson failed";
                 isBidAccepted = false;

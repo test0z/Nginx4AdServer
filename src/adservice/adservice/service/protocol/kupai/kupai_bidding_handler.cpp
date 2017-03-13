@@ -62,6 +62,7 @@ namespace bidding {
     bool KupaiBiddingHandler::parseRequestData(const std::string & data)
     {
         bidRequest_.Clear();
+        bidResponse_.Clear();
         return adservice::utility::serialize::getProtoBufObject(bidRequest_, data);
     }
 
@@ -151,7 +152,7 @@ namespace bidding {
     void KupaiBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
                                              const MT::common::SelectResult & result, int seq)
     {
-        if (seq == 0) {
+        if (!bidResponse_.has_bidid()) {
             bidResponse_.Clear();
             bidResponse_.set_id(bidRequest_.id());
             bidResponse_.set_bidid(adservice::utility::cypher::randomId(3));

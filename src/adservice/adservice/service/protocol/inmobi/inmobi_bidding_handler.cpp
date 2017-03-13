@@ -119,6 +119,7 @@ namespace bidding {
     }
     bool InmobiBiddingHandler::parseRequestData(const std::string & data)
     {
+        bidResponse.undefined();
         return parseJson(data.c_str(), bidRequest);
     }
 
@@ -261,7 +262,7 @@ namespace bidding {
                                               const MT::common::SelectResult & result, int seq)
     {
         std::string requestId = bidRequest["id"].str();
-        if (seq == 0) {
+        if (bidResponse.is_undefined()) {
             if (!parseJson(BIDRESPONSE_TEMPLATE, bidResponse)) {
                 LOG_ERROR << "in InmobiBiddingHandler::buildBidResult parseJson failed";
                 isBidAccepted = false;
