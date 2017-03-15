@@ -45,6 +45,7 @@ namespace bidding {
         logItem.reqStatus = 200;
         if (!isAccepted) {
             logItem.adInfo = protocol::log::AdInfo();
+            buildFlowExtraInfo(queryCondition);
         }
         logItem.adInfo.adxid = queryCondition.adxid;
         logItem.adInfo.adxpid = queryCondition.adxpid;
@@ -52,7 +53,6 @@ namespace bidding {
         if (!cmInfo.userMapping.userId.empty()) {
             logItem.userId = cmInfo.userMapping.userId;
         }
-        buildFlowExtraInfo(queryCondition);
         logItem.device = adFlowExtraInfo.devInfo;
         if (isAccepted) {
             logItem.adInfo.sid = adInfo.sid;
@@ -257,10 +257,12 @@ namespace bidding {
         adInfo.areaId = adservice::server::IpManager::getInstance().getAreaCodeStrByIp(selectCondition.ip.data());
         auto idSeq = CookieMappingManager::IdSeq();
         adInfo.imp_id = std::to_string(idSeq.time()) + std::to_string(idSeq.id());
+        buildFlowExtraInfo(selectCondition);
         std::string deviceId;
         char buffer[1024];
         adservice::utility::url::urlEncode_f(adFlowExtraInfo.devInfo.deviceID, deviceId, buffer);
         adFlowExtraInfo.devInfo.deviceID = deviceId;
+
         if (!selectCondition.dealId.empty() && finalSolution.dDealId != "0") {
             adFlowExtraInfo.dealIds.clear();
             adFlowExtraInfo.dealIds.push_back(finalSolution.dDealId);

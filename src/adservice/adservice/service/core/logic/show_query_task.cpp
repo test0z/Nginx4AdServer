@@ -398,9 +398,9 @@ namespace corelogic {
             log.adInfo.cost = adplace.costPrice;
             ipManager.getAreaCodeByIp(condition.ip.data(), log.geoInfo.country, log.geoInfo.province, log.geoInfo.city);
             std::string bannerJson = banner.json;
-            if (condition.mobileDevice == SOLUTION_DEVICE_IPHONE || condition.mobileDevice == SOLUTION_DEVICE_IPAD) {
-                adservice::utility::url::url_replace_all(bannerJson, "http://", "https://");
-            }
+            // if (condition.mobileDevice == SOLUTION_DEVICE_IPHONE || condition.mobileDevice == SOLUTION_DEVICE_IPAD) {
+            adservice::utility::url::url_replace_all(bannerJson, "http://", "https://");
+            //}
             auto idSeq = CookieMappingManager::IdSeq();
             log.adInfo.imp_id = std::to_string(idSeq.time()) + std::to_string(idSeq.id());
             //返回结果
