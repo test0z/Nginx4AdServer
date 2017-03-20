@@ -28,6 +28,7 @@
 #include "file.h"
 #include "userclient.h"
 #include "http.h"
+#include "compress.h"
 #include <tuple>
 #include "google/protobuf/message.h"
 

@@ -82,6 +82,7 @@ SET(SRC_LIST
     ./service/utility/random.cpp
     ./service/utility/url.cpp
     ./service/utility/userclient.cpp
+    ./service/utility/compress.cpp
     ./service/common/atomic.cpp
     ./service/common/functions.cpp
     ./service/common/platform.cpp

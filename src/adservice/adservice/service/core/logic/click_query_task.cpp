@@ -126,6 +126,7 @@ namespace corelogic {
         paramMap["androidid"] = paramMap[URL_DEVICE_ANDOROIDID];
         paramMap["xid"] = paramMap[URL_ADX_ID];
         paramMap["ip"] = userIp;
+        paramMap["geoid"] = paramMap[URL_AREA_ID];
 
         char buffer[1024];
         char result[1024];

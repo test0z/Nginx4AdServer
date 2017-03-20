@@ -69,7 +69,8 @@ $ngx_addon_dir/service/utility/mttytime.cpp
 $ngx_addon_dir/service/utility/random.cpp
 $ngx_addon_dir/service/utility/url.cpp
 $ngx_addon_dir/service/utility/userclient.cpp
-$ngx_addon_dir/service/utility/http.cpp"
+$ngx_addon_dir/service/utility/http.cpp
+$ngx_addon_dir/service/utility/compress.cpp"
 
 #CORE_DEPS="$CORE_DEPS $ngx_addon_dir/logging.h
 #$ngx_addon_dir/service/common/constants.h
@@ -142,7 +143,8 @@ CORE_LIBS="-L/usr/lib -L/usr/lib64 -L/usr/local/lib -L/usr/local/lib64 $CORE_LIB
 /usr/local/lib/libboost_filesystem.a
 /usr/local/lib/libboost_system.a
 /usr/local/lib/libprotobuf.a
--pthread -lstdc++ -lcrypt -lpcre -lcrypto -lcryptopp -lz -lssl -lcurl -licuuc -licui18n -ldl -lzmq -lmtty
+/usr/local/lib/libboost_iostreams.a
+-lboost_iostreams -lpthread -lstdc++ -lcrypt -lpcre -lcrypto -lcryptopp -lz -lssl -lcurl -licuuc -licui18n -ldl -lzmq -lmtty
 /usr/lib/libaerospike.a
 /usr/local/lib/libev.a
 -Wl,-rpath,/usr/local/lib "

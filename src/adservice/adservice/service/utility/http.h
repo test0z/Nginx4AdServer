@@ -23,6 +23,8 @@ namespace utility {
 #define CONTENTTYPE "Content-Type"
 #define CONTENTLENGTH "Content-Length"
 #define SETCOOKIE "Set-Cookie"
+#define CONTENTENCODING "Content-Encoding"
+#define ACCEPTENCODING "Accept-Encoding"
 
     class HttpRequest {
     public:
@@ -40,6 +42,16 @@ namespace utility {
                 return iter->second;
             }
             return "";
+        }
+
+        bool isGzip()
+        {
+            return get(CONTENTENCODING).find("gzip") != std::string::npos;
+        }
+
+        bool isResponseNeedGzip()
+        {
+            return get(ACCEPTENCODING).find("gzip") != std::string::npos;
         }
 
         std::string path_info()
@@ -108,6 +120,16 @@ namespace utility {
 
     class HttpResponse {
     public:
+        void setResponseGzip(bool t)
+        {
+            needGzipResponse = t;
+        }
+
+        bool responseNeedGzip()
+        {
+            return needGzipResponse;
+        }
+
         void set(const std::string & key, const std::string & value)
         {
             headers[key] = value;
@@ -208,6 +230,7 @@ namespace utility {
         std::map<std::string, std::string> headers;
         std::string body;
         std::stringstream bodyStream;
+        bool needGzipResponse{ false };
     };
 }
 }
