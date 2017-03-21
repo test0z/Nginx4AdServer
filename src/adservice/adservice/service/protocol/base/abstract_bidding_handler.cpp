@@ -285,13 +285,16 @@ namespace bidding {
     const CookieMappingQueryKeyValue & AbstractBiddingHandler::cookieMappingKeyMobile(const std::string & idfa,
                                                                                       const std::string & imei,
                                                                                       const std::string & androidId,
-                                                                                      const std::string & mac)
+                                                                                      const std::string & mac,
+                                                                                      int appAdxId,
+                                                                                      const std::string & appUserId)
     {
         cmInfo.queryKV.clearDeviceMapping();
         return cmInfo.queryKV.rebindDevice(MtUserMapping::idfaKey(), idfa)
             .rebindDevice(MtUserMapping::imeiKey(), imei)
             .rebindDevice(MtUserMapping::androidIdKey(), androidId)
-            .rebindDevice(MtUserMapping::macKey(), mac);
+            .rebindDevice(MtUserMapping::macKey(), mac)
+            .rebindDevice(MtUserMapping::adxUidKey(appAdxId), appUserId);
     }
 
     const CookieMappingQueryKeyValue & AbstractBiddingHandler::cookieMappingKeyPC(int64_t adxId,
@@ -352,7 +355,13 @@ namespace bidding {
             cmInfo.needReMapping = false;
         } else if (cmInfo.needTouchMapping) { //更新mapping ttl
             CookieMappingManager & cmManager = CookieMappingManager::getInstance();
-            cmManager.touchMapping(cmInfo.queryKV.key, cmInfo.queryKV.value);
+            if (cmInfo.queryKV.isAdxCookieKey()) {
+                cmManager.touchMapping(cmInfo.queryKV.key, cmInfo.queryKV.value, cmInfo.userMapping.userId);
+            } else {
+                for (auto kvPair : cmInfo.queryKV.deviceMappings) {
+                    cmManager.touchMapping(kvPair.first, kvPair.second, cmInfo.userMapping.userId);
+                }
+            }
         }
         return "";
     }

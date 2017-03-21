@@ -214,7 +214,9 @@ namespace bidding {
                                    ? (queryCondition.androidId = stringtool::toupper(tanxDeviceId(device.android_id())))
                                    : ""),
                     md5_encode(device.has_mac() ? (queryCondition.mac = stringtool::toupper(tanxDeviceId(device.mac())))
-                                                : ""));
+                                                : ""),
+                    queryCondition.adxid,
+                    bidRequest.has_tid() ? bidRequest.tid() : "");
             } else { // wap
                 cookieMappingKeyWap(ADX_TANX_MOBILE, bidRequest.has_tid() ? bidRequest.tid() : "");
             }

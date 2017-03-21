@@ -137,7 +137,8 @@ namespace bidding {
          */
         const CookieMappingQueryKeyValue & cookieMappingKeyMobile(const std::string & idfa, const std::string & imei,
                                                                   const std::string & androidId,
-                                                                  const std::string & mac);
+                                                                  const std::string & mac, int appAdxId = 0,
+                                                                  const std::string & appUserId = "");
 
         /**
          * 准备pc平台进行cookie mapping的key

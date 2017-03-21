@@ -107,7 +107,10 @@ namespace bidding {
                 cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
                                        md5_encode(queryCondition.imei),
                                        md5_encode(queryCondition.androidId),
-                                       md5_encode(queryCondition.mac));
+                                       md5_encode(queryCondition.mac),
+                                       queryCondition.adxid,
+                                       bidRequest.has_user() && bidRequest.user().has_suid() ? bidRequest.user().suid()
+                                                                                             : "");
             } else if (queryCondition.mobileDevice != SOLUTION_DEVICE_OTHER
                        || strcasecmp(device.type().data(), "Wap") == 0) { // wap
                 queryCondition.mobileDevice = queryCondition.mobileDevice == SOLUTION_DEVICE_OTHER

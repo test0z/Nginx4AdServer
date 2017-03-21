@@ -217,7 +217,9 @@ namespace bidding {
                                 md5_encode(queryCondition.androidId
                                            = stringtool::toupper(device.get<std::string>("androidid", ""))),
                                 md5_encode(queryCondition.mac
-                                           = stringtool::toupper(device.get<std::string>("mac", ""))));
+                                           = stringtool::toupper(device.get<std::string>("mac", ""))),
+                                queryCondition.adxid,
+                                bidRequest.get("user.id", ""));
                         } else { // wap
                             cookieMappingKeyWap(ADX_YOUKU_MOBILE, bidRequest.get("user.id", ""));
                         }
@@ -247,6 +249,11 @@ namespace bidding {
             const cppcms::json::value & appContent = bidRequest.find("app.content");
             const cppcms::json::value & actualContent = siteContent.is_undefined() ? appContent : siteContent;
             const cppcms::json::value & contentExt = actualContent.find("ext");
+            if (!actualContent.is_undefined()) {
+                std::string keywords = actualContent.get("keywords", "");
+                adservice::utility::url::url_replace_all(keywords, "|", ",");
+                queryCondition.keywords.push_back(keywords);
+            }
             if (!contentExt.is_undefined()) {
                 std::string channel = contentExt.get("channel", "");
                 std::string cs = contentExt.get("cs", "");
@@ -255,9 +262,6 @@ namespace bidding {
                 }
                 TypeTableManager & typeTableManager = TypeTableManager::getInstance();
                 queryCondition.mttyContentType = typeTableManager.getContentType(ADX_YOUKU, channel);
-                std::string keywords = actualContent.get("keywords", "");
-                adservice::utility::url::url_replace_all(keywords, "|", ",");
-                queryCondition.keywords.push_back(keywords);
             }
             isDeal = false;
             const cppcms::json::value & pmp = adzinfo.find("pmp");

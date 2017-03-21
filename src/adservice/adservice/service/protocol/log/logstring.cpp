@@ -51,6 +51,24 @@ static std::string devTypeString(int mobileDevType)
     }
 }
 
+static std::string osTypeString(int os)
+{
+    switch (os) {
+    case SOLUTION_OS_ANDROID:
+        return "android";
+    case SOLUTION_OS_IOS:
+        return "ios";
+    case SOLUTION_OS_WINDOWS:
+        return "windows";
+    case SOLUTION_OS_MAC:
+        return "mac";
+    case SOLUTION_OS_LINUX:
+        return "linux";
+    default:
+        return "unknown";
+    }
+}
+
 static std::string networkString(int network)
 {
     switch (network) {
@@ -86,9 +104,18 @@ void printLogPhase(std::stringstream & ss, LogPhaseType & type)
     }
 }
 
+template <typename T>
+void printVector(std::stringstream & ss, std::vector<T> & vec)
+{
+    for (auto iter : vec) {
+        ss << iter << ",";
+    }
+    ss << endl;
+}
+
 std::string padAdxId(int adxId)
 {
-    if (adxid < 10) {
+    if (adxId < 10) {
         return std::string("0") + std::to_string(adxId);
     } else {
         return std::to_string(adxId);
@@ -161,6 +188,8 @@ void printDeviceInfo(std::stringstream & ss, const protocol::log::DeviceInfo & d
     ss << "deviceType:" << devTypeString(devInfo.deviceType) << endl;
     ss << "flowType:" << devInfo.flowType << endl;
     ss << "deviceNetwork:" << networkString(devInfo.netWork) << endl;
+    ss << "device os:" << osTypeString(devInfo.os) << endl;
+    ss << "device make:" << devInfo.make << endl;
 }
 
 void printTraceInfo(std::stringstream & ss, const protocol::log::TraceInfo & traceInfo)
@@ -199,6 +228,9 @@ std::string getLogItemString(protocol::log::LogItem & log)
     ss << "traceId:" << log.traceId << endl;
     ss << "click coord:(" << log.clickx << "," << log.clicky << ")" << endl;
     ss << "flowRef:" << log.flowRef << endl;
+    ss << "keywords:" << log.keyWords << endl;
+    ss << "contentTypes:";
+    printVector(ss, log.contentTypes);
     printLogAdInfo(ss, log.adInfo);
     printLogGeoInfo(ss, log.geoInfo);
     printLogUserInfo(ss, log.userInfo);

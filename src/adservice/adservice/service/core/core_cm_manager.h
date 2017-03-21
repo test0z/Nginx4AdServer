@@ -36,8 +36,10 @@ namespace server {
         CookieMappingQueryKeyValue & rebindDevice(const std::string & k, const std::string & v)
         {
             if (!k.empty() && !v.empty()) {
-                key = k;
-                value = v;
+                if (key.empty() || value.empty()) {
+                    key = k;
+                    value = v;
+                }
                 deviceMappings.insert({ k, v });
             }
             isAdxCookie = false;
@@ -81,7 +83,7 @@ namespace server {
                                       const std::string & deviceIdType,
                                       const std::string & value);
 
-        void touchMapping(const std::string & key, const std::string & value);
+        void touchMapping(const std::string & key, const std::string & value, const std::string & userId);
 
         adservice::core::model::UserIDEntity newIdSeq();
 
