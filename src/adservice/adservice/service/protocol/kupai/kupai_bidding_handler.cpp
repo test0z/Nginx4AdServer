@@ -70,6 +70,7 @@ namespace bidding {
                                               protocol::log::LogItem & logItem, bool isAccepted)
     {
         logItem.ipInfo.proxy = selectCondition.ip;
+        logItem.userAgent = bidRequest_.has_device() && bidRequest_.device().has_ua() ? bidRequest_.device().ua() : "";
         if (isAccepted) {
             if (bidRequest_.device().devicetype() != BidRequest_Device_DeviceType_PERSONAL_COMPUTER) {
                 logItem.deviceInfo = bidRequest_.device().DebugString();
@@ -124,14 +125,25 @@ namespace bidding {
                 queryCondition.pAdplaceInfo = &adplaceInfo;
             }
         }
+        if (bidRequest_.has_site()) {
+            const BidRequest_Site & site = bidRequest_.site();
+            queryCondition.keywords.push_back(site.keywords());
+        }
+        if (bidRequest_.has_app()) {
+            const BidRequest_App & app = bidRequest_.app();
+            queryCondition.keywords.push_back(app.keywords());
+        }
         if (device.devicetype() != BidRequest_Device_DeviceType_PERSONAL_COMPUTER) {
             queryCondition.mobileDevice = getDeviceType(device.devicetype());
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.adxid = ADX_KUPAI_MOBILE;
             queryCondition.mobileNetwork = getNetWork(device.connectiontype());
-            queryCondition.imei = device.has_didmd5() ? device.didmd5() : "";
-            queryCondition.androidId = device.has_dpidmd5() ? device.dpidmd5() : "";
-            queryCondition.mac = device.has_macmd5() ? device.macmd5() : "";
+            queryCondition.imei = device.has_didmd5() ? stringtool::toupper(device.didmd5()) : "";
+            queryCondition.androidId = device.has_dpidmd5() ? stringtool::toupper(device.dpidmd5()) : "";
+            queryCondition.mac = device.has_macmd5() ? stringtool::toupper(device.macmd5()) : "";
+            queryCondition.pcOs = adservice::utility::userclient::getOSTypeFromUA(device.ua());
+            queryCondition.deviceMaker = device.has_make() ? device.make() : "";
+            queryCondition.mobileModel = device.has_model() ? device.model() : "";
         } else {
             queryCondition.pcOS = SOLUTION_OS_OTHER;
             queryCondition.flowType = SOLUTION_FLOWTYPE_PC;

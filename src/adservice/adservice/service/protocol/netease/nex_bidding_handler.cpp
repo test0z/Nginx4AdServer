@@ -43,8 +43,10 @@ namespace bidding {
         flowType = SOLUTION_FLOWTYPE_MOBILE;
         if (!strcasecmp(osType.data(), NEX_OS_ANDROID)) {
             mobileDev = SOLUTION_DEVICE_ANDROID;
+            pcOs = SOLUTION_OS_ANDROID;
         } else if (!strcasecmp(osType.data(), NEX_OS_iPhone)) {
             mobileDev = SOLUTION_DEVICE_IPHONE;
+            pcOs = SOLUTION_OS_IOS;
         } else {
             flowType = SOLUTION_FLOWTYPE_PC;
             if (osType.empty()) {
@@ -161,10 +163,11 @@ namespace bidding {
                         queryCondition.adxid = ADX_NEX_MOBILE;
                         adInfo.adxid = ADX_NEX_MOBILE;
                     }
+                    queryCondition.mobileModel = device.get("model", "");
                     queryCondition.mobileNetwork = getNetwork(device.get("connectiontype", ""));
-                    queryCondition.idfa = device.get("idfa", "");
-                    queryCondition.mac = device.get("mac", "");
-                    queryCondition.imei = device.get("imei", "");
+                    queryCondition.idfa = stringtool::toupper(device.get("idfa", ""));
+                    queryCondition.mac = stringtool::toupper(device.get("mac", ""));
+                    queryCondition.imei = stringtool::toupper(device.get("imei", ""));
                     cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
                                            md5_encode(queryCondition.imei),
                                            md5_encode(queryCondition.androidId),

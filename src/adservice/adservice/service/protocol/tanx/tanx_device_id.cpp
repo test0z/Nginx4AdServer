@@ -145,6 +145,8 @@ std::string tanxDeviceId(const std::string & src)
     uchar deviceId[64] = { '\0' };
     if (decodeDeviceId(orig, deviceId)) {
         return std::string((const char *)deviceId);
+    } else {
+        LOG_WARN << "tanx device id decode failed,deviceId:" << src;
     }
 
     return "";

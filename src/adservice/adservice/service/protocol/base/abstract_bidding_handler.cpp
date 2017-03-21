@@ -53,6 +53,16 @@ namespace bidding {
         if (!cmInfo.userMapping.userId.empty()) {
             logItem.userId = cmInfo.userMapping.userId;
         }
+        if (queryCondition.mttyContentType != 0) {
+            logItem.contentTypes.push_back(queryCondition.mttyContentType);
+        }
+        if (!queryCondition.keywords.empty()) {
+            std::stringstream ss;
+            for (auto keyword : queryCondition.keywords) {
+                ss << keyword << ",";
+            }
+            logItem.keyWords = ss.str();
+        }
         logItem.device = adFlowExtraInfo.devInfo;
         if (isAccepted) {
             logItem.adInfo.sid = adInfo.sid;
@@ -76,6 +86,7 @@ namespace bidding {
             logItem.contentTypes = adFlowExtraInfo.contentType;
             logItem.mediaType = adFlowExtraInfo.mediaType;
             logItem.adInfo.bidEcpmPrice = adInfo.bidEcpmPrice;
+            logItem.adInfo.imp_id = adInfo.imp_id;
         } else {
             logItem.adInfo.pid = std::to_string(queryCondition.mttyPid);
             logItem.adInfo.adxpid = queryCondition.adxpid;
@@ -201,8 +212,10 @@ namespace bidding {
         adFlowExtraInfo.devInfo.deviceType = selectCondition.mobileDevice;
         adFlowExtraInfo.devInfo.flowType = selectCondition.flowType;
         adFlowExtraInfo.devInfo.netWork = selectCondition.mobileNetwork;
-        adFlowExtraInfo.devInfo.os = selectCondition.mobileDevice;
+        adFlowExtraInfo.devInfo.os = selectCondition.pcOS;
         adFlowExtraInfo.devInfo.deviceID = "";
+        adFlowExtraInfo.devInfo.make
+            = selectCondition.deviceMaker.empty() ? selectCondition.mobileModel : selectCondition.deviceMaker;
         if (selectCondition.mobileDevice == SOLUTION_DEVICE_ANDROID
             || selectCondition.mobileDevice == SOLUTION_DEVICE_ANDROIDPAD) {
             if (selectCondition.imei.empty()) {
@@ -274,16 +287,11 @@ namespace bidding {
                                                                                       const std::string & androidId,
                                                                                       const std::string & mac)
     {
-        if (!idfa.empty()) {
-            return cmInfo.queryKV.rebind(MtUserMapping::idfaKey(), idfa, false);
-        } else if (!imei.empty()) {
-            return cmInfo.queryKV.rebind(MtUserMapping::imeiKey(), imei, false);
-        } else if (!androidId.empty()) {
-            return cmInfo.queryKV.rebind(MtUserMapping::androidIdKey(), androidId, false);
-        } else if (!mac.empty()) {
-            return cmInfo.queryKV.rebind(MtUserMapping::macKey(), mac, false);
-        }
-        return cmInfo.queryKV.rebind("", "", false);
+        cmInfo.queryKV.clearDeviceMapping();
+        return cmInfo.queryKV.rebindDevice(MtUserMapping::idfaKey(), idfa)
+            .rebindDevice(MtUserMapping::imeiKey(), imei)
+            .rebindDevice(MtUserMapping::androidIdKey(), androidId)
+            .rebindDevice(MtUserMapping::macKey(), mac);
     }
 
     const CookieMappingQueryKeyValue & AbstractBiddingHandler::cookieMappingKeyPC(int64_t adxId,
@@ -337,7 +345,9 @@ namespace bidding {
                 }
             } else { // device id
                 CookieMappingManager & cmManager = CookieMappingManager::getInstance();
-                cmManager.updateMappingDeviceAsync(cmInfo.userMapping.userId, cmInfo.queryKV.key, cmInfo.queryKV.value);
+                for (auto kvPair : cmInfo.queryKV.deviceMappings) {
+                    cmManager.updateMappingDeviceAsync(cmInfo.userMapping.userId, kvPair.first, kvPair.second);
+                }
             }
             cmInfo.needReMapping = false;
         } else if (cmInfo.needTouchMapping) { //更新mapping ttl

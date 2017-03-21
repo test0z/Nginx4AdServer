@@ -94,15 +94,16 @@ namespace bidding {
             auto & device = bidRequest.device();
             queryCondition.ip = device.has_ip() ? device.ip() : "";
             queryCondition.mobileDevice = getMobileTypeFromUA(device.ua());
+            queryCondition.pcOS = getOSTypeFromUA(device.ua());
             if (strcasecmp(device.type().data(), "Mobile") == 0) { // mobile
                 queryCondition.mobileDevice = getSohuDeviceType(device.mobiletype());
                 queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
                 queryCondition.adxid = ADX_SOHU_MOBILE;
                 queryCondition.mobileNetwork = getSohuNeworkType(device.nettype());
-                queryCondition.idfa = device.has_idfa() ? device.idfa() : "";
-                queryCondition.imei = device.has_imei() ? device.imei() : "";
-                queryCondition.androidId = device.has_androidid() ? device.androidid() : "";
-                queryCondition.mac = device.has_mac() ? device.mac() : "";
+                queryCondition.idfa = device.has_idfa() ? stringtool::toupper(device.idfa()) : "";
+                queryCondition.imei = device.has_imei() ? stringtool::toupper(device.imei()) : "";
+                queryCondition.androidId = device.has_androidid() ? stringtool::toupper(device.androidid()) : "";
+                queryCondition.mac = device.has_mac() ? stringtool::toupper(device.mac()) : "";
                 cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
                                        md5_encode(queryCondition.imei),
                                        md5_encode(queryCondition.androidId),

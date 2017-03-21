@@ -4,57 +4,57 @@ protocol log{
 import idl "common.inc";
 @namespace("com.mtty.protocol")
 record LogItem {
-	// 处理请求时的UNIX时间戳,按照需求,这个时间是UTC标准时,任何模块下都是非空字段
+        // 处理请求时的UNIX时间戳,任何模块下都是非空字段
 	long timeStamp = 1;
 	// 日志产生的模块,非空字段
 	LogPhaseType logType;
-	// 请求状态,非空字段,默认200,在出错的情况下为500,500的情况下继续读取各个字段没有意义
+        // 请求状态,非空字段,默认200,在出错的情况下为500
 	int reqStatus = 200;
 	// 请求方法,1:GET,0:POST,非空字段
 	int reqMethod = 1;
 	// 用户的IP信息
 	IPInfo ipInfo;
-	// 请求来源,点击模块下为非空字段
+        // 请求来源 bid模块(360,光阴,inmobi,搜狐,tanx,youku),show模块，click模块，track模块
 	string referer;
-	// 请求主机,非空字段
+        // 请求主机,废弃
 	string host;
-	// 请求的路径,非空字段
+        // 请求的路径,废弃
 	string path;
-	// 用户Id,不同模块可能有不同的定义,点击模块下为cookiesId
+        // 用户Id,bid模块(对mapping过的用户有效,tanx,youku,搜狐，移动APP用户),show,click,track总是有效，ssp目前无效
 	string userId;
-	// 用户浏览器代理,有可能为空
+        // 用户浏览器代理，bid(360,光阴,inmobi,酷派,猎豹,nex,sohu,tanx,youku),其它模块总是有
 	string userAgent;
-	// 第三方平台提供的用户信息,点击模块下为空
+        // 第三方平台提供的用户信息,暂时为空
 	UserInfo userInfo;
-	// 第三方平台提供的地理信息,点击模块下为空
+        // 地理信息只有城市，国家字段可用
 	GeoInfo geoInfo;
-	// 用户访问的页面信息,点击模块下为空
+        // 用户访问的页面信息，废弃
 	string pageInfo;
-	// 前端脚本挖掘到的信息,点击模块下为空
+        // 前端脚本挖掘到的信息,废弃
 	string jsInfo;
-	// 设备信息,点击模块下为空
+        // 设备信息，废弃
 	string deviceInfo;
-	// 跟踪Id,点击模块下为空
+        // 跟踪Id,仅在trace模块有效
 	int traceId;
-	// 广告信息,点击模块下非空
+        // 广告信息,bid,show,click,trace模块有效
 	AdInfo adInfo;
-	// 点击坐标x,如果前端没有传,为0
+        // 点击坐标x,废弃
 	int clickx;
-	// 点击坐标y,如果前端没有传,为0
+        // 点击坐标y,废弃
 	int clicky;
-	// trace模块记录的信息
+        // trace模块记录的信息，仅trace模块有效
 	TraceInfo traceInfo;
-        // deal id 优酷搜狐
+        // deal id 优酷搜狐有效
         array<string> dealIds;
-        // 页面关键词、视频标题等
+        // 页面关键词、视频标题等，暂时无效
         string keyWords;
-        // 媒体分类ID
+        // 媒体分类ID，暂时无效
         int mediaType;
-        // 内容分类ID
+        // 内容分类ID,暂时无效
         array<int> contentTypes;
         // 设备信息
         DeviceInfo  device;
-        // 流量来源 0 普通 1营销工具
+        // 流量来源 0 普通 1营销工具，暂时无效
         int flowRef;
 }
 

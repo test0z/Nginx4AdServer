@@ -57,16 +57,20 @@ namespace bidding {
                 flowType = SOLUTION_FLOWTYPE_MOBILE;
                 if (!strcasecmp(osType.data(), INMOBI_OS_ANDROID)) {
                     mobileDev = SOLUTION_DEVICE_ANDROID;
+                    pcOs = SOLUTION_OS_ANDROID;
                 } else if (!strcasecmp(osType.data(), INMOBI_OS_IOS)) {
                     mobileDev = SOLUTION_DEVICE_IPHONE;
+                    pcOs = SOLUTION_OS_IOS;
                 } else
                     mobileDev = SOLUTION_DEVICE_OTHER;
             } else if (devType == INMOBI_DEV_TABLET || devType == INMOBI_DEV_MOBILEORPAD) {
                 flowType = SOLUTION_FLOWTYPE_MOBILE;
                 if (!strcasecmp(osType.data(), INMOBI_OS_ANDROID)) {
                     mobileDev = SOLUTION_DEVICE_ANDROIDPAD;
+                    pcOs = SOLUTION_OS_ANDROID;
                 } else if (!strcasecmp(osType.data(), INMOBI_OS_IOS)) {
                     mobileDev = SOLUTION_DEVICE_IPAD;
+                    pcOs = SOLUTION_OS_IOS;
                 } else
                     mobileDev = SOLUTION_DEVICE_OTHER;
             } else if (devType == INMOBI_DEV_PC) {
@@ -129,11 +133,11 @@ namespace bidding {
         cppcms::json::value & deviceInfo = bidRequest["device"];
         logItem.userAgent = deviceInfo.get("ua", "");
         logItem.ipInfo.proxy = selectCondition.ip;
+        logItem.referer = bidRequest.get("site.ref", "");
         if (isAccepted) {
             cppcms::json::value device;
             device["deviceInfo"] = deviceInfo;
             logItem.deviceInfo = toJson(device);
-            logItem.referer = bidRequest.get("site.ref", "");
         }
         return true;
     }
@@ -204,10 +208,12 @@ namespace bidding {
                                     queryCondition.mobileDevice,
                                     queryCondition.pcOS,
                                     queryCondition.pcBrowserStr);
+            queryCondition.mobileModel = device.get("model", "");
+            queryCondition.deviceMaker = device.get("make", "");
             queryCondition.mobileNetwork = getInmobiNetwork(device.get("connectiontype", 0));
-            queryCondition.idfa = device.get("ext.idfa", "");
-            queryCondition.imei = device.get("didmd5", "");
-            queryCondition.androidId = device.get("dpidmd5", "");
+            queryCondition.idfa = stringtool::toupper(device.get("ext.idfa", ""));
+            queryCondition.imei = stringtool::toupper(device.get("didmd5", ""));
+            queryCondition.androidId = stringtool::toupper(device.get("dpidmd5", ""));
             cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
                                    queryCondition.imei,
                                    queryCondition.androidId,

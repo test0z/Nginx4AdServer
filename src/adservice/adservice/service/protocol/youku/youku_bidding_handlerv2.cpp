@@ -46,16 +46,20 @@ namespace bidding {
             flowType = SOLUTION_FLOWTYPE_MOBILE;
             if (!strcasecmp(osType.data(), YOUKU_OS_ANDROID)) {
                 mobileDev = SOLUTION_DEVICE_ANDROID;
+                pcOs = SOLUTION_OS_ANDROID;
             } else if (!strcasecmp(osType.data(), YOUKU_OS_iPhone)) {
                 mobileDev = SOLUTION_DEVICE_IPHONE;
+                pcOs = SOLUTION_OS_IOS;
             } else
                 mobileDev = SOLUTION_DEVICE_OTHER;
         } else if (devType == YOUKU_DEVICE_PAD) {
             flowType = SOLUTION_FLOWTYPE_MOBILE;
             if (!strcasecmp(osType.data(), YOUKU_OS_ANDROID)) {
                 mobileDev = SOLUTION_DEVICE_ANDROIDPAD;
+                pcOs = SOLUTION_OS_ANDROID;
             } else if (!strcasecmp(osType.data(), YOUKU_OS_iPhone)) {
                 mobileDev = SOLUTION_DEVICE_IPAD;
+                pcOs = SOLUTION_OS_IOS;
             } else
                 mobileDev = SOLUTION_DEVICE_OTHER;
         } else if (devType == YOUKU_DEVICE_PC) {
@@ -73,10 +77,9 @@ namespace bidding {
             pcBrowser = getBrowserTypeFromUA(ua);
         } else {
             mobileDev = getMobileTypeFromUA(ua);
+            pcOs = getOSTypeFromUA(ua);
             if (mobileDev != SOLUTION_DEVICE_OTHER) {
                 flowType = SOLUTION_FLOWTYPE_MOBILE;
-            } else {
-                pcOs = getOSTypeFromUA(ua);
             }
         }
     }
@@ -190,6 +193,8 @@ namespace bidding {
                     int devType = device.get("devicetype", YOUKU_DEVICE_PC);
                     std::string osType = device.get("os", "");
                     std::string ua = device.get("ua", "");
+                    queryCondition.deviceMaker = device.get("make", "");
+                    queryCondition.mobileModel = device.gte("model", "");
                     fromYoukuDevTypeOsType(devType,
                                            osType,
                                            ua,
@@ -205,10 +210,14 @@ namespace bidding {
                     if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
                         if (!bidRequest.find("app").is_undefined()) { // app
                             cookieMappingKeyMobile(
-                                md5_encode(queryCondition.idfa = device.get<std::string>("idfa", "")),
-                                md5_encode(queryCondition.imei = device.get<std::string>("imei", "")),
-                                md5_encode(queryCondition.androidId = device.get<std::string>("androidid", "")),
-                                md5_encode(queryCondition.mac = device.get<std::string>("mac", "")));
+                                md5_encode(queryCondition.idfa
+                                           = stringtool::toupper(device.get<std::string>("idfa", ""))),
+                                md5_encode(queryCondition.imei
+                                           = stringtool::toupper(device.get<std::string>("imei", ""))),
+                                md5_encode(queryCondition.androidId
+                                           = stringtool::toupper(device.get<std::string>("androidid", ""))),
+                                md5_encode(queryCondition.mac
+                                           = stringtool::toupper(device.get<std::string>("mac", ""))));
                         } else { // wap
                             cookieMappingKeyWap(ADX_YOUKU_MOBILE, bidRequest.get("user.id", ""));
                         }
@@ -234,9 +243,10 @@ namespace bidding {
                 queryCondition.imei = firstQueryCondition.imei;
             }
 
-            const cppcms::json::value & siteContent = bidRequest.find("site.content.ext");
-            const cppcms::json::value & appContent = bidRequest.find("app.content.ext");
-            const cppcms::json::value & contentExt = siteContent.is_undefined() ? appContent : siteContent;
+            const cppcms::json::value & siteContent = bidRequest.find("site.content");
+            const cppcms::json::value & appContent = bidRequest.find("app.content");
+            const cppcms::json::value & actualContent = siteContent.is_undefined() ? appContent : siteContent;
+            const cppcms::json::value & contentExt = actualContent.find("ext");
             if (!contentExt.is_undefined()) {
                 std::string channel = contentExt.get("channel", "");
                 std::string cs = contentExt.get("cs", "");
@@ -245,6 +255,9 @@ namespace bidding {
                 }
                 TypeTableManager & typeTableManager = TypeTableManager::getInstance();
                 queryCondition.mttyContentType = typeTableManager.getContentType(ADX_YOUKU, channel);
+                std::string keywords = actualContent.get("keywords", "");
+                adservice::utility::url::url_replace_all(keywords, "|", ",");
+                queryCondition.keywords.push_back(keywords);
             }
             isDeal = false;
             const cppcms::json::value & pmp = adzinfo.find("pmp");

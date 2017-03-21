@@ -26,6 +26,24 @@ namespace server {
             return *this;
         }
 
+        void clearDeviceMapping()
+        {
+            k = "";
+            v = "";
+            deviceMappings.clear();
+        }
+
+        CookieMappingQueryKeyValue & rebindDevice(const std::string & k, const std::string & v)
+        {
+            if (!k.empty() && !v.empty()) {
+                key = k;
+                value = v;
+                deviceMappings.insert({ k, v });
+            }
+            isAdxCookie = false;
+            return *this;
+        }
+
         bool isNull() const
         {
             return key.empty() || value.empty();
@@ -39,6 +57,7 @@ namespace server {
     public:
         std::string key;
         std::string value;
+        std::unordered_map<std::string, std::string> deviceMappings;
         bool isAdxCookie;
     };
 

@@ -38,6 +38,17 @@ namespace bidding {
         }
     }
 
+    static int getDeviceOs(const std::string & os)
+    {
+        if (os.find("ios") != std::string::npos) {
+            return SOLUTION_OS_IOS;
+        } else if (os.find("android") != std::string::npos) {
+            return SOLUTION_OS_ANDROID;
+        } else {
+            return SOLUTION_OS_OTHER;
+        }
+    }
+
     static int getNetWork(int network)
     {
         switch (network) {
@@ -146,6 +157,8 @@ namespace bidding {
             const BidRequest_Mobile & mobile = bidRequest.mobile();
             const BidRequest_Mobile_Device & device = mobile.device();
             queryCondition.mobileDevice = getDeviceTypeByOS(device.os());
+            queryCondition.pcOS = getDeviceOs(device.os());
+            queryCondition.mobileModel = device.model();
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.adxid = ADX_360_MAX_MOBILE;
             if (device.has_network()) {
@@ -161,10 +174,12 @@ namespace bidding {
                         = typeTableManager.getContentType(ADX_TANX, std::to_string(mobile.app_category(0)));
                 }
                 cookieMappingKeyMobile(
-                    md5_encode(device.has_idfa() ? (queryCondition.idfa = device.idfa()) : ""),
-                    md5_encode(device.has_imei() ? (queryCondition.imei = device.imei()) : ""),
-                    md5_encode(device.has_android_id() ? (queryCondition.androidId = device.android_id()) : ""),
-                    md5_encode(device.has_mac() ? (queryCondition.mac = device.mac()) : ""));
+                    md5_encode(device.has_idfa() ? (queryCondition.idfa = stringtool::toupper(device.idfa())) : ""),
+                    md5_encode(device.has_imei() ? (queryCondition.imei = stringtool::toupper(device.imei())) : ""),
+                    md5_encode(device.has_android_id()
+                                   ? (queryCondition.androidId = stringtool::toupper(device.android_id()))
+                                   : ""),
+                    md5_encode(device.has_mac() ? (queryCondition.mac = stringtool::toupper(device.mac())) : ""));
             } else { // wap
                 cookieMappingKeyWap(ADX_360_MAX_MOBILE, bidRequest.has_mv_user_id() ? bidRequest.mv_user_id() : "");
             }
@@ -185,7 +200,6 @@ namespace bidding {
             }
             queryCondition.dealId = ss.str();
         }
-
         if (!filterCb(this, queryConditions)) {
             return bidFailedReturn();
         }

@@ -32,6 +32,16 @@ namespace bidding {
             return SOLUTION_DEVICE_OTHER;
     }
 
+    it getNetEaseOsType(const std::string & os)
+    {
+        if (!strncasecmp(platform.data(), "android", platform.length())) {
+            return SOLUTION_OS_ANDROID;
+        } else if (!strncasecmp(platform.data(), "ios", platform.length())) {
+            return SOLUTION_OS_IOS;
+        } else
+            return SOLUTION_OS_OTHER;
+    }
+
     static int getNetwork(const std::string & network)
     {
         if (network == "wifi") {
@@ -86,9 +96,10 @@ namespace bidding {
         queryCondition.mobileDevice = getNetEaseDeviceType(platform);
         const cppcms::json::value & device = bidRequest.find("device");
         if (!device.is_undefined()) {
-            queryCondition.idfa = device.get("idfa", "");
-            queryCondition.imei = device.get("imei", "");
-            queryCondition.mac = device.get("mac", "");
+            queryCondition.idfa = stringtool::toupper(device.get("idfa", ""));
+            queryCondition.imei = stringtool::toupper(stdevice.get("imei", ""));
+            queryCondition.mac = stringtool::toupper(device.get("mac", ""));
+            queryCondition.pcOS = getNetEaseOsType(device.get("os", ""));
             const cppcms::json::value & networkStatus = device.find("network_status");
             if (!networkStatus.is_undefined()) {
                 queryCondition.mobileNetwork = getNetwork(networkStatus.str());
