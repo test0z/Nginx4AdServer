@@ -32,7 +32,7 @@ namespace bidding {
             return SOLUTION_DEVICE_OTHER;
     }
 
-    it getNetEaseOsType(const std::string & os)
+    int getNetEaseOsType(const std::string & platform)
     {
         if (!strncasecmp(platform.data(), "android", platform.length())) {
             return SOLUTION_OS_ANDROID;
@@ -97,7 +97,7 @@ namespace bidding {
         const cppcms::json::value & device = bidRequest.find("device");
         if (!device.is_undefined()) {
             queryCondition.idfa = stringtool::toupper(device.get("idfa", ""));
-            queryCondition.imei = stringtool::toupper(stdevice.get("imei", ""));
+            queryCondition.imei = stringtool::toupper(device.get("imei", ""));
             queryCondition.mac = stringtool::toupper(device.get("mac", ""));
             queryCondition.pcOS = getNetEaseOsType(device.get("os", ""));
             const cppcms::json::value & networkStatus = device.find("network_status");

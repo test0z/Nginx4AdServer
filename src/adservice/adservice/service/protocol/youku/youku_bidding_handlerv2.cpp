@@ -194,7 +194,7 @@ namespace bidding {
                     std::string osType = device.get("os", "");
                     std::string ua = device.get("ua", "");
                     queryCondition.deviceMaker = device.get("make", "");
-                    queryCondition.mobileModel = device.gte("model", "");
+                    queryCondition.mobileModel = device.get("model", "");
                     fromYoukuDevTypeOsType(devType,
                                            osType,
                                            ua,

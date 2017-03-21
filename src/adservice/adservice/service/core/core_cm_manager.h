@@ -28,8 +28,8 @@ namespace server {
 
         void clearDeviceMapping()
         {
-            k = "";
-            v = "";
+            key = "";
+            value = "";
             deviceMappings.clear();
         }
 

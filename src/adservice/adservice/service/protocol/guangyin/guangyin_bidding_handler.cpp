@@ -139,7 +139,7 @@ namespace bidding {
         queryCondition.basePrice = imp.bidfloor();
         queryCondition.width = banner.w();
         queryCondition.height = banner.h();
-        for (uint32_t i = 0; i < banner.keywords_size(); i++) {
+        for (int i = 0; i < banner.keywords_size(); i++) {
             queryCondition.keywords.push_back(banner.keywords(i));
         }
         if (device.devicetype() == DeviceType::MOBILE) {
@@ -160,7 +160,7 @@ namespace bidding {
                 if (queryCondition.adxpid.empty() && app.has_publisher()) {
                     queryCondition.adxpid = app.publisher().slot();
                 }
-                for (uint32_t i = 0; i < app.keywords_size(); i++) {
+                for (int i = 0; i < app.keywords_size(); i++) {
                     queryCondition.keywords.push_back(app.keywords(i));
                 }
             } else if (bidRequest_.has_site()) {
@@ -168,7 +168,7 @@ namespace bidding {
                 if (site.has_publisher()) {
                     queryCondition.adxpid = site.publisher().slot();
                 }
-                for (uint32_t i = 0; i < site.keywords_size(); i++) {
+                for (int i = 0; i < site.keywords_size(); i++) {
                     queryCondition.keywords.push_back(site.keywords(i));
                 }
             }
@@ -187,7 +187,7 @@ namespace bidding {
                 if (site.has_publisher()) {
                     queryCondition.adxpid = site.publisher().slot();
                 }
-                for (uint32_t i = 0; i < site.keywords_size(); i++) {
+                for (int i = 0; i < site.keywords_size(); i++) {
                     queryCondition.keywords.push_back(site.keywords(i));
                 }
             }

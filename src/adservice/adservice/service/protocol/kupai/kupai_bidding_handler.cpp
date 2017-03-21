@@ -141,7 +141,7 @@ namespace bidding {
             queryCondition.imei = device.has_didmd5() ? stringtool::toupper(device.didmd5()) : "";
             queryCondition.androidId = device.has_dpidmd5() ? stringtool::toupper(device.dpidmd5()) : "";
             queryCondition.mac = device.has_macmd5() ? stringtool::toupper(device.macmd5()) : "";
-            queryCondition.pcOs = adservice::utility::userclient::getOSTypeFromUA(device.ua());
+            queryCondition.pcOS = adservice::utility::userclient::getOSTypeFromUA(device.ua());
             queryCondition.deviceMaker = device.has_make() ? device.make() : "";
             queryCondition.mobileModel = device.has_model() ? device.model() : "";
         } else {
