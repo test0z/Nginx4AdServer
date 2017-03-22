@@ -2,19 +2,24 @@
 // Created by guoze.lin on 16/5/3.
 //
 
-#include "baidu_bidding_handler.h"
+#include "protocol/m_baidu/baidu_bidding_handler.h"
 #include "core/core_ip_manager.h"
 #include "core/core_typetable.h"
 #include "logging.h"
+#include "utility/json.h"
 #include "utility/userclient.h"
 #include "utility/utility.h"
+
 namespace protocol {
 namespace bidding {
 
-    using namespace protocol::Baidu;
+    using namespace protocol::baidu;
+    using namespace adservice::utility;
     using namespace adservice::utility::serialize;
     using namespace adservice::server;
     using namespace adservice::utility::userclient;
+    using namespace adservice::utility::json;
+    using namespace adservice::utility::cypher;
 
 #define AD_BD_CLICK_MACRO "%%CLICK_URL_ESC%%"
 #define AD_BD_PRICE_MACRO "%%PRICE%%"
@@ -69,6 +74,36 @@ namespace bidding {
         }
         return SOLUTION_NETWORK_OTHER;
     }
+    void getIDFA_AND(AdSelectCondition & select, const BidRequest_Mobile_ForAdvertisingID & temp)
+    {
+        switch (temp.type()) {
+        case 4:
+            select.androidId = temp.id();
+            break;
+        case 5:
+            select.idfa = temp.id();
+            break;
+        default:
+            select.androidId = "";
+            select.idfa = "";
+            break;
+        }
+    }
+    void getMAC_IMEI(AdSelectCondition & select, const BidRequest_Mobile_MobileID & temp)
+    {
+        switch (temp.type()) {
+        case 1:
+            select.imei = temp.id();
+            break;
+        case 2:
+            select.mac = temp.id();
+            break;
+        default:
+            select.imei = "";
+            select.mac = "";
+            break;
+        }
+    }
     bool BaiduBiddingHandler::parseRequestData(const std::string & data)
     {
         bidRequest.Clear();
@@ -78,17 +113,8 @@ namespace bidding {
 
     std::string BaiduBiddingHandler::baiduHtmlSnippet()
     {
-        char extShowBuf[1024];
-        const std::string & bid = bidRequest.id();
-        const BidRequest_AdSlot & adSlot = bidRequest.adslot(0);
-        int width = adSlot.width();
-        int height = adSlot.height();
-        size_t len
-            = (size_t)snprintf(extShowBuf, sizeof(extShowBuf), "p=%s&l=%s&", AD_BD_PRICE_MACRO, AD_BD_CLICK_MACRO);
-        if (len >= sizeof(extShowBuf)) {
-            LOG_WARN << "BaiduBiddingHandler::baiduHtmlSnippet,extShowBuf buffer size not enough,needed:" << len;
-        }
-        return generateHtmlSnippet(bid, width, height, extShowBuf);
+        char html[2048];
+        memset(html, 0x00, 2048);
     }
 
     std::string BaiduBiddingHandler::baiduHtmlScript()
@@ -142,6 +168,8 @@ namespace bidding {
             queryCondition.mttyContentType
                 = typeTableManager.getContentType(ADX_BAIDU, std::to_string(bidRequest.site_category()));
         }
+        if (!adSlot.allowed_non_nativead())
+            queryCondition.bannerType = BANNER_TYPE_PRIMITIVE;
         //移动端处理
         if (bidRequest.has_mobile()) {
             const BidRequest_Mobile & mobile = bidRequest.mobile();
@@ -150,6 +178,8 @@ namespace bidding {
                 queryCondition.mobileDevice
                     = adservice::utility::userclient::getMobileTypeFromUA(bidRequest.user_agent());
             }
+            queryCondition.width = adSlot.actual_width();
+            queryCondition.height = adSlot.actual_height();
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             if (mobile.has_wireless_network_type())
                 queryCondition.mobileNetwork = getMobileNet(mobile.wireless_network_type());
@@ -161,7 +191,16 @@ namespace bidding {
                     queryCondition.mttyContentType = typeTableManager.getContentType(
                         ADX_BAIDU, std::to_string(mobile.mobile_app().app_category()));
                 }
-                cookieMappingKeyMobile("", "", "", "");
+                const BidRequest_Mobile_ForAdvertisingID bid_fa_id = mobile.for_advertising_id(0);
+                const BidRequest_Mobile_MobileID bid_mo_id = mobile.id();
+                getMAC_IMEI(queryCondition, bid_mo_id);
+                getIDFA_AND(queryCondition, bid_fa_id);
+                boost::algorithm::to_upper(queryCondition.idfa);
+                boost::algorithm::to_upper(queryCondition.imei);
+                boost::algorithm::to_upper(queryCondition.androidId);
+                boost::algorithm::to_upper(queryCondition.mac);
+                cookieMappingKeyMobile(md5_encode(queryCondition.idfa), md5_encode(queryCondition.imei),
+                                       md5_encode(queryCondition.androidId), md5_encode(queryCondition.mac));
             } else {
                 cookieMappingKeyWap(ADX_BAIDU,
                                     (bidRequest.baidu_id_list_size() > 0) ? bidRequest.baidu_id_list(0).baidu_user_id()
@@ -205,6 +244,8 @@ namespace bidding {
         const MT::common::Banner & banner = result.banner;
         int advId = finalSolution.advId;
         const BidRequest_AdSlot & adSlot = bidRequest.adslot(0);
+        std::string adxIndustryTypeStr = banner.adxIndustryType;
+        int adxIndustryType = extractRealValue(adxIndustryTypeStr.data(), ADX_BAIDU);
         int maxCpmPrice = max(result.bidPrice, adSlot.minimum_cpm());
         adResult->set_max_cpm(maxCpmPrice);
         adResult->set_advertiser_id(advId);
@@ -212,26 +253,53 @@ namespace bidding {
         adResult->set_height(banner.height);
         adResult->set_width(banner.width);
         adResult->set_sequence_id(adSlot.sequence_id());
+        adResult->set_category(adxIndustryType);
+        adResult->set_type(banner.bannerType);
         //缓存最终广告结果
         fillAdInfo(queryCodition, result, bidRequest.id());
-        /*adInfo.pid = adplace.pId;
-        adInfo.advId = advId;
-        adInfo.sid = finalSolution.sId;
-        adInfo.adxid = ADX_BAIDU;
-        adInfo.adxpid = adplace.adxPId;
-        adInfo.adxuid = bidRequest.baidu_user_id();
-        adInfo.bannerId = banner.bId;
-        adInfo.cid = adplace.cId;
-        adInfo.mid = adplace.mId;
-        adInfo.cpid = adInfo.advId;
-        adInfo.offerPrice = maxCpmPrice;
-        adInfo.priceType = finalSolution.priceType;
-        adInfo.ppid = result.ppid;
-        adInfo.bidSize = makeBidSize(banner.width, banner.height);
-        const std::string & userIp = bidRequest.ip();
-        IpManager & ipManager = IpManager::getInstance();
-        adInfo.areaId = ipManager.getAreaCodeStrByIp(userIp.data());*/
-        adResult->set_html_snippet(baiduHtmlSnippet());
+        std::string cookieMappingUrl = redoCookieMapping(ADX_BAIDU, AD_COOKIEMAPPING_BAIDU);
+        bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
+                     || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD || bidRequest.adslot(0).secure();
+        std::string strBannerJson = banner.json;
+        urlHttp2HttpsIOS(isIOS, strBannerJson);
+        cppcms::json::value bannerJson;
+        parseJson(strBannerJson.c_str(), bannerJson);
+        const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
+        if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE && queryCondition.bannerType == BANNER_TYPE_PRIMITIVE) {
+            BidResponse_Ad_NativeAd & native_ad = adResult->native_ad();
+            BidResponse_Ad_NativeAd_Image & native_img = native_ad.add_image();
+            BidRequest_AdSlot_NativeAdParam_ImageEle & res_img = adSlot.nativead_param().image();
+            std::string landing_url = mtlsArray[0].get("p9", "");
+            adResult->set_landing_page(landing_url);
+            url::URLHelper clickUrlParam;
+            getClickPara(clickUrlParam, bidRequest.bid(), "", landing_url);
+            std::string click_url
+                = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+            adResult->add_target_url(click_url);
+            std::string img_url = mtlsArray[0].get("p6", "");
+            if (adSlot.secure())
+                adservice::utility::url::url_replace(img_url, "http://", "https://");
+            else
+                adservice::utility::url::url_replace(img_url, "https://", "http://");
+            native_img.set_url(img_url);
+            native_img.set_width(res_img.width());
+            native_img.set_height(res_img.height());
+            native_ad.set_title(mtlsArray[0].get("p0", ""));
+            url::URLHelper showUrlParam;
+            getShowPara(showUrlParam, bidRequest.bid());
+            showUrlParam.add(URL_IMP_OF, "3");
+            showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_BD_PRICE_MACRO);
+            std::string monitor_url
+                = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + showUrlParam.cipherParam();
+            adResult->add_monitor_urls(monitor_url);
+        } else {
+            std::string landing_url = mtlsArray[0].get("p1", "");
+            std::string click_url
+                = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+            adResult->add_target_url(click_url);
+            adResult->set_landing_page(landing_url);
+            adResult->set_html_snippet(baiduHtmlSnippet());
+        }
     }
 
     void BaiduBiddingHandler::match(adservice::utility::HttpResponse & response)

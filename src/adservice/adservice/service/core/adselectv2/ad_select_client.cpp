@@ -35,7 +35,14 @@ namespace adselectv2 {
 
     void makeRequest(bool isSSP, AdSelectCondition & selectCondition, MT::common::SelectRequest & request)
     {
+
+        LOG_DEBUG << "adx_id" << selectCondition.adxid << " "
+                  << "idfa" << selectCondition.idfa << " "
+                  << "mac" << selectCondition.mac << " "
+                  << "imei" << selectCondition.imei << " "
+                  << "android_id" << selectCondition.androidId << std::endl;
         MT::common::SourceType & source = request.source;
+
         source.insert({ "d_adplacetype", (int64_t)selectCondition.adplaceType });
         source.insert({ "d_adexchange", (int64_t)selectCondition.adxid });
         source.insert({ "d_adplace", selectCondition.mttyPid });
