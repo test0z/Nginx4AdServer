@@ -32,6 +32,16 @@ namespace bidding {
             return SOLUTION_DEVICE_OTHER;
     }
 
+    int getNetEaseOsType(const std::string & platform)
+    {
+        if (!strncasecmp(platform.data(), "android", platform.length())) {
+            return SOLUTION_OS_ANDROID;
+        } else if (!strncasecmp(platform.data(), "ios", platform.length())) {
+            return SOLUTION_OS_IOS;
+        } else
+            return SOLUTION_OS_OTHER;
+    }
+
     static int getNetwork(const std::string & network)
     {
         if (network == "wifi") {
@@ -86,9 +96,10 @@ namespace bidding {
         queryCondition.mobileDevice = getNetEaseDeviceType(platform);
         const cppcms::json::value & device = bidRequest.find("device");
         if (!device.is_undefined()) {
-            queryCondition.idfa = device.get("idfa", "");
-            queryCondition.imei = device.get("imei", "");
-            queryCondition.mac = device.get("mac", "");
+            queryCondition.idfa = stringtool::toupper(device.get("idfa", ""));
+            queryCondition.imei = stringtool::toupper(device.get("imei", ""));
+            queryCondition.mac = stringtool::toupper(device.get("mac", ""));
+            queryCondition.pcOS = getNetEaseOsType(device.get("os", ""));
             const cppcms::json::value & networkStatus = device.find("network_status");
             if (!networkStatus.is_undefined()) {
                 queryCondition.mobileNetwork = getNetwork(networkStatus.str());
@@ -141,15 +152,6 @@ namespace bidding {
 	"linkUrl":""
 })";
 
-    static bool replace(std::string & str, const std::string & from, const std::string & to)
-    {
-        size_t start_pos = str.find(from);
-        if (start_pos == std::string::npos)
-            return false;
-        str.replace(start_pos, from.length(), to);
-        return true;
-    }
-
     void NetEaseBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
                                                const MT::common::SelectResult & result, int seq)
     {
@@ -172,9 +174,8 @@ namespace bidding {
 
         int bannerType = banner.bannerType;
         std::string strBannerJson = banner.json;
-        urlHttp2HttpsIOS(isIOS, strBannerJson);
-        cppcms::json::value bannerJson;
-        parseJson(strBannerJson.c_str(), bannerJson);
+        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
+        const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string mainTitle;
         std::string landingUrl;
         std::string downloadUrl;
@@ -185,14 +186,11 @@ namespace bidding {
         bidResponse["showMonitorUrl"]
             = std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?" + showUrlParam.cipherParam();
         std::vector<std::string> materialUrls;
-        cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         if (bannerType == BANNER_TYPE_PRIMITIVE) {
             materialUrls.push_back(mtlsArray[0]["p6"].str());
             materialUrls.push_back(mtlsArray[0]["p7"].str());
             materialUrls.push_back(mtlsArray[0]["p8"].str());
             landingUrl = mtlsArray[0]["p9"].str();
-            replace(landingUrl, "{{click}}", "");
-            replace(landingUrl, "https://", "http://");
             if (queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE) {
                 downloadUrl = mtlsArray[0]["p10"].str();
             } else if (queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROID) {
@@ -221,7 +219,6 @@ namespace bidding {
             std::string materialUrl = mtlsArray[0]["p0"].str();
             materialUrls.push_back(materialUrl);
             landingUrl = mtlsArray[0]["p1"].str();
-            replace(landingUrl, "https://", "http://");
         }
         bidResponse["mainTitle"] = mainTitle;
         bidResponse["valid_time"] = 86400000;

@@ -23,6 +23,7 @@ namespace core {
 
                 if (record_ == nullptr) {
                     record_ = as_record_new(1);
+                    record_->ttl = DAY_SECOND * 30;
                 }
                 as_record_set_str(record_, "source_id", val_.c_str());
             } else {
@@ -33,7 +34,7 @@ namespace core {
         SourceRecord::SourceRecord(utility::url::ParamMap & paramMap, protocol::log::LogItem & log)
         {
             record_ = as_record_new(16);
-
+            record_->ttl = DAY_SECOND * 30;
             as_record_set_int64(record_, "latest_time", log.timeStamp);
             as_record_set_str(record_, "adv_id", paramMap[URL_ADOWNER_ID].c_str());
             as_record_set_str(record_, "sid", paramMap[URL_EXEC_ID].c_str());

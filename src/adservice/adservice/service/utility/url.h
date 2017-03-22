@@ -6,7 +6,6 @@
 #define ADCORE_URL_H
 
 #include "common/types.h"
-#include "muduo/net/http/HttpRequest.h"
 #include <boost/serialization/access.hpp>
 #include <cstring>
 #include <ctime>
@@ -83,8 +82,6 @@ namespace utility {
          * 从xxx-xxx-xxx形式的字符串提取国家,省,市
          */
         void extractAreaInfo(const char * input, int & country, int & province, int & city);
-
-        bool parseHttpRequest(muduo::net::HttpRequest & request, const char * buffer, int size);
 
         /**
          * 提取不超过指定长度的字符串

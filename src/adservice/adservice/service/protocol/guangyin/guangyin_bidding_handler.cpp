@@ -139,15 +139,19 @@ namespace bidding {
         queryCondition.basePrice = imp.bidfloor();
         queryCondition.width = banner.w();
         queryCondition.height = banner.h();
-
+        for (int i = 0; i < banner.keywords_size(); i++) {
+            queryCondition.keywords.push_back(banner.keywords(i));
+        }
         if (device.devicetype() == DeviceType::MOBILE) {
             queryCondition.mobileDevice = getDeviceType(device);
+            queryCondition.pcOS = adservice::utility::userclient::getOSTypeFromUA(device.ua());
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.adxid = ADX_GUANGYIN_MOBILE;
             queryCondition.mobileNetwork = getNetWork(device.connectiontype());
-            queryCondition.idfa = device.has_idfa() ? device.idfa() : "";
-            queryCondition.imei = device.has_imei() ? device.imei() : "";
-            queryCondition.androidId = device.has_androidid() ? device.androidid() : "";
+            queryCondition.idfa = device.has_idfa() ? adservice::utility::stringtool::toupper(device.idfa()) : "";
+            queryCondition.imei = device.has_imei() ? adservice::utility::stringtool::toupper(device.imei()) : "";
+            queryCondition.androidId
+                = device.has_androidid() ? adservice::utility::stringtool::toupper(device.androidid()) : "";
             if (bidRequest_.has_app()) {
                 const App & app = bidRequest_.app();
                 if (app.has_id()) {
@@ -156,10 +160,16 @@ namespace bidding {
                 if (queryCondition.adxpid.empty() && app.has_publisher()) {
                     queryCondition.adxpid = app.publisher().slot();
                 }
+                for (int i = 0; i < app.keywords_size(); i++) {
+                    queryCondition.keywords.push_back(app.keywords(i));
+                }
             } else if (bidRequest_.has_site()) {
                 const Site & site = bidRequest_.site();
                 if (site.has_publisher()) {
                     queryCondition.adxpid = site.publisher().slot();
+                }
+                for (int i = 0; i < site.keywords_size(); i++) {
+                    queryCondition.keywords.push_back(site.keywords(i));
                 }
             }
             cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
@@ -177,8 +187,13 @@ namespace bidding {
                 if (site.has_publisher()) {
                     queryCondition.adxpid = site.publisher().slot();
                 }
+                for (int i = 0; i < site.keywords_size(); i++) {
+                    queryCondition.keywords.push_back(site.keywords(i));
+                }
             }
         }
+        queryCondition.deviceMaker = device.make();
+        queryCondition.mobileModel = device.model();
 
         if (!filterCb(this, queryConditions)) {
             adInfo.pid = std::to_string(queryCondition.mttyPid);
@@ -230,15 +245,10 @@ namespace bidding {
         adResult->set_iurl(std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?"
                            + showUrlParam.cipherParam());
 
-        cppcms::json::value bannerJson;
         std::string strBannerJson = banner.json;
-        urlHttp2HttpsIOS(isIOS, strBannerJson);
-        std::stringstream ss;
-        ss << strBannerJson; // boost::algorithm::erase_all_copy(banner.json, "\\");
-        ss >> bannerJson;
+        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string landingUrl = mtlsArray[0].get("p1", "");
-        adservice::utility::url::url_replace(landingUrl, "https://", "http://");
         if (banner.bannerType == BANNER_TYPE_HTML) {
             std::string base64html = mtlsArray[0].get("p0", "");
             std::string html;

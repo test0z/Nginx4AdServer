@@ -43,8 +43,10 @@ namespace bidding {
         flowType = SOLUTION_FLOWTYPE_MOBILE;
         if (!strcasecmp(osType.data(), NEX_OS_ANDROID)) {
             mobileDev = SOLUTION_DEVICE_ANDROID;
+            pcOs = SOLUTION_OS_ANDROID;
         } else if (!strcasecmp(osType.data(), NEX_OS_iPhone)) {
             mobileDev = SOLUTION_DEVICE_IPHONE;
+            pcOs = SOLUTION_OS_IOS;
         } else {
             flowType = SOLUTION_FLOWTYPE_PC;
             if (osType.empty()) {
@@ -74,15 +76,6 @@ namespace bidding {
         } else {
             return SOLUTION_NETWORK_ALL;
         }
-    }
-
-    static bool replace(std::string & str, const std::string & from, const std::string & to)
-    {
-        size_t start_pos = str.find(from);
-        if (start_pos == std::string::npos)
-            return false;
-        str.replace(start_pos, from.length(), to);
-        return true;
     }
 
     bool NexBiddingHandler::parseRequestData(const std::string & data)
@@ -161,10 +154,11 @@ namespace bidding {
                         queryCondition.adxid = ADX_NEX_MOBILE;
                         adInfo.adxid = ADX_NEX_MOBILE;
                     }
+                    queryCondition.mobileModel = device.get("model", "");
                     queryCondition.mobileNetwork = getNetwork(device.get("connectiontype", ""));
-                    queryCondition.idfa = device.get("idfa", "");
-                    queryCondition.mac = device.get("mac", "");
-                    queryCondition.imei = device.get("imei", "");
+                    queryCondition.idfa = stringtool::toupper(device.get("idfa", ""));
+                    queryCondition.mac = stringtool::toupper(device.get("mac", ""));
+                    queryCondition.imei = stringtool::toupper(device.get("imei", ""));
                     cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
                                            md5_encode(queryCondition.imei),
                                            md5_encode(queryCondition.androidId),
@@ -255,10 +249,8 @@ namespace bidding {
 
         // html snippet相关
         std::string strBannerJson = banner.json;
-        urlHttp2HttpsIOS(isIOS, strBannerJson);
-        cppcms::json::value bannerJson;
-        parseJson(strBannerJson.c_str(), bannerJson);
-        cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
+        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
+        const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string tview = bannerJson["tview"].str();
 
         cppcms::json::value extValue;
@@ -285,8 +277,6 @@ namespace bidding {
         std::string mainTitle;
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
             landingUrl = mtlsArray[0]["p9"].str();
-            replace(landingUrl, "{{click}}", "");
-            adservice::utility::url::url_replace(landingUrl, "https://", "http://");
             extValue["linkUrl"] = landingUrl;
             int style = 0;
             auto & sizeStyleMap = adplaceStyleMap.getSizeStyleMap();

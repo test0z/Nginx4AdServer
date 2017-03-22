@@ -26,6 +26,26 @@ namespace server {
             return *this;
         }
 
+        void clearDeviceMapping()
+        {
+            key = "";
+            value = "";
+            deviceMappings.clear();
+        }
+
+        CookieMappingQueryKeyValue & rebindDevice(const std::string & k, const std::string & v)
+        {
+            if (!k.empty() && !v.empty()) {
+                if (key.empty() || value.empty()) {
+                    key = k;
+                    value = v;
+                }
+                deviceMappings.insert({ k, v });
+            }
+            isAdxCookie = false;
+            return *this;
+        }
+
         bool isNull() const
         {
             return key.empty() || value.empty();
@@ -39,6 +59,7 @@ namespace server {
     public:
         std::string key;
         std::string value;
+        std::unordered_map<std::string, std::string> deviceMappings;
         bool isAdxCookie;
     };
 
@@ -62,7 +83,7 @@ namespace server {
                                       const std::string & deviceIdType,
                                       const std::string & value);
 
-        void touchMapping(const std::string & key, const std::string & value);
+        void touchMapping(const std::string & key, const std::string & value, const std::string & userId);
 
         adservice::core::model::UserIDEntity newIdSeq();
 

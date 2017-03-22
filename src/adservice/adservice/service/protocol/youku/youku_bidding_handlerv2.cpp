@@ -46,16 +46,20 @@ namespace bidding {
             flowType = SOLUTION_FLOWTYPE_MOBILE;
             if (!strcasecmp(osType.data(), YOUKU_OS_ANDROID)) {
                 mobileDev = SOLUTION_DEVICE_ANDROID;
+                pcOs = SOLUTION_OS_ANDROID;
             } else if (!strcasecmp(osType.data(), YOUKU_OS_iPhone)) {
                 mobileDev = SOLUTION_DEVICE_IPHONE;
+                pcOs = SOLUTION_OS_IOS;
             } else
                 mobileDev = SOLUTION_DEVICE_OTHER;
         } else if (devType == YOUKU_DEVICE_PAD) {
             flowType = SOLUTION_FLOWTYPE_MOBILE;
             if (!strcasecmp(osType.data(), YOUKU_OS_ANDROID)) {
                 mobileDev = SOLUTION_DEVICE_ANDROIDPAD;
+                pcOs = SOLUTION_OS_ANDROID;
             } else if (!strcasecmp(osType.data(), YOUKU_OS_iPhone)) {
                 mobileDev = SOLUTION_DEVICE_IPAD;
+                pcOs = SOLUTION_OS_IOS;
             } else
                 mobileDev = SOLUTION_DEVICE_OTHER;
         } else if (devType == YOUKU_DEVICE_PC) {
@@ -73,10 +77,9 @@ namespace bidding {
             pcBrowser = getBrowserTypeFromUA(ua);
         } else {
             mobileDev = getMobileTypeFromUA(ua);
+            pcOs = getOSTypeFromUA(ua);
             if (mobileDev != SOLUTION_DEVICE_OTHER) {
                 flowType = SOLUTION_FLOWTYPE_MOBILE;
-            } else {
-                pcOs = getOSTypeFromUA(ua);
             }
         }
     }
@@ -97,15 +100,6 @@ namespace bidding {
         default:
             return SOLUTION_NETWORK_ALL;
         }
-    }
-
-    static bool replace(std::string & str, const std::string & from, const std::string & to)
-    {
-        size_t start_pos = str.find(from);
-        if (start_pos == std::string::npos)
-            return false;
-        str.replace(start_pos, from.length(), to);
-        return true;
     }
 
     bool YoukuBiddingHandler::parseRequestData(const std::string & data)
@@ -190,6 +184,8 @@ namespace bidding {
                     int devType = device.get("devicetype", YOUKU_DEVICE_PC);
                     std::string osType = device.get("os", "");
                     std::string ua = device.get("ua", "");
+                    queryCondition.deviceMaker = device.get("make", "");
+                    queryCondition.mobileModel = device.get("model", "");
                     fromYoukuDevTypeOsType(devType,
                                            osType,
                                            ua,
@@ -205,10 +201,16 @@ namespace bidding {
                     if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
                         if (!bidRequest.find("app").is_undefined()) { // app
                             cookieMappingKeyMobile(
-                                md5_encode(queryCondition.idfa = device.get<std::string>("idfa", "")),
-                                md5_encode(queryCondition.imei = device.get<std::string>("imei", "")),
-                                md5_encode(queryCondition.androidId = device.get<std::string>("androidid", "")),
-                                md5_encode(queryCondition.mac = device.get<std::string>("mac", "")));
+                                md5_encode(queryCondition.idfa
+                                           = stringtool::toupper(device.get<std::string>("idfa", ""))),
+                                md5_encode(queryCondition.imei
+                                           = stringtool::toupper(device.get<std::string>("imei", ""))),
+                                md5_encode(queryCondition.androidId
+                                           = stringtool::toupper(device.get<std::string>("androidid", ""))),
+                                md5_encode(queryCondition.mac
+                                           = stringtool::toupper(device.get<std::string>("mac", ""))),
+                                queryCondition.adxid,
+                                bidRequest.get("user.id", ""));
                         } else { // wap
                             cookieMappingKeyWap(ADX_YOUKU_MOBILE, bidRequest.get("user.id", ""));
                         }
@@ -234,9 +236,15 @@ namespace bidding {
                 queryCondition.imei = firstQueryCondition.imei;
             }
 
-            const cppcms::json::value & siteContent = bidRequest.find("site.content.ext");
-            const cppcms::json::value & appContent = bidRequest.find("app.content.ext");
-            const cppcms::json::value & contentExt = siteContent.is_undefined() ? appContent : siteContent;
+            const cppcms::json::value & siteContent = bidRequest.find("site.content");
+            const cppcms::json::value & appContent = bidRequest.find("app.content");
+            const cppcms::json::value & actualContent = siteContent.is_undefined() ? appContent : siteContent;
+            const cppcms::json::value & contentExt = actualContent.find("ext");
+            if (!actualContent.is_undefined()) {
+                std::string keywords = actualContent.get("keywords", "");
+                adservice::utility::url::url_replace_all(keywords, "|", ",");
+                queryCondition.keywords.push_back(keywords);
+            }
             if (!contentExt.is_undefined()) {
                 std::string channel = contentExt.get("channel", "");
                 std::string cs = contentExt.get("cs", "");
@@ -312,9 +320,7 @@ namespace bidding {
                      || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         // html snippet相关
         std::string strBannerJson = banner.json;
-        urlHttp2HttpsIOS(isIOS, strBannerJson);
-        cppcms::json::value bannerJson;
-        parseJson(strBannerJson.c_str(), bannerJson);
+        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
         cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string tview = bannerJson["tview"].str();
 
@@ -349,13 +355,11 @@ namespace bidding {
             nativeObj["native_template_id"] = nativeTemplateId;
             bidValue["native"] = nativeObj;
             landingUrl = mtlsArray[0]["p9"].str();
-            replace(landingUrl, "{{click}}", "");
         } else {
             std::string materialUrl = mtlsArray[0]["p0"].str();
             bidValue["adm"] = materialUrl;
             landingUrl = mtlsArray[0]["p1"].str();
         }
-        adservice::utility::url::url_replace(landingUrl, "https://", "http://");
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, requestId, "", landingUrl);
         extValue["ldp"]

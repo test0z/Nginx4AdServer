@@ -22,7 +22,7 @@ namespace bidding {
 #define AD_LIEBAO_CLICK_URL "http://click.mtty.com/c?%s"
 #define LIEBAO_NETWORK_WIFI 2
 
-    int getLiebaoDeviceType(const std::string & platform)
+    static int getLiebaoDeviceType(const std::string & platform)
     {
         if (!strncasecmp(platform.data(), "android", platform.length())) {
             return SOLUTION_DEVICE_ANDROID;
@@ -30,6 +30,16 @@ namespace bidding {
             return SOLUTION_DEVICE_IPHONE;
         } else
             return SOLUTION_DEVICE_OTHER;
+    }
+
+    static int getLiebaoOs(const std::string & platform)
+    {
+        if (!strncasecmp(platform.data(), "android", platform.length())) {
+            return SOLUTION_OS_ANDROID;
+        } else if (!strncasecmp(platform.data(), "ios", platform.length())) {
+            return SOLUTION_OS_IOS;
+        } else
+            return SOLUTION_OS_OTHER;
     }
 
     static int getNetwork(int network)
@@ -50,6 +60,7 @@ namespace bidding {
                                                protocol::log::LogItem & logItem, bool isAccepted)
     {
         logItem.ipInfo.proxy = selectCondition.ip;
+        logItem.userAgent = bidRequest.get("device.ua", "");
         if (isAccepted) {
             const cppcms::json::value & deviceInfo = bidRequest["device"];
             cppcms::json::value device;
@@ -89,8 +100,11 @@ namespace bidding {
                     if (queryCondition.mobileDevice == SOLUTION_DEVICE_OTHER) {
                         queryCondition.mobileDevice = userclient::getMobileTypeFromUA(device.get("ua", ""));
                     }
-                    queryCondition.idfa = queryCondition.androidId = device.get("dpidmd5", "");
-                    queryCondition.imei = device.get("imei", "");
+                    queryCondition.pcOS = getLiebaoOs(device.get("os", ""));
+                    queryCondition.mobileModel = device.get("model", "");
+                    queryCondition.deviceMaker = device.get("make", "");
+                    queryCondition.idfa = queryCondition.androidId = stringtool::toupper(device.get("dpidmd5", ""));
+                    queryCondition.imei = stringtool::toupper(device.get("imei", ""));
                     queryCondition.mobileNetwork = getNetwork(device.get("connnectiontype", 0));
                     queryCondition.ip = device.get("ip", "");
                     cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
@@ -98,6 +112,14 @@ namespace bidding {
                                            md5_encode(queryCondition.androidId),
                                            md5_encode(queryCondition.mac));
                     queryCookieMapping(cmInfo.queryKV, queryCondition);
+                }
+                const cppcms::json::value & site = bidRequest.find("site");
+                if (!site.is_undefined()) {
+                    queryCondition.keywords.push_back(site.get("keywords", ""));
+                }
+                const cppcms::json::value & app = bidRequest.find("app");
+                if (!app.is_undefined()) {
+                    queryCondition.keywords.push_back(app.get("keywords", ""));
                 }
             } else {
                 AdSelectCondition & firstQueryCondition = queryConditions[0];
@@ -211,10 +233,8 @@ namespace bidding {
                      || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         // html snippet相关
         std::string strBannerJson = banner.json;
-        urlHttp2HttpsIOS(isIOS, strBannerJson);
-        cppcms::json::value bannerJson;
-        parseJson(strBannerJson.c_str(), bannerJson);
-        cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
+        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
+        const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
 
         url::URLHelper showUrl;
         getShowPara(showUrl, requestId);
@@ -255,8 +275,6 @@ namespace bidding {
             }
 
             landingUrl = mtlsArray[0]["p9"].str();
-            url_replace(landingUrl, "{{click}}", "");
-            adservice::utility::url::url_replace(landingUrl, "https://", "http://");
             admAssetsArray.push_back(outputAsset);
             admObj["link"]["url"] = landingUrl;
             admObj["link"]["clicktrackers"] = cppcms::json::array();

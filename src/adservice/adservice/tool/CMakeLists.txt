@@ -50,7 +50,9 @@ ADD_EXECUTABLE(locallog_collector ./locallog_collector.cpp
 
 ADD_EXECUTABLE(update_from_db ./update_from_db.cpp)
 
-ADD_EXECUTABLE(translate_user ./translate_user.cpp)
+ADD_EXECUTABLE(translate_user ./translate_user.cpp
+    ../service/utility/cypher.cpp
+    ../service/utility/random.cpp)
 
 
 ADD_EXECUTABLE(track_user ./track_user.cpp
