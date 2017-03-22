@@ -453,10 +453,10 @@ void after_read_post_data(ngx_http_request_t * r)
         } else {
             httpRequest.set_post_data(ss.str());
         }
-        if (httpRequest.isResponseNeedGzip()) {
-            httpResponse.setResponseGzip(true);
-            httpResponse.set(CONTENTENCODING, "gzip");
-        }
+        //        if (httpRequest.isResponseNeedGzip()) {
+        //            httpResponse.setResponseGzip(true);
+        //            httpResponse.set(CONTENTENCODING, "gzip");
+        //        }
     }
     const std::string queryPath = httpRequest.path_info();
     if (queryPath.find("bid") != std::string::npos) {

@@ -32,6 +32,31 @@ namespace bidding {
         }
     }
 
+    cppcms::json::value bannerJson2HttpsIOS(bool isIOS, const std::string & bannerJson, int bannerType)
+    {
+        cppcms::json::value banner;
+        adservice::utility::json::parseJson(bannerJson.c_str(), banner);
+        if (isIOS) {
+            cppcms::json::value httpsBanner;
+            std::string httpsBannerJson = bannerJson;
+            adservice::utility::url::url_replace_all(httpsBannerJson, "http://", "https://");
+            adservice::utility::json::parseJson(httpsBannerJson.c_str(), httpsBanner);
+            cppcms::json::array & originMtlsArray = banner["mtls"].array();
+            cppcms::json::array & httpsMtlsArray = httpsBanner["mtls"].array();
+            if (bannerType == BANNER_TYPE_PRIMITIVE) {
+                std::string destUrl = originMtlsArray[0]["p9"].str();
+                adservice::utility::url::url_replace(destUrl, "{{click}}", "");
+                httpsMtlsArray[0]["p9"] = destUrl;
+            } else {
+                std::string destUrl = originMtlsArray[0]["p1"].str();
+                adservice::utility::url::url_replace(destUrl, "{{click}}", "");
+                httpsMtlsArray[0]["p1"] = destUrl;
+            }
+            return httpsBanner;
+        }
+        return banner;
+    }
+
     std::string makeBidSize(int width, int height)
     {
         char buf[64];

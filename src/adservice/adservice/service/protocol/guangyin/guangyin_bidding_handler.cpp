@@ -245,15 +245,10 @@ namespace bidding {
         adResult->set_iurl(std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?"
                            + showUrlParam.cipherParam());
 
-        cppcms::json::value bannerJson;
         std::string strBannerJson = banner.json;
-        urlHttp2HttpsIOS(isIOS, strBannerJson);
-        std::stringstream ss;
-        ss << strBannerJson; // boost::algorithm::erase_all_copy(banner.json, "\\");
-        ss >> bannerJson;
+        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string landingUrl = mtlsArray[0].get("p1", "");
-        adservice::utility::url::url_replace(landingUrl, "https://", "http://");
         if (banner.bannerType == BANNER_TYPE_HTML) {
             std::string base64html = mtlsArray[0].get("p0", "");
             std::string html;

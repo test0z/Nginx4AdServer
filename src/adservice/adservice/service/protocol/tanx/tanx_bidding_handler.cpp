@@ -273,9 +273,7 @@ namespace bidding {
         bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
                      || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         std::string strBannerJson = banner.json;
-        urlHttp2HttpsIOS(isIOS, strBannerJson);
-        cppcms::json::value bannerJson;
-        parseJson(strBannerJson.c_str(), bannerJson);
+        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
 
         adResult->set_creative_id(std::to_string(adInfo.bannerId));
@@ -283,8 +281,6 @@ namespace bidding {
         if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE
             && banner.bannerType == BANNER_TYPE_PRIMITIVE) { //移动原生广告
             std::string destUrl = mtlsArray[0].get("p9", "");
-            url::url_replace(destUrl, "{{click}}", "");
-            adservice::utility::url::url_replace(destUrl, "https://", "http://");
             adResult->add_destination_url(destUrl);
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
@@ -316,7 +312,6 @@ namespace bidding {
             adResult->set_feedback_address(feedbackUrl);
         } else { //非移动原生广告
             std::string destUrl = mtlsArray[0].get("p1", "");
-            adservice::utility::url::url_replace(destUrl, "https://", "http://");
             adResult->add_destination_url(destUrl);
             adResult->add_click_through_url(destUrl);
             if (queryCondition.flowType == SOLUTION_FLOWTYPE_PC) {

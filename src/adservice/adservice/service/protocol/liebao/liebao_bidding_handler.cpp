@@ -233,10 +233,8 @@ namespace bidding {
                      || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         // html snippet相关
         std::string strBannerJson = banner.json;
-        urlHttp2HttpsIOS(isIOS, strBannerJson);
-        cppcms::json::value bannerJson;
-        parseJson(strBannerJson.c_str(), bannerJson);
-        cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
+        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
+        const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
 
         url::URLHelper showUrl;
         getShowPara(showUrl, requestId);
@@ -277,8 +275,6 @@ namespace bidding {
             }
 
             landingUrl = mtlsArray[0]["p9"].str();
-            url_replace(landingUrl, "{{click}}", "");
-            adservice::utility::url::url_replace(landingUrl, "https://", "http://");
             admAssetsArray.push_back(outputAsset);
             admObj["link"]["url"] = landingUrl;
             admObj["link"]["clicktrackers"] = cppcms::json::array();

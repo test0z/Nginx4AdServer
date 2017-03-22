@@ -102,15 +102,6 @@ namespace bidding {
         }
     }
 
-    static bool replace(std::string & str, const std::string & from, const std::string & to)
-    {
-        size_t start_pos = str.find(from);
-        if (start_pos == std::string::npos)
-            return false;
-        str.replace(start_pos, from.length(), to);
-        return true;
-    }
-
     bool YoukuBiddingHandler::parseRequestData(const std::string & data)
     {
         bidResponse.undefined();
@@ -329,9 +320,7 @@ namespace bidding {
                      || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         // html snippet相关
         std::string strBannerJson = banner.json;
-        urlHttp2HttpsIOS(isIOS, strBannerJson);
-        cppcms::json::value bannerJson;
-        parseJson(strBannerJson.c_str(), bannerJson);
+        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
         cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string tview = bannerJson["tview"].str();
 
@@ -366,13 +355,11 @@ namespace bidding {
             nativeObj["native_template_id"] = nativeTemplateId;
             bidValue["native"] = nativeObj;
             landingUrl = mtlsArray[0]["p9"].str();
-            replace(landingUrl, "{{click}}", "");
         } else {
             std::string materialUrl = mtlsArray[0]["p0"].str();
             bidValue["adm"] = materialUrl;
             landingUrl = mtlsArray[0]["p1"].str();
         }
-        adservice::utility::url::url_replace(landingUrl, "https://", "http://");
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, requestId, "", landingUrl);
         extValue["ldp"]

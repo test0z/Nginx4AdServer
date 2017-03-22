@@ -295,10 +295,8 @@ namespace bidding {
 
         // html snippet相关
         std::string strBannerJson = banner.json;
-        urlHttp2HttpsIOS(isIOS, strBannerJson);
-        // tripslash2(pjson);
-        cppcms::json::value bannerJson;
-        parseJson(strBannerJson.c_str(), bannerJson);
+        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
+        const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
 
         url::URLHelper showUrl;
         getShowPara(showUrl, requestId);
@@ -317,7 +315,6 @@ namespace bidding {
             std::string html = generateHtmlSnippet(requestId, w, h, "of=2&", "", isIOS);
             bidValue["adm"] = html;
         } else { //设置admobject
-            const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
             const cppcms::json::array & assets = adzInfo.find("native.requestobj.assets").array();
             cppcms::json::value admObject;
             cppcms::json::value nativeObject;
@@ -381,8 +378,6 @@ namespace bidding {
                 }
             }
             std::string landingUrl = mtlsArray[0]["p9"].str();
-            replace(landingUrl, "{{click}}", "");
-            adservice::utility::url::url_replace(landingUrl, "https://", "http://");
             nativeObject["assets"] = assetsArray;
             nativeObject["link"] = cppcms::json::value();
             nativeObject["link"]["url"] = landingUrl;

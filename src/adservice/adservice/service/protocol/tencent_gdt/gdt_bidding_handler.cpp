@@ -202,9 +202,7 @@ namespace bidding {
         bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
                      || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         std::string strBannerJson = banner.json;
-        urlHttp2HttpsIOS(isIOS, strBannerJson);
-        cppcms::json::value bannerJson;
-        adservice::utility::json::parseJson(strBannerJson.c_str(), bannerJson);
+        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string landingUrl;
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
@@ -213,7 +211,6 @@ namespace bidding {
             landingUrl = mtlsArray[0].get("p1", "");
         }
         adservice::utility::url::url_replace(landingUrl, "{{click}}", "");
-        adservice::utility::url::url_replace(landingUrl, "https://", "http://");
         // html snippet相关
         url::URLHelper showUrlParam;
         getShowPara(showUrlParam, bidRequest.id());

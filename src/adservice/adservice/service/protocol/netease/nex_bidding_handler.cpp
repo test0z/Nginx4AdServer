@@ -78,15 +78,6 @@ namespace bidding {
         }
     }
 
-    static bool replace(std::string & str, const std::string & from, const std::string & to)
-    {
-        size_t start_pos = str.find(from);
-        if (start_pos == std::string::npos)
-            return false;
-        str.replace(start_pos, from.length(), to);
-        return true;
-    }
-
     bool NexBiddingHandler::parseRequestData(const std::string & data)
     {
         bidResponse.undefined();
@@ -258,10 +249,8 @@ namespace bidding {
 
         // html snippet相关
         std::string strBannerJson = banner.json;
-        urlHttp2HttpsIOS(isIOS, strBannerJson);
-        cppcms::json::value bannerJson;
-        parseJson(strBannerJson.c_str(), bannerJson);
-        cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
+        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
+        const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string tview = bannerJson["tview"].str();
 
         cppcms::json::value extValue;
@@ -288,8 +277,6 @@ namespace bidding {
         std::string mainTitle;
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
             landingUrl = mtlsArray[0]["p9"].str();
-            replace(landingUrl, "{{click}}", "");
-            adservice::utility::url::url_replace(landingUrl, "https://", "http://");
             extValue["linkUrl"] = landingUrl;
             int style = 0;
             auto & sizeStyleMap = adplaceStyleMap.getSizeStyleMap();

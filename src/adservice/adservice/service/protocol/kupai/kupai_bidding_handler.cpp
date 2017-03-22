@@ -198,19 +198,13 @@ namespace bidding {
         adResult->set_nurl(std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?"
                            + showUrlParam.cipherParam());
 
-        cppcms::json::value bannerJson;
         std::string bJson = banner.json;
-        urlHttp2HttpsIOS(isIOS, bJson);
-        std::stringstream ss;
-        ss << bJson; // boost::algorithm::erase_all_copy(banner.json, "\\");
-        ss >> bannerJson;
+        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, bJson, banner.bannerType);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string landingUrl;
         cppcms::json::value admObject;
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
             landingUrl = mtlsArray[0]["p9"].str();
-            replace(landingUrl, "{{click}}", "");
-            adservice::utility::url::url_replace(landingUrl, "https://", "http://");
             cppcms::json::array imageUrls;
             imageUrls.push_back(mtlsArray[0]["p6"].str());
             imageUrls.push_back(mtlsArray[0]["p7"].str());
@@ -219,7 +213,6 @@ namespace bidding {
             admObject["landingurl"] = landingUrl;
         } else if (banner.bannerType != BANNER_TYPE_HTML) {
             landingUrl = mtlsArray[0]["p1"].str();
-            adservice::utility::url::url_replace(landingUrl, "https://", "http://");
             cppcms::json::array imageUrls;
             imageUrls.push_back(mtlsArray[0]["p0"].str());
             admObject["imgurl"] = imageUrls;

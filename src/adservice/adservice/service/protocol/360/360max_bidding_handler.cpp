@@ -236,15 +236,12 @@ namespace bidding {
         bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
                      || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         std::string strBannerJson = banner.json;
-        urlHttp2HttpsIOS(isIOS, strBannerJson);
-        cppcms::json::value bannerJson;
-        parseJson(strBannerJson.c_str(), bannerJson);
+        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         adResult->set_creative_id(std::to_string(adInfo.bannerId));
         adResult->set_advertiser_id(std::to_string(adxAdvId)); // adx_advid
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {      //原生广告
             std::string destUrl = mtlsArray[0].get("p9", "");
-            adservice::utility::url::url_replace(destUrl, "https://", "http://");
             adResult->add_destination_url(destUrl);
             const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
             auto sizePair = adSizeMap.rget({ banner.width, banner.height });
@@ -277,7 +274,6 @@ namespace bidding {
                                + showUrlParam.cipherParam());
         } else { //非原生广告
             std::string destUrl = mtlsArray[0].get("p1", "");
-            adservice::utility::url::url_replace(destUrl, "https://", "http://");
             adResult->add_destination_url(destUrl);
             adResult->set_width(banner.width);
             adResult->set_height(banner.height);

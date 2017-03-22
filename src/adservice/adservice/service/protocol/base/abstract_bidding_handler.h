@@ -40,6 +40,8 @@ namespace bidding {
         }
     }
 
+    cppcms::json::value bannerJson2HttpsIOS(bool isIOS, const std::string & bannerJson, int bannerType);
+
     class BiddingFlowExtraInfo {
     public:
         int32_t mediaType;
