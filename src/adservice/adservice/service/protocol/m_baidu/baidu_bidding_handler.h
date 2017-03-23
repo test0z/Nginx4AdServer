@@ -49,7 +49,7 @@ namespace bidding {
         void reject(INOUT adservice::utility::HttpResponse & response);
 
     private:
-        std::string baiduHtmlSnippet();
+        std::string baiduHtmlSnippet(const std::string & cookieMappingUrl, bool useHttps);
 
         std::string baiduHtmlScript();
 
