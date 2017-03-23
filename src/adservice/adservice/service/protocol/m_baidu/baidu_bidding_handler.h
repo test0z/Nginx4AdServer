@@ -50,7 +50,8 @@ namespace bidding {
 
     private:
         std::string baiduHtmlSnippet(const std::string & cookieMappingUrl, bool useHttps);
-
+        std::string generateHtmlSnippet(const std::string & bid, int width, int height, const char * extShowBuf,
+                                        const char * cookieMappingUrl, bool useHttps);
         std::string baiduHtmlScript();
 
     private:

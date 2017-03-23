@@ -113,22 +113,20 @@ namespace bidding {
 
     std::string BaiduBiddingHandler::baiduHtmlSnippet(const std::string & cookieMappingUrl, bool useHttps)
     {
-        std::string bid = bidRequest.bid();
+        std::string bid = bidRequest.id();
         // bool isMobile = bidRequest.has_mobile();
-        const BidRequest_AdzInfo & adzInfo = bidRequest.adzinfo(0);
-        std::string bannerSize = adzInfo.size();
-        int width = 0;
-        int height = 0;
-        extractSize(bannerSize, width, height);
+        const BidRequest_AdSlot & adSlot = bidRequest.adslot(0);
+        int width = adSlot.width();
+        int height = adSlot.height();
         std::string cmImage;
         if (!cookieMappingUrl.empty()) {
             cmImage = cmImage + "<img src=\"" + cookieMappingUrl + "\"/>";
         }
         return generateHtmlSnippet(bid, width, height, NULL, cmImage.c_str(), useHttps);
     }
-    std::string TanxBiddingHandler::generateHtmlSnippet(const std::string & bid, int width, int height,
-                                                        const char * extShowBuf, const char * cookieMappingUrl,
-                                                        bool useHttps)
+    std::string BaiduBiddingHandler::generateHtmlSnippet(const std::string & bid, int width, int height,
+                                                         const char * extShowBuf, const char * cookieMappingUrl,
+                                                         bool useHttps)
     {
         char html[4096];
         memset(html, 0x00, 4096);
@@ -136,7 +134,8 @@ namespace bidding {
         getShowPara(showUrlParam, bid);
         showUrlParam.add(URL_IMP_OF, "2");
         showUrlParam.addMacro(URL_ADX_MACRO, AD_BD_CLICK_MACRO);
-        int length = snprintf(html, sizeof(html), "< a herf=%s /> %s", showUrlParam.cipherParam(), cookieMappingUrl);
+        int length
+            = snprintf(html, sizeof(html), "< a herf=%s /> %s", showUrlParam.cipherParam().c_str(), cookieMappingUrl);
         return std::string(html, html + length);
     }
     std::string BaiduBiddingHandler::baiduHtmlScript()
@@ -215,7 +214,7 @@ namespace bidding {
                         ADX_BAIDU_MOBILE, std::to_string(mobile.mobile_app().app_category()));
                 }
                 const BidRequest_Mobile_ForAdvertisingID bid_fa_id = mobile.for_advertising_id(0);
-                const BidRequest_Mobile_MobileID bid_mo_id = mobile.id();
+                const BidRequest_Mobile_MobileID bid_mo_id = mobile.id(0);
                 getMAC_IMEI(queryCondition, bid_mo_id);
                 getIDFA_AND(queryCondition, bid_fa_id);
                 boost::algorithm::to_upper(queryCondition.idfa);
@@ -280,7 +279,7 @@ namespace bidding {
         adResult->set_category(adxIndustryType);
         adResult->set_type(banner.bannerType);
         //缓存最终广告结果
-        fillAdInfo(queryCodition, result, bidRequest.id());
+        fillAdInfo(queryCondition, result, bidRequest.id());
         std::string cookieMappingUrl = redoCookieMapping(ADX_BAIDU, AD_COOKIEMAPPING_BAIDU);
         bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
                      || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD || bidRequest.adslot(0).secure();
@@ -288,13 +287,13 @@ namespace bidding {
         cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE && queryCondition.bannerType == BANNER_TYPE_PRIMITIVE) {
-            BidResponse_Ad_NativeAd & native_ad = adResult->native_ad();
-            BidResponse_Ad_NativeAd_Image & native_img = native_ad.add_image();
+            BidResponse_Ad_NativeAd * native_ad = adResult->mutable_native_ad();
+            BidResponse_Ad_NativeAd_Image * native_img = native_ad->add_image();
             BidRequest_AdSlot_NativeAdParam_ImageEle & res_img = adSlot.nativead_param().image();
             std::string landing_url = mtlsArray[0].get("p9", "");
             adResult->set_landing_page(landing_url);
             url::URLHelper clickUrlParam;
-            getClickPara(clickUrlParam, bidRequest.bid(), "", landing_url);
+            getClickPara(clickUrlParam, bidRequest.id(), "", landing_url);
             std::string click_url
                 = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
             adResult->add_target_url(click_url);
@@ -303,12 +302,12 @@ namespace bidding {
                 adservice::utility::url::url_replace(img_url, "http://", "https://");
             else
                 adservice::utility::url::url_replace(img_url, "https://", "http://");
-            native_img.set_url(img_url);
-            native_img.set_width(res_img.width());
-            native_img.set_height(res_img.height());
-            native_ad.set_title(mtlsArray[0].get("p0", ""));
+            native_img->set_url(img_url);
+            native_img->set_width(res_img.width());
+            native_img->set_height(res_img.height());
+            native_ad->set_title(mtlsArray[0].get("p0", ""));
             url::URLHelper showUrlParam;
-            getShowPara(showUrlParam, bidRequest.bid());
+            getShowPara(showUrlParam, bidRequest.id());
             showUrlParam.add(URL_IMP_OF, "3");
             showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_BD_PRICE_MACRO);
             std::string monitor_url
@@ -317,14 +316,14 @@ namespace bidding {
         } else {
             std::string landing_url = mtlsArray[0].get("p1", "");
             url::URLHelper clickUrlParam;
-            getClickPara(clickUrlParam, bidRequest.bid(), "", landing_url);
+            getClickPara(clickUrlParam, bidRequest.id(), "", landing_url);
             std::string click_url
                 = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
             adResult->add_target_url(click_url);
             adResult->set_landing_page(landing_url);
             adResult->set_html_snippet(baiduHtmlSnippet(cookieMappingUrl, isIOS));
             url::URLHelper showUrlParam;
-            getShowPara(showUrlParam, bidRequest.bid());
+            getShowPara(showUrlParam, bidRequest.id());
             showUrlParam.add(URL_IMP_OF, "3");
             showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_BD_PRICE_MACRO);
             std::string monitor_url
