@@ -292,7 +292,6 @@ namespace bidding {
             BidResponse_Ad_NativeAd_Image & native_img = native_ad.add_image();
             BidRequest_AdSlot_NativeAdParam_ImageEle & res_img = adSlot.nativead_param().image();
             std::string landing_url = mtlsArray[0].get("p9", "");
-            adservice::utility::url::url_replace(landing_url, "{{click}}", "");
             adResult->set_landing_page(landing_url);
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.bid(), "", landing_url);
@@ -317,7 +316,6 @@ namespace bidding {
             adResult->add_monitor_urls(monitor_url);
         } else {
             std::string landing_url = mtlsArray[0].get("p1", "");
-            adservice::utility::url::url_replace(landing_url, "{{click}}", "");
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.bid(), "", landing_url);
             std::string click_url
