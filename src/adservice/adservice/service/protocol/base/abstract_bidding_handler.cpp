@@ -174,6 +174,7 @@ namespace bidding {
         showUrl.add("ep", std::to_string(adInfo.ppid));
         showUrl.add(URL_SITE_ID, std::to_string(adInfo.mid));
         showUrl.add(URL_FLOWTYPE, std::to_string(adFlowExtraInfo.flowType));
+        showUrl.add(adFlowExtraInfo.deviceIdName, adFlowExtraInfo.devInfo.deviceID);
     }
 
     void AbstractBiddingHandler::getClickPara(URLHelper & clickUrl, const std::string & bid, const std::string & ref,

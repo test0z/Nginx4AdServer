@@ -186,6 +186,10 @@ namespace corelogic {
         }
         clickUrl.add(URL_IMP_OF, OF_DSP);
         clickUrl.add(URL_ADX_MACRO, adxMacro);
+        clickUrl.add(URL_DEVICE_IDFA, paramMap[URL_DEVICE_IDFA]);
+        clickUrl.add(URL_DEVICE_IMEI, paramMap[URL_DEVICE_IMEI]);
+        clickUrl.add(URL_DEVICE_ANDOROIDID, paramMap[URL_DEVICE_ANDOROIDID]);
+        clickUrl.add(URL_DEVICE_MAC, paramMap[URL_DEVICE_MAC]);
         cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
         cppcms::json::array & mtls = mtlsArray.array();
         char landingPageBuffer[1024];
