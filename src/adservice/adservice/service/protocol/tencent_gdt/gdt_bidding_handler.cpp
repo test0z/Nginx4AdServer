@@ -33,6 +33,10 @@ namespace bidding {
             switch (os) {
             case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSWindows:
                 return SOLUTION_OS_WINDOWS;
+            case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSAndroid:
+                return SOLUTION_OS_ANDROID;
+            case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSIOS:
+                return SOLUTION_OS_IOS;
             default:
                 return SOLUTION_OS_OTHER;
             }

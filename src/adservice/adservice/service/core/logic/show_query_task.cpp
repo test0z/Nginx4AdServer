@@ -402,9 +402,9 @@ namespace corelogic {
             log.adInfo.cost = adplace.costPrice;
             ipManager.getAreaCodeByIp(condition.ip.data(), log.geoInfo.country, log.geoInfo.province, log.geoInfo.city);
             std::string bannerJson = banner.json;
-            bool isIOS
-                = condition.mobileDevice == SOLUTION_DEVICE_IPHONE || condition.mobileDevice == SOLUTION_DEVICE_IPAD;
-            cppcms::json::value mtAdInfo = bannerJson2HttpsIOS(isIOS, bannerJson, banner.bannerType);
+            // bool isIOS
+            //    = condition.mobileDevice == SOLUTION_DEVICE_IPHONE || condition.mobileDevice == SOLUTION_DEVICE_IPAD;
+            cppcms::json::value mtAdInfo = bannerJson2HttpsIOS(true, bannerJson, banner.bannerType);
             auto idSeq = CookieMappingManager::IdSeq();
             log.adInfo.imp_id = std::to_string(idSeq.time()) + std::to_string(idSeq.id());
             //返回结果

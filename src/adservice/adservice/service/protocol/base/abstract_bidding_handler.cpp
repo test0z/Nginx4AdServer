@@ -53,6 +53,17 @@ namespace bidding {
                 httpsMtlsArray[0]["p1"] = destUrl;
             }
             return httpsBanner;
+        } else {
+            cppcms::json::array & originMtlsArray = banner["mtls"].array();
+            if (bannerType == BANNER_TYPE_PRIMITIVE) {
+                std::string destUrl = originMtlsArray[0]["p9"].str();
+                adservice::utility::url::url_replace(destUrl, "{{click}}", "");
+                originMtlsArray[0]["p9"] = destUrl;
+            } else {
+                std::string destUrl = originMtlsArray[0]["p1"].str();
+                adservice::utility::url::url_replace(destUrl, "{{click}}", "");
+                originMtlsArray[0]["p1"] = destUrl;
+            }
         }
         return banner;
     }
