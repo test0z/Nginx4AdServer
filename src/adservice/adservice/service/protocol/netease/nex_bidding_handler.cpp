@@ -270,8 +270,7 @@ namespace bidding {
         if (!banner.feedback.empty()) {
             parseJson(banner.feedback.c_str(), bannerFeedbackJson);
         }
-        std::string crid = bannerFeedbackJson.get(std::to_string(queryCondition.adxid) + ".adx_cid",
-                                                  bannerFeedbackJson.get("adx_cid", std::to_string(adInfo.bannerId)));
+        std::string crid = std::to_string(banner.adxCids[queryCondition.adxid]);
         bidValue["crid"] = crid;
         std::string landingUrl;
         std::string mainTitle;
