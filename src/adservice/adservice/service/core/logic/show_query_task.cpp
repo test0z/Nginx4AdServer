@@ -162,8 +162,8 @@ namespace corelogic {
         mtAdInfo["pricetype"] = paramMap[URL_PRICE_TYPE];
         mtAdInfo["price"] = paramMap[URL_BID_PRICE];
         mtAdInfo["ppid"] = paramMap[URL_PRODUCTPACKAGE_ID];
-        std::string width = to_string(banner.width);
-        std::string height = to_string(banner.height);
+        std::string width = std::to_string(banner.width);
+        std::string height = std::to_string(banner.height);
         mtAdInfo["width"] = width;
         mtAdInfo["height"] = height;
         mtAdInfo["oid"] = paramMap[URL_ORDER_ID];
@@ -197,7 +197,7 @@ namespace corelogic {
         return len;
     }
 
-    int buildResponseForSsp(const MT::common::SelectResult & selectResult, ParamMap & paramMap, string & json,
+    int buildResponseForSsp(const MT::common::SelectResult & selectResult, ParamMap & paramMap, std::string & json,
                             const char * templateFmt, char * buffer, int bufferSize, const std::string & userIp,
                             const std::string & referer, const std::string & impId)
     {
@@ -206,28 +206,28 @@ namespace corelogic {
         const MT::common::ADPlace & adplace = selectResult.adplace;
         cppcms::json::value mtAdInfo;
         utility::json::parseJson(json.c_str(), mtAdInfo);
-        std::string pid = to_string(adplace.pId);
+        std::string pid = std::to_string(adplace.pId);
         mtAdInfo["pid"] = pid;
         mtAdInfo["adxpid"] = pid;
         mtAdInfo["impid"] = impId;
-        std::string adxid = to_string(adplace.adxId);
+        std::string adxid = std::to_string(adplace.adxId);
         mtAdInfo["unid"] = adxid;
         mtAdInfo["plid"] = "";
-        std::string sid = to_string(solution.sId);
+        std::string sid = std::to_string(solution.sId);
         mtAdInfo["gpid"] = sid;
         IpManager & ipManager = IpManager::getInstance();
         std::string address = ipManager.getAreaCodeStrByIp(userIp.data());
         mtAdInfo["arid"] = address;
         mtAdInfo["xcurl"] = "";
-        std::string width = to_string(banner.width);
-        std::string height = to_string(banner.height);
+        std::string width = std::to_string(banner.width);
+        std::string height = std::to_string(banner.height);
         mtAdInfo["width"] = width;
         mtAdInfo["height"] = height;
-        std::string priceType = to_string(solution.priceType);
+        std::string priceType = std::to_string(solution.priceType);
         mtAdInfo["pricetype"] = priceType;
         std::string price = encodePrice(selectResult.feePrice);
         mtAdInfo["price"] = price;
-        std::string ppid = to_string(selectResult.ppid);
+        std::string ppid = std::to_string(selectResult.ppid);
         mtAdInfo["ppid"] = ppid;
         mtAdInfo["oid"] = selectResult.orderId;
         mtAdInfo["ctype"] = banner.bannerType;
@@ -380,7 +380,7 @@ namespace corelogic {
             log.adInfo.bannerId = banner.bId;
             log.adInfo.advId = finalSolution.advId;
             log.adInfo.adxid = adplace.adxId;
-            log.adInfo.pid = to_string(adplace.pId);
+            log.adInfo.pid = std::to_string(adplace.pId);
             log.adInfo.adxpid = adplace.adxPId;
             log.adInfo.sid = finalSolution.sId;
             log.adInfo.mid = adplace.mId;

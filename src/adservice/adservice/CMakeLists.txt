@@ -19,7 +19,6 @@ SET(SRC_LIST
     ./service/core/config_types.cpp
     ./service/core/core_executor.cpp
     ./service/core/core_ip_manager.cpp
-    ./service/core/core_threadlocal_manager.cpp
     ./service/core/core_typetable.cpp
     ./service/core/core_ad_sizemap.cpp
     ./service/core/core_cm_manager.cpp

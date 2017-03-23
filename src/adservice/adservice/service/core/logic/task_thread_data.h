@@ -30,6 +30,7 @@ namespace adservice{
             int seqId;
             BidThreadLocal bidData;
             TaskThreadLocal():seqId(-1){
+                updateSeqId();
             }
             void updateSeqId();
             static void destructor(void* ptr){

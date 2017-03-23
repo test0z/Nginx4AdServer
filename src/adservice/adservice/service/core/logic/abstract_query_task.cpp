@@ -25,6 +25,7 @@ namespace corelogic {
 
     static int threadSeqId = 0;
     struct spinlock slock = { 0 };
+    thread_local TaskThreadLocal * threadData = new TaskThreadLocal;
 
     void TaskThreadLocal::updateSeqId()
     {
@@ -252,33 +253,6 @@ namespace corelogic {
             }
         }
 
-        void checkAliEscapeSafe(protocol::log::LogItem & logItem, std::string & input)
-        {
-            using namespace adservice::utility::escape;
-            std::string escape_string = encode4ali(input);
-            std::string decode_string = decode4ali(escape_string);
-            const char * a = input.c_str();
-            const char * b = decode_string.c_str();
-            if (input.length() == decode_string.length()) {
-                bool isSame = true;
-                for (size_t i = 0; i < input.length(); ++i) {
-                    if (a[i] != b[i]) {
-                        isSame = false;
-                        break;
-                    }
-                }
-                if (isSame) {
-                    protocol::log::LogItem parseLog;
-                    getAvroObject(parseLog, (uint8_t *)decode_string.c_str(), decode_string.length());
-                } else {
-                    LOG_WARN << "decoded string not equal origin,escape4ali not safe";
-                }
-            } else {
-                LOG_WARN << "decoded string length not equal origin,escape4ali not safe," << input.length() << " "
-                         << decode_string.length();
-            }
-        }
-
         void plantNewCookie(const std::string & cookieUid, adservice::utility::HttpResponse & resp)
         {
             std::string cookieString = COOKIES_MTTY_ID "=";
@@ -300,13 +274,6 @@ namespace corelogic {
 
     void AbstractQueryTask::updateThreadData()
     {
-        pthread_t thread = pthread_self();
-        threadData = (TaskThreadLocal *)ThreadLocalManager::getInstance().get(thread);
-        if (threadData == NULL) {
-            threadData = new TaskThreadLocal;
-            threadData->updateSeqId();
-            ThreadLocalManager::getInstance().put(thread, threadData, &TaskThreadLocal::destructor);
-        }
     }
 
     void AbstractQueryTask::filterParamMapSafe(ParamMap & paramMap)

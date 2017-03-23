@@ -23,11 +23,6 @@ namespace bidding {
 
     namespace {
 
-        inline int max(const int & a, const int & b)
-        {
-            return a > b ? a : b;
-        }
-
         int getGdtOsType(BidRequest_OperatingSystem os)
         {
             switch (os) {

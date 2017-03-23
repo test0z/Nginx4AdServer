@@ -31,6 +31,7 @@ namespace corelogic {
     using namespace adservice::utility::hash;
     using namespace adservice::utility::file;
 
+    extern thread_local TaskThreadLocal * threadData;
     /**
      * 处理请求的抽象逻辑
      */
@@ -131,7 +132,6 @@ namespace corelogic {
         bool isPost;
         bool needLog;
         adservice::utility::HttpResponse & resp;
-        TaskThreadLocal * threadData;
         adservice::log::LogPusherPtr serviceLogger;
     };
 }

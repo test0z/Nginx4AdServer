@@ -22,7 +22,6 @@ extern "C" {
 #include "core/adselectv2/ad_select_client.h"
 #include "core/config_types.h"
 #include "core/core_ip_manager.h"
-#include "core/core_threadlocal_manager.h"
 #include "core/logic/bid_query_task.h"
 #include "core/logic/click_query_task.h"
 #include "core/logic/mapping_query_task.h"

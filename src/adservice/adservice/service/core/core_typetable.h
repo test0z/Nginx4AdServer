@@ -2,6 +2,8 @@
 #define CORE_TYPETABLE_H
 
 #include <map>
+#include <string>
+
 #include <mtty/constants.h>
 
 namespace adservice {

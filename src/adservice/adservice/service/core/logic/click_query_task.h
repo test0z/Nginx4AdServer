@@ -21,14 +21,16 @@ namespace corelogic {
         {
         }
 
-        protocol::log::LogPhaseType currentPhase();
+        virtual protocol::log::LogPhaseType currentPhase() override;
 
         // 期望http 请求状态
-        int expectedReqStatus();
+        virtual int expectedReqStatus() override;
 
-        void customLogic(ParamMap & paramMap, protocol::log::LogItem & log, adservice::utility::HttpResponse & resp);
+        virtual void customLogic(ParamMap & paramMap,
+                                 protocol::log::LogItem & log,
+                                 adservice::utility::HttpResponse & resp) override;
 
-        void onError(std::exception & e, adservice::utility::HttpResponse & resp);
+        virtual void onError(std::exception & e, adservice::utility::HttpResponse & resp) override;
 
         void handleLandingUrl(protocol::log::LogItem & logItem, ParamMap & paramMap);
     };
