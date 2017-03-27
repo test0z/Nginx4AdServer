@@ -319,19 +319,21 @@ namespace bidding {
         }
     }
 
-    const CookieMappingQueryKeyValue & AbstractBiddingHandler::cookieMappingKeyMobile(const std::string & idfa,
-                                                                                      const std::string & imei,
-                                                                                      const std::string & androidId,
-                                                                                      const std::string & mac,
-                                                                                      int appAdxId,
-                                                                                      const std::string & appUserId)
+    const CookieMappingQueryKeyValue &
+    AbstractBiddingHandler::cookieMappingKeyMobile(const std::string & idfa,
+                                                   const std::string & imei,
+                                                   const std::string & androidId,
+                                                   const std::string & mac,
+                                                   const AdSelectCondition & selectCondition,
+                                                   int appAdxId,
+                                                   const std::string & appUserId)
     {
         cmInfo.queryKV.clearDeviceMapping();
-        return cmInfo.queryKV.rebindDevice(MtUserMapping::idfaKey(), idfa)
-            .rebindDevice(MtUserMapping::imeiKey(), imei)
-            .rebindDevice(MtUserMapping::androidIdKey(), androidId)
-            .rebindDevice(MtUserMapping::macKey(), mac)
-            .rebindDevice(MtUserMapping::adxUidKey(appAdxId), appUserId);
+        return cmInfo.queryKV.rebindDevice(MtUserMapping::idfaKey(), idfa, selectCondition.idfa)
+            .rebindDevice(MtUserMapping::imeiKey(), imei, selectCondition.imei)
+            .rebindDevice(MtUserMapping::androidIdKey(), androidId, selectCondition.androidId)
+            .rebindDevice(MtUserMapping::macKey(), mac, selectCondition.mac)
+            .rebindDevice(MtUserMapping::adxUidKey(appAdxId), appUserId, "");
     }
 
     const CookieMappingQueryKeyValue & AbstractBiddingHandler::cookieMappingKeyPC(int64_t adxId,
@@ -350,19 +352,26 @@ namespace bidding {
         if (globalConfig.cmConfig.disabledCookieMapping) {
             cmInfo.needReMapping = false;
             cmInfo.needTouchMapping = false;
+            cmInfo.needFixMapping = false;
             return;
         }
         cmInfo.needReMapping = false;
         cmInfo.needTouchMapping = false;
+        cmInfo.needFixMapping = false;
         cmInfo.userMapping.reset();
         if (!queryKV.isNull()) { //查询键值非空
             CookieMappingManager & cmManager = CookieMappingManager::getInstance();
             // LOG_DEBUG << "cookie mapping query kv:" << queryKV.key << "," << queryKV.value;
-            cmInfo.userMapping = cmManager.getUserMappingByKey(queryKV.key, queryKV.value);
+            cmInfo.userMapping = cmManager.getUserMappingByKey(queryKV.key, queryKV.value, !queryKV.isAdxCookieKey());
             if (cmInfo.userMapping.isValid()) {
                 // todo: 填充selectCondition的对应字段
                 selectCondition.mtUserId = cmInfo.userMapping.userId;
-                cmInfo.needTouchMapping = true;
+                if (!queryKV.isAdxCookieKey()
+                    && cmInfo.userMapping.outerUserOriginId.empty()) { // device类型但是没有查到原deviceid
+                    cmInfo.needFixMapping = true;
+                } else { //其它情况
+                    cmInfo.needTouchMapping = true;
+                }
                 return;
             } else { //服务端找不到对应记录，需要重新mapping
                 cmInfo.needReMapping = true;
@@ -386,7 +395,8 @@ namespace bidding {
             } else { // device id
                 CookieMappingManager & cmManager = CookieMappingManager::getInstance();
                 for (auto kvPair : cmInfo.queryKV.deviceMappings) {
-                    cmManager.updateMappingDeviceAsync(cmInfo.userMapping.userId, kvPair.first, kvPair.second);
+                    cmManager.updateMappingDeviceAsync(cmInfo.userMapping.userId, kvPair.first, kvPair.second.first,
+                                                       kvPair.second.second);
                 }
             }
             cmInfo.needReMapping = false;
@@ -396,8 +406,14 @@ namespace bidding {
                 cmManager.touchMapping(cmInfo.queryKV.key, cmInfo.queryKV.value, cmInfo.userMapping.userId);
             } else {
                 for (auto kvPair : cmInfo.queryKV.deviceMappings) {
-                    cmManager.touchMapping(kvPair.first, kvPair.second, cmInfo.userMapping.userId);
+                    cmManager.touchMapping(kvPair.first, kvPair.second.first, cmInfo.userMapping.userId);
                 }
+            }
+        } else if (cmInfo.needFixMapping) { //计划赶不上变化，修数据吧
+            CookieMappingManager & cmManager = CookieMappingManager::getInstance();
+            for (auto kvPair : cmInfo.queryKV.deviceMappings) {
+                cmManager.updateMappingDeviceAsync(cmInfo.userMapping.userId, kvPair.first, kvPair.second.first,
+                                                   kvPair.second.second);
             }
         }
         return "";

@@ -108,6 +108,7 @@ namespace bidding {
                                        md5_encode(queryCondition.imei),
                                        md5_encode(queryCondition.androidId),
                                        md5_encode(queryCondition.mac),
+                                       queryCondition,
                                        queryCondition.adxid,
                                        bidRequest.has_user() && bidRequest.user().has_suid() ? bidRequest.user().suid()
                                                                                              : "");

@@ -14,11 +14,14 @@ namespace server {
     CookieMappingManager CookieMappingManager::instance_;
 
     //改成根据key查询
-    adservice::core::model::MtUserMapping CookieMappingManager::getUserMappingByKey(const std::string & k,
-                                                                                    const std::string & v)
+    adservice::core::model::MtUserMapping
+    CookieMappingManager::getUserMappingByKey(const std::string & k, const std::string & v, bool isDevice)
     {
         adservice::core::model::MtUserMapping mapping;
         mapping.outerUserKey = k;
+        if (isDevice) {
+            mapping.needDeviceOriginId = true;
+        }
         try {
             MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), k, v.c_str());
             aerospikeClient.get(key, mapping);
@@ -72,13 +75,18 @@ namespace server {
 
     bool CookieMappingManager::updateMappingDeviceAsync(const std::string & userId,
                                                         const std::string & deviceIdType,
-                                                        const std::string & value)
+                                                        const std::string & value,
+                                                        const std::string & originDeviceValue)
     {
         core::model::MtUserMapping mapping;
         mapping.userId = userId;
         std::string k = deviceIdType;
         mapping.outerUserKey = k;
         mapping.outerUserId = value;
+        if (!originDeviceValue.empty()) {
+            mapping.needDeviceOriginId = true;
+            mapping.outerUserOriginId = originDeviceValue;
+        }
         MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), k, value);
         try {
             aerospikeClient.putAsync(key, mapping);
@@ -126,7 +134,7 @@ namespace server {
         if (err != nullptr && err->code == 2 && udata != nullptr) { // if the mapping doesn't exist,update the mapping
             TouchFallbackData * touchData = (TouchFallbackData *)udata;
             CookieMappingManager & cmManager = CookieMappingManager::getInstance();
-            cmManager.updateMappingDeviceAsync(touchData->userId, touchData->key, touchData->value);
+            cmManager.updateMappingDeviceAsync(touchData->userId, touchData->key, touchData->value, "");
         }
         if (udata != nullptr) {
             delete (TouchFallbackData *)udata;

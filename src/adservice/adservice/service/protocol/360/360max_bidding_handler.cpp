@@ -179,7 +179,8 @@ namespace bidding {
                     md5_encode(device.has_android_id()
                                    ? (queryCondition.androidId = stringtool::toupper(device.android_id()))
                                    : ""),
-                    md5_encode(device.has_mac() ? (queryCondition.mac = stringtool::toupper(device.mac())) : ""));
+                    md5_encode(device.has_mac() ? (queryCondition.mac = stringtool::toupper(device.mac())) : ""),
+                    queryCondition);
             } else { // wap
                 cookieMappingKeyWap(ADX_360_MAX_MOBILE, bidRequest.has_mv_user_id() ? bidRequest.mv_user_id() : "");
             }

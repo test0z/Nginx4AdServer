@@ -46,8 +46,10 @@ namespace core {
             struct spinlock slock;
             std::string userId;
             std::string outerUserKey;
-            std::string outerUserId; // device id或者是平台uid
+            std::string outerUserId;       // device id或者是平台uid
+            std::string outerUserOriginId; //未加密的device id或者平台id
             std::string cypherUserId;
+            bool needDeviceOriginId{ false };
         };
     }
 }

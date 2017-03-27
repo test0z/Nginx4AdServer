@@ -215,6 +215,7 @@ namespace bidding {
                                    : ""),
                     md5_encode(device.has_mac() ? (queryCondition.mac = stringtool::toupper(tanxDeviceId(device.mac())))
                                                 : ""),
+                    queryCondition,
                     queryCondition.adxid,
                     bidRequest.has_tid() ? bidRequest.tid() : "");
             } else { // wap

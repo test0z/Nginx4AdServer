@@ -209,6 +209,7 @@ namespace bidding {
                                            = stringtool::toupper(device.get<std::string>("androidid", ""))),
                                 md5_encode(queryCondition.mac
                                            = stringtool::toupper(device.get<std::string>("mac", ""))),
+                                queryCondition,
                                 queryCondition.adxid,
                                 bidRequest.get("user.id", ""));
                         } else { // wap

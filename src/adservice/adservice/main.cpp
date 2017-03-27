@@ -23,6 +23,7 @@ extern "C" {
 #include "core/config_types.h"
 #include "core/core_ip_manager.h"
 #include "core/core_threadlocal_manager.h"
+#include "core/core_typetable.h"
 #include "core/logic/bid_query_task.h"
 #include "core/logic/click_query_task.h"
 #include "core/logic/mapping_query_task.h"
@@ -301,6 +302,7 @@ static void global_init(LocationConf * conf)
     adservice::corelogic::HandleBidQueryTask::init();
     adservice::corelogic::HandleShowQueryTask::loadTemplates();
     protocol::bidding::GuangyinBiddingHandler::loadStaticAdmTemplate();
+    adservice::server::TypeTableManager::getInstance();
 
     char cwd[256];
     getcwd(cwd, sizeof(cwd));
