@@ -22,6 +22,7 @@ extern "C" {
 #include "core/adselectv2/ad_select_client.h"
 #include "core/config_types.h"
 #include "core/core_ip_manager.h"
+#include "core/core_typetable.h"
 #include "core/logic/bid_query_task.h"
 #include "core/logic/click_query_task.h"
 #include "core/logic/mapping_query_task.h"
@@ -300,6 +301,7 @@ static void global_init(LocationConf * conf)
     adservice::corelogic::HandleBidQueryTask::init();
     adservice::corelogic::HandleShowQueryTask::loadTemplates();
     protocol::bidding::GuangyinBiddingHandler::loadStaticAdmTemplate();
+    adservice::server::TypeTableManager::getInstance();
 
     char cwd[256];
     getcwd(cwd, sizeof(cwd));
@@ -345,7 +347,9 @@ ngx_int_t build_response(ngx_http_request_t * r, adservice::utility::HttpRespons
     if (r->headers_out.status != 204 && httpResponse.get_body().empty()) { // http standard compromised to bussiness<-->
         httpResponse.set_body("\r");
     }
-    const std::string & strResp = httpResponse.get_body();
+    const std::string & strResp = httpResponse.responseNeedGzip()
+                                      ? adservice::utility::gzip::compress(httpResponse.get_body())
+                                      : httpResponse.get_body();
     if (r->headers_out.status == 200) {
         r->headers_out.content_type.data = (uchar_t *)httpResponse.content_header().data();
         r->headers_out.content_type.len = httpResponse.content_header().length();
@@ -445,7 +449,15 @@ void after_read_post_data(ngx_http_request_t * r)
             buf = cl->buf;
             ss << std::string((const char *)buf->pos, (const char *)buf->last);
         }
-        httpRequest.set_post_data(ss.str());
+        if (httpRequest.isGzip()) {
+            httpRequest.set_post_data(adservice::utility::gzip::decompress(ss));
+        } else {
+            httpRequest.set_post_data(ss.str());
+        }
+        //        if (httpRequest.isResponseNeedGzip()) {
+        //            httpResponse.setResponseGzip(true);
+        //            httpResponse.set(CONTENTENCODING, "gzip");
+        //        }
     }
     const std::string queryPath = httpRequest.path_info();
     if (queryPath.find("bid") != std::string::npos) {
@@ -511,6 +523,10 @@ static ngx_int_t adservice_handler(ngx_http_request_t * r)
     read_header(r, httpRequest);
 
     adservice::utility::HttpResponse httpResponse;
+    if (httpRequest.isResponseNeedGzip()) {
+        httpResponse.setResponseGzip(true);
+        httpResponse.set(CONTENTENCODING, "gzip");
+    }
     dispatchRequest(httpRequest, httpResponse);
 
     return build_response(r, httpResponse);

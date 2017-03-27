@@ -14,11 +14,14 @@ namespace server {
     CookieMappingManager CookieMappingManager::instance_;
 
     //改成根据key查询
-    adservice::core::model::MtUserMapping CookieMappingManager::getUserMappingByKey(const std::string & k,
-                                                                                    const std::string & v)
+    adservice::core::model::MtUserMapping
+    CookieMappingManager::getUserMappingByKey(const std::string & k, const std::string & v, bool isDevice)
     {
         adservice::core::model::MtUserMapping mapping;
         mapping.outerUserKey = k;
+        if (isDevice) {
+            mapping.needDeviceOriginId = true;
+        }
         try {
             MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), k, v.c_str());
             aerospikeClient.get(key, mapping);
@@ -72,13 +75,18 @@ namespace server {
 
     bool CookieMappingManager::updateMappingDeviceAsync(const std::string & userId,
                                                         const std::string & deviceIdType,
-                                                        const std::string & value)
+                                                        const std::string & value,
+                                                        const std::string & originDeviceValue)
     {
         core::model::MtUserMapping mapping;
         mapping.userId = userId;
         std::string k = deviceIdType;
         mapping.outerUserKey = k;
         mapping.outerUserId = value;
+        if (!originDeviceValue.empty()) {
+            mapping.needDeviceOriginId = true;
+            mapping.outerUserOriginId = originDeviceValue;
+        }
         MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), k, value);
         try {
             aerospikeClient.putAsync(key, mapping);
@@ -109,14 +117,42 @@ namespace server {
         return idEntity;
     }
 
-    void CookieMappingManager::touchMapping(const std::string & k, const std::string & value)
+    struct TouchFallbackData {
+        std::string key;
+        std::string value;
+        std::string userId;
+        TouchFallbackData(const std::string & k, const std::string & v, const std::string & u)
+            : key(k)
+            , value(v)
+            , userId(u)
+        {
+        }
+    };
+
+    void touchMappingAsyncCallback(as_error * err, as_record * record, void * udata, as_event_loop * event_loop)
+    {
+        if (err != nullptr && err->code == 2 && udata != nullptr) { // if the mapping doesn't exist,update the mapping
+            TouchFallbackData * touchData = (TouchFallbackData *)udata;
+            CookieMappingManager & cmManager = CookieMappingManager::getInstance();
+            cmManager.updateMappingDeviceAsync(touchData->userId, touchData->key, touchData->value, "");
+        }
+        if (udata != nullptr) {
+            delete (TouchFallbackData *)udata;
+        }
+    }
+
+    void
+    CookieMappingManager::touchMapping(const std::string & k, const std::string & value, const std::string & userId)
     {
         MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), k, value);
         MT::common::ASOperation touchOperation(1, DAY_SECOND * 30);
         touchOperation.addTouch();
         try {
-            aerospikeClient.operateAsync(key, touchOperation);
+            TouchFallbackData * data = new TouchFallbackData(k, value, userId);
+            aerospikeClient.operateAsync(key, touchOperation, touchMappingAsyncCallback, (void *)data);
         } catch (MT::common::AerospikeExcption & e) {
+        } catch (std::bad_alloc & e) {
+            LOG_ERROR << "touchMapping allocating memory failed";
         }
     }
 }

@@ -28,10 +28,19 @@ std::string userDecode(const std::string& input){
         return clientUid.text();
 }
 
+std::string md5DeviceId(const std::string& input){
+    return cypher::md5_encode(stringtool::toupper(input));
+}
+
 int main(int argc, char ** argv)
 {
     if(argc>1){
-        std::cout<<userDecode(argv[1])<<std::endl;
+        std::string opt = argv[1];
+        if(opt == "decode"){
+            std::cout<<userDecode(argv[2])<<std::endl;
+        }else if (opt == "encodedevice"){
+            std::cout<<md5DeviceId(argv[2])<<std::endl;
+        }
     }
     return 0;
 }

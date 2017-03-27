@@ -57,16 +57,20 @@ namespace bidding {
                 flowType = SOLUTION_FLOWTYPE_MOBILE;
                 if (!strcasecmp(osType.data(), INMOBI_OS_ANDROID)) {
                     mobileDev = SOLUTION_DEVICE_ANDROID;
+                    pcOs = SOLUTION_OS_ANDROID;
                 } else if (!strcasecmp(osType.data(), INMOBI_OS_IOS)) {
                     mobileDev = SOLUTION_DEVICE_IPHONE;
+                    pcOs = SOLUTION_OS_IOS;
                 } else
                     mobileDev = SOLUTION_DEVICE_OTHER;
             } else if (devType == INMOBI_DEV_TABLET || devType == INMOBI_DEV_MOBILEORPAD) {
                 flowType = SOLUTION_FLOWTYPE_MOBILE;
                 if (!strcasecmp(osType.data(), INMOBI_OS_ANDROID)) {
                     mobileDev = SOLUTION_DEVICE_ANDROIDPAD;
+                    pcOs = SOLUTION_OS_ANDROID;
                 } else if (!strcasecmp(osType.data(), INMOBI_OS_IOS)) {
                     mobileDev = SOLUTION_DEVICE_IPAD;
+                    pcOs = SOLUTION_OS_IOS;
                 } else
                     mobileDev = SOLUTION_DEVICE_OTHER;
             } else if (devType == INMOBI_DEV_PC) {
@@ -129,11 +133,11 @@ namespace bidding {
         cppcms::json::value & deviceInfo = bidRequest["device"];
         logItem.userAgent = deviceInfo.get("ua", "");
         logItem.ipInfo.proxy = selectCondition.ip;
+        logItem.referer = bidRequest.get("site.ref", "");
         if (isAccepted) {
             cppcms::json::value device;
             device["deviceInfo"] = deviceInfo;
             logItem.deviceInfo = toJson(device);
-            logItem.referer = bidRequest.get("site.ref", "");
         }
         return true;
     }
@@ -204,14 +208,17 @@ namespace bidding {
                                     queryCondition.mobileDevice,
                                     queryCondition.pcOS,
                                     queryCondition.pcBrowserStr);
+            queryCondition.mobileModel = device.get("model", "");
+            queryCondition.deviceMaker = device.get("make", "");
             queryCondition.mobileNetwork = getInmobiNetwork(device.get("connectiontype", 0));
-            queryCondition.idfa = device.get("ext.idfa", "");
-            queryCondition.imei = device.get("didmd5", "");
-            queryCondition.androidId = device.get("dpidmd5", "");
+            queryCondition.idfa = stringtool::toupper(device.get("ext.idfa", ""));
+            queryCondition.imei = stringtool::toupper(device.get("didmd5", ""));
+            queryCondition.androidId = stringtool::toupper(device.get("dpidmd5", ""));
             cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
                                    queryCondition.imei,
                                    queryCondition.androidId,
-                                   md5_encode(queryCondition.mac));
+                                   md5_encode(queryCondition.mac),
+                                   queryCondition);
             queryCookieMapping(cmInfo.queryKV, queryCondition);
         }
         const cppcms::json::value & siteContent = bidRequest.find("site");
@@ -289,10 +296,8 @@ namespace bidding {
 
         // html snippet相关
         std::string strBannerJson = banner.json;
-        urlHttp2HttpsIOS(isIOS, strBannerJson);
-        // tripslash2(pjson);
-        cppcms::json::value bannerJson;
-        parseJson(strBannerJson.c_str(), bannerJson);
+        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
+        const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
 
         url::URLHelper showUrl;
         getShowPara(showUrl, requestId);
@@ -311,7 +316,6 @@ namespace bidding {
             std::string html = generateHtmlSnippet(requestId, w, h, "of=2&", "", isIOS);
             bidValue["adm"] = html;
         } else { //设置admobject
-            const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
             const cppcms::json::array & assets = adzInfo.find("native.requestobj.assets").array();
             cppcms::json::value admObject;
             cppcms::json::value nativeObject;
@@ -375,8 +379,6 @@ namespace bidding {
                 }
             }
             std::string landingUrl = mtlsArray[0]["p9"].str();
-            replace(landingUrl, "{{click}}", "");
-            adservice::utility::url::url_replace(landingUrl, "https://", "http://");
             nativeObject["assets"] = assetsArray;
             nativeObject["link"] = cppcms::json::value();
             nativeObject["link"]["url"] = landingUrl;

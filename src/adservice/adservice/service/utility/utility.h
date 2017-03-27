@@ -28,7 +28,9 @@
 #include "file.h"
 #include "userclient.h"
 #include "http.h"
+#include "compress.h"
 #include <tuple>
+#include <boost/algorithm/string.hpp>
 #include "google/protobuf/message.h"
 
 namespace std {
@@ -300,6 +302,14 @@ void adservice_free(void* ptr);
                sprintf(buf,"%d.%d.%d.%d",0xff&what.c[3],0xff&what.c[2],0xff&what.c[1],0xff&what.c[0]);
                return std::string(buf);
            }
+       }
+
+       namespace stringtool{
+
+            inline std::string toupper(const std::string& input){
+                return boost::to_upper_copy<std::string>(input);
+            }
+
        }
 
    }

@@ -94,19 +94,24 @@ namespace bidding {
             auto & device = bidRequest.device();
             queryCondition.ip = device.has_ip() ? device.ip() : "";
             queryCondition.mobileDevice = getMobileTypeFromUA(device.ua());
+            queryCondition.pcOS = getOSTypeFromUA(device.ua());
             if (strcasecmp(device.type().data(), "Mobile") == 0) { // mobile
                 queryCondition.mobileDevice = getSohuDeviceType(device.mobiletype());
                 queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
                 queryCondition.adxid = ADX_SOHU_MOBILE;
                 queryCondition.mobileNetwork = getSohuNeworkType(device.nettype());
-                queryCondition.idfa = device.has_idfa() ? device.idfa() : "";
-                queryCondition.imei = device.has_imei() ? device.imei() : "";
-                queryCondition.androidId = device.has_androidid() ? device.androidid() : "";
-                queryCondition.mac = device.has_mac() ? device.mac() : "";
+                queryCondition.idfa = device.has_idfa() ? stringtool::toupper(device.idfa()) : "";
+                queryCondition.imei = device.has_imei() ? stringtool::toupper(device.imei()) : "";
+                queryCondition.androidId = device.has_androidid() ? stringtool::toupper(device.androidid()) : "";
+                queryCondition.mac = device.has_mac() ? stringtool::toupper(device.mac()) : "";
                 cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
                                        md5_encode(queryCondition.imei),
                                        md5_encode(queryCondition.androidId),
-                                       md5_encode(queryCondition.mac));
+                                       md5_encode(queryCondition.mac),
+                                       queryCondition,
+                                       queryCondition.adxid,
+                                       bidRequest.has_user() && bidRequest.user().has_suid() ? bidRequest.user().suid()
+                                                                                             : "");
             } else if (queryCondition.mobileDevice != SOLUTION_DEVICE_OTHER
                        || strcasecmp(device.type().data(), "Wap") == 0) { // wap
                 queryCondition.mobileDevice = queryCondition.mobileDevice == SOLUTION_DEVICE_OTHER
@@ -184,9 +189,7 @@ namespace bidding {
         bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
                      || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         std::string strBannerJson = banner.json;
-        urlHttp2HttpsIOS(isIOS, strBannerJson);
-        cppcms::json::value bannerJson;
-        parseJson(strBannerJson.c_str(), bannerJson);
+        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string materialUrl;
         std::string landingUrl;

@@ -55,6 +55,16 @@ namespace bidding {
             return SOLUTION_DEVICE_OTHER;
     }
 
+    static int getOSTypeFromOs(const std::string & os)
+    {
+        if (!strcasecmp(os.c_str(), "ios")) {
+            return SOLUTION_OS_IOS;
+        } else if (!strcasecmp(os.c_str(), "android")) {
+            return SOLUTION_OS_ANDROID;
+        } else
+            return SOLUTION_OS_OTHER;
+    }
+
     static int getNetWork(int network)
     {
         switch (network) {
@@ -168,8 +178,11 @@ namespace bidding {
                         = adservice::utility::userclient::getMobileTypeFromUA(bidRequest.user_agent());
                 }
             }
+            queryCondition.pcOS
+                = device.os().empty() ? getOSTypeFromUA(bidRequest.user_agent()) : getOSTypeFromOs(device.os());
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.adxid = ADX_TANX_MOBILE;
+            queryCondition.mobileModel = device.has_model() ? device.model() : "";
             if (device.has_network()) {
                 queryCondition.mobileNetwork = getNetWork(device.network());
             }
@@ -191,16 +204,26 @@ namespace bidding {
                         = typeTableManager.getContentType(ADX_TANX, std::to_string(category.id()));
                 }
                 cookieMappingKeyMobile(
-                    md5_encode(device.has_idfa() ? (queryCondition.idfa = tanxDeviceId(device.idfa())) : ""),
-                    md5_encode(device.has_imei() ? (queryCondition.imei = tanxDeviceId(device.imei())) : ""),
-                    md5_encode(device.has_android_id() ? (queryCondition.androidId = tanxDeviceId(device.android_id()))
-                                                       : ""),
-                    md5_encode(device.has_mac() ? (queryCondition.mac = tanxDeviceId(device.mac())) : ""));
+                    md5_encode(device.has_idfa()
+                                   ? (queryCondition.idfa = stringtool::toupper(tanxDeviceId(device.idfa())))
+                                   : ""),
+                    md5_encode(device.has_imei()
+                                   ? (queryCondition.imei = stringtool::toupper(tanxDeviceId(device.imei())))
+                                   : ""),
+                    md5_encode(device.has_android_id()
+                                   ? (queryCondition.androidId = stringtool::toupper(tanxDeviceId(device.android_id())))
+                                   : ""),
+                    md5_encode(device.has_mac() ? (queryCondition.mac = stringtool::toupper(tanxDeviceId(device.mac())))
+                                                : ""),
+                    queryCondition,
+                    queryCondition.adxid,
+                    bidRequest.has_tid() ? bidRequest.tid() : "");
             } else { // wap
                 cookieMappingKeyWap(ADX_TANX_MOBILE, bidRequest.has_tid() ? bidRequest.tid() : "");
             }
         } else {
             queryCondition.mobileDevice = getMobileTypeFromUA(bidRequest.user_agent());
+            queryCondition.pcOS = getOSTypeFromUA(bidRequest.user_agent());
             if (queryCondition.mobileDevice != SOLUTION_DEVICE_OTHER) { // wap
                 queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
                 queryCondition.adxid = ADX_TANX_MOBILE;
@@ -251,9 +274,7 @@ namespace bidding {
         bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
                      || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         std::string strBannerJson = banner.json;
-        urlHttp2HttpsIOS(isIOS, strBannerJson);
-        cppcms::json::value bannerJson;
-        parseJson(strBannerJson.c_str(), bannerJson);
+        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
 
         adResult->set_creative_id(std::to_string(adInfo.bannerId));
@@ -261,8 +282,6 @@ namespace bidding {
         if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE
             && banner.bannerType == BANNER_TYPE_PRIMITIVE) { //移动原生广告
             std::string destUrl = mtlsArray[0].get("p9", "");
-            url::url_replace(destUrl, "{{click}}", "");
-            adservice::utility::url::url_replace(destUrl, "https://", "http://");
             adResult->add_destination_url(destUrl);
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
@@ -294,7 +313,6 @@ namespace bidding {
             adResult->set_feedback_address(feedbackUrl);
         } else { //非移动原生广告
             std::string destUrl = mtlsArray[0].get("p1", "");
-            adservice::utility::url::url_replace(destUrl, "https://", "http://");
             adResult->add_destination_url(destUrl);
             adResult->add_click_through_url(destUrl);
             if (queryCondition.flowType == SOLUTION_FLOWTYPE_PC) {

@@ -28,6 +28,10 @@ namespace bidding {
             switch (os) {
             case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSWindows:
                 return SOLUTION_OS_WINDOWS;
+            case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSAndroid:
+                return SOLUTION_OS_ANDROID;
+            case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSIOS:
+                return SOLUTION_OS_IOS;
             default:
                 return SOLUTION_OS_OTHER;
             }
@@ -121,22 +125,23 @@ namespace bidding {
             const BidRequest_Device & device = bidRequest.device();
             queryCondition.mobileNetwork = getGdtNetWork(device.connection_type());
             BidRequest_DeviceType devType = device.device_type();
+            queryCondition.pcOS = device.has_os() ? getGdtOsType(device.os()) : SOLUTION_OS_OTHER;
+            queryCondition.mobileModel = device.brand_and_model();
             if (devType == BidRequest_DeviceType::BidRequest_DeviceType_kDeviceTypePC) {
-                queryCondition.pcOS = getGdtOsType(device.os());
                 queryCondition.pcBrowserStr = getBrowserTypeFromUA(device.user_agent());
                 if (queryCondition.pcOS == SOLUTION_OS_OTHER) {
                     queryCondition.pcOS = getOSTypeFromUA(device.user_agent());
                 }
-                queryCondition.mac = device.id();
+                queryCondition.mac = stringtool::toupper(device.id());
             } else if (devType == BidRequest_DeviceType::BidRequest_DeviceType_kDeviceTypeMobile) {
                 adplaceInfo.flowType = SOLUTION_FLOWTYPE_MOBILE;
                 queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
                 queryCondition.adxid = ADX_GDT_MOBILE;
                 queryCondition.mobileDevice = getGdtMobileDeviceType(device.os());
                 if (queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE) {
-                    queryCondition.idfa = device.id();
+                    queryCondition.idfa = stringtool::toupper(device.id());
                 } else {
-                    queryCondition.imei = device.id();
+                    queryCondition.imei = stringtool::toupper(device.id());
                 }
             } else if (devType == BidRequest_DeviceType::BidRequest_DeviceType_kDeviceTypePad) {
                 adplaceInfo.flowType = SOLUTION_FLOWTYPE_MOBILE;
@@ -146,16 +151,16 @@ namespace bidding {
                                                   ? SOLUTION_DEVICE_IPAD
                                                   : SOLUTION_DEVICE_ANDROIDPAD;
                 if (queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD) {
-                    queryCondition.idfa = device.id();
+                    queryCondition.idfa = stringtool::toupper(device.id());
                 } else {
-                    queryCondition.imei = device.id();
+                    queryCondition.imei = stringtool::toupper(device.id());
                 }
             } else {
                 queryCondition.mobileDevice = SOLUTION_DEVICE_OTHER;
                 queryCondition.pcOS = SOLUTION_OS_OTHER;
             }
             cookieMappingKeyMobile(queryCondition.idfa, queryCondition.imei, queryCondition.androidId,
-                                   queryCondition.mac);
+                                   queryCondition.mac, queryCondition);
             queryCookieMapping(cmInfo.queryKV, queryCondition);
         }
         if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE && bidRequest.has_app()) {
@@ -196,9 +201,7 @@ namespace bidding {
         bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
                      || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         std::string strBannerJson = banner.json;
-        urlHttp2HttpsIOS(isIOS, strBannerJson);
-        cppcms::json::value bannerJson;
-        adservice::utility::json::parseJson(strBannerJson.c_str(), bannerJson);
+        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string landingUrl;
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
@@ -207,7 +210,6 @@ namespace bidding {
             landingUrl = mtlsArray[0].get("p1", "");
         }
         adservice::utility::url::url_replace(landingUrl, "{{click}}", "");
-        adservice::utility::url::url_replace(landingUrl, "https://", "http://");
         // html snippet相关
         url::URLHelper showUrlParam;
         getShowPara(showUrlParam, bidRequest.id());

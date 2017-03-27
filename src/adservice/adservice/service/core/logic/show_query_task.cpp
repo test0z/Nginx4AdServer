@@ -28,6 +28,13 @@ extern GlobalConfig globalConfig;
 
 extern MT::common::RequestCounter requestCounter;
 
+namespace protocol {
+namespace bidding {
+
+    extern cppcms::json::value bannerJson2HttpsIOS(bool isIOS, const std::string & bannerJson, int bannerType);
+}
+}
+
 namespace adservice {
 namespace corelogic {
 
@@ -35,6 +42,7 @@ namespace corelogic {
     using namespace adservice::utility;
     using namespace adservice::utility::time;
     using namespace adservice::adselectv2;
+    using protocol::bidding::bannerJson2HttpsIOS;
 
     static long handleShowRequests = 0;
     static long updateShowRequestsTime = 0;
@@ -178,6 +186,10 @@ namespace corelogic {
         }
         clickUrl.add(URL_IMP_OF, OF_DSP);
         clickUrl.add(URL_ADX_MACRO, adxMacro);
+        clickUrl.add(URL_DEVICE_IDFA, paramMap[URL_DEVICE_IDFA]);
+        clickUrl.add(URL_DEVICE_IMEI, paramMap[URL_DEVICE_IMEI]);
+        clickUrl.add(URL_DEVICE_ANDOROIDID, paramMap[URL_DEVICE_ANDOROIDID]);
+        clickUrl.add(URL_DEVICE_MAC, paramMap[URL_DEVICE_MAC]);
         cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
         cppcms::json::array & mtls = mtlsArray.array();
         char landingPageBuffer[1024];
@@ -197,16 +209,14 @@ namespace corelogic {
         return len;
     }
 
-    int buildResponseForSsp(const MT::common::SelectResult & selectResult, ParamMap & paramMap, std::string & json,
-                            const char * templateFmt, char * buffer, int bufferSize, const std::string & userIp,
-                            const std::string & referer, const std::string & impId)
+    int buildResponseForSsp(const MT::common::SelectResult & selectResult, ParamMap & paramMap,
+                            cppcms::json::value & mtAdInfo, const char * templateFmt, char * buffer, int bufferSize,
+                            const std::string & userIp, const std::string & referer, const std::string & impId)
     {
         const MT::common::Solution & solution = selectResult.solution;
         const MT::common::Banner & banner = selectResult.banner;
         const MT::common::ADPlace & adplace = selectResult.adplace;
-        cppcms::json::value mtAdInfo;
-        utility::json::parseJson(json.c_str(), mtAdInfo);
-        std::string pid = std::to_string(adplace.pId);
+        std::string pid = to_string(adplace.pId);
         mtAdInfo["pid"] = pid;
         mtAdInfo["adxpid"] = pid;
         mtAdInfo["impid"] = impId;
@@ -256,8 +266,6 @@ namespace corelogic {
         char landingPageBuffer[1024];
         std::string landingUrl
             = banner.bannerType == BANNER_TYPE_PRIMITIVE ? mtls[0].get("p9", "") : mtls[0].get("p1", "");
-        url_replace(landingUrl, "{{click}}", "");
-        url_replace(landingUrl, "https://", "http://");
         std::string encodedLandingUrl;
         urlEncode_f(landingUrl, encodedLandingUrl, landingPageBuffer);
         clickUrl.add(URL_LANDING_URL, encodedLandingUrl);
@@ -398,15 +406,15 @@ namespace corelogic {
             log.adInfo.cost = adplace.costPrice;
             ipManager.getAreaCodeByIp(condition.ip.data(), log.geoInfo.country, log.geoInfo.province, log.geoInfo.city);
             std::string bannerJson = banner.json;
-            // if (condition.mobileDevice == SOLUTION_DEVICE_IPHONE || condition.mobileDevice == SOLUTION_DEVICE_IPAD) {
-            adservice::utility::url::url_replace_all(bannerJson, "http://", "https://");
-            //}
+            // bool isIOS
+            //    = condition.mobileDevice == SOLUTION_DEVICE_IPHONE || condition.mobileDevice == SOLUTION_DEVICE_IPAD;
+            cppcms::json::value mtAdInfo = bannerJson2HttpsIOS(true, bannerJson, banner.bannerType);
             auto idSeq = CookieMappingManager::IdSeq();
             log.adInfo.imp_id = std::to_string(idSeq.time()) + std::to_string(idSeq.id());
             //返回结果
             char buffer[8192];
-            int len = buildResponseForSsp(selectResult, paramMap, bannerJson, templateFmt, buffer, sizeof(buffer),
-                                          userIp, referer, log.adInfo.imp_id);
+            int len = buildResponseForSsp(selectResult, paramMap, mtAdInfo, templateFmt, buffer, sizeof(buffer), userIp,
+                                          referer, log.adInfo.imp_id);
             respBody = std::string(buffer, buffer + len);
             //狗尾续一个bid日志
             doLog(log);

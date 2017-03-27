@@ -70,6 +70,7 @@ namespace bidding {
                                               protocol::log::LogItem & logItem, bool isAccepted)
     {
         logItem.ipInfo.proxy = selectCondition.ip;
+        logItem.userAgent = bidRequest_.has_device() && bidRequest_.device().has_ua() ? bidRequest_.device().ua() : "";
         if (isAccepted) {
             if (bidRequest_.device().devicetype() != BidRequest_Device_DeviceType_PERSONAL_COMPUTER) {
                 logItem.deviceInfo = bidRequest_.device().DebugString();
@@ -124,14 +125,25 @@ namespace bidding {
                 queryCondition.pAdplaceInfo = &adplaceInfo;
             }
         }
+        if (bidRequest_.has_site()) {
+            const BidRequest_Site & site = bidRequest_.site();
+            queryCondition.keywords.push_back(site.keywords());
+        }
+        if (bidRequest_.has_app()) {
+            const BidRequest_App & app = bidRequest_.app();
+            queryCondition.keywords.push_back(app.keywords());
+        }
         if (device.devicetype() != BidRequest_Device_DeviceType_PERSONAL_COMPUTER) {
             queryCondition.mobileDevice = getDeviceType(device.devicetype());
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.adxid = ADX_KUPAI_MOBILE;
             queryCondition.mobileNetwork = getNetWork(device.connectiontype());
-            queryCondition.imei = device.has_didmd5() ? device.didmd5() : "";
-            queryCondition.androidId = device.has_dpidmd5() ? device.dpidmd5() : "";
-            queryCondition.mac = device.has_macmd5() ? device.macmd5() : "";
+            queryCondition.imei = device.has_didmd5() ? stringtool::toupper(device.didmd5()) : "";
+            queryCondition.androidId = device.has_dpidmd5() ? stringtool::toupper(device.dpidmd5()) : "";
+            queryCondition.mac = device.has_macmd5() ? stringtool::toupper(device.macmd5()) : "";
+            queryCondition.pcOS = adservice::utility::userclient::getOSTypeFromUA(device.ua());
+            queryCondition.deviceMaker = device.has_make() ? device.make() : "";
+            queryCondition.mobileModel = device.has_model() ? device.model() : "";
         } else {
             queryCondition.pcOS = SOLUTION_OS_OTHER;
             queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
@@ -186,19 +198,13 @@ namespace bidding {
         adResult->set_nurl(std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?"
                            + showUrlParam.cipherParam());
 
-        cppcms::json::value bannerJson;
         std::string bJson = banner.json;
-        urlHttp2HttpsIOS(isIOS, bJson);
-        std::stringstream ss;
-        ss << bJson; // boost::algorithm::erase_all_copy(banner.json, "\\");
-        ss >> bannerJson;
+        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, bJson, banner.bannerType);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         std::string landingUrl;
         cppcms::json::value admObject;
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
             landingUrl = mtlsArray[0]["p9"].str();
-            replace(landingUrl, "{{click}}", "");
-            adservice::utility::url::url_replace(landingUrl, "https://", "http://");
             cppcms::json::array imageUrls;
             imageUrls.push_back(mtlsArray[0]["p6"].str());
             imageUrls.push_back(mtlsArray[0]["p7"].str());
@@ -207,7 +213,6 @@ namespace bidding {
             admObject["landingurl"] = landingUrl;
         } else if (banner.bannerType != BANNER_TYPE_HTML) {
             landingUrl = mtlsArray[0]["p1"].str();
-            adservice::utility::url::url_replace(landingUrl, "https://", "http://");
             cppcms::json::array imageUrls;
             imageUrls.push_back(mtlsArray[0]["p0"].str());
             admObject["imgurl"] = imageUrls;

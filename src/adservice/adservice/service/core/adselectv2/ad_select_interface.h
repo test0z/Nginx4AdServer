@@ -87,6 +87,12 @@ namespace adselectv2 {
         int bannerType{ 0 };
         //提供的mt 用户id，可以用于查找频次信息
         std::string mtUserId;
+        //关键词信息
+        std::vector<std::string> keywords;
+        //设备厂商
+        std::string deviceMaker;
+        //移动设备型号
+        std::string mobileModel;
         // 预设的广告位信息,比如从ADX流量获取的信息填充到这里,可以省略在ES中对广告位的查询
         PreSetAdplaceInfo * pAdplaceInfo{ nullptr };
     };

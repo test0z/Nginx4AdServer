@@ -40,6 +40,8 @@ namespace bidding {
         }
     }
 
+    cppcms::json::value bannerJson2HttpsIOS(bool isIOS, const std::string & bannerJson, int bannerType);
+
     class BiddingFlowExtraInfo {
     public:
         int32_t mediaType;
@@ -57,6 +59,7 @@ namespace bidding {
         MtUserMapping userMapping;
         bool needReMapping{ false };
         bool needTouchMapping{ false };
+        bool needFixMapping{ false };
     };
 
     /**
@@ -137,7 +140,9 @@ namespace bidding {
          */
         const CookieMappingQueryKeyValue & cookieMappingKeyMobile(const std::string & idfa, const std::string & imei,
                                                                   const std::string & androidId,
-                                                                  const std::string & mac);
+                                                                  const std::string & mac,
+                                                                  const AdSelectCondition & selectCondition,
+                                                                  int appAdxId = 0, const std::string & appUserId = "");
 
         /**
          * 准备pc平台进行cookie mapping的key

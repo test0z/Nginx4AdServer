@@ -12,6 +12,7 @@ namespace core {
         const std::string MAPPING_KEY_MAC = "mac";
         const std::string MAPPING_KEY_ANDROIDID = "androidId";
         const std::string MAPPING_KEY_USER = "user_id";
+        const std::string MAPPING_OUTER_ORIGINID = "origin_id";
 
         std::string MtUserMapping::adxUidKey(int64_t adxId)
         {
@@ -51,6 +52,8 @@ namespace core {
             cypherUserId = "";
             outerUserId = "";
             outerUserKey = "";
+            needDeviceOriginId = false;
+            outerUserOriginId = "";
         }
 
         std::string MtUserMapping::cypherUid()
@@ -77,11 +80,14 @@ namespace core {
         {
             this->userId = getStr(record, MAPPING_KEY_USER.c_str());
             this->outerUserId = getStr(record, outerUserKey.c_str());
+            if (this->needDeviceOriginId) {
+                this->outerUserOriginId = getStr(record, MAPPING_OUTER_ORIGINID.c_str());
+            }
         }
 
         as_record * MtUserMapping::record()
         {
-            int size = 2;
+            int size = this->needDeviceOriginId ? 3 : 2;
             if (record_ == nullptr) {
                 record_ = as_record_new(size);
             }
@@ -91,6 +97,9 @@ namespace core {
             }
             if (!outerUserId.empty()) {
                 as_record_set_str(record_, outerUserKey.c_str(), outerUserId.c_str());
+            }
+            if (!outerUserOriginId.empty()) {
+                as_record_set_str(record_, MAPPING_OUTER_ORIGINID.c_str(), outerUserOriginId.c_str());
             }
             return record_;
         }

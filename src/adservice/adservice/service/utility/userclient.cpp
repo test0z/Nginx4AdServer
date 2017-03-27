@@ -43,9 +43,15 @@ namespace utility {
             if (userAgent.find("NT ") != std::string::npos) {
                 return SOLUTION_OS_WINDOWS;
             } else if (userAgent.find("Mac") != std::string::npos) {
-                return SOLUTION_OS_MAC;
+                if (userAgent.find("iPhone") != std::string::npos || userAgent.find("iPad") != std::string::npos) {
+                    return SOLUTION_OS_IOS;
+                } else
+                    return SOLUTION_OS_MAC;
             } else if (userAgent.find("Linux") != std::string::npos) {
-                return SOLUTION_OS_LINUX;
+                if (userAgent.find("Android") != std::string::npos) {
+                    return SOLUTION_OS_ANDROID;
+                } else
+                    return SOLUTION_OS_LINUX;
             }
             return SOLUTION_OS_OTHER;
         }

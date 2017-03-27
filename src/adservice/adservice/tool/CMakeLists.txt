@@ -20,8 +20,6 @@ FIND_LIBRARY(LIB_CRYPTOPP NAMES "libcryptopp.a" cryptopp)
 FIND_LIBRARY(LIB_Z NAMES "libz.a" z)
 FIND_LIBRARY(LIB_CRYPT NAMES "libcrypt.a" crypt)
 FIND_LIBRARY(LIB_AVRO NAMES "libavrocpp_s.a" avrocpp_s)
-FIND_LIBRARY(LIB_MUDUO_BASE11 NAMES "libmuduo_base_cpp11.a" muduo_base_cpp11)
-FIND_LIBRARY(LIB_TBB NAMES "libtbb.a" tbb)
 FIND_LIBRARY(LIB_BOOST_IOSTREAMS NAMES "libboost_iostreams.a" boost_iostreams)
 FIND_LIBRARY(LIB_BOOSTER NAMES "libbooster.a" booster)
 FIND_LIBRARY(LIB_AEROSPIKE NAMES "libaerospike.a" aerospike)
@@ -50,7 +48,9 @@ ADD_EXECUTABLE(locallog_collector ./locallog_collector.cpp
 
 ADD_EXECUTABLE(update_from_db ./update_from_db.cpp)
 
-ADD_EXECUTABLE(translate_user ./translate_user.cpp)
+ADD_EXECUTABLE(translate_user ./translate_user.cpp
+    ../service/utility/cypher.cpp
+    ../service/utility/random.cpp)
 
 
 ADD_EXECUTABLE(track_user ./track_user.cpp
@@ -69,7 +69,6 @@ SET(LINK_LIBRARY
     rt
     dl
     pthread
-    sasl2
     ssl
     ${LIB_KAFKAPP}
     ${LIB_KAFKA}
@@ -88,8 +87,6 @@ SET(LINK_LIBRARY
 TARGET_LINK_LIBRARIES(kafka_checker ${LINK_LIBRARY})
 
 TARGET_LINK_LIBRARIES(locallog_collector ${LINK_LIBRARY}
-    ${LIB_MUDUO_BASE11}
-    ${LIB_TBB}
     pthread)
 
 TARGET_LINK_LIBRARIES(update_from_db ${LINK_LIBRARY}
