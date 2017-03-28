@@ -19,6 +19,7 @@
 #include "core/core_ip_manager.h"
 #include "logging.h"
 #include "utility/utility.h"
+#include <mtty/trafficcontrollproxy.h>
 #include <mtty/usershowcounter.h>
 
 extern adservice::adselectv2::AdSelectClientPtr adSelectClient;
@@ -527,6 +528,12 @@ namespace corelogic {
             } else {
                 LOG_INFO << "handleShowRequests:" << handleShowRequests;
             }
+        }
+        auto trafficControl = MT::common::traffic::TrafficControllProxy::getInstance();
+        if (log.adInfo.priceType == PRICETYPE_RRTB_CPM || log.adInfo.priceType == PRICETYPE_RTB) {
+            trafficControl->recordCPMShow(log.adInfo.sid, log.adInfo.advId, log.adInfo.bidPrice);
+        } else if (log.adInfo.priceType == PRICETYPE_RCPC || log.adInfo.priceType == PRICETYPE_RRTB_CPC) {
+            trafficControl->recordCPCShow(log.adInfo.sid);
         }
     }
 }

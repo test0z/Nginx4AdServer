@@ -5,6 +5,7 @@
 #include "click_query_task.h"
 
 #include <mtty/requestcounter.h>
+#include <mtty/trafficcontrollproxy.h>
 
 #include "core/config_types.h"
 #include "core/core_ip_manager.h"
@@ -205,6 +206,12 @@ namespace corelogic {
         if (!paramArea.empty() && clickIpArea != paramArea) {
             LOG_ERROR << "click ip area not equal to url param area,sid:" << log.adInfo.sid << ",clickip:" << userIp
                       << ",clickArea:" << clickIpArea << ",paramArea:" << paramArea;
+        }
+        auto trafficControl = MT::common::traffic::TrafficControllProxy::getInstance();
+        if (log.adInfo.priceType == PRICETYPE_RRTB_CPM || log.adInfo.priceType == PRICETYPE_RTB) {
+            trafficControl->recordCPMClick(log.adInfo.sid);
+        } else if (log.adInfo.priceType == PRICETYPE_RCPC || log.adInfo.priceType == PRICETYPE_RRTB_CPC) {
+            trafficControl->recordCPCClick(log.adInfo.sid, log.adInfo.advId, log.adInfo.bidPrice / 1000); //与历史兼容
         }
     }
 

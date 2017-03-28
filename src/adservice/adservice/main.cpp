@@ -9,6 +9,7 @@
 
 #include <mtty/constants.h>
 #include <mtty/requestcounter.h>
+#include <mtty/trafficcontrollproxy.h>
 
 extern "C" {
 #include <ngx_config.h>
@@ -302,6 +303,9 @@ static void global_init(LocationConf * conf)
     adservice::corelogic::HandleShowQueryTask::loadTemplates();
     protocol::bidding::GuangyinBiddingHandler::loadStaticAdmTemplate();
     adservice::server::TypeTableManager::getInstance();
+
+    MT::common::traffic::TrafficControllProxy::instance_
+        = std::make_shared<MT::common::traffic::TrafficControllProxy>(aerospikeClient);
 
     char cwd[256];
     getcwd(cwd, sizeof(cwd));

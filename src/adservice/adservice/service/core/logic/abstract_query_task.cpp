@@ -17,6 +17,7 @@
 #include "protocol/youku/youku_price.h"
 #include "utility/mttytime.h"
 #include <mtty/mtuser.h>
+#include <mtty/trafficcontrollproxy.h>
 
 namespace adservice {
 namespace corelogic {
