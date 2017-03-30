@@ -103,9 +103,9 @@ namespace log {
         const char * bytes = msg.bytes.c_str();
         int len = msg.bytes.length();
 #endif
-        int randIdx = random() % 26;
+        // int randIdx = random() % 26;
         RdKafka::ErrorCode resp = producer->produce(topic, RdKafka::Topic::PARTITION_UA, RdKafka::Producer::RK_MSG_COPY,
-                                                    (void *)bytes, len, &randomKey[randIdx], NULL);
+                                                    (void *)bytes, len, NULL, NULL);
         if (resp == RdKafka::ErrorCode::ERR_NO_ERROR) {
             return SendResult::SEND_OK;
         } else {

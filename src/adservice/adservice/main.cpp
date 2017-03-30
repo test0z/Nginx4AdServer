@@ -306,6 +306,7 @@ static void global_init(LocationConf * conf)
 
     MT::common::traffic::TrafficControllProxy::instance_
         = std::make_shared<MT::common::traffic::TrafficControllProxy>(aerospikeClient);
+    MT::common::traffic::TrafficControllProxy::instance_->start(std::cerr);
 
     char cwd[256];
     getcwd(cwd, sizeof(cwd));

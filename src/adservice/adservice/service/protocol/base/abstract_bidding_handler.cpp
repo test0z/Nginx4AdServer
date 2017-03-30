@@ -100,6 +100,7 @@ namespace bidding {
             logItem.keyWords = ss.str();
         }
         logItem.device = adFlowExtraInfo.devInfo;
+        logItem.dealIds = adFlowExtraInfo.dealIds;
         if (isAccepted) {
             logItem.adInfo.sid = adInfo.sid;
             logItem.adInfo.advId = adInfo.advId;
@@ -275,6 +276,10 @@ namespace bidding {
         adFlowExtraInfo.contentType.push_back(selectCondition.mttyContentType);
         adFlowExtraInfo.mediaType = selectCondition.mediaType;
         adFlowExtraInfo.flowType = selectCondition.flowType;
+        if (!selectCondition.dealId.empty()) {
+            adFlowExtraInfo.dealIds.clear();
+            adFlowExtraInfo.dealIds.push_back(selectCondition.dealId);
+        }
     }
 
     void AbstractBiddingHandler::fillAdInfo(const AdSelectCondition & selectCondition,
@@ -312,7 +317,6 @@ namespace bidding {
         char buffer[1024];
         adservice::utility::url::urlEncode_f(adFlowExtraInfo.devInfo.deviceID, deviceId, buffer);
         adFlowExtraInfo.devInfo.deviceID = deviceId;
-
         if (!selectCondition.dealId.empty() && finalSolution.dDealId != "0") {
             adFlowExtraInfo.dealIds.clear();
             adFlowExtraInfo.dealIds.push_back(finalSolution.dDealId);

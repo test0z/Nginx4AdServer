@@ -217,7 +217,7 @@ namespace corelogic {
         const MT::common::Solution & solution = selectResult.solution;
         const MT::common::Banner & banner = selectResult.banner;
         const MT::common::ADPlace & adplace = selectResult.adplace;
-        std::string pid = to_string(adplace.pId);
+        std::string pid = std::to_string(adplace.pId);
         mtAdInfo["pid"] = pid;
         mtAdInfo["adxpid"] = pid;
         mtAdInfo["impid"] = impId;

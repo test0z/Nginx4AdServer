@@ -303,10 +303,13 @@ namespace corelogic {
         MT::User::UserID clientUid(cookieEncUid, true);
         MT::User::UserID serverUid(serverEncUid, true);
         if (clientUid.isValid() && serverUid.isValid()) { //客户端id和服务端id同时存在且合法
-            int64_t clientUserTime = clientUid.time();
-            int64_t serverUserTime = serverUid.time();
-            if (clientUserTime < serverUserTime) {
-                return clientUid.text();
+                                                          //            int64_t clientUserTime = clientUid.time();
+                                                          //            int64_t serverUserTime = serverUid.time();
+                                                          //            if (clientUserTime < serverUserTime) {
+                                                          //                 return clientUid.text();
+                                                          //            }
+            if (cookieEncUid != serverEncUid) {
+                plantNewCookie(serverUid.cipher(), resp);
             }
             return serverUid.text();
         } else if (!clientUid.isValid() && serverUid.isValid()) { //客户端id不合法,服务端id合法
