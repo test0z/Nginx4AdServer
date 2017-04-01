@@ -186,6 +186,10 @@ namespace corelogic {
         }
         clickUrl.add(URL_IMP_OF, OF_DSP);
         clickUrl.add(URL_ADX_MACRO, adxMacro);
+        clickUrl.add(URL_DEVICE_IDFA, paramMap[URL_DEVICE_IDFA]);
+        clickUrl.add(URL_DEVICE_IMEI, paramMap[URL_DEVICE_IMEI]);
+        clickUrl.add(URL_DEVICE_ANDOROIDID, paramMap[URL_DEVICE_ANDOROIDID]);
+        clickUrl.add(URL_DEVICE_MAC, paramMap[URL_DEVICE_MAC]);
         cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
         cppcms::json::array & mtls = mtlsArray.array();
         char landingPageBuffer[1024];
@@ -402,9 +406,9 @@ namespace corelogic {
             log.adInfo.cost = adplace.costPrice;
             ipManager.getAreaCodeByIp(condition.ip.data(), log.geoInfo.country, log.geoInfo.province, log.geoInfo.city);
             std::string bannerJson = banner.json;
-            bool isIOS
-                = condition.mobileDevice == SOLUTION_DEVICE_IPHONE || condition.mobileDevice == SOLUTION_DEVICE_IPAD;
-            cppcms::json::value mtAdInfo = bannerJson2HttpsIOS(isIOS, bannerJson, banner.bannerType);
+            // bool isIOS
+            //    = condition.mobileDevice == SOLUTION_DEVICE_IPHONE || condition.mobileDevice == SOLUTION_DEVICE_IPAD;
+            cppcms::json::value mtAdInfo = bannerJson2HttpsIOS(true, bannerJson, banner.bannerType);
             auto idSeq = CookieMappingManager::IdSeq();
             log.adInfo.imp_id = std::to_string(idSeq.time()) + std::to_string(idSeq.id());
             //返回结果

@@ -33,6 +33,10 @@ namespace bidding {
             switch (os) {
             case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSWindows:
                 return SOLUTION_OS_WINDOWS;
+            case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSAndroid:
+                return SOLUTION_OS_ANDROID;
+            case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSIOS:
+                return SOLUTION_OS_IOS;
             default:
                 return SOLUTION_OS_OTHER;
             }
@@ -161,7 +165,7 @@ namespace bidding {
                 queryCondition.pcOS = SOLUTION_OS_OTHER;
             }
             cookieMappingKeyMobile(queryCondition.idfa, queryCondition.imei, queryCondition.androidId,
-                                   queryCondition.mac);
+                                   queryCondition.mac, queryCondition);
             queryCookieMapping(cmInfo.queryKV, queryCondition);
         }
         if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE && bidRequest.has_app()) {

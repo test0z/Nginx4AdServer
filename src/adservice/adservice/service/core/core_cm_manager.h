@@ -33,14 +33,14 @@ namespace server {
             deviceMappings.clear();
         }
 
-        CookieMappingQueryKeyValue & rebindDevice(const std::string & k, const std::string & v)
+        CookieMappingQueryKeyValue & rebindDevice(const std::string & k, const std::string & v, const std::string & v2)
         {
             if (!k.empty() && !v.empty()) {
                 if (key.empty() || value.empty()) {
                     key = k;
                     value = v;
                 }
-                deviceMappings.insert({ k, v });
+                deviceMappings.insert({ k, { v, v2 } });
             }
             isAdxCookie = false;
             return *this;
@@ -59,7 +59,7 @@ namespace server {
     public:
         std::string key;
         std::string value;
-        std::unordered_map<std::string, std::string> deviceMappings;
+        std::unordered_map<std::string, std::pair<std::string, std::string>> deviceMappings;
         bool isAdxCookie;
     };
 
@@ -71,7 +71,8 @@ namespace server {
         }
 
     public:
-        adservice::core::model::MtUserMapping getUserMappingByKey(const std::string & key, const std::string & value);
+        adservice::core::model::MtUserMapping
+        getUserMappingByKey(const std::string & key, const std::string & value, bool isDevice);
 
         bool updateMappingAdxUid(const std::string & userId, int64_t adxId, const std::string & value);
 
@@ -81,7 +82,8 @@ namespace server {
 
         bool updateMappingDeviceAsync(const std::string & userId,
                                       const std::string & deviceIdType,
-                                      const std::string & value);
+                                      const std::string & value,
+                                      const std::string & originDeviceValue);
 
         void touchMapping(const std::string & key, const std::string & value, const std::string & userId);
 

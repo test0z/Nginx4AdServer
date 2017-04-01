@@ -107,7 +107,8 @@ namespace bidding {
             cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
                                    md5_encode(queryCondition.imei),
                                    md5_encode(queryCondition.androidId),
-                                   md5_encode(queryCondition.mac));
+                                   md5_encode(queryCondition.mac),
+                                   queryCondition);
             queryCookieMapping(cmInfo.queryKV, queryCondition);
         }
         PreSetAdplaceInfo adplaceInfo;
