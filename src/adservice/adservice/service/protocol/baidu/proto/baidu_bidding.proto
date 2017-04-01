@@ -1,270 +1,643 @@
+// Copyright 2013-2015 Baidu Inc. All Rights Reserved.
+//
+// ÎÄ¼şÄÚÈİ: baidu exchange service ÊµÊ±¾º¼ÛĞ­ÒéÎÄ¼ş
+//
+syntax="proto2";
 
-package protocol.Baidu;
+package protocol.baidu;
 
-//protocol version 2.3
 
 message BidRequest {
-	//  è¯·æ±‚ ID,  å”¯ä¸€æ ‡è¯†æœ¬æ¬¡è¯·æ±‚ï¼Œæ˜æ–‡å­—ç¬¦ä¸²
-	required string id = 1;
-	// ****  ç”¨æˆ·ä¿¡æ¯  ****
-	//  ç”¨æˆ· IP åœ°å€ï¼Œç‚¹åˆ†åè¿›åˆ¶å­—ç¬¦ä¸²
-	optional string ip = 2;
-	// User-Agent
-	optional string user_agent = 3;
-	//  ç”¨æˆ· IDï¼Œè¯¥å°†äº 2015 å¹´ 4 æœˆ 30 æ—¥åœæ­¢ä½¿ç”¨
-	optional string baidu_user_id = 4;
-	//  ç”¨æˆ· ID ç‰ˆæœ¬ï¼Œè¯¥å°†äº 2015 å¹´ 4 æœˆ 30 æ—¥åœæ­¢ä½¿ç”¨
-	optional int32 baidu_user_id_version = 5;
-	//  ç”¨æˆ· ID
-	//  åœ¨ 2015 å¹´ 4 æœˆ 30 æ—¥ä¹‹å‰å°†ä¼šåŒæ—¶å‘é€ç‰ˆæœ¬ 1 å’Œç‰ˆæœ¬ 2 çš„ cookie
-	//  ä» 2015 å¹´ 5 æœˆ 1 æ—¥èµ·åªå‘é€ç‰ˆæœ¬ 2 çš„ cookie
-	message BaiduId {
-	optional string baidu_user_id = 1;
-	optional int32 baidu_user_id_version = 2;
-	}
-	repeated BaiduId baidu_id_list = 8;
-	//  ç”¨æˆ·å…´è¶£
-	repeated int64 user_category = 6;
-	//  ç”¨æˆ·æ€§åˆ«
-	enum Gender {
-	UNKNOWN = 0;
-	MALE = 1;
-	FEMALE = 2;
-	}
-	optional Gender gender = 7;
-	//  é¡µé¢è¯­è¨€
-	optional string detected_language = 9;
-	// flash ç‰ˆæœ¬
-	optional string flash_version = 10;
-	// ****  ä½ç½®ä¿¡æ¯  ****
-	message Geo {
-	//  ç»çº¬åº¦ä¿¡æ¯
-	message Coordinate {
-	//  ç»çº¬åº¦åæ ‡æ ‡å‡†
-	enum Standard {
-	//  ç™¾åº¦åœ°å›¾çš„ç»çº¬åº¦åæ ‡æ ‡å‡†
-	BD_09 = 0;
-	//  å›½æµ‹å±€åˆ¶å®šçš„ç»çº¬åº¦åæ ‡æ ‡å‡†
-	GCJ_02 = 1;
-	//  å›½é™…ç»çº¬åº¦åæ ‡æ ‡å‡†
-	WGS_84 = 2;
-	}
-	//  åœ°å›¾åæ ‡æ ‡å‡†
-	optional Standard standard = 1;
-	//  çº¬åº¦
-	optional float latitude = 2;
-	//  ç»åº¦
-	optional float longitude = 3;
-	}
-	repeated Coordinate user_coordinate = 1;
-	//  ç”¨æˆ·ä½ç½®ä¿¡æ¯
-	message UserLocation {
-	//  çœä»½ï¼Œå¦‚åŒ—äº¬å¸‚
-	optional string province = 1;
-	//  åŸå¸‚ï¼Œå¦‚åŒ—äº¬å¸‚
-	optional string city = 2;
-	//  åŒºå¿ï¼Œå¦‚æµ·æ·€åŒº
-	optional string district = 3;
-	//  è¡—é“ï¼Œå¦‚ä¸­å…³æ‘å¤§è¡—
-	optional string street = 4;
-	}
-	optional UserLocation user_location = 2;
-	}
-	optional Geo user_geo_info = 28;
-	// ****  é¡µé¢ä¿¡æ¯  ****
-	//  å½“å‰é¡µé¢ URL
-	optional string url = 11;
-	//  è¯·æ±‚çš„ referer
-	optional string referer = 12;
-	//  ç½‘ç«™åˆ†ç±»
-	optional int32 site_category = 13;
-	//  ç½‘ç«™è´¨é‡ç±»å‹
-	optional int32 site_quality = 14;
-	//  é¡µé¢ç±»å‹
-	optional int32 page_type = 15;
-	//  é¡µé¢å…³é”®è¯
-	repeated string page_keyword = 17;
-	//  é¡µé¢å†…å®¹è´¨é‡
-	optional int32 page_quality = 18;
-	//  é¡µé¢åˆ†ç±»
-	optional int32 page_vertical = 21;
-	//  å‘å¸ƒå•†ä¸å…è®¸çš„å¹¿å‘Šè¡Œä¸š
-	repeated int32 excluded_product_category = 19 [packed=true];
-	// ****  ç§»åŠ¨ä¿¡æ¯  ****
-	message Mobile {
-	// ****  ç§»åŠ¨è®¾å¤‡ä¿¡æ¯  ****
-	//  ç™¾åº¦å”¯ä¸€æ ‡è¯†ç§»åŠ¨è®¾å¤‡çš„ç¼–å·
-	optional string device_id = 1;
-	//  è®¾å¤‡ç±»å‹å®šä¹‰
-	enum MobileDeviceType {
-	UNKNOWN_DEVICE = 0;
-	HIGHEND_PHONE = 1;
-	TABLET = 2;
-	}
-	//  è®¾å¤‡ç±»å‹
-	optional MobileDeviceType device_type = 2;
-	//  ç§»åŠ¨å¹³å°åï¼Œä¾‹å¦‚ androidï¼Œiphone ç­‰ç­‰
-	enum OS {
-	UNKNOWN_OS = 0;
-	IOS = 1;
-	ANDROID = 2;
-	WINDOWS_PHONE = 3;
-	}
-	optional OS platform = 3 [default = UNKNOWN_OS];
-	//  ç§»åŠ¨æ“ä½œç³»ç»Ÿç‰ˆæœ¬å·
-	//  ä¾‹å¦‚  Android 2.1, major, minor åˆ†åˆ«æ˜¯ 2,1
-	//  ä¾‹å¦‚  Iphone 4.2.1ï¼Œmajor, minor, micro åˆ†åˆ«æ˜¯ 4,2,1
-	message DeviceOsVersion {
-	optional int32 os_version_major = 1;
-	optional int32 os_version_minor = 2;
-	optional int32 os_version_micro = 3;
-	}
-	optional DeviceOsVersion os_version = 4;
-	//  è®¾å¤‡å“ç‰Œ
-	optional string brand = 5;
-	//  è®¾å¤‡æœºå‹
-	optional string model = 6;
-	//  è®¾å¤‡å±å®½
-	optional int32 screen_width = 7;
-	//  è®¾å¤‡å±é«˜
-	optional int32 screen_height = 8;
-	//  è¿è¥å•†
-	optional int64 carrier_id = 9;
-	//  æ— çº¿ç½‘ç»œç±»å‹
-	enum WirelessNetworkType {
-	UNKNOWN_NETWORK = 0;
-	WIFI = 1;
-	MOBILE_2G = 2;
-	MOBILE_3G = 3;
-	MOBILE_4G = 4;
-	}
-	optional WirelessNetworkType wireless_network_type = 10;
-	//  ç§»åŠ¨è®¾å¤‡ä¸Šä¸ºå¹¿å‘Šæ§åˆ¶æä¾›çš„ ID
-	optional string for_advertising_id = 11;
-	// ****  ç§»åŠ¨åº”ç”¨ä¿¡æ¯  ****
-	message MobileApp {
-	//  ç™¾åº¦ç§»åŠ¨è”ç›Ÿä¸ºè¯¥ App åˆ†é…çš„ app id
-	optional string app_id = 1;
-	// App åº”ç”¨çš„ package å…¨å
-	optional string app_bundle_id = 2;
-	// App åº”ç”¨åˆ†ç±»
-	optional int32 app_category = 3;
-	// App å¼€å‘è€… ID
-	optional int32 app_publisher_id = 4;
-	// App å…è®¸çš„äº¤äº’ç±»å‹å®šä¹‰
-	//  ç”µè¯ã€ä¸‹è½½
-	enum AppInteractionType {
-	TELEPHONE = 0;
-	DOWNLOAD = 1;
-	}
-	// App å…è®¸çš„äº¤äº’ç±»å‹
-	repeated AppInteractionType app_interaction_type = 5;
-	}
-	//  ç§»åŠ¨åº”ç”¨ä¿¡æ¯ï¼Œå½“æµé‡æ¥è‡ª App æ—¶è¯¥å­—æ®µéç©º
-	optional MobileApp mobile_app = 12;
-	}
-	//  ç§»åŠ¨ä¿¡æ¯ï¼Œå½“æµé‡æ¥è‡ªç§»åŠ¨è®¾å¤‡æ—¶è¯¥å­—æ®µéç©º
-	optional Mobile mobile = 29;
-	// ****  è§†é¢‘ä¿¡æ¯  ****
-	message Video {
-	//è§†é¢‘çš„æ ‡é¢˜
-	optional string title = 1;
-	//è§†é¢‘çš„æ ‡ç­¾
-	repeated string tags = 2;
-	//è§†é¢‘çš„æ’­æ”¾æ—¶é•¿
-	optional int32 content_length = 3;
-	//è§†é¢‘çš„é¢‘é“ ID
-	repeated int64 channel_id = 4;
-	}
-	optional Video video = 30;
-	// ****  å¹¿å‘Šä½ä¿¡æ¯  ****
-	message AdSlot {
-	//  å¹¿å‘Šä½ IDï¼Œå…¨å±€å”¯ä¸€ ID
-	optional uint64 ad_block_key = 1;
-	//  å½“å‰é¡µé¢å¹¿å‘Šä½é¡ºåº idï¼ŒåŒä¸€é¡µé¢ä» 1 å¼€å§‹
-	optional int32 sequence_id = 2;
-	//  å±•ç¤ºç±»å‹
-	optional int32 adslot_type = 3;
-	//  å®½
-	optional int32 width = 4;
-	//  é«˜
-	optional int32 height = 5;
-	//  è§†é¢‘å¹¿å‘Šçš„æœ€å¤§æ—¶é•¿
-	optional int32 max_video_duration = 10;
-	//  è§†é¢‘å¹¿å‘Šçš„æœ€å°æ—¶é•¿
-	optional int32 min_video_duration = 11;
-	//  è§†é¢‘å¹¿å‘Šçš„æ’­æ”¾å»¶æ—¶ï¼Œ  0 åŠæ­£æ•´æ•°è¡¨ç¤ºå‰è´´ï¼Œ-1 è¡¨ç¤ºä¸­è´´ï¼Œ-2 è¡¨ç¤ºåè´´
-	optional int32 video_start_delay = 12;
-	//  å±•ç¤ºä½ç½®
-	optional int32 slot_visibility = 6;
-	//  å‘å¸ƒå•†å…è®¸çš„åˆ›æ„ç±»å‹
-	repeated int32 creative_type = 7 [packed=true];
-	//  å‘å¸ƒå•†ä¸å…è®¸çš„ landing page url
-	repeated string excluded_landing_page_url = 8;
-	//  åª’ä½“ä¿æŠ¤è®¾ç½®å¯¹åº”ä¿¡æ¯çš„ ID
-	repeated fixed64 publisher_settings_list_id = 14;
-	//  å‘å¸ƒå•†è®¾ç½®çš„åº•ä»·ï¼Œå•ä½åˆ†
-	optional int32 minimum_cpm = 9;
-	//  ä¼˜å…ˆäº¤æ˜“ä¿¡æ¯
-	message PreferredOrderInfo {
-	message PreferredOrder {
-	//  ä¼˜å…ˆäº¤æ˜“ ID
-	optional int64 order_id = 1;
-	//  è¯¥ä¼˜å…ˆäº¤æ˜“çš„äº¤æ˜“ä»·æ ¼
-	optional int64 fixed_cpm = 2;
-	}
-	//  ä¸€æ¬¡è¯·æ±‚å¯èƒ½åŒ…å«å¤šä¸ªä¼˜å…ˆäº¤æ˜“
-	repeated PreferredOrder preferred_orders = 1;
-	//  å…è®¸ä¼˜å…ˆäº¤æ˜“çš„åŒæ—¶ï¼Œæ˜¯å¦å…è®¸ç«ä»·
-	optional bool allow_auction = 2 [default=true];
-	}
-	optional PreferredOrderInfo preferred_order_info = 13;
-	}
-	//  é»˜è®¤æ¯æ¬¡è¯·æ±‚ä¸€ä¸ªå¹¿å‘Šä½
-	repeated AdSlot adslot = 20;
-	// ****  ç³»ç»Ÿä½¿ç”¨  ****
-	optional bool is_test = 26 [default=false];
-	optional bool is_ping = 27 [default=false];
+  // ÇëÇóID£¬Î¨Ò»±êÊ¶±¾´ÎÇëÇó£¬Ã÷ÎÄ×Ö·û´®
+  required string id = 1;
+
+  // **** ÓÃ»§ĞÅÏ¢ ****
+  // ÓÃ»§IPµØÖ·£¬µã·ÖÊ®½øÖÆ×Ö·û´®
+  optional string ip = 2;
+  // User-Agent
+  optional string user_agent = 3;
+
+  // ÓÃ»§ID£¬¸Ã×Ö¶Î½«ÓÚ2015Äê4ÔÂ30ÈÕÍ£Ö¹Ê¹ÓÃ
+  optional string baidu_user_id = 4;
+  // ÓÃ»§ID°æ±¾£¬¸Ã×Ö¶Î½«ÓÚ2015Äê4ÔÂ30ÈÕÍ£Ö¹Ê¹ÓÃ
+  optional int32 baidu_user_id_version = 5;
+
+  // ÓÃ»§ID
+  // ÔÚ2015Äê4ÔÂ30ÈÕÖ®Ç°½«»áÍ¬Ê±·¢ËÍ°æ±¾1ºÍ°æ±¾2µÄcookie
+  // ´Ó2015Äê5ÔÂ1ÈÕÆğÖ»·¢ËÍ°æ±¾2µÄcookie
+  message BaiduId {
+      optional string baidu_user_id = 1;
+      optional int32 baidu_user_id_version = 2;
+  }
+  repeated BaiduId baidu_id_list = 8;
+  
+  // DSP ÍĞ¹Üµ½ BESµÄ USER ID
+  optional string buyer_user_id = 32;
+
+  // ÓÃ»§·ÖÀà
+  repeated int64 user_category = 6;
+
+  message CustomizedUserTag {
+    message AmsTag {
+        optional uint64 tag_id = 1;
+    }
+    repeated AmsTag ams_tag_list = 1;
+  }
+
+  optional CustomizedUserTag customized_user_tag = 31;
+
+
+  // ÓÃ»§ĞÔ±ğ
+  enum Gender {
+    UNKNOWN = 0;
+    MALE = 1;
+    FEMALE = 2;
+  }
+  // ×¢£º±¾×Ö¶ÎÒÑ·ÏÆú£¬²»ÔÙ´«µİÈÎºÎÖµ¡£ÇëÎğÊ¹ÓÃ
+  // ÓÃ»§ÈçĞè»ñµÃend-userµÄĞÔ±ğĞÅÏ¢£¬Çë²ÉÓÃuser_category×Ö¶Î£¬²¢
+  // ²ÎÕÕÆäÖµÓòËµÃ÷¡£
+  optional Gender gender = 7;
+  // Ò³ÃæÓïÑÔ
+  optional string detected_language = 9;
+  // flash°æ±¾
+  optional string flash_version = 10;
+
+  // **** Î»ÖÃĞÅÏ¢ ****
+  message Geo {
+    // ¾­Î³¶ÈĞÅÏ¢
+    message Coordinate {
+        // ¾­Î³¶È×ø±ê±ê×¼  
+        enum Standard {
+            // °Ù¶ÈµØÍ¼µÄ¾­Î³¶È×ø±ê±ê×¼
+            BD_09 = 0;
+            // ¹ú²â¾ÖÖÆ¶¨µÄ¾­Î³¶È×ø±ê±ê×¼
+            GCJ_02 = 1;
+            // ¹ú¼Ê¾­Î³¶È×ø±ê±ê×¼ 
+            WGS_84 = 2;
+            // °Ù¶ÈµØÍ¼µÄÄ«¿¨×ø±ê±ê×¼,ÒÔÃ×Îªµ¥Î»
+            BD_09_LL = 3;
+        }
+        // µØÍ¼×ø±ê±ê×¼
+        optional Standard standard = 1;
+        // Î¬¶È
+        optional float latitude = 2;
+        // ¾­¶È
+        optional float longitude = 3;
+    }
+    repeated Coordinate user_coordinate = 1;
+
+    // ÓÃ»§Î»ÖÃĞÅÏ¢
+    message UserLocation {
+        // Ê¡·İ
+        optional string province = 1;
+        // ³ÇÊĞ
+        optional string city = 2;
+        // ÇøÏØ
+        optional string district = 3;
+        // ½ÖµÀ
+        optional string street = 4;
+    }
+    optional UserLocation user_location = 2;
+  }  
+  optional Geo user_geo_info = 28;
+
+  // **** Ò³ÃæĞÅÏ¢ ****
+  // µ±Ç°Ò³ÃæURL
+  optional string url = 11;
+  // ÇëÇóµÄrefer
+  optional string referer = 12;
+  // ÍøÕ¾·ÖÀà
+  optional int32 site_category = 13;
+  // ÍøÕ¾ÖÊÁ¿ÀàĞÍ
+  optional int32 site_quality = 14;
+  // Ò³ÃæÀàĞÍ
+  optional int32 page_type = 15;
+  // Ò³Ãæ¹Ø¼ü´Ê
+  repeated string page_keyword = 17;
+  // Ò³ÃæÄÚÈİÖÊÁ¿
+  optional int32 page_quality = 18;
+  // Ò³Ãæ·ÖÀà
+  optional int32 page_vertical = 21;
+  // ·¢²¼ÉÌ²»ÔÊĞíµÄ¹ã¸æĞĞÒµ
+  repeated int32 excluded_product_category = 19 [packed=true];
+
+  // **** ÒÆ¶¯Éè±¸ĞÅÏ¢ ****
+  message Mobile {
+    // °Ù¶ÈÎ¨Ò»±êÊ¾ÒÆ¶¯Éè±¸µÄ±àºÅ
+    optional string DEPRECATED_device_id = 1;      
+
+    // ĞÂ°æÒÆ¶¯Éè±¸ĞòÁĞºÅ±êÊ¶×Ö¶Î¡£ÔÊĞíÍ¬Ê±´æ´¢¶à¸öĞòÁĞºÅ
+    message MobileID {
+        // ÒÆ¶¯Éè±¸IDµÄÀàĞÍ
+        enum IDType {
+            // Î´Öª
+            UNKNOWN = 0;
+            // IMEI
+            IMEI = 1;
+            // MACµØÖ·
+            MAC = 2;
+        }
+        optional IDType type = 1; // ĞòÁĞºÅÀàĞÍ
+        optional string id = 2;   // ĞòÁĞºÅ
+    }
+    repeated MobileID id = 13;
+
+    // Éè±¸ÀàĞÍ¶¨Òå
+    enum MobileDeviceType {
+        UNKNOWN_DEVICE = 0;
+        HIGHEND_PHONE = 1;
+        TABLET = 2;
+    }
+    // Éè±¸ÀàĞÍ
+    optional MobileDeviceType device_type = 2;
+    // ÒÆ¶¯Æ½Ì¨Ãû£¬ÀıÈçandroid£¬iphoneµÈµÈ
+    enum OS {
+        UNKNOWN_OS = 0;
+        IOS = 1;
+        ANDROID = 2;
+        WINDOWS_PHONE = 3;
+    }
+    optional OS platform = 3 [default = UNKNOWN_OS];
+    // ÒÆ¶¯²Ù×÷ÏµÍ³°æ±¾ºÅ
+    // ÀıÈç Android 2.1, major, micro·Ö±ğÊÇ2,1
+    // ÀıÈç Iphone 4.2.1£¬major, minor, micro·Ö±ğÊÇ4,2,1
+    message DeviceOsVersion {
+        optional int32 os_version_major = 1;
+        optional int32 os_version_minor = 2;
+        optional int32 os_version_micro = 3;
+    };
+    optional DeviceOsVersion os_version = 4;
+    // Éè±¸Æ·ÅÆ
+    optional string brand = 5;
+    // Éè±¸»úĞÍ
+    optional string model = 6;
+    // Éè±¸ÆÁ¿í
+    optional int32 screen_width = 7;
+    // Éè±¸ÆÁ¸ß
+    optional int32 screen_height = 8;
+    // Éè±¸ÆÁÄ»ÏñËØÃÜ¶È
+    optional float screen_density = 15;
+    // ÔËÓªÉÌ±àºÅ£¨MCC+MNC±àºÅ£©
+    // ÀıÈçÖĞ¹úÒÆ¶¯ 46000
+    // Ç°ÈıÎ»ÊÇMobile Country Code
+    // ºóÁ½Î»ÊÇMobile Network Code
+    optional int64 carrier_id = 9;
+    // ÎŞÏßÍøÂçÀàĞÍ
+    enum WirelessNetworkType {
+        UNKNOWN_NETWORK = 0;
+        WIFI = 1;
+        MOBILE_2G = 2;
+        MOBILE_3G = 3;
+        MOBILE_4G = 4;
+    }
+    optional WirelessNetworkType wireless_network_type = 10;
+
+    // ÒÆ¶¯Éè±¸ÉÏÎª¹ã¸æ¿ØÖÆÌá¹©µÄID
+    optional string DEPRECATED_for_advertising_id = 11;
+
+    // ĞÂ°æÒÆ¶¯Éè±¸ÓÃ»§Ê¶±ğºÅ×Ö¶Î£¬ÔÊĞí¶àÖÖÀàĞÍÍ¬Ê±´æÔÚ
+    // ÍÆ¼öÊ¹ÓÃ±¾×Ö¶Î»ñÈ¡ÓÃ»§ID£¬Ô­×Ö¶Î»áÖğ²½·ÏÆú¡£
+    message ForAdvertisingID {
+        enum IDType {
+            UNKNOWN = 0;    // Î´Öª
+            ANDROID_ID = 4; // AndroidÊÊÓÃ
+            IDFA = 5;       // IOSÊÊÓÃ
+        }
+        optional IDType type = 1; // IDÀàĞÍ
+        optional string id = 2; // IDÄÚÈİ
+    }
+    repeated ForAdvertisingID for_advertising_id = 14;
+
+    // **** ÒÆ¶¯Ó¦ÓÃĞÅÏ¢ ****
+    message MobileApp {
+        // °Ù¶ÈÒÆ¶¯ÁªÃËÎª¸ÃApp·ÖÅäµÄapp id
+        optional string app_id = 1;
+        // Èç¹ûÀ´×ÔÆ»¹ûÉÌµê£¬ÔòÖ±½ÓÊÇapp-store id
+        // Èç¹ûÀ´×ÔAndroidÉè±¸£¬ÔòÊÇpackageµÄÈ«Ãû
+        optional string app_bundle_id = 2;
+        // AppÓ¦ÓÃ·ÖÀà
+        optional int32 app_category = 3;
+        // App¿ª·¢ÕßID
+        optional int32 app_publisher_id = 4;
+        // AppÔÊĞíµÄ½»»¥ÀàĞÍ¶¨Òå
+        // µç»°¡¢ÏÂÔØ¡¢Ó¦ÓÃ»½ĞÑ
+        enum AppInteractionType {
+            TELEPHONE = 0;
+            DOWNLOAD = 1;
+            DEEPLINK = 2;
+        }
+        // AppÔÊĞíµÄ½»»¥ÀàĞÍ
+        repeated AppInteractionType app_interaction_type = 5;
+    }
+    // ÒÆ¶¯Ó¦ÓÃĞÅÏ¢£¬µ±Á÷Á¿À´×ÔAppÊ±¸Ã×Ö¶Î·Ç¿Õ
+    optional MobileApp mobile_app = 12;
+  }
+  // ÒÆ¶¯Éè±¸ĞÅÏ¢£¬µ±Á÷Á¿À´×ÔÒÆ¶¯Éè±¸Ê±¸Ã×Ö¶Î·Ç¿Õ
+  optional Mobile mobile = 29;
+
+  // ÊÓÆµÁ÷Á¿µÄÃ½ÌåĞÅÏ¢
+  message Video {
+    // ÊÓÆµµÄ±êÌâ
+    optional string title = 1;
+    // ÊÓÆµµÄ±êÇ©
+    repeated string tags  = 2;
+    // ÊÓÆµµÄ²¥·ÅÊ±³¤
+    optional int32  content_length = 3;
+    //ÆµµÀĞÅÏ¢
+    repeated int64 channel_id = 4;
+  }
+  optional Video video = 30;
+
+  // **** ¹ã¸æÎ»ĞÅÏ¢ ****
+  message AdSlot {
+    // ¹ã¸æÎ»ID, È«¾ÖÎ¨Ò»id
+    optional uint64 ad_block_key = 1;
+    // µ±Ç°Ò³Ãæ¹ã¸æÎ»Ë³Ğòid£¬Í¬Ò»Ò³Ãæ´Ó1¿ªÊ¼
+    optional int32 sequence_id = 2;
+    // Õ¹Ê¾ÀàĞÍ
+    optional int32 adslot_type = 3;
+    // ¿í
+    optional int32 width = 4;
+    // ¸ß
+    optional int32 height = 5;
+    // ¹ã¸æÎ»Êµ¼Ê¿í¶È
+    optional int32 actual_width = 18;
+    // ¹ã¸æÎ»Êµ¼Ê¸ß¶È
+    optional int32 actual_height = 19;
+    // Õ¹Ê¾Î»ÖÃ
+    optional int32 slot_visibility = 6;
+    // ·¢²¼ÉÌÔÊĞíµÄ´´ÒâÀàĞÍ
+    repeated int32 creative_type = 7 [packed=true];  
+    // ¹ã¸æÎ»ĞèÒªµÄ´´Òâ·â×°ºÍäÖÈ¾ÀàĞÍ
+    // 1 ¾²Ì¬´´Òâ
+    // 2 ¶¯Ì¬´´Òâ
+    enum CreativeDescType {
+        STATIC_CREATIVE = 1;
+        DYNAMIC_CREATIVE = 2;  
+    };
+    repeated CreativeDescType creative_desc_type = 22;
+    // ·¢²¼ÉÌ²»ÔÊĞíµÄlanding page url
+    repeated string excluded_landing_page_url = 8;
+    // Ã½Ìå±£»¤ÉèÖÃĞÅÏ¢µÄID
+    repeated fixed64 publisher_settings_list_id = 14;
+    // ·¢²¼ÉÌÉèÖÃµÄµ×¼Û£¬µ¥Î»·Ö
+    optional int32 minimum_cpm = 9;
+    // ÊÓÆµ¹ã¸æµÄ×î´óÊ±³¤¡£¸Ã×Ö¶Î½«ÓÚ2015Äê6ÔÂ3ÈÕºóÍ£Ö¹Ê¹ÓÃ£¬6ÔÂ4ÈÕ¿ªÊ¼Ê¹ÓÃĞÂµÄ×Ö¶Î
+    optional int32 max_video_duration = 10;
+    // ÊÓÆµ¹ã¸æµÄ×îĞ¡Ê±³¤¡£¸Ã×Ö¶Î½«ÓÚ2015Äê6ÔÂ3ÈÕºóÍ£Ö¹Ê¹ÓÃ£¬6ÔÂ4ÈÕ¿ªÊ¼Ê¹ÓÃĞÂµÄ×Ö¶Î
+    optional int32 min_video_duration = 11;
+    // ÊÓÆµ¹ã¸æµÄ²¥³öÑÓÊ±£¬ 0¼°ÕıÕûÊı±íÊ¾Ç°Ìù£¬-1±íÊ¾ÖĞÌù£¬-2±íÊ¾ºóÌù¡£
+    // ¸Ã×Ö¶Î½«ÓÚ2015Äê6ÔÂ3ÈÕºóÍ£Ö¹Ê¹ÓÃ£¬6ÔÂ4ÈÕ¿ªÊ¼Ê¹ÓÃĞÂµÄ×Ö¶Î
+    optional int32 video_start_delay = 12;
+
+    // ½¨ÒéÊ¹ÓÃĞÂµÄ×Ö¶Î½ÓÈëvideo
+    message VideoInfo {
+        // ÊÓÆµ¹ã¸æµÄ×î´óÊ±³¤
+        optional int32 max_video_duration = 1;
+        // ÊÓÆµ¹ã¸æµÄ×îĞ¡Ê±³¤
+        optional int32 min_video_duration = 2;
+        // ÊÓÆµ¹ã¸æµÄ²¥³öÑÓÊ±£¬ 0¼°ÕıÕûÊı±íÊ¾Ç°Ìù£¬-1±íÊ¾ÖĞÌù£¬-2±íÊ¾ºóÌù
+        optional int32 video_start_delay = 3;
+    }
+    optional VideoInfo video_info = 15;
+
+    message LinkUnitInfo {
+        // Á´½Óµ¥Ôª¹ã¸æºòÑ¡ÑùÊ½
+        // ÔÚrequestÖĞ£¬BES»á¼ÆËãÔÚ´Ë´ÎÇëÇóÖĞ×îÓÅµÄ¹ã¸æÑùÊ½¼¯ºÏ£¬²¢½«´Ë¼¯ºÏ
+        // ·¢ËÍ¸øDSP£¬×îºóÊ¹ÓÃµÄÑùÊ½½«¸ù¾İDSP·µ»ØµÄ¹Ø¼ü´Ê×éºÏ½øĞĞÈ·¶¨¡£
+        repeated int32 style_type = 1;
+        // Á´½Óµ¥Ôª¹ã¸æ¿ÉÒÔ·µ»ØµÄ¹Ø¼ü´Ê¸öÊı
+        optional int32 req_keyword_num = 2;
+        // BESÍÆ¼öÊ¹ÓÃµÄ¹Ø¼ü´Ê, dsp¿ÉÑ¡ÔñÊ¹ÓÃ£¬Ò²¿ÉÒÔÊ¹ÓÃ×Ô¼ºÈÏÎª¸üºÃµÄ¹Ø¼ü´Ê, Ê¹ÓÃutf-8±àÂë
+        repeated string proposed_keyword = 3;
+
+        // Ìæ´úproposed_keyword, ÈİÄÉ´ÊÃ÷ÎÄÖ®ÍâµÄÆäËü×Ö¶Î¡£
+        message ProposedKeyword {
+            // BESÍÆ¼öÊ¹ÓÃµÄ¹Ø¼ü´Ê, dsp¿ÉÑ¡ÔñÊ¹ÓÃ£¬Ò²¿ÉÒÔÊ¹ÓÃ×Ô¼ºÈÏÎª¸üºÃµÄ¹Ø¼ü´Ê, Ê¹ÓÃutf-8±àÂë
+            // ÓëÔ­proposed_keyword×Ö¶ÎÒ»ÖÂ£¬×öÎªÔ­×Ö¶ÎµÄÌæ´ú¡£
+            optional string text = 1;
+            // ÍÆ¼ö´ÊµÄµã»÷ÂÊÔ¤¹À£¬¹©DSP²Î¿¼¡£µ¥Î»Ê®ÒÚ·ÖÖ®1¡£
+            optional float pctr1 = 2;
+        }
+        repeated ProposedKeyword keywords = 4;
+    }
+    optional LinkUnitInfo link_unit_info = 16;
+
+    // ÓÅÏÈ½»Ò×ĞÅÏ¢
+    message PreferredOrderInfo {
+        message PreferredOrder {
+            // ÓÅÏÈ½»Ò×ID
+            optional string order_id = 1;
+            // ¸ÃÓÅÏÈ½»Ò×µÄ½»Ò×¼Û¸ñ
+            optional int64 fixed_cpm = 2;
+        }
+        // Ò»´ÎÇëÇó¿ÉÄÜ°üº¬¶à¸öÓÅÏÈ½»Ò×
+        repeated PreferredOrder preferred_orders = 1;
+        // ÔÊĞíÓÅÏÈ½»Ò×µÄÍ¬Ê±£¬ÊÇ·ñÔÊĞí¾º¼Û
+        optional bool allow_auction = 2 [default=true];
+    }
+    optional PreferredOrderInfo preferred_order_info = 13;
+    
+    // °ü¶Ï¶©µ¥ĞÅÏ¢
+    message GuaranteedOrder {
+        // ¶©µ¥id£¬È«¾ÖÎ¨Ò»
+        optional uint32 order_id = 1; 
+        message Charge {
+            // ¶©µ¥¼Û¸ñ
+            optional int32 price = 1;
+            // charging type
+            //¹ã¸æ¼Æ·ÑÄ£Ê½
+            enum ChargeType {
+                CHARGE_GD_CPM = 2;  // °ü¶ÏCPM
+            }
+            optional ChargeType charge_mode = 2 [default = CHARGE_GD_CPM]; 
+        }
+        optional Charge charge = 2;  //¼Æ·ÑÀàĞÍºÍcpm
+    }
+    repeated GuaranteedOrder guaranteed_orders = 20;
+
+    // ¸Ã¹ã¸æÎ»ÔÊĞíµÄÀ©Õ¹´´ÒâĞÅÏ¢
+    message ExpandCreativeInfo {
+        // À©Õ¹¶¯×÷ÀàĞÍ
+        enum ActionType {
+            // ĞüÍ£
+            HOVER = 1;
+            // µã»÷
+            CLICK = 2;
+            // ¼ÓÔØ
+            LOAD = 3;
+        }
+        repeated ActionType expand_action_type = 1;
+        // À©Õ¹·½Ïò
+        enum Direction {
+            EXPAND_NONE = 0;
+            // ÏòÉÏÀ©Õ¹
+            EXPAND_UP = 1;
+            // ÏòÏÂÀ©Õ¹
+            EXPAND_DOWN = 2;
+            // Ïò×óÀ©Õ¹
+            EXPAND_LEFT = 3;
+            // ÏòÓÒÀ©Õ¹
+            EXPAND_RIGHT = 4;
+        };
+        optional Direction expand_direction = 2;
+        // ÔÊĞíµÄ´´ÒâÀàĞÍ
+        repeated int32 expand_creative_type = 3 [packed=true];
+        // À©Õ¹ºóµÄ¹ã¸æÎ»¿í¶È
+        optional int32 expand_width = 4;
+        // À©Õ¹ºóµÄ¹ã¸æÎ»¸ß¶È
+        optional int32 expand_height = 5;
+        // À©Õ¹Õ¹ÏÖÊ±³¤
+        optional int32 expand_duration = 6;
+    }
+    optional ExpandCreativeInfo expand_creative_info = 17;
+
+    // ¹ã¸æÎ»¼¶±ğ
+    enum AdSlotLevel {
+        UNKNOWN_ADB_LEVEL = 0;
+        TOP = 1;    // ÓÅÖÊ¹ã¸æÎ»
+        MED = 2;    // ÖĞ¶Ë¹ã¸æÎ»
+        TAIL = 3;   // ³¤Î²¹ã¸æÎ»
+        LOW = 4;    // µÍË×¹ã¸æÎ»
+    }
+    optional AdSlotLevel adslot_level = 21 [default=UNKNOWN_ADB_LEVEL];
+    // Ô­Éú¹ã¸æËßÇó²ÎÊı
+    message NativeAdParam {
+        enum Fields {
+            // ±êÌâ
+            TITLE = 0x1;
+            // ÄÚÈİÃèÊö
+            DESC = 0x2;
+            // Ö÷ÌâÍ¼
+            IMAGE = 0x4;
+            // logo Í¼±ê
+            LOGOICON = 0x8;
+            // Í¶·ÅÊ±ÏÂÔØµÄAPP´óĞ¡
+            APPSIZE = 0x10;
+        }
+        message ImageEle {
+            // ¿í
+            optional int32 width = 1;
+            // ¸ß
+            optional int32 height = 2;
+            // ĞÎ×´£¬
+            // 0Ã»ÓĞĞÎ×´ÒªÇó£¬
+            // 1¾ØĞÎ£¬
+            // 2Ô²ĞÎ£¬
+            // 3°ëÔ²ĞÎ
+            optional int32 shape = 3 [default = 0];
+        }
+        // °´ÕÕÎ»Í¼ÉèÖÃÏàÓ¦µÄÎ»Îª1£¬²»ĞèÒªÇëÇóµÄÎ»±£³Ö0
+        // Ê¾Àı£ºÔ­Éú¹ã¸æ±ØĞë°üº¬±êÌâºÍÍ¼±ê£¬Ôòrequired_fields = (0x1 | 0x8) = 9
+        repeated int64 required_fields = 1;
+        // ±êÌâ×î´ó³¤¶È
+        optional int32 title_max_length = 2;
+        // ÃèÊö×î´ó³¤¶È
+        optional int32 desc_max_length = 3;
+        // ¹ã¸æÖ÷logo»òÍ¼±êµÄ¿í¸ß¡¢ĞÎ×´ÒªÇó
+        optional ImageEle logo_icon = 4;
+        // Ö÷ÌâÍ¼µÄ¿í¸ß¡¢ĞÎ×´ÒªÇó
+        optional ImageEle image = 5;
+        // Ö÷ÌâÍ¼ÊıÁ¿
+        optional int32 image_num = 6;
+    }
+    // ÊÇ·ñÔÊĞí·µ»Ø·ÇÔ­Éú¹ã¸æ´´Òâ£¬
+    // Èç¹ûÎªtrue£¬Ôò¶ÔÓÚ´æÔÚÔ­ÉúËßÇóµÄÇé¿öÏÂ¿ÉÒÔ·µ»Ø·ÇÔ­Éú¹ã¸æ´´Òâ£¬
+    // Èç¹ûÎªfalse£¬Ôò±ØĞë·µ»ØÔ­Éú´´Òâ
+    optional bool allowed_non_nativead = 23 [default=true];
+    optional NativeAdParam nativead_param = 24;
+    // ÊÇ·ñÎªHTTPSÇëÇó
+    // Èç¹ûÎªtrue£¬ÔòËùÓĞ×ÊÔ´£¨Í¼Æ¬¡¢ÊÓÆµµÈ£©±ØĞëÒÔHTTPS·µ»Ø
+    // ×¢Òâ£ºurl×Ö¶Î¶ÔÓ¦Ğ­ÒéÓësecure×Ö¶ÎµÄÖµ²¢ÎŞÑÏ¸ñ¶ÔÓ¦¹ØÏµ£¬
+    //       ±ÈÈç£¬´æÔÚurlĞ­ÒéÎªHTTP¶øsecureÎªtrueµÄÇé¿ö£¬
+    //       Òò´Ë£¬ĞèÒªÊ¹ÓÃsecure×Ö¶ÎÀ´¾ö¶¨ÊÇ·ñÒÔHTTPS·µ»Ø×ÊÔ´£¬¶ø²»ÒªÒÀÀµurl×Ö¶Î
+    optional bool secure = 25 [default=false];
+  }
+
+  // Ä¬ÈÏÃ¿´ÎÇëÇóÒ»¸ö¹ã¸æÎ»
+  repeated AdSlot adslot = 20;
+ 
+  // **** ÏµÍ³Ê¹ÓÃ ****
+  optional bool is_test = 26 [default=false];
+  optional bool is_ping = 27 [default=false];
 }
 
 message BidResponse {
-	//  è¿”å› IDï¼Œå°†è¯·æ±‚ä¸­çš„ id å¤åˆ¶ç»™è¿”å› idï¼Œä¾¿äº session trace
-	required string id = 1;
-	// ****  ç«ä»·å¹¿å‘Šä¿¡æ¯  ****
-	message Ad {
-	//  å¹¿å‘Šä½é¡ºåº ID
-	optional int32 sequence_id = 1;
-	//  åˆ›æ„ ID
-	optional int64 creative_id = 2;
-	//  æœ€é«˜ç«ä»·ï¼Œå•ä½åˆ†
-	optional int32 max_cpm = 3;
-	//  æ‰©å±•å‚æ•°
-	optional string extdata = 5;
-	//  æ˜¯å¦è¿›è¡Œ cookie matching
-	optional bool is_cookie_matching = 6;
-	//  ä»£ç æ®µ
-	optional string html_snippet = 7;
-	//  å¹¿å‘Šä¸» id
-	optional uint32 advertiser_id = 8;
-	//  åˆ›æ„å®½
-	optional int32 width = 9;
-	//  åˆ›æ„é«˜
-	optional int32 height = 10;
-	//  åˆ›æ„æ‰€å±è¡Œä¸š
-	optional int32 category = 11;
-	//  åˆ›æ„ç±»å‹
-	optional int32 type = 12;
-	//  åˆ°è¾¾é¡µé¢
-	optional string landing_page = 13;
-	//  ç‚¹å‡»é“¾æ¥
-	repeated string target_url = 14;
-	//  å¦‚æœé€‰æ‹©ä¼˜å…ˆäº¤æ˜“ï¼Œè¯¥äº¤æ˜“çš„ ID
-	optional int64 preferred_order_id = 15;
-	}
-	repeated Ad ad = 2;
-	// ****  ç³»ç»Ÿä½¿ç”¨  ****
-	// debug æ¥å£
-	optional string debug_string = 3;
-	// DSP å¤„ç†æ—¶é—´
-	optional int32 processing_time_ms = 4;
+    // ·µ»ØID£¬½«ÇëÇóÖĞµÄid¸³Öµ¸ø·µ»Øid£¬±ãÓÚsession trace
+    required string id = 1;
+
+    // **** ¾º¼Û¹ã¸æĞÅÏ¢ ****
+    message Ad {
+        // ¹ã¸æÎ»Ë³ĞòID
+        optional int32 sequence_id = 1;
+        // ´´ÒâID
+        // ¶ÔÓÚ¾²Ì¬´´Òâ£¨dsp½«´´ÒâÉÏ´«µ½BES, BES½øĞĞ¹ã¸æäÖÈ¾£©£¬
+        // creative_idÎ¨Ò»±êÊ¶DSPÉÏ´«µ½BESµÄÃ¿¸ö´´Òâ£¨Ä¿Ç°½öÖ§³ÖÒ»¸ö´´Òâ£©¡£
+        // ¶ÔÓÚ¶¯Ì¬´´Òâ£¬creative_idÎ¨Ò»±êÊ¶html snippet¡£BES»á¶Ô¶¯Ì¬´´
+        // ÒâµÄÎïÁÏ¡¢¼à²âµØÖ·¼°landing pageµÈ½øĞĞÉóºË¡£DSPÓ¦±£Ö¤º¬ÓĞÏàÍ¬ÎïÁÏ¡¢¼à²âµØÖ·¼°landing page
+        // µÄhtml_snippetµÄsnippet idÏàÍ¬£¬±ÜÃâÖØ¸´ÉóºË¡£µ«µ±html snippetÖĞµÄÎïÁÏ¡¢¼à²âµØÖ·¼°landing page
+        // ·¢Éú¸Ä±äÊ±£¬ĞèÒªÉú³ÉĞÂµÄcreative_id¡£
+        // ¶ÔÓÚ¹Ø¼ü´Ê£¬creative_idÎ¨Ò»±êÊ¶¹Ø¼ü´Ê¡£
+        // ¶ÔÓÚ·ÇBESÍĞ¹ÜµÄÔ­Éú¹ã¸æ£¬creative_idÎ¨Ò»±êÊ¶¸ÃÔ­Éú¹ã¸æ
+        optional int64 creative_id = 2;
+        // html_snippet×Ö¶Î½öÔÚ·µ»Ø¶¯Ì¬´´ÒâÊ±Ê¹ÓÃ¡£DSP½«Æ´×°Íê³ÉµÄ
+        // ´´Òâ¼°ÆäÎïÁÏÆ´×°µ½htmlÖĞ£¬·µ»Ø¸øBES¡£
+        // BES¾­¹ıÅĞ¶Ï£¬ÈÏÎª*ÓµÓĞhtml_snippet×Ö¶ÎµÄÏìÓ¦*ÊôÓÚ¶¯Ì¬´´Òâ£¬
+        // ²¢Í¨¹ı´ËÀà×Ö¶Î»ñÈ¡±ØĞëµÄÎïÁÏĞÅÏ¢¡£ÏàÓ¦Êı¾İÖĞÈçÒÅÂ©×Ö¶Î£¬Ôò
+        // BES²»ÄÜ±£Ö¤Æä²ÎÓë¾º¼Û¡£
+        //
+        // ÈçºÎ»ñÖªµã»÷ĞÅÏ¢: 
+        // html snippet´úÂë¡£¸Ã×Ö¶ÎÖĞĞèÒªÌî³äclick urlµÄÎ»ÖÃÓ¦Ìî³ä
+        // ºê%%CLICK_URL_{N}%%£¨ÕâÀï{N}´Ó0¿ªÊ¼£¬Ó¦Ê¹ÓÃ¾ßÌåµÄĞòºÅ´úÌæ£¬
+        // ²¢Óëtarget_urlÖĞµÄË³ĞòÒ»ÖÂ£©£¬²¢½«click urlÌîĞ´ÖÁ
+        // target_url×Ö¶Î¡£BES»á¸ù¾İDSPµÄtarget_url
+        // ¹¹½¨×îÖÕclick urlÖ®ºó£¬ÓÃÆäÌæ»»¸Ãºê¡£
+        // ÈçÏÂhtmlÖĞ°üº¬Á½¸ö´´Òâ£¬ÔòĞèÒª×¢²áÁ½¸öºê%%CLICK_URL_0%%ºÍ
+        // %%CLICK_URL_1%%¡£²¢ÔÚtarget_url×Ö¶ÎÖĞË³Ğò¸³Öµ¡£
+        // std::string html("<BODY>...<a href="%%CLICK_URL_0%%"/>.."
+        //  "<a href="%%CLICK_URL_1%%"/>...</BODY>"
+        // ad.set_html_snippet(html);
+        // ad.add_target_url("http://click.dsp.com?idea=ad1...");
+        // ad.add_target_url("http://click.dsp.com?idea=ad2...");
+        // ºêµÄ´íÎó£¨ÈçË³Ğò¡¢ÒÅÂ©µÈ£©»òÕßtarget_urlµÄ¸³Öµ´í
+        // Îó¶¼»áµ¼ÖÂBES¶Ôtarget_urlÌî³ä³ö´í¡£
+        //
+        // ÈçºÎ»ñÖª¾º¼ÛºóµÄ¼Æ¼ÛĞÅÏ¢: 
+        // ÈçDSPĞèÒª»ñÖª¾º¼Û³É¹¦ºó´´ÒâµÄcpm£¬¿ÉÔÚÆÚÍûµÄmonitor_url
+        // ×Ö¶ÎÌØ¶¨Î»ÖÃÌí¼Óºê%%PRICE%%¡£BESÍ¨¹ıÌæ»»»áÊ¹ÓÃcpmÌæ»»¸Ãºê¡£
+        // Àı: 
+        // http://wins.dsp.com?key1=val1&&cpm=%%PRICE%%...
+        // ½ö¶¯Ì¬´´ÒâĞèÒªÌî³ä
+        optional string html_snippet = 7;
+        message LinkUnitKeyword {
+            // ¾º¼ÛÁ´½Óµ¥Ôª¹ã¸æµÄ¹Ø¼ü´Ê, utf-8±àÂë£¬dspĞèÒªÎªÃ¿¸ö¾º¼ÛµÄ¹Ø¼ü´ÊÉèÖÃÈçÏÂĞÅÏ¢
+            // creative_id: ´´Òâid
+            // max_cpm: ¹Ø¼ü´Ê±¨¼Û£¬µ¥Î»·Ö
+            // selected_style_type: ¹Ø¼ü´Ê¾º¼ÛµÄÑùÊ½
+            // advertiser_id: ¹ã¸æÖ÷id
+            // category: ¹Ø¼ü´ÊËùÊôĞĞÒµ
+            // landing_page: ×ÅÂ½Ò³
+            // target_url: µã»÷´®
+            // monitor_urls: Õ¹Ê¾¼à²â
+            // type: ´´ÒâµÄÎïÁÏÀàĞÍ
+            optional string keyword = 1;
+            // ¹Ø¼ü´Ê¾º¼ÛµÄÑùÊ½
+            // dspÎª¹Ø¼ü´ÊÑ¡ÔñµÄÑùÊ½id,¿ÉÒÔ´ÓÇëÇóÖĞµÄºòÑ¡ÑùÊ½ÖĞÑ¡Ôñ¶à¸ö
+            // ×îÖÕµÄÑùÊ½ÊÇÓÉbes¿¼Á¿¶àÖØÒòËØ´ÓºòÑ¡ÑùÊ½ÖĞÑ¡ÔñµÄ×îÓÅÑùÊ½½øĞĞÕ¹ÏÖ
+            // Îª¿Õ±íÊ¾¿ÉÒÔÊÊÓÃÓÚrequestÖĞµÄËùÓĞÑùÊ½,Èç¹ûdsp¶ÔÑùÊ½ÎŞÌØ±ğÒªÇó
+            // ½¨ÒéÎª¿Õ,dsp²»ÉèÖÃ¸Ã×Ö¶Î,¿ÉÒÔÌá¸ßÊ¤³öÂÊ
+            repeated int32 selected_style_type = 2;
+        }
+        optional LinkUnitKeyword link_unit_keyword = 18;
+        // Èç¹ûBidRequestµÄAdSlotÖĞ°üº¬ExpandCreativeInfoĞÅÏ¢£¬
+        // ÔòDSP¿ÉÒÔÔÚBidResponseÖĞ·µ»ØÈçÏÂ½á¹¹±íÊ¾·µ»ØÀ´À©Õ¹´´Òâ¡£
+        // Ä¿Ç°BES¶ÔÀ©Õ¹´´ÒâµÄÖ§³Ö½öÏŞÓÚ¶¯Ì¬´´Òâ£¬Òà¼´Ìî³äÁËhtml_snippet¡£
+        message ExpandCreativeInfo {
+            // ´´Òâ¿í
+            optional int32 creative_width = 1;
+            // ´´Òâ¸ß
+            optional int32 creative_height = 2;
+            // ×ÅÂ½Ò³
+            optional string creative_landing_page = 3;
+            // ÎïÁÏ
+            optional int32 creative_type = 4;
+        }
+        optional ExpandCreativeInfo expand_creative_info = 19;
+        // ¹ã¸æÖ÷id¡£¶¯Ì¬´´Òâ¼°¹Ø¼ü´ÊĞèÒªÌî³ä
+        // ·ÇBESÍĞ¹ÜµÄÔ­Éú¹ã¸æĞèÒªÌî³ä
+        // ¶¯Ì¬´´ÒâÒªÇóÒ»¸öhtml snippetµÄËùÓĞ¹ã¸æÊôÓÚÍ¬Ò»¸ö¹ã¸æÖ÷¡£
+        optional uint64 advertiser_id = 8;
+        // ÎïÁÏ³ß´ç - ¿í¶È¡£ĞèÓëÇëÇóÖĞµÄ³ß´çÒ»ÖÂ
+        // ½ö¶¯Ì¬´´ÒâĞèÒªÌî³ä
+        optional int32  width = 9;
+        // ÎïÁÏ³ß´ç - ¸ß¶È¡£ĞèÓëÇëÇóÖĞµÄ³ß´çÒ»ÖÂ
+        // ½ö¶¯Ì¬´´ÒâĞèÒªÌî³ä
+        optional int32  height = 10;
+        // ´´ÒâËùÊôĞĞÒµµÄĞĞÒµid¡£±¾×Ö¶ÎµÄÒâÒåÓë¾²Ì¬´´ÒâÖĞÈë¿âÎïÁÏËùĞè
+        // ĞĞÒµidÏàÍ¬¡£
+        // ¶¯Ì¬´´ÒâºÍ¹Ø¼ü´ÊĞèÒªÌî³ä
+        // ·ÇBESÍĞ¹ÜµÄÔ­Éú¹ã¸æĞèÒªÌî³ä
+        optional int32  category = 11;
+        // ´´ÒâµÄÎïÁÏÀàĞÍ
+        // ¶¯Ì¬´´ÒâºÍ¹Ø¼ü´ÊĞèÒªÌî³ä
+        // ·ÇBESÍĞ¹ÜµÄÔ­Éú¹ã¸æĞèÒªÌî³ä
+        optional int32  type = 12;
+        // ´´ÒâµÄlanding page¡£ÒªÇóËùÓĞ´´ÒâµÄlanding pageÓµÓĞÏàÍ¬µÄÓò£¬
+        // Í¬Ê±landing pageÓ¦Îªtarget_urlµÄ×îºóÒ»´ÎÌø×ª¡£
+        // ×¢Òâ: ÕâÀï½öÌîlanding pageµÄdomainĞÅÏ¢¼´¿É¡£Èç: 
+        // http://landing_page.advertiser.com/example.php?param1=...
+        // ÈçÉÏurlµÄlanding pageÓ¦ÌîÈëlanding_page.advertiser.com¡£
+        // ¶¯Ì¬´´ÒâºÍ¹Ø¼ü´ÊĞèÒªÌî³ä
+        // ·ÇBESÍĞ¹ÜµÄÔ­Éú¹ã¸æĞèÒªÌî³ä
+        optional string landing_page = 13;
+        // ´´ÒâµÄclick url¡£ÏìÓ¦ÖĞº¬ÓĞ¶à¸ö´´ÒâµÄÇé¿öÏÂ£¬Ã¿¸ö´´Òâclick
+        // urlµÄË³ĞòÓ¦Óë´´ÒâÔÚhtml snippetÖĞµÄË³ĞòÒ»ÖÂ¡£BES½«Ë³Ğò½øĞĞ
+        // click urlµÄÌæ»»¡£
+        // Èç¸ÃË³Ğò²»ÕıÈ·£¬½«Òı·¢µã»÷µÄÍ³¼ÆÆ«²î¡£
+        // ¶¯Ì¬´´ÒâºÍ¹Ø¼ü´ÊĞèÒªÌî³ä
+        // ·ÇBESÍĞ¹ÜµÄÔ­Éú¹ã¸æĞèÒªÌî³ä
+        repeated string target_url = 14;
+        // ÆØ¹â¼à²â¡£
+        // ¹Ø¼ü´ÊĞèÒªÌî³ä
+        // ·ÇBESÍĞ¹ÜµÄÔ­Éú¹ã¸æĞèÒªÌî³ä
+        repeated string monitor_urls = 17;
+        // ×î¸ß¾º¼Û£¬µ¥Î»·Ö
+        optional int32 max_cpm = 3;
+        // À©Õ¹²ÎÊı
+        optional string extdata = 5;
+        // ÊÇ·ñ½øĞĞcookie mapping
+        optional bool is_cookie_matching = 6;
+        // Èç¹û²ÉÓÃÓÅÏÈ½»Ò×£¬¸Ã½»Ò×µÄID
+        optional string preferred_order_id = 15;
+        // Èç¹û²ÉÓÃ°ü¶ÏÍ¶·Å£¬Í¶·ÅµÄid
+        optional uint32 guaranteed_order_id = 20;
+        // APP »½ĞÑĞÅÏ¢
+        // Ä¿Ç°Ö»ÓĞ½»»¥ÀàĞÍÎªÓ¦ÓÃ»½ĞÑÊ±ĞèÒªÌîĞ´¸Ã×Ö¶Î
+        message DeeplinkInfo {
+            // Ó¦ÓÃ»½ĞÑ´ò¿ªÒ³Ãæ
+            optional string deeplink_url = 1;
+            // Ó¦ÓÃ»½ĞÑ°æ±¾
+            optional uint32 app_version = 2;
+            // Ó¦ÓÃ»½ĞÑÍË»¯Á´½Ó
+            optional string fallback_url = 3;
+            // Ó¦ÓÃ»½ĞÑÍË»¯Á´½ÓÀàĞÍ: LANDING_PAGE = 1, DOWNLOAD = 2
+            optional uint32 fallback_type = 4;
+        }
+        optional DeeplinkInfo deeplink_info = 21;
+        message NativeAd {
+            // ±êÌâ,±àÂëUTF-8
+            optional bytes title = 1;
+            // ÃèÊö,±àÂëUTF-8
+            optional bytes desc = 2;
+            message Image {
+                optional string url = 1;
+                optional int32 width = 2;
+                optional int32 height = 3;
+            }
+            // image,Ö§³Ö¶àÍ¼Æ¬
+            repeated Image image = 3;
+            // logo »ò icon
+            optional Image logo_icon = 4;
+            // app ´óĞ¡
+            optional int32 app_size = 5;
+        }
+        optional NativeAd native_ad = 22;
+
+        extensions 100 to 199;
+    }
+    // Ä¿Ç°Ö»Ö§³ÖÒ»¸ö¾º¼Û¹ã¸æ·µ»Ø
+    repeated Ad ad = 2;
+
+    // **** ÏµÍ³Ê¹ÓÃ ****
+    // debug½Ó¿Ú
+    optional string debug_string = 3;
+    // DSP´¦ÀíÊ±¼ä
+    optional int32 processing_time_ms = 4;
+
 }
+
+// for our system
+extend BidResponse.Ad {
+    optional int32 ad_status = 101;
+}
+

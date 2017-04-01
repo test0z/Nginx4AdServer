@@ -1,2 +1,2 @@
 #!/bin/bash
-./configure --with-ld-opt="-lstdc++" --add-module=$(pwd)/src/adservice/adservice
+./configure --prefix=/User/tongfeixiang/nt --with-ld-opt="-lstdc++" --add-module=$(pwd)/src/adservice/adservice

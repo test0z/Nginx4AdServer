@@ -39,9 +39,9 @@ SET(SRC_LIST
     ./service/libutil/AdMd5.cpp
     ./service/libutil/test/AESPro2.cpp
     ./service/libutil/test/md5test.cpp
-    ./service/protocol/m_baidu/baidu_bidding.pb.cpp
-    ./service/protocol/m_baidu/baidu_bidding_handler.cpp
-    ./service/protocol/m_baidu/baidu_price.cpp
+    ./service/protocol/baidu/baidu_bidding.pb.cpp
+    ./service/protocol/baidu/baidu_bidding_handler.cpp
+    ./service/protocol/baidu/baidu_price.cpp
     #./service/protocol/baidu/baidu_bidding.pb.cpp
     #./service/protocol/baidu/baidu_bidding_handler.cpp
     #./service/protocol/baidu/baidu_price.cpp
