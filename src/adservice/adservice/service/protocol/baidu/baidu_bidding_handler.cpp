@@ -379,17 +379,6 @@ namespace bidding {
                 native_img->set_width(res_img.width());
                 native_img->set_height(res_img.height());
             }
-            /* else {
-            BidResponse_Ad_NativeAd_Image * native_img = native_ad->add_image();
-            std::string img_url = mtlsArray[0].get("p6", "");
-            if (adSlot.secure())
-                adservice::utility::url::url_replace(img_url, "http://", "https://");
-            else
-                adservice::utility::url::url_replace(img_url, "https://", "http://");
-            native_img->set_url(img_url);
-            native_img->set_width(res_img.width());
-            native_img->set_height(res_img.height());
-        }*/
             string logo_url = mtlsArray[0].get("p15", "");
             if (!logo_url.empty()) {
                 if (adSlot.secure())
@@ -401,7 +390,6 @@ namespace bidding {
                 logo->set_width(res_logo.width());
                 logo->set_height(res_logo.height());
             }
-            // native_ad->set_desc(mtlsArray[0].get("",""));
             url::URLHelper showUrlParam;
             getShowPara(showUrlParam, bidRequest.id());
             showUrlParam.add(URL_IMP_OF, "3");
