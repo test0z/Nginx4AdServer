@@ -28,6 +28,7 @@ SET(SRC_LIST
     ./service/core/logic/show_query_task.cpp
     ./service/core/logic/trace_task.cpp
     ./service/core/logic/mapping_query_task.cpp
+    ./service/core/logic/tool_query_task.cpp
     ./service/core/logpusher/kafka_log_producer.cpp
     ./service/core/logpusher/log_pusher.cpp
     ./service/core/model/source_id.cpp
@@ -82,6 +83,7 @@ SET(SRC_LIST
     ./service/utility/url.cpp
     ./service/utility/userclient.cpp
     ./service/utility/compress.cpp
+    ./service/utility/template_engine.cpp
     ./service/common/atomic.cpp
     ./service/common/functions.cpp
     ./service/common/platform.cpp

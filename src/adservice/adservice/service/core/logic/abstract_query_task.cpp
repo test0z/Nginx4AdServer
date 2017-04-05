@@ -248,6 +248,22 @@ namespace corelogic {
                     std::string & ppid = iter->second;
                     log.adInfo.ppid = URLParamMap::stringToInt(ppid);
                 }
+                if ((iter = paramMap.find(URL_DEVICE_IDFA)) != paramMap.end()) { // idfa
+                    std::string & deviceId = iter->second;
+                    log.device.deviceID += std::string("idfa:") + deviceId + ",";
+                }
+                if ((iter = paramMap.find(URL_DEVICE_IMEI)) != paramMap.end()) { // imei
+                    std::string & deviceId = iter->second;
+                    log.device.deviceID += std::string("imei:") + deviceId + ",";
+                }
+                if ((iter = paramMap.find(URL_DEVICE_ANDOROIDID)) != paramMap.end()) { // androidid
+                    std::string & deviceId = iter->second;
+                    log.device.deviceID += std::string("androidid:") + deviceId + ",";
+                }
+                if ((iter = paramMap.find(URL_DEVICE_MAC)) != paramMap.end()) { // mac
+                    std::string & deviceId = iter->second;
+                    log.device.deviceID += std::string("mac:") + deviceId + ",";
+                }
             } catch (std::exception & e) {
                 log.reqStatus = 500;
                 LOG_ERROR << "error:" << e.what() << ",when processing query " << allQuery;

@@ -156,12 +156,16 @@ namespace bidding {
         const BidRequest_AdzInfo & adzInfo = bidRequest.adzinfo(0);
         const std::string & pid = adzInfo.pid();
         std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
+        std::vector<PreSetAdplaceInfo> adplaceInfos{ PreSetAdplaceInfo() };
         AdSelectCondition & queryCondition = queryConditions[0];
+        PreSetAdplaceInfo & pAdplaceInfo = adplaceInfos[0];
+        queryCondition.pAdplaceInfo = &pAdplaceInfo;
         queryCondition.adxid = ADX_TANX;
         queryCondition.adxpid = pid;
         queryCondition.ip = bidRequest.ip();
         queryCondition.basePrice = adzInfo.has_min_cpm_price() ? adzInfo.min_cpm_price() : 0;
         extractSize(adzInfo.size(), queryCondition.width, queryCondition.height);
+        pAdplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
         if (bidRequest.content_categories().size() > 0) {
             const BidRequest_ContentCategory & category = bidRequest.content_categories(0);
             TypeTableManager & typeTableManager = TypeTableManager::getInstance();
@@ -190,8 +194,12 @@ namespace bidding {
                 if (adzInfo.view_type_size() > 0 && adzInfo.view_type(0) == 104) { //无线墙原生
                     const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
                     auto sizePair = adSizeMap.get({ queryCondition.width, queryCondition.height });
-                    queryCondition.width = sizePair.first;
-                    queryCondition.height = sizePair.second;
+                    for (auto sizeIter : sizePair) {
+                        queryCondition.width = sizeIter.first;
+                        queryCondition.height = sizeIter.second;
+                        queryCondition.pAdplaceInfo->sizeArray.push_back(
+                            { queryCondition.width, queryCondition.height });
+                    }
                     queryCondition.bannerType = BANNER_TYPE_PRIMITIVE;
                 }
                 if (mobile.has_package_name()) {

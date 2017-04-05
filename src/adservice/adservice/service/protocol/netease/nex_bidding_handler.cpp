@@ -163,7 +163,9 @@ namespace bidding {
                                            md5_encode(queryCondition.imei),
                                            md5_encode(queryCondition.androidId),
                                            md5_encode(queryCondition.mac),
-                                           queryCondition);
+                                           queryCondition,
+                                           queryCondition.adxid,
+                                           bidRequest.get("user.id", ""));
                     queryCookieMapping(cmInfo.queryKV, queryCondition);
                 }
             } else {

@@ -211,7 +211,7 @@ namespace corelogic {
         if (log.adInfo.priceType == PRICETYPE_RRTB_CPM || log.adInfo.priceType == PRICETYPE_RTB) {
             trafficControl->recordCPMClick(log.adInfo.sid);
         } else if (log.adInfo.priceType == PRICETYPE_RCPC || log.adInfo.priceType == PRICETYPE_RRTB_CPC) {
-            trafficControl->recordCPCClick(log.adInfo.sid, log.adInfo.advId, log.adInfo.bidPrice / 1000); //与历史兼容
+            trafficControl->recordCPCClick(log.adInfo.sid, log.adInfo.advId, log.adInfo.bidPrice); //与历史兼容
         }
     }
 

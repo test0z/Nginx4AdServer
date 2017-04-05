@@ -1,6 +1,6 @@
 
 user  root;
-worker_processes  1;
+worker_processes  ${adservice.workers};
 
 #error_log  logs/error.log;
 #error_log  logs/error.log  notice;
@@ -39,32 +39,35 @@ http {
             index  index.html index.htm;
 	    #server config
 	    #运行日志级别
-            logging_level 1;
+            logging_level ${adservice.loggingLevel};
 
             #bussiness log config(kafka)
-            kafka_broker 192.168.31.235;
-            kafka_topic	 mt-log;
-            kafka_key    click;
-            kafka_mqmaxsize 10000;
-            kafka_logger_enable 0;
-	    kafka_partition_cnt 18;
-	    bid_kafka_broker 192.168.2.138,192.168.2.139,192.168.2.140;
-	    bid_kafka_topic mt-log;
-	    bid_kafka_key bid;
-	    bid_kafka_mqmaxsize 10000;
-	    bid_kafka_logger_enable 1;
-	    bid_kafka_partition_cnt 18;
-            local_logger_thread 3;
+            kafka_broker ${adservice.kafka_broker};
+            kafka_topic	 ${adservice.kafka_topic};
+            kafka_key    ${adservice.kafka_key};
+            kafka_mqmaxsize ${adservice.kafka_mqmaxsize};
+            kafka_logger_enable ${adservice.kafka_logger_enable};
+	    kafka_partition_cnt ${adservice.kafka_partition_cnt};
+	    bid_kafka_broker ${adservice.bid_kafka_broker};
+	    bid_kafka_topic ${adservice.bid_kafka_topic};
+	    bid_kafka_key ${adservice.bid_kafka_key};
+	    bid_kafka_mqmaxsize ${adservice.bid_kafka_mqmaxsize};
+	    bid_kafka_logger_enable ${adservice.bid_kafka_logger_enable};
+	    bid_kafka_partition_cnt ${adservice.bid_kafka_partition_cnt};
+            local_logger_thread ${adservice.local_logger_thread};
 
             #adselect config
-            adselect_entry tcp://localhost:20002;
+            adselect_entry ${adservice.adselect_entry};
             adselect_timeout 0:15|20:200|98:-1|99:-1;
 
             #aerospike config
-            as_node  123.56.5.102:3000;
-            as_namespace mtty;
+            as_node  ${adservice.as_node};
+            as_namespace ${adservice.as_namespacei};
 	    
 	    workdir .;
+
+	    disable_cm ${adservice.disable_cm};
+
         }
 
         #error_page  404              /404.html;

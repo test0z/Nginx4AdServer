@@ -61,10 +61,17 @@ namespace log {
     void KafkaLogProducer::configure()
     {
         // todo: modified with configmanager
-        LogConfig * logConfig = &globalConfig.logConfig;
-        topicName = logConfig->kafkaTopic;
-        logKey = logConfig->kafkaKey;
-        std::string brokers = logConfig->kafkaBroker;
+        auto configIter = globalConfig.logConfig.find(logConfigKey);
+        if (configIter == globalConfig.logConfig.end()) {
+            LOG_ERROR << "Log Config key " << logConfigKey << " not found!!";
+            throw "log config key not found";
+        }
+
+        LogConfig & logConfig = configIter->second;
+        topicName = logConfig.kafkaTopic;
+        logKey = logConfig.kafkaKey;
+        kafkaPartition = logConfig.partitionCnt;
+        std::string brokers = logConfig.kafkaBroker;
         RdKafka::Conf * conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
         RdKafka::Conf * tconf = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
         std::string errstr;
@@ -72,7 +79,7 @@ namespace log {
         if ((res = conf->set("metadata.broker.list", brokers, errstr)) != RdKafka::Conf::CONF_OK
             || (res = conf->set("event_cb", &eventCb, errstr)) != RdKafka::Conf::CONF_OK
             || (res = conf->set("dr_cb", &drCb, errstr)) != RdKafka::Conf::CONF_OK
-            || (res = conf->set("queue.buffering.max.messages", logConfig->kafkaMQMaxSize, errstr))
+            || (res = conf->set("queue.buffering.max.messages", logConfig.kafkaMQMaxSize, errstr))
                    != RdKafka::Conf::CONF_OK
             || (res = conf->set("message.send.max.retries", "3", errstr)) != RdKafka::Conf::CONF_OK
             || (res = conf->set("retry.backoff.ms", "500", errstr)) != RdKafka::Conf::CONF_OK) {
@@ -104,8 +111,9 @@ namespace log {
         int len = msg.bytes.length();
 #endif
         // int randIdx = random() % 26;
-        RdKafka::ErrorCode resp = producer->produce(topic, RdKafka::Topic::PARTITION_UA, RdKafka::Producer::RK_MSG_COPY,
-                                                    (void *)bytes, len, NULL, NULL);
+        int partition = kafkaPartition > 0 ? random() % kafkaPartition : RdKafka::Topic::PARTITION_UA;
+        RdKafka::ErrorCode resp = producer->produce(topic, partition /*RdKafka::Topic::PARTITION_UA*/,
+                                                    RdKafka::Producer::RK_MSG_COPY, (void *)bytes, len, NULL, NULL);
         if (resp == RdKafka::ErrorCode::ERR_NO_ERROR) {
             return SendResult::SEND_OK;
         } else {
@@ -123,9 +131,10 @@ namespace log {
         const char * bytes = msg.bytes.c_str();
         int len = msg.bytes.length();
 #endif
-        int randIdx = random() % 26;
-        RdKafka::ErrorCode resp = producer->produce(topic, RdKafka::Topic::PARTITION_UA, RdKafka::Producer::RK_MSG_COPY,
-                                                    (void *)bytes, len, &randomKey[randIdx], NULL);
+        //        int randIdx = random() % 26;
+        int partition = kafkaPartition > 0 ? random() % kafkaPartition : RdKafka::Topic::PARTITION_UA;
+        RdKafka::ErrorCode resp = producer->produce(topic, partition /*RdKafka::Topic::PARTITION_UA*/,
+                                                    RdKafka::Producer::RK_MSG_COPY, (void *)bytes, len, NULL, NULL);
         if (resp == RdKafka::ErrorCode::ERR_NO_ERROR) {
             return SendResult::SEND_OK;
         } else {

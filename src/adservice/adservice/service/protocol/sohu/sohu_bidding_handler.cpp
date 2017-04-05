@@ -86,7 +86,10 @@ namespace bidding {
         const Request_Impression & adzInfo = bidRequest.impression(0);
         const std::string & pid = adzInfo.pid();
         std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
+        std::vector<PreSetAdplaceInfo> adplaceInfos{ PreSetAdplaceInfo() };
         AdSelectCondition & queryCondition = queryConditions[0];
+        PreSetAdplaceInfo & pAdplaceInfo = adplaceInfos[0];
+        queryCondition.pAdplaceInfo = &pAdplaceInfo;
         queryCondition.adxid = ADX_SOHU_PC;
         queryCondition.adxpid = pid;
         queryCondition.basePrice = adzInfo.has_bidfloor() ? adzInfo.bidfloor() : 0;
@@ -153,8 +156,11 @@ namespace bidding {
         if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
             const adservice::utility::AdSizeMap & sizeMap = adservice::utility::AdSizeMap::getInstance();
             auto size = sizeMap.get({ queryCondition.width, queryCondition.height });
-            queryCondition.width = size.first;
-            queryCondition.height = size.second;
+            for (auto sizeIter : size) {
+                queryCondition.width = sizeIter.first;
+                queryCondition.height = sizeIter.second;
+                pAdplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
+            }
         }
         if (adzInfo.has_ispreferreddeals() && adzInfo.ispreferreddeals()) {
             const std::string & dealId = adzInfo.campaignid();

@@ -167,9 +167,11 @@ namespace bidding {
                         int w = asset.get("image_url.w", 750);
                         int h = asset.get("image_url.h", 350);
                         auto sizePair = adSizeMap.get({ w, h });
-                        queryCondition.width = sizePair.first;
-                        queryCondition.height = sizePair.second;
-                        adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
+                        for (auto sizeIter : sizePair) {
+                            queryCondition.width = sizeIter.first;
+                            queryCondition.height = sizeIter.second;
+                            adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
+                        }
                     }
                     queryCondition.pAdplaceInfo = &adplaceInfo;
                 } else {
@@ -347,10 +349,16 @@ namespace bidding {
                 int w = asset.get("image_url.w", 0);
                 int h = asset.get("image_url.h", 0);
                 auto sizePair = adSizeMap.get({ w, h });
-                if (sizePair.first == banner.width && sizePair.second == banner.height) {
-                    nativeTemplateId = asset.get("native_template_id", "0");
-                    break;
+                bool found = false;
+                for (auto sizeIter : sizePair) {
+                    if (sizeIter.first == banner.width && sizeIter.second == banner.height) {
+                        nativeTemplateId = asset.get("native_template_id", "0");
+                        found = true;
+                        break;
+                    }
                 }
+                if (found)
+                    break;
             }
             cppcms::json::value nativeObj;
             nativeObj["native_template_id"] = nativeTemplateId;

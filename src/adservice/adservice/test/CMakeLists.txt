@@ -12,6 +12,7 @@ FIND_LIBRARY(LIB_BOOST_LOG  NAMES "libboost_log.a" boost_log)
 FIND_LIBRARY(LIB_BOOST_THREAD NAMES "libboost_thread.a" boost_thread)
 FIND_LIBRARY(LIB_BOOST_FILESYSTEM NAMES "libboost_filesystem.a" boost_filesystem)
 FIND_LIBRARY(LIB_BOOST_SYSTEM NAMES  "libboost_system.a" boost_system)
+FIND_LIBRARY(LIB_BOOST_REGEX "libboost_regex.a" boost_regex)
 FIND_LIBRARY(LIB_BOOSTER NAMES "libbooster.a" booster)
 FIND_LIBRARY(LIB_CRYPTO NAMES "libcrypto.a" crypto)
 FIND_LIBRARY(LIB_CRYPTOPP NAMES "libcryptopp.a" cryptopp)
@@ -35,6 +36,11 @@ ADD_EXECUTABLE(url_test ./urlhelper_test.cpp
     ../service/utility/url.cpp
     ../service/utility/random.cpp)
 
+ADD_EXECUTABLE(te_test ./template_engine_test.cpp
+    ../logging.cpp
+    ../service/utility/template_engine.cpp
+    ../service/utility/file.cpp)
+
 ADD_EXECUTABLE(price_test ./price_test.cpp
     ../service/protocol/netease/nex_price.cpp
     ../service/protocol/youku/youku_price.cpp
@@ -53,7 +59,8 @@ ADD_EXECUTABLE(executor_test ./executor_test.cpp
     ../service/utility/random.cpp
     ../service/utility/json.cpp)
 
-SET(LINK_LIBRARY rt
+SET(LINK_LIBRARY 
+    rt
     dl
     pthread
     ssl
@@ -64,6 +71,7 @@ SET(LINK_LIBRARY rt
     ${LIB_BOOST_THREAD}
     ${LIB_BOOST_FILESYSTEM}
     ${LIB_BOOST_SYSTEM}
+    ${LIB_BOOST_REGEX}
     ${LIB_MTTY}
     ${LIB_AEROSPIKE}
     ${LIB_CRYPTO}
@@ -78,3 +86,4 @@ TARGET_LINK_LIBRARIES(price_test ${LINK_LIBRARY})
 TARGET_LINK_LIBRARIES(ip_test ${LINK_LIBRARY})
 TARGET_LINK_LIBRARIES(json_test ${LINK_LIBRARY} ${LIB_CPPCMS})
 TARGET_LINK_LIBRARIES(executor_test ${LINK_LIBRARY} ${LIB_CPPCMS})
+TARGET_LINK_LIBRARIES(te_test ${LINK_LIBRARY})

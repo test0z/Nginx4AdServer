@@ -182,9 +182,11 @@ namespace bidding {
                     int w = asset.get("img.wmin", 0);
                     int h = asset.get("img.hmin", 0);
                     auto sizePair = adSizeMap.get({ w, h });
-                    queryCondition.width = sizePair.first;
-                    queryCondition.height = sizePair.second;
-                    adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
+                    for (auto & sizeIter : sizePair) {
+                        queryCondition.width = sizeIter.first;
+                        queryCondition.height = sizeIter.second;
+                        adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
+                    }
                 }
                 queryCondition.pAdplaceInfo = &adplaceInfo;
                 if (adplaceInfo.sizeArray.size() > 0) {
@@ -218,7 +220,9 @@ namespace bidding {
                                    queryCondition.imei,
                                    queryCondition.androidId,
                                    md5_encode(queryCondition.mac),
-                                   queryCondition);
+                                   queryCondition,
+                                   queryCondition.adxid,
+                                   bidRequest.get("user.id", ""));
             queryCookieMapping(cmInfo.queryKV, queryCondition);
         }
         const cppcms::json::value & siteContent = bidRequest.find("site");

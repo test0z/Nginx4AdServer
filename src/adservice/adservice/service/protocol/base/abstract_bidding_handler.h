@@ -47,7 +47,7 @@ namespace bidding {
         int32_t mediaType;
         int32_t flowType;
         std::string keyWords;
-        std::string deviceIdName;
+        std::unordered_map<std::string, std::string> deviceIds;
         std::vector<std::string> dealIds;
         std::vector<int32_t> contentType;
         protocol::log::DeviceInfo devInfo;

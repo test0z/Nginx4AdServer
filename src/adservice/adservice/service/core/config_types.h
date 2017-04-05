@@ -13,6 +13,7 @@
 
 #include <mtty/aerospike.h>
 #include <mtty/constants.h>
+#include <unordered_map>
 
 //全局服务配置类型
 struct ServerConfig {
@@ -25,6 +26,7 @@ struct LogConfig {
     std::string kafkaTopic;
     std::string kafkaKey;
     std::string kafkaMQMaxSize;
+    int partitionCnt{ 18 };
     int localLoggerThreads;
     bool kafkaLogEnable;
 };
@@ -53,7 +55,7 @@ struct CookieMappingConfig {
 
 struct GlobalConfig {
     ServerConfig serverConfig;
-    LogConfig logConfig;
+    std::unordered_map<std::string, LogConfig> logConfig;
     ADSelectConfig adselectConfig;
     AdDataConfig addataConfig;
     AerospikeConfig aerospikeConfig;

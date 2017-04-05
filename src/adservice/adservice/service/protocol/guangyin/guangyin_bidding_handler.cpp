@@ -176,7 +176,9 @@ namespace bidding {
                                    md5_encode(queryCondition.imei),
                                    md5_encode(queryCondition.androidId),
                                    md5_encode(queryCondition.mac),
-                                   queryCondition);
+                                   queryCondition,
+                                   queryCondition.adxid,
+                                   bidRequest_.has_user() ? bidRequest_.user().id() : "");
             queryCookieMapping(cmInfo.queryKV, queryCondition);
         } else {
             queryCondition.pcOS = adservice::utility::userclient::getOSTypeFromUA(device.ua());
