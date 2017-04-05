@@ -33,6 +33,9 @@ namespace corelogic {
             case ADX_360_MAX_PC:
             case ADX_360_MAX_MOBILE:
                 return "mvuid";
+            case ADX_BAIDU:
+            case ADX_BAIDU_MOBILE:
+                return "baidu_user_id";
             }
             return "";
         }

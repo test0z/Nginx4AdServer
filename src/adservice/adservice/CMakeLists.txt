@@ -42,6 +42,9 @@ SET(SRC_LIST
     ./service/protocol/baidu/baidu_bidding.pb.cpp
     ./service/protocol/baidu/baidu_bidding_handler.cpp
     ./service/protocol/baidu/baidu_price.cpp
+    #./service/protocol/baidu/baidu_bidding.pb.cpp
+    #./service/protocol/baidu/baidu_bidding_handler.cpp
+    #./service/protocol/baidu/baidu_price.cpp
     ./service/protocol/base/abstract_bidding_handler.cpp
     ./service/protocol/guangyin/guangyin_bidding.pb.cpp
     ./service/protocol/guangyin/guangyin_bidding_handler.cpp

@@ -5,7 +5,7 @@
 #ifndef ADCORE_BAIDU_BIDDING_HANDLER_H
 #define ADCORE_BAIDU_BIDDING_HANDLER_H
 
-#include "protocol/baidu/baidu_bidding.pb.h"
+#include "protocol/baidu/baidu_bidding.h"
 #include "protocol/base/abstract_bidding_handler.h"
 
 namespace protocol {
@@ -49,13 +49,14 @@ namespace bidding {
         void reject(INOUT adservice::utility::HttpResponse & response);
 
     private:
-        std::string baiduHtmlSnippet();
-
+        std::string baiduHtmlSnippet(const std::string & cookieMappingUrl, bool useHttps);
+        std::string generateHtmlSnippet(const std::string & bid, int width, int height, const char * extShowBuf,
+                                        const char * cookieMappingUrl, bool useHttps);
         std::string baiduHtmlScript();
 
     private:
-        protocol::Baidu::BidRequest bidRequest;
-        protocol::Baidu::BidResponse bidResponse;
+        protocol::baidu::BidRequest bidRequest;
+        protocol::baidu::BidResponse bidResponse;
     };
 }
 }
