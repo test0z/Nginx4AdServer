@@ -5,11 +5,11 @@
 #ifndef ADCORE_CORE_EXECUTOR_H
 #define ADCORE_CORE_EXECUTOR_H
 
-#include "core_threadlocal_manager.h"
+#include <unistd.h>
+
 #include <deque>
 #include <functional>
 #include <mutex>
-#include <unistd.h>
 #include <vector>
 
 namespace adservice {

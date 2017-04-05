@@ -54,10 +54,10 @@ namespace adservice{
 
         class LogClientException : public std::exception{
         public:
-            LogClientException() _GLIBCXX_USE_NOEXCEPT {}
-            LogClientException(const std::string& str,int error) _GLIBCXX_USE_NOEXCEPT :message(str),errorCode(error){}
+            LogClientException() noexcept {}
+            LogClientException(const std::string& str,int error) noexcept :message(str),errorCode(error){}
             const char* GetMsg() const { return message.c_str();}
-            const char* what() const _GLIBCXX_USE_NOEXCEPT {return message.c_str();}
+            const char* what() const noexcept {return message.c_str();}
             int GetError() const {return errorCode;}
         private:
             std::string message;

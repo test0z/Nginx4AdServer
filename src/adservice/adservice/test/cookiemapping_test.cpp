@@ -51,51 +51,7 @@ void testUserId(){
     std::cout<<"from public userId,cypher:"<<userId3.cipher()<<",public:"<<userId3.text()<<std::endl;
 }
 
-struct asBatchCBData {
-    std::vector<int64_t> * data1;
-    std::vector<std::string> * data2;
-};
 
-bool asBatchCB(const as_batch_read * result, uint32_t n, void * udata)
-{
-    asBatchCBData * cbData = (asBatchCBData *)udata;
-    std::vector<int64_t> & orderCounts = *(cbData->data1);
-    std::vector<std::string> & binNames = *(cbData->data2);
-    for (int i = 0; i < n; i++) {
-        if (result[i].result == AEROSPIKE_OK) {
-            const as_record & record = result[i].record;
-            int amount = as_record_get_int64(&record, binNames[i].c_str(), 0);
-            std::cout<<"amount:"<<amount<<std::endl;
-            orderCounts.push_back(amount);
-        } else {
-            std::cout<<"amount:"<<0<<std::endl;
-            orderCounts.push_back(0);
-        }
-    }
-    return true;
-}
-
-void testAerospikeBatch(){
-    std::vector<std::string> freqKeys;
-    std::string mtUserId="2016121201551054800000";
-    std::vector<int64_t> sIds = {100678,100755,100799};
-    for (auto & sId : sIds) {
-        freqKeys.push_back(mtUserId + ":" + std::to_string(sId));
-    }
-    try{
-        if (freqKeys.size() > 0) {
-            MT::common::ASBatch asBatch("test", "user-freq", freqKeys);
-            std::vector<std::string> binNames(freqKeys.size(), "s");
-            std::vector<int64_t> freqCounts;
-            asBatchCBData cbData;
-            cbData.data1 = &freqCounts;
-            cbData.data2 = &binNames;
-            aerospikeClient.execBatchRead(asBatch, &asBatchCB, &cbData);
-        }
-    }catch(MT::common::AerospikeExcption& e){
-        std::cout<<"exception batch read:"<<e.what()<<std::endl;
-    }
-}
 
 void testMd5(){
     std::string output = cypher::md5_encode("helloworld");

@@ -6,6 +6,8 @@
 #define ADCORE_CORE_IP_MANAGER_H
 
 #include <map>
+#include <string>
+
 #include <mtty/constants.h>
 
 namespace adservice {

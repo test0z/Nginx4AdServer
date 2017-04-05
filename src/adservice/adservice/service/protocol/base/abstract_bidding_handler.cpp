@@ -100,6 +100,7 @@ namespace bidding {
             logItem.keyWords = ss.str();
         }
         logItem.device = adFlowExtraInfo.devInfo;
+        logItem.dealIds = adFlowExtraInfo.dealIds;
         if (isAccepted) {
             logItem.adInfo.sid = adInfo.sid;
             logItem.adInfo.advId = adInfo.advId;
@@ -174,7 +175,10 @@ namespace bidding {
         showUrl.add("ep", std::to_string(adInfo.ppid));
         showUrl.add(URL_SITE_ID, std::to_string(adInfo.mid));
         showUrl.add(URL_FLOWTYPE, std::to_string(adFlowExtraInfo.flowType));
-        showUrl.add(adFlowExtraInfo.deviceIdName, adFlowExtraInfo.devInfo.deviceID);
+        showUrl.add(URL_DEVICE_IDFA, adFlowExtraInfo.deviceIds[URL_DEVICE_IDFA]);
+        showUrl.add(URL_DEVICE_IMEI, adFlowExtraInfo.deviceIds[URL_DEVICE_IMEI]);
+        showUrl.add(URL_DEVICE_ANDOROIDID, adFlowExtraInfo.deviceIds[URL_DEVICE_ANDOROIDID]);
+        showUrl.add(URL_DEVICE_MAC, adFlowExtraInfo.deviceIds[URL_DEVICE_MAC]);
     }
 
     void AbstractBiddingHandler::getClickPara(URLHelper & clickUrl, const std::string & bid, const std::string & ref,
@@ -203,7 +207,10 @@ namespace bidding {
         clickUrl.add("od", std::to_string(adInfo.orderId));
         clickUrl.add("url", encodedLandingUrl);
         clickUrl.add(URL_SITE_ID, std::to_string(adInfo.mid));
-        clickUrl.add(adFlowExtraInfo.deviceIdName, adFlowExtraInfo.devInfo.deviceID);
+        clickUrl.add(URL_DEVICE_IDFA, adFlowExtraInfo.deviceIds[URL_DEVICE_IDFA]);
+        clickUrl.add(URL_DEVICE_IMEI, adFlowExtraInfo.deviceIds[URL_DEVICE_IMEI]);
+        clickUrl.add(URL_DEVICE_ANDOROIDID, adFlowExtraInfo.deviceIds[URL_DEVICE_ANDOROIDID]);
+        clickUrl.add(URL_DEVICE_MAC, adFlowExtraInfo.deviceIds[URL_DEVICE_MAC]);
     }
 
     std::string AbstractBiddingHandler::generateHtmlSnippet(const std::string & bid, int width, int height,
@@ -253,28 +260,21 @@ namespace bidding {
         adFlowExtraInfo.devInfo.deviceID = "";
         adFlowExtraInfo.devInfo.make
             = selectCondition.deviceMaker.empty() ? selectCondition.mobileModel : selectCondition.deviceMaker;
-        if (selectCondition.mobileDevice == SOLUTION_DEVICE_ANDROID
-            || selectCondition.mobileDevice == SOLUTION_DEVICE_ANDROIDPAD) {
-            if (selectCondition.imei.empty()) {
-                adFlowExtraInfo.devInfo.deviceID = selectCondition.androidId;
-                adFlowExtraInfo.deviceIdName = URL_DEVICE_ANDOROIDID;
-            } else {
-                adFlowExtraInfo.devInfo.deviceID = selectCondition.imei;
-                adFlowExtraInfo.deviceIdName = URL_DEVICE_IMEI;
-            }
-        } else if (selectCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
-                   || selectCondition.mobileDevice == SOLUTION_DEVICE_IPAD) {
-            adFlowExtraInfo.devInfo.deviceID = selectCondition.idfa;
-            adFlowExtraInfo.deviceIdName = URL_DEVICE_IDFA;
-        }
-        if (adFlowExtraInfo.devInfo.deviceID.empty()) {
-            adFlowExtraInfo.devInfo.deviceID = selectCondition.mac;
-            adFlowExtraInfo.deviceIdName = URL_DEVICE_MAC;
+        adFlowExtraInfo.deviceIds.clear();
+        adFlowExtraInfo.deviceIds.insert({ URL_DEVICE_IDFA, selectCondition.idfa });
+        adFlowExtraInfo.deviceIds.insert({ URL_DEVICE_IMEI, selectCondition.imei });
+        adFlowExtraInfo.deviceIds.insert({ URL_DEVICE_ANDOROIDID, selectCondition.androidId });
+        if (selectCondition.mac != "02:00:00:00:00:00") {
+            adFlowExtraInfo.deviceIds.insert({ URL_DEVICE_MAC, selectCondition.mac });
         }
         adFlowExtraInfo.contentType.clear();
         adFlowExtraInfo.contentType.push_back(selectCondition.mttyContentType);
         adFlowExtraInfo.mediaType = selectCondition.mediaType;
         adFlowExtraInfo.flowType = selectCondition.flowType;
+        if (!selectCondition.dealId.empty()) {
+            adFlowExtraInfo.dealIds.clear();
+            adFlowExtraInfo.dealIds.push_back(selectCondition.dealId);
+        }
     }
 
     void AbstractBiddingHandler::fillAdInfo(const AdSelectCondition & selectCondition,
@@ -312,7 +312,6 @@ namespace bidding {
         char buffer[1024];
         adservice::utility::url::urlEncode_f(adFlowExtraInfo.devInfo.deviceID, deviceId, buffer);
         adFlowExtraInfo.devInfo.deviceID = deviceId;
-
         if (!selectCondition.dealId.empty() && finalSolution.dDealId != "0") {
             adFlowExtraInfo.dealIds.clear();
             adFlowExtraInfo.dealIds.push_back(finalSolution.dDealId);

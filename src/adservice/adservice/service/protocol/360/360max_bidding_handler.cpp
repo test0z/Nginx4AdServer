@@ -134,6 +134,8 @@ namespace bidding {
         const std::string & pid = adzInfo.pid();
         std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
         AdSelectCondition & queryCondition = queryConditions[0];
+        PreSetAdplaceInfo pAdplaceInfo;
+        queryCondition.pAdplaceInfo = &pAdplaceInfo;
         queryCondition.adxid = ADX_360_MAX_PC;
         queryCondition.adxpid = pid;
         queryCondition.ip = bidRequest.ip();
@@ -141,11 +143,15 @@ namespace bidding {
         if (adzInfo.has_native()) { //原生请求
             const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
             auto sizePair = adSizeMap.get({ adzInfo.width(), adzInfo.height() });
-            queryCondition.width = sizePair.first;
-            queryCondition.height = sizePair.second;
+            for (auto & sizeIter : sizePair) {
+                queryCondition.width = sizeIter.first;
+                queryCondition.height = sizeIter.second;
+                pAdplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
+            }
         } else { //非原生请求
             queryCondition.width = adzInfo.width();
             queryCondition.height = adzInfo.height();
+            pAdplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
         }
         if (bidRequest.content_category_size() > 0) {
             const BidRequest_ContentCategory & category = bidRequest.content_category(0);
@@ -161,6 +167,7 @@ namespace bidding {
             queryCondition.mobileModel = device.model();
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.adxid = ADX_360_MAX_MOBILE;
+            pAdplaceInfo.flowType = queryCondition.flowType;
             if (device.has_network()) {
                 queryCondition.mobileNetwork = getNetWork(device.network());
             }
@@ -180,7 +187,9 @@ namespace bidding {
                                    ? (queryCondition.androidId = stringtool::toupper(device.android_id()))
                                    : ""),
                     md5_encode(device.has_mac() ? (queryCondition.mac = stringtool::toupper(device.mac())) : ""),
-                    queryCondition);
+                    queryCondition,
+                    queryCondition.adxid,
+                    bidRequest.has_mv_user_id() ? bidRequest.mv_user_id() : "");
             } else { // wap
                 cookieMappingKeyWap(ADX_360_MAX_MOBILE, bidRequest.has_mv_user_id() ? bidRequest.mv_user_id() : "");
             }
@@ -189,6 +198,7 @@ namespace bidding {
             queryCondition.pcBrowserStr = getBrowserTypeFromUA(bidRequest.user_agent());
             queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
             cookieMappingKeyPC(ADX_360_MAX_PC, bidRequest.has_mv_user_id() ? bidRequest.mv_user_id() : "");
+            pAdplaceInfo.flowType = queryCondition.flowType;
         }
         queryCookieMapping(cmInfo.queryKV, queryCondition);
         const auto & deals = adzInfo.deals();

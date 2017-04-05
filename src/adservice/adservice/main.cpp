@@ -9,6 +9,7 @@
 
 #include <mtty/constants.h>
 #include <mtty/requestcounter.h>
+#include <mtty/trafficcontrollproxy.h>
 
 extern "C" {
 #include <ngx_config.h>
@@ -22,12 +23,12 @@ extern "C" {
 #include "core/adselectv2/ad_select_client.h"
 #include "core/config_types.h"
 #include "core/core_ip_manager.h"
-#include "core/core_threadlocal_manager.h"
 #include "core/core_typetable.h"
 #include "core/logic/bid_query_task.h"
 #include "core/logic/click_query_task.h"
 #include "core/logic/mapping_query_task.h"
 #include "core/logic/show_query_task.h"
+#include "core/logic/tool_query_task.h"
 #include "core/logic/trace_task.h"
 #include "core/logpusher/log_pusher.h"
 #include "logging.h"
@@ -49,6 +50,21 @@ struct LocationConf {
     ngx_str_t kafkamqmaxsize;
     //是否开启kafka日志
     ngx_uint_t kafkaloggerenable;
+    // kafka 分区数
+    ngx_uint_t kafkapartionscnt;
+    // Kafka连接配置
+    // bid kafka节点
+    ngx_str_t bidkafkabroker;
+    // bid kafkatopic
+    ngx_str_t bidkafkatopic;
+    // bid kafkakey
+    ngx_str_t bidkafkakey;
+    // bid kafka传输队列大小
+    ngx_str_t bidkafkamqmaxsize;
+    //是否开启bid kafka日志
+    ngx_uint_t bidkafkaloggerenable;
+    // bid kafka 分区数
+    ngx_uint_t bidkafkapartionscnt;
     //如果不开启kafka日志,本地业务日志的线程数
     ngx_uint_t localloggerthreads;
     // adselect配置
@@ -88,20 +104,28 @@ char * parseConfNum(ngx_conf_t * cf, ngx_command_t * cmd, void * conf)
             offsetof(configstruct, variable), 0                                                 \
     }
 
-static ngx_command_t commands[] = { COMMAND_ITEM("logging_level", LocationConf, logginglevel, parseConfNum),
-                                    COMMAND_ITEM("kafka_broker", LocationConf, kafkabroker, parseConfStr),
-                                    COMMAND_ITEM("kafka_topic", LocationConf, kafkatopic, parseConfStr),
-                                    COMMAND_ITEM("kafka_key", LocationConf, kafkakey, parseConfStr),
-                                    COMMAND_ITEM("kafka_mqmaxsize", LocationConf, kafkamqmaxsize, parseConfStr),
-                                    COMMAND_ITEM("kafka_logger_enable", LocationConf, kafkaloggerenable, parseConfNum),
-                                    COMMAND_ITEM("local_logger_thread", LocationConf, localloggerthreads, parseConfNum),
-                                    COMMAND_ITEM("adselect_entry", LocationConf, adselectentry, parseConfStr),
-                                    COMMAND_ITEM("adselect_timeout", LocationConf, adselecttimeout, parseConfStr),
-                                    COMMAND_ITEM("as_node", LocationConf, asnode, parseConfStr),
-                                    COMMAND_ITEM("as_namespace", LocationConf, asnamespace, parseConfStr),
-                                    COMMAND_ITEM("workdir", LocationConf, workdir, parseConfStr),
-                                    COMMAND_ITEM("disable_cm", LocationConf, disabledCookieMapping, parseConfStr),
-                                    ngx_null_command };
+static ngx_command_t commands[]
+    = { COMMAND_ITEM("logging_level", LocationConf, logginglevel, parseConfNum),
+        COMMAND_ITEM("kafka_broker", LocationConf, kafkabroker, parseConfStr),
+        COMMAND_ITEM("kafka_topic", LocationConf, kafkatopic, parseConfStr),
+        COMMAND_ITEM("kafka_key", LocationConf, kafkakey, parseConfStr),
+        COMMAND_ITEM("kafka_mqmaxsize", LocationConf, kafkamqmaxsize, parseConfStr),
+        COMMAND_ITEM("kafka_logger_enable", LocationConf, kafkaloggerenable, parseConfNum),
+        COMMAND_ITEM("kafka_partition_cnt", LocationConf, kafkapartionscnt, parseConfNum),
+        COMMAND_ITEM("bid_kafka_broker", LocationConf, bidkafkabroker, parseConfStr),
+        COMMAND_ITEM("bid_kafka_topic", LocationConf, bidkafkatopic, parseConfStr),
+        COMMAND_ITEM("bid_kafka_key", LocationConf, bidkafkakey, parseConfStr),
+        COMMAND_ITEM("bid_kafka_mqmaxsize", LocationConf, bidkafkamqmaxsize, parseConfStr),
+        COMMAND_ITEM("bid_kafka_logger_enable", LocationConf, bidkafkaloggerenable, parseConfNum),
+        COMMAND_ITEM("bid_kafka_partition_cnt", LocationConf, bidkafkapartionscnt, parseConfNum),
+        COMMAND_ITEM("local_logger_thread", LocationConf, localloggerthreads, parseConfNum),
+        COMMAND_ITEM("adselect_entry", LocationConf, adselectentry, parseConfStr),
+        COMMAND_ITEM("adselect_timeout", LocationConf, adselecttimeout, parseConfStr),
+        COMMAND_ITEM("as_node", LocationConf, asnode, parseConfStr),
+        COMMAND_ITEM("as_namespace", LocationConf, asnamespace, parseConfStr),
+        COMMAND_ITEM("workdir", LocationConf, workdir, parseConfStr),
+        COMMAND_ITEM("disable_cm", LocationConf, disabledCookieMapping, parseConfStr),
+        ngx_null_command };
 
 #define INIT_NGX_STR(str, initvalue)                                 \
     {                                                                \
@@ -122,6 +146,13 @@ static void * createLocationConf(ngx_conf_t * cf)
     ngx_str_null(&conf->kafkakey);
     ngx_str_null(&conf->kafkamqmaxsize);
     conf->kafkaloggerenable = NGX_CONF_UNSET_UINT;
+    conf->kafkapartionscnt = NGX_CONF_UNSET_UINT;
+    ngx_str_null(&conf->bidkafkabroker);
+    ngx_str_null(&conf->bidkafkatopic);
+    ngx_str_null(&conf->bidkafkakey);
+    ngx_str_null(&conf->bidkafkamqmaxsize);
+    conf->bidkafkaloggerenable = NGX_CONF_UNSET_UINT;
+    conf->bidkafkapartionscnt = NGX_CONF_UNSET_UINT;
     conf->localloggerthreads = NGX_CONF_UNSET_UINT;
     ngx_str_null(&conf->adselectentry);
     ngx_str_null(&conf->adselecttimeout);
@@ -143,6 +174,13 @@ static char * mergeLocationConf(ngx_conf_t * cf, void * parent, void * child)
     ngx_conf_merge_str_value(conf->kafkakey, prev->kafkakey, "");
     ngx_conf_merge_str_value(conf->kafkamqmaxsize, prev->kafkamqmaxsize, "10000");
     ngx_conf_merge_uint_value(conf->kafkaloggerenable, prev->kafkaloggerenable, TRUE);
+    ngx_conf_merge_uint_value(conf->kafkapartionscnt, prev->kafkapartionscnt, 18);
+    ngx_conf_merge_str_value(conf->bidkafkabroker, prev->bidkafkabroker, "");
+    ngx_conf_merge_str_value(conf->bidkafkatopic, prev->bidkafkatopic, "mt-log");
+    ngx_conf_merge_str_value(conf->bidkafkakey, prev->bidkafkakey, "");
+    ngx_conf_merge_str_value(conf->bidkafkamqmaxsize, prev->bidkafkamqmaxsize, "10000");
+    ngx_conf_merge_uint_value(conf->bidkafkaloggerenable, prev->bidkafkaloggerenable, TRUE);
+    ngx_conf_merge_uint_value(conf->bidkafkapartionscnt, prev->bidkafkapartionscnt, 18);
     ngx_conf_merge_uint_value(conf->localloggerthreads, prev->localloggerthreads, 3);
     ngx_conf_merge_str_value(conf->adselectentry, prev->adselectentry, "");
     ngx_conf_merge_str_value(conf->adselecttimeout, prev->adselecttimeout, "0:15|21:-1|98:-1|99:-1");
@@ -208,6 +246,7 @@ static bool serviceInitialized = false;
 static std::mutex globalMutex;
 GlobalConfig globalConfig;
 adservice::log::LogPusherPtr serviceLogger = nullptr;
+adservice::log::LogPusherPtr bidServiceLogger = nullptr;
 AdServiceLogPtr serviceLogPtr = nullptr;
 adservice::adselectv2::AdSelectClientPtr adSelectClient;
 ngx_log_t * globalLog;
@@ -262,12 +301,25 @@ static void global_init(LocationConf * conf)
 
     globalConfig.serverConfig.loggingLevel = (int)conf->logginglevel;
     setGlobalLoggingLevel(globalConfig.serverConfig.loggingLevel);
-    globalConfig.logConfig.kafkaBroker = NGX_STR_2_STD_STR(conf->kafkabroker);
-    globalConfig.logConfig.kafkaKey = NGX_STR_2_STD_STR(conf->kafkakey);
-    globalConfig.logConfig.kafkaTopic = NGX_STR_2_STD_STR(conf->kafkatopic);
-    globalConfig.logConfig.kafkaMQMaxSize = NGX_STR_2_STD_STR(conf->kafkamqmaxsize);
-    globalConfig.logConfig.kafkaLogEnable = NGX_BOOL(conf->kafkaloggerenable);
-    globalConfig.logConfig.localLoggerThreads = conf->localloggerthreads;
+    LogConfig logConfig;
+    logConfig.kafkaBroker = NGX_STR_2_STD_STR(conf->kafkabroker);
+    logConfig.kafkaKey = NGX_STR_2_STD_STR(conf->kafkakey);
+    logConfig.kafkaTopic = NGX_STR_2_STD_STR(conf->kafkatopic);
+    logConfig.kafkaMQMaxSize = NGX_STR_2_STD_STR(conf->kafkamqmaxsize);
+    logConfig.kafkaLogEnable = NGX_BOOL(conf->kafkaloggerenable);
+    logConfig.localLoggerThreads = conf->localloggerthreads;
+    logConfig.partitionCnt = conf->kafkapartionscnt;
+    globalConfig.logConfig.insert({ CONFIG_LOG, logConfig });
+    LogConfig bidLogConfig;
+    bidLogConfig.kafkaBroker = NGX_STR_2_STD_STR(conf->bidkafkabroker);
+    bidLogConfig.kafkaKey = NGX_STR_2_STD_STR(conf->bidkafkakey);
+    bidLogConfig.kafkaTopic = NGX_STR_2_STD_STR(conf->bidkafkatopic);
+    bidLogConfig.kafkaMQMaxSize = NGX_STR_2_STD_STR(conf->bidkafkamqmaxsize);
+    bidLogConfig.kafkaLogEnable = NGX_BOOL(conf->bidkafkaloggerenable);
+    bidLogConfig.localLoggerThreads = conf->localloggerthreads;
+    bidLogConfig.partitionCnt = conf->bidkafkapartionscnt;
+    std::string bidConfigKey = std::string("BID_") + CONFIG_LOG;
+    globalConfig.logConfig.insert({ bidConfigKey, bidLogConfig });
     globalConfig.adselectConfig.adselectNode = NGX_STR_2_STD_STR(conf->adselectentry);
     std::string disableCM = NGX_STR_2_STD_STR(conf->disabledCookieMapping);
     globalConfig.cmConfig.disabledCookieMapping = disableCM == "yes";
@@ -288,12 +340,18 @@ static void global_init(LocationConf * conf)
         serviceLogger->stop();
     }
 
-    serviceLogger = adservice::log::LogPusher::getLogger(MTTY_SERVICE_LOGGER,
-                                                         CONFIG_LOG,
-                                                         globalConfig.logConfig.localLoggerThreads,
-                                                         !globalConfig.logConfig.kafkaLogEnable);
+    serviceLogger = adservice::log::LogPusher::getLogger(MTTY_SERVICE_LOGGER, CONFIG_LOG, logConfig.localLoggerThreads,
+                                                         !logConfig.kafkaLogEnable);
     serviceLogger->start();
 
+    if (bidLogConfig.kafkaBroker.empty()) {
+        bidServiceLogger = serviceLogger;
+    } else {
+        bidServiceLogger
+            = adservice::log::LogPusher::getLogger(std::string("BID_") + MTTY_SERVICE_LOGGER, bidConfigKey,
+                                                   bidLogConfig.localLoggerThreads, !bidLogConfig.kafkaLogEnable);
+        bidServiceLogger->start();
+    }
     serviceLogPtr = std::make_shared<AdServiceLog>(AdServiceLog::globalLoggingLevel);
 
     adSelectClient = std::make_shared<adservice::adselectv2::AdSelectClient>(globalConfig.adselectConfig.adselectNode);
@@ -303,6 +361,10 @@ static void global_init(LocationConf * conf)
     adservice::corelogic::HandleShowQueryTask::loadTemplates();
     protocol::bidding::GuangyinBiddingHandler::loadStaticAdmTemplate();
     adservice::server::TypeTableManager::getInstance();
+
+    MT::common::traffic::TrafficControllProxy::instance_
+        = std::make_shared<MT::common::traffic::TrafficControllProxy>(aerospikeClient);
+    MT::common::traffic::TrafficControllProxy::instance_->start(std::cerr);
 
     char cwd[256];
     getcwd(cwd, sizeof(cwd));
@@ -412,7 +474,7 @@ void dispatchRequest(adservice::utility::HttpRequest & request, adservice::utili
     const std::string & queryPath = request.path_info();
     if (queryPath.find("bid") != std::string::npos) {
         adservice::corelogic::HandleBidQueryTask task(request, response);
-        task.setLogger(serviceLogger);
+        task.setLogger(bidServiceLogger);
         task();
     } else if (queryPath == "/v" || queryPath == "/s") {
         adservice::corelogic::HandleShowQueryTask task(request, response);
@@ -428,6 +490,10 @@ void dispatchRequest(adservice::utility::HttpRequest & request, adservice::utili
         task();
     } else if (queryPath == "/t") {
         adservice::corelogic::HandleTraceTask task(request, response);
+        task.setLogger(serviceLogger);
+        task();
+    } else if (queryPath = "/tool") {
+        adservice::corelogic::HandleToolQueryTask task(request, response);
         task.setLogger(serviceLogger);
         task();
     } else {
@@ -463,6 +529,10 @@ void after_read_post_data(ngx_http_request_t * r)
     const std::string queryPath = httpRequest.path_info();
     if (queryPath.find("bid") != std::string::npos) {
         adservice::corelogic::HandleBidQueryTask task(httpRequest, httpResponse);
+        task.setLogger(bidServiceLogger);
+        task();
+    } else if (queryPath == "/tool") {
+        adservice::corelogic::HandleToolQueryTask task(httpRequest, httpResponse);
         task.setLogger(serviceLogger);
         task();
     } else if (queryPath == "/debug") { // debug module

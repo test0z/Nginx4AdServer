@@ -28,8 +28,6 @@ namespace core {
 
             SourceRecord(utility::url::ParamMap & paramMap, protocol::log::LogItem & log);
 
-            void record(const as_record & record);
-
             int64_t time() const;
             const std::string & advId() const;
             const std::string & sid() const;

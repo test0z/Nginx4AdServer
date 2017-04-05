@@ -19,7 +19,6 @@ SET(SRC_LIST
     ./service/core/config_types.cpp
     ./service/core/core_executor.cpp
     ./service/core/core_ip_manager.cpp
-    ./service/core/core_threadlocal_manager.cpp
     ./service/core/core_typetable.cpp
     ./service/core/core_ad_sizemap.cpp
     ./service/core/core_cm_manager.cpp
@@ -29,6 +28,7 @@ SET(SRC_LIST
     ./service/core/logic/show_query_task.cpp
     ./service/core/logic/trace_task.cpp
     ./service/core/logic/mapping_query_task.cpp
+    ./service/core/logic/tool_query_task.cpp
     ./service/core/logpusher/kafka_log_producer.cpp
     ./service/core/logpusher/log_pusher.cpp
     ./service/core/model/source_id.cpp
@@ -42,9 +42,6 @@ SET(SRC_LIST
     ./service/protocol/baidu/baidu_bidding.pb.cpp
     ./service/protocol/baidu/baidu_bidding_handler.cpp
     ./service/protocol/baidu/baidu_price.cpp
-    #./service/protocol/baidu/baidu_bidding.pb.cpp
-    #./service/protocol/baidu/baidu_bidding_handler.cpp
-    #./service/protocol/baidu/baidu_price.cpp
     ./service/protocol/base/abstract_bidding_handler.cpp
     ./service/protocol/guangyin/guangyin_bidding.pb.cpp
     ./service/protocol/guangyin/guangyin_bidding_handler.cpp
@@ -86,6 +83,7 @@ SET(SRC_LIST
     ./service/utility/url.cpp
     ./service/utility/userclient.cpp
     ./service/utility/compress.cpp
+    ./service/utility/template_engine.cpp
     ./service/common/atomic.cpp
     ./service/common/functions.cpp
     ./service/common/platform.cpp

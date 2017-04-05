@@ -40,6 +40,23 @@ namespace corelogic {
             return "";
         }
 
+        int64_t checkAdxId(const std::string & userAgent, int64_t adxId)
+        {
+            if (userAgent.find("Mobile") != std::string::npos) {
+                switch (adxId) {
+                case ADX_TANX:
+                    return ADX_TANX_MOBILE;
+                case ADX_YOUKU:
+                    return ADX_YOUKU_MOBILE;
+                case ADX_SOHU_PC:
+                    return ADX_SOHU_MOBILE;
+                case ADX_360_MAX_PC:
+                    return ADX_360_MAX_MOBILE;
+                }
+            }
+            return adxId;
+        }
+
         bool isAdxUidValid(int64_t adxId, const std::string & uid)
         {
             if (adxId == ADX_360_MAX_PC || adxId == ADX_360_MAX_MOBILE) {
@@ -89,7 +106,7 @@ namespace corelogic {
             const std::string & uId = log.userId;
             // todo:获取url中和cookiemapping相关的参数,更新到这个uid对应的记录中，并且设置映射表条目的过期时间
             CookieMappingManager & cmManager = CookieMappingManager::getInstance();
-            int64_t adxId = log.adInfo.adxid;
+            int64_t adxId = checkAdxId(userAgent, log.adInfo.adxid);
             std::string adxUidKey = getAdxMappingKey(adxId);
             std::string adxUid = paramMap.find(adxUidKey) != paramMap.end() ? paramMap[adxUidKey] : "";
             if (!adxUid.empty() && isAdxUidValid(adxId, adxUid)) {

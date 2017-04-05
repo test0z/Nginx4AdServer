@@ -163,7 +163,9 @@ namespace bidding {
                                            md5_encode(queryCondition.imei),
                                            md5_encode(queryCondition.androidId),
                                            md5_encode(queryCondition.mac),
-                                           queryCondition);
+                                           queryCondition,
+                                           queryCondition.adxid,
+                                           bidRequest.get("user.id", ""));
                     queryCookieMapping(cmInfo.queryKV, queryCondition);
                 }
             } else {
@@ -271,7 +273,9 @@ namespace bidding {
         if (!banner.feedback.empty()) {
             parseJson(banner.feedback.c_str(), bannerFeedbackJson);
         }
-        std::string crid = std::to_string(banner.adxCids[queryCondition.adxid]);
+        auto adxCidIter = banner.adxCids.find(queryCondition.adxid);
+        std::string crid
+            = adxCidIter == banner.adxCids.end() ? std::to_string(banner.bId) : std::to_string(adxCidIter->second);
         bidValue["crid"] = crid;
         std::string landingUrl;
         std::string mainTitle;

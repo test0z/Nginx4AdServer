@@ -150,9 +150,11 @@ namespace bidding {
                     int w = assetArray[j].get("img.w", 0);
                     int h = assetArray[j].get("img.h", 0);
                     const auto & sizePair = adSizeMap.get({ w, h });
-                    queryCondition.width = sizePair.first;
-                    queryCondition.height = sizePair.second;
-                    adplaceInfo.sizeArray.push_back(sizePair);
+                    for (auto & sizeIter : sizePair) {
+                        queryCondition.width = sizeIter.first;
+                        queryCondition.height = sizeIter.second;
+                        adplaceInfo.sizeArray.push_back(sizeIter);
+                    }
                 }
                 queryCondition.bannerType = BANNER_TYPE_PRIMITIVE;
             }
@@ -264,14 +266,16 @@ namespace bidding {
                 int w = asset.get("img.w", 0);
                 int h = asset.get("img.h", 0);
                 auto sizePair = adSizeMap.get({ w, h });
-                if (sizePair.first == banner.width && sizePair.second == banner.height) {
-                    outputAsset["id"] = asset.get("id", 0);
-                    outputAsset["img"]["w"] = w;
-                    outputAsset["img"]["h"] = h;
-                    bidValue["w"] = w;
-                    bidValue["h"] = h;
-                    outputAsset["img"]["url"] = mtlsArray[0]["p6"].str();
-                    break;
+                for (auto sizeIter : sizePair) {
+                    if (sizePair.first == banner.width && sizePair.second == banner.height) {
+                        outputAsset["id"] = asset.get("id", 0);
+                        outputAsset["img"]["w"] = w;
+                        outputAsset["img"]["h"] = h;
+                        bidValue["w"] = w;
+                        bidValue["h"] = h;
+                        outputAsset["img"]["url"] = mtlsArray[0]["p6"].str();
+                        break;
+                    }
                 }
             }
 

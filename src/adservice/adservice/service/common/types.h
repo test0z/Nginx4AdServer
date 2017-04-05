@@ -5,32 +5,30 @@
 #ifndef ADCORE_LOG_H
 #define ADCORE_LOG_H
 
-
-#include <sys/types.h>
-#include <cstdlib>
-#include <memory>
-#include <exception>
 #include "protocol/log/log.h"
+#include <cstdlib>
+#include <exception>
+#include <memory>
+#include <sys/types.h>
 
-#ifdef NO_COW_STRING           //如果定义了禁止string的COW,那么使用vstring或者请在Makefile中定义_GLIBCXX_USE_CXX11_ABI=1
+#ifdef NO_COW_STRING //如果定义了禁止string的COW,那么使用vstring或者请在Makefile中定义_GLIBCXX_USE_CXX11_ABI=1
 #include <ext/vstring.h>
 #include <ext/vstring_fwd.h>
 
-namespace adservice{
-	namespace types{
+namespace adservice {
+namespace types {
 
-		// c++11 small string optimization
-		// https://gcc.gnu.org/ml/gcc-patches/2014-11/msg01785.html
-		typedef __gnu_cxx::__sso_string string;
-	}
+    // c++11 small string optimization
+    // https://gcc.gnu.org/ml/gcc-patches/2014-11/msg01785.html
+    typedef __gnu_cxx::__sso_string string;
+}
 }
 #else
 
-namespace adservice{
-	namespace types{
-		typedef std::string string;
-
-	}
+namespace adservice {
+namespace types {
+    typedef std::string string;
+}
 }
 
 #endif
@@ -59,21 +57,26 @@ typedef u_int32_t uint32_t;
 typedef u_int64_t uint64_t;
 #endif
 
-
 #define IN
 #define OUT
 #define INOUT
 
-class MtException:public std::exception{
+class MtException : public std::exception {
 public:
-	MtException(const std::string& message) _GLIBCXX_USE_NOEXCEPT :msg(message){
-	}
-	virtual ~MtException() _GLIBCXX_USE_NOEXCEPT{}
-	virtual const char* what() const _GLIBCXX_USE_NOEXCEPT{
-		return msg.data();
-	}
+    MtException(const std::string & message) noexcept
+        : msg(message)
+    {
+    }
+    virtual ~MtException() noexcept
+    {
+    }
+    virtual const char * what() const noexcept
+    {
+        return msg.data();
+    }
+
 protected:
-	std::string msg;
+    std::string msg;
 };
 
 #endif

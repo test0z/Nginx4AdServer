@@ -1,0 +1,83 @@
+
+user  root;
+worker_processes ${adservice.worker_processes};
+
+#error_log  logs/error.log;
+#error_log  logs/error.log  notice;
+error_log  logs/error.log  emerg;
+
+#pid        logs/nginx.pid;
+
+
+events {
+    worker_connections  65535;
+}
+
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    access_log off;
+
+    sendfile        on;
+
+    keepalive_timeout  65;
+
+    server {
+        listen       20007;
+        server_name  0.0.0.0;
+	gzip on;
+	gzip_min_length 20;
+	gzip_types application/json application/octet-stream;
+
+        location /jt.html {
+                return 200;
+        }
+
+        location / {
+            root   html;
+            index  index.html index.htm;
+	    #server config
+	    #运行日志级别
+            logging_level ${adservice.loggingLevel};
+
+            #bussiness log config(kafka)
+            kafka_broker ${adservice.kafka_broker};
+            kafka_topic	${adservice.kafka_topic};
+            kafka_key ${adservice.kafka_key};
+            kafka_mqmaxsize ${adservice.kafka_mqmaxsize};
+            kafka_logger_enable ${adservice.kafka_logger_enable};
+            kafka_partition_cnt ${adservice.kafka_partition_cnt};
+	    bid_kafka_broker ${adservice.bid_kafka_broker};
+            bid_kafka_topic ${adservice.bid_kafka_topic};
+            bid_kafka_key ${adservice.bid_kafka_key};
+            bid_kafka_mqmaxsize ${adservice.bid_kafka_mqmaxsize};
+            bid_kafka_logger_enable ${adservice.bid_kafka_logger_enable};
+	    bid_kafka_partition_cnt ${adservice.bid_kafka_partition_cnt};
+	    local_logger_thread ${adservice.local_logger_thread};
+
+            #adselect config
+            adselect_entry ${adservice.adselect_entry};
+            adselect_timeout 0:15|20:200|98:-1|99:-1;
+
+            #aerospike config
+            as_node ${adservice.as_node};
+            as_namespace ${adservice.as_namespace};
+	    
+	    workdir .;
+	    disable_cm ${adservice.disable_cm};
+        }
+
+        #error_page  404              /404.html;
+
+        # redirect server error pages to the static page /50x.html
+        #
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+
+    }
+
+}

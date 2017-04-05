@@ -55,21 +55,21 @@ namespace corelogic {
 
         void updateBiddingHandler();
 
-        protocol::log::LogPhaseType currentPhase()
+        virtual protocol::log::LogPhaseType currentPhase() override
         {
             return protocol::log::LogPhaseType::BID;
         }
 
         // 期望http 请求状态
-        int expectedReqStatus()
+        virtual int expectedReqStatus() override
         {
             return 300;
         }
 
-        void getPostParam(ParamMap & paramMap);
+        virtual void getPostParam(ParamMap & paramMap) override;
 
-        void customLogic(ParamMap & paramMap, protocol::log::LogItem & log,
-                         adservice::utility::HttpResponse & response);
+        virtual void customLogic(ParamMap & paramMap, protocol::log::LogItem & log,
+                                 adservice::utility::HttpResponse & response) override;
 
         virtual void onError(std::exception & e, adservice::utility::HttpResponse & resp) override;
 

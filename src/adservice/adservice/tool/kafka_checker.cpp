@@ -51,6 +51,23 @@ static int report_offset = 0;
 static FILE * latency_fp = NULL;
 static int msgcnt = -1;
 static int nostatus = 0;
+static bool collectData = false;
+static int collectLastHour = -1;
+std::unordered_map<int64_t,int64_t> cpmCosts;
+std::unordered_map<int64_t,int64_t> cpmFees;
+std::unordered_map<int64_t,int64_t> cpcCosts;
+std::unordered_map<int64_t,int64_t> cpcFees;
+std::unordered_map<int64_t,int64_t> sidAdvs;
+
+static void incrMap(std::unordered_map<int64_t,int64_t>& maps,int64_t sid,int64_t value){
+    std::unordered_map<int64_t,int64_t>::iterator iter = maps.find(sid);
+    if(iter == maps.end()){
+        maps.insert(std::make_pair(sid,value));
+    }else{
+        iter->second+=value;
+    }
+}
+
 
 static void stop(int sig)
 {
@@ -262,8 +279,47 @@ static void msg_consume(rd_kafka_message_t * rkmessage, void * opaque)
                         }else{
                             printf("%s",str.c_str());
                         }
-                    } else {
+                    } else if(!collectData){
                         printf("%s", str.c_str());
+                    }
+                    if(collectData && (logItem.logType==protocol::log::LogPhaseType::SHOW||
+                                       logItem.logType == protocol::log::LogPhaseType::CLICK)){
+                        sidAdvs.insert(std::make_pair(logItem.adInfo.sid,logItem.adInfo.advId));
+                        if(logItem.adInfo.priceType==PRICETYPE_RTB||logItem.adInfo.priceType == PRICETYPE_RRTB_CPM){
+                            incrMap(cpmCosts,logItem.adInfo.sid,logItem.adInfo.cost);
+                            incrMap(cpmFees,logItem.adInfo.sid,logItem.adInfo.bidPrice);
+                        }else if(logItem.adInfo.priceType==PRICETYPE_RCPC||logItem.adInfo.priceType==PRICETYPE_RRTB_CPC){
+                            incrMap(cpcCosts,logItem.adInfo.sid,logItem.adInfo.cost);
+                            incrMap(cpcFees,logItem.adInfo.sid,logItem.adInfo.bidPrice);
+                        }
+                        struct tm t;
+                        memset(&t, sizeof(tm), 0);
+                        localtime_r((const time_t*)&logItem.timeStamp,&t);
+                        if(t.tm_hour!=collectLastHour){
+                            collectLastHour = t.tm_hour;
+                            printf("data collect for hour:%d\n",t.tm_hour);
+                            printf("sid-advs:\n");
+                            for(auto iter:sidAdvs){
+                                printf("sid:%ld advId:%ld\n",iter.first,iter.second);
+                            }
+                            printf("cpmCosts:\n");
+                            for(auto iter:cpmCosts){
+                                printf("sid:%ld cost:%ld\n",iter.first,iter.second);
+                            }
+                            printf("cpmFees:\n");
+                            for(auto iter:cpmFees){
+                                printf("sid:%ld fees:%ld\n",iter.first,iter.second);
+                            }
+                            printf("cpcCosts:\n");
+                            for(auto iter:cpcCosts){
+                                printf("sid:%ld cost:%ld\n",iter.first,iter.second);
+                            }
+                            printf("cpcFees:\n");
+                            for(auto iter:cpcFees){
+                                printf("sid:%ld fees:%ld\n",iter.first,iter.second);
+                            }
+                            fflush(STDOUT);
+                        }
                     }
                 } catch (avro::Exception & e) {
                     printf("exception:%s", e.what());
@@ -580,7 +636,7 @@ int main(int argc, char ** argv)
     /* Kafka topic configuration */
     topic_conf = rd_kafka_topic_conf_new();
 
-    while ((opt = getopt(argc, argv, "Ct:p:b:k:s:o:B:v:f:q::")) != -1) {
+    while ((opt = getopt(argc, argv, "Ct:p:b:k:s:o:B:v:z:f:q::")) != -1) {
         switch (opt) {
         case 'C':
             mode = opt;
@@ -630,6 +686,9 @@ int main(int argc, char ** argv)
         case 'q':
             nostatus = 1;
             break;
+        case 'z':
+            collectData=true;
+            break;
         default:
             fprintf(stderr, "Unknown option: %c\n", opt);
             goto usage;
@@ -657,6 +716,7 @@ int main(int argc, char ** argv)
                 "  -v <num>     specify verbosity level 1 to 3\n"
                 "  -f <condition> filter a condition\n"
                 "  -q    do not print status info\n"
+                "  -z    collect data\n"
                 "\n"
                 " In Consumer mode:\n"
                 "  consumes messages and prints thruput\n"
