@@ -3,13 +3,15 @@
 //
 
 #include "log_pusher.h"
-#include "common/atomic.h"
-#include "core/core_threadlocal_manager.h"
-#include "logging.h"
-#include "utility/utility.h"
+
 #include <cstdlib>
+
 #include <sys/stat.h>
 #include <sys/types.h>
+
+#include "common/atomic.h"
+#include "logging.h"
+#include "utility/utility.h"
 
 namespace adservice {
 namespace log {
@@ -92,6 +94,8 @@ namespace log {
         }
     };
 
+    thread_local LogPushLocalThreadData * logPushLocalThreadData = new LogPushLocalThreadData;
+
 #define HOUR_SECOND 3600
     struct LogPushLocalTask {
         LogPushLocalTask(std::shared_ptr<adservice::types::string> & l)
@@ -106,20 +110,16 @@ namespace log {
         {
             pid_t pid = getpid();
             pthread_t thread = pthread_self();
-            LogPushLocalThreadData * data = (LogPushLocalThreadData *)ThreadLocalManager::getInstance().get(thread);
-            if (data == NULL) {
-                data = new LogPushLocalThreadData;
-                ThreadLocalManager::getInstance().put(thread, data, &LogPushLocalThreadData::destructor);
-            }
-            FILE * fp = data->fp;
+
+            FILE * fp = logPushLocalThreadData->fp;
             long curTime = utility::time::getCurrentTimeStamp();
             bool expired = false;
-            if (fp == NULL || (expired = (data->lastTime < curTime - HOUR_SECOND))) {
+            if (fp == NULL || (expired = (logPushLocalThreadData->lastTime < curTime - HOUR_SECOND))) {
                 if (expired) {
                     fclose(fp);
                     fp = NULL;
-                    LOG_INFO << "hourly log cnt:" << data->logCnt << " of thread " << (long)thread;
-                    data->logCnt = 0;
+                    LOG_INFO << "hourly log cnt:" << logPushLocalThreadData->logCnt << " of thread " << (long)thread;
+                    logPushLocalThreadData->logCnt = 0;
                 }
                 std::string logfolder = LogPusher::getLocalLogFilePrefix() + "/logs";
                 if (access(logfolder.data(), F_OK) == -1) {
@@ -139,21 +139,22 @@ namespace log {
                         LOG_ERROR << "dir " << dirname << " can not be created!";
                     }
                 }
-                char filename[1024];
-                sprintf(filename, "%s/bussiness.%d.%lu.%lu.log", dirname, pid, thread, curTime);
-                fp = fopen(filename, "wb+");
+                std::stringstream ss;
+                ss << dirname << "/bussiness." << pid << "." << thread << "." << curTime << ".log";
+                std::string filename = ss.str();
+                fp = fopen(filename.c_str(), "wb+");
                 if (fp == NULL) {
                     LOG_ERROR << "file " << filename << " can not be opened!";
                     return;
                 }
-                data->lastTime = utility::time::getTodayStartTime() + ltime->tm_hour * HOUR_SECOND;
-                data->fp = fp;
+                logPushLocalThreadData->lastTime = utility::time::getTodayStartTime() + ltime->tm_hour * HOUR_SECOND;
+                logPushLocalThreadData->fp = fp;
             }
             char flag[20] = { '\0' };
             sprintf(flag, "mt%lu^", log->length());
             fwrite(flag, strlen(flag), 1, fp);
             fwrite(log->c_str(), log->length(), 1, fp);
-            data->logCnt++;
+            logPushLocalThreadData->logCnt++;
         }
         std::shared_ptr<adservice::types::string> log;
     };

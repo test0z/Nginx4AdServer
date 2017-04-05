@@ -2,6 +2,7 @@
 #define CORE_AD_SIZEMAP_H
 
 #include <map>
+#include <vector>
 
 namespace adservice {
 namespace utility {
@@ -15,8 +16,8 @@ namespace utility {
     public:
         AdSizeMap()
         {
-            sizemap[MATERIAL_TYPE_PIC] = std::map<std::pair<int, int>, std::pair<int, int>>();
-            sizemap[MATERIAL_TYPE_VIDEO] = std::map<std::pair<int, int>, std::pair<int, int>>();
+            sizemap[MATERIAL_TYPE_PIC] = std::map<std::pair<int, int>, std::vector<std::pair<int, int>>>();
+            sizemap[MATERIAL_TYPE_VIDEO] = std::map<std::pair<int, int>, std::vector<std::pair<int, int>>>();
             add(std::make_pair(270, 202), std::make_pair(1, 0));
             add(std::make_pair(240, 180), std::make_pair(1, 1));
             add(std::make_pair(984, 328), std::make_pair(2, 0));
@@ -42,22 +43,28 @@ namespace utility {
         }
         void add(const std::pair<int, int> & k, const std::pair<int, int> & v, int type = MATERIAL_TYPE_PIC)
         {
-            sizemap[type].insert(std::make_pair(k, v));
+
+            auto iter = sizemap[type].find(k);
+            if (iter != sizemap[type].end()) {
+                iter->second.push_back(v);
+            } else {
+                sizemap[type].insert({ k, std::vector<std::pair<int, int>>{ v } });
+            }
             rsizemap.insert(std::make_pair(v, k));
         }
 
-        std::pair<int, int> get(const std::pair<int, int> & k, int type = MATERIAL_TYPE_PIC) const
+        std::vector<std::pair<int, int>> get(const std::pair<int, int> & k, int type = MATERIAL_TYPE_PIC) const
         {
             auto it = sizemap.find(type);
             if (it == sizemap.end()) {
-                return k;
+                return std::vector<std::pair<int, int>>{ k };
             }
             auto & typeSizeMap = it->second;
             auto iter = typeSizeMap.find(k);
             if (iter != typeSizeMap.end()) {
                 return iter->second;
             } else {
-                return k;
+                return std::vector<std::pair<int, int>>{ k };
             }
         }
 
@@ -72,7 +79,7 @@ namespace utility {
         }
 
     private:
-        std::map<int, std::map<std::pair<int, int>, std::pair<int, int>>> sizemap;
+        std::map<int, std::map<std::pair<int, int>, std::vector<std::pair<int, int>>>> sizemap;
         std::map<std::pair<int, int>, std::pair<int, int>> rsizemap;
 
     private:

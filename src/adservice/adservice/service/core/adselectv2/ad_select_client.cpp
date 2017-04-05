@@ -20,7 +20,7 @@ namespace adselectv2 {
 
     MT::common::ListType makeSize(int64_t width, int64_t height)
     {
-        MT::common::ListType list{ MT::common::TupleType{ width, height } };
+        MT::common::ListType list{ MT::common::TupleType{ { width, height } } };
         return list;
     }
 
@@ -28,7 +28,7 @@ namespace adselectv2 {
     {
         MT::common::ListType list;
         for (auto & item : sizes) {
-            list.push_back(MT::common::TupleType{ item.first, item.second });
+            list.push_back(MT::common::TupleType{ { item.first, item.second } });
         }
         return list;
     }

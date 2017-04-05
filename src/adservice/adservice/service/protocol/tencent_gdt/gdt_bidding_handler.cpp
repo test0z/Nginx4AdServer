@@ -23,11 +23,6 @@ namespace bidding {
 
     namespace {
 
-        inline int max(const int & a, const int & b)
-        {
-            return a > b ? a : b;
-        }
-
         int getGdtOsType(BidRequest_OperatingSystem os)
         {
             switch (os) {
@@ -114,12 +109,13 @@ namespace bidding {
             int createspecs = adzInfo.creative_specs(i);
             if (gdtAdplaceMap.find(createspecs)) {
                 GdtAdplace & gdtAdplace = gdtAdplaceMap.get(createspecs);
-                const std::pair<int, int> & sizePair
-                    = adSizeMap.get(std::make_pair(gdtAdplace.width, gdtAdplace.height));
-                adplaceInfo.sizeArray.push_back(std::make_pair(sizePair.first, sizePair.second));
+                auto sizePair = adSizeMap.get(std::make_pair(gdtAdplace.width, gdtAdplace.height));
+                for (auto & sizeIter : sizePair) {
+                    queryCondition.width = sizeIter.first;
+                    queryCondition.height = sizeIter.second;
+                    adplaceInfo.sizeArray.push_back(std::make_pair(sizeIter.first, sizeIter.second));
+                }
                 adplaceInfo.flowType = gdtAdplace.flowType;
-                queryCondition.width = sizePair.first;
-                queryCondition.height = sizePair.second;
                 queryCondition.flowType = gdtAdplace.flowType;
             }
         }
@@ -165,13 +161,17 @@ namespace bidding {
                 queryCondition.pcOS = SOLUTION_OS_OTHER;
             }
             cookieMappingKeyMobile(queryCondition.idfa, queryCondition.imei, queryCondition.androidId,
-                                   queryCondition.mac, queryCondition);
+                                   queryCondition.mac, queryCondition, queryCondition.adxid,
+                                   bidRequest.has_user() ? bidRequest.user().id() : "");
             queryCookieMapping(cmInfo.queryKV, queryCondition);
         }
         if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE && bidRequest.has_app()) {
             const BidRequest_App & app = bidRequest.app();
             if (app.has_app_bundle_id()) {
                 queryCondition.adxpid = app.app_bundle_id();
+            }
+            if (queryCondition.adxpid.empty() && adzInfo.has_placement_id()) {
+                queryCondition.adxpid == std::to_string(adzInfo.placement_id());
             }
         } else if (adzInfo.has_placement_id()) {
             queryCondition.adxpid = std::to_string(adzInfo.placement_id());

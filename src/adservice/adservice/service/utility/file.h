@@ -5,20 +5,21 @@
 #ifndef ADCORE_FILE_H
 #define ADCORE_FILE_H
 
-#include <string.h>
-#include <string>
+#include <fstream>
 #include <iostream>
 #include <sstream>
-#include <fstream>
+#include <string.h>
+#include <string>
 
-namespace adservice{
-    namespace utility{
-        namespace file{
+namespace adservice {
+namespace utility {
+    namespace file {
 
-            void loadFile(char* buffer,const char* filePath);
+        void loadFile(char * buffer, const char * filePath);
 
-        }
+        std::string loadFile(const std::string & filePath);
     }
 }
+}
 
-#endif //ADCORE_FILE_H
+#endif // ADCORE_FILE_H

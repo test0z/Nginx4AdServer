@@ -29,9 +29,11 @@
 #include "userclient.h"
 #include "http.h"
 #include "compress.h"
+#include "template_engine.h"
 #include <tuple>
 #include <boost/algorithm/string.hpp>
 #include "google/protobuf/message.h"
+#include "logging.h"
 
 namespace std {
 
@@ -311,6 +313,22 @@ void adservice_free(void* ptr);
             }
 
        }
+
+       class PerformanceWatcher{
+       public:
+           PerformanceWatcher(const std::string& n):name(n){
+              beginTimeMs = time::getCurrentTimeStampMs();
+           }
+
+           ~PerformanceWatcher(){
+               int64_t endTime = time::getCurrentTimeStampMs();
+               LOG_DEBUG<<name<<" time collapses:"<<(endTime-beginTimeMs)<<"ms";
+           }
+
+       private:
+           int64_t beginTimeMs;
+           std::string name;
+       };
 
    }
 }

@@ -123,12 +123,16 @@ namespace server {
             myCore = runCore++;
             SPIN_UNLOCK(this);
             pthread_t me = pthread_self();
-            threadMappingTable[myCore] = me;
+            threadMappingTable[myCore] = long(me);
             myCore %= totalCore;
+
+#ifdef CPU_ZERO
             cpu_set_t cpuset;
             CPU_ZERO(&cpuset);
             CPU_SET(myCore, &cpuset);
             pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpuset);
+#endif
+
             if (runCore == totalThread) {
                 std::sort<long *>(threadMappingTable, threadMappingTable + totalThread);
             }

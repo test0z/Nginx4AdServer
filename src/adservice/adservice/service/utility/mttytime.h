@@ -113,6 +113,20 @@ namespace utility {
             return getTodayStartTime() + DAY_SECOND;
         }
     }
+
+    class PerformanceWatcher {
+    public:
+        PerformanceWatcher(const std::string & n)
+            : name(n)
+        {
+            beginTimeMs = time::getCurrentTimeStampMs();
+        }
+        ~PerformanceWatcher();
+
+    private:
+        int64_t beginTimeMs;
+        std::string name;
+    };
 }
 }
 

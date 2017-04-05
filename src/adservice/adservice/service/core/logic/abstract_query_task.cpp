@@ -17,6 +17,7 @@
 #include "protocol/youku/youku_price.h"
 #include "utility/mttytime.h"
 #include <mtty/mtuser.h>
+#include <mtty/trafficcontrollproxy.h>
 
 namespace adservice {
 namespace corelogic {
@@ -25,6 +26,7 @@ namespace corelogic {
 
     static int threadSeqId = 0;
     struct spinlock slock = { 0 };
+    thread_local TaskThreadLocal * threadData = new TaskThreadLocal;
 
     void TaskThreadLocal::updateSeqId()
     {
@@ -246,36 +248,25 @@ namespace corelogic {
                     std::string & ppid = iter->second;
                     log.adInfo.ppid = URLParamMap::stringToInt(ppid);
                 }
+                if ((iter = paramMap.find(URL_DEVICE_IDFA)) != paramMap.end()) { // idfa
+                    std::string & deviceId = iter->second;
+                    log.device.deviceID += std::string("idfa:") + deviceId + ",";
+                }
+                if ((iter = paramMap.find(URL_DEVICE_IMEI)) != paramMap.end()) { // imei
+                    std::string & deviceId = iter->second;
+                    log.device.deviceID += std::string("imei:") + deviceId + ",";
+                }
+                if ((iter = paramMap.find(URL_DEVICE_ANDOROIDID)) != paramMap.end()) { // androidid
+                    std::string & deviceId = iter->second;
+                    log.device.deviceID += std::string("androidid:") + deviceId + ",";
+                }
+                if ((iter = paramMap.find(URL_DEVICE_MAC)) != paramMap.end()) { // mac
+                    std::string & deviceId = iter->second;
+                    log.device.deviceID += std::string("mac:") + deviceId + ",";
+                }
             } catch (std::exception & e) {
                 log.reqStatus = 500;
                 LOG_ERROR << "error:" << e.what() << ",when processing query " << allQuery;
-            }
-        }
-
-        void checkAliEscapeSafe(protocol::log::LogItem & logItem, std::string & input)
-        {
-            using namespace adservice::utility::escape;
-            std::string escape_string = encode4ali(input);
-            std::string decode_string = decode4ali(escape_string);
-            const char * a = input.c_str();
-            const char * b = decode_string.c_str();
-            if (input.length() == decode_string.length()) {
-                bool isSame = true;
-                for (size_t i = 0; i < input.length(); ++i) {
-                    if (a[i] != b[i]) {
-                        isSame = false;
-                        break;
-                    }
-                }
-                if (isSame) {
-                    protocol::log::LogItem parseLog;
-                    getAvroObject(parseLog, (uint8_t *)decode_string.c_str(), decode_string.length());
-                } else {
-                    LOG_WARN << "decoded string not equal origin,escape4ali not safe";
-                }
-            } else {
-                LOG_WARN << "decoded string length not equal origin,escape4ali not safe," << input.length() << " "
-                         << decode_string.length();
             }
         }
 
@@ -300,13 +291,6 @@ namespace corelogic {
 
     void AbstractQueryTask::updateThreadData()
     {
-        pthread_t thread = pthread_self();
-        threadData = (TaskThreadLocal *)ThreadLocalManager::getInstance().get(thread);
-        if (threadData == NULL) {
-            threadData = new TaskThreadLocal;
-            threadData->updateSeqId();
-            ThreadLocalManager::getInstance().put(thread, threadData, &TaskThreadLocal::destructor);
-        }
     }
 
     void AbstractQueryTask::filterParamMapSafe(ParamMap & paramMap)
@@ -335,10 +319,13 @@ namespace corelogic {
         MT::User::UserID clientUid(cookieEncUid, true);
         MT::User::UserID serverUid(serverEncUid, true);
         if (clientUid.isValid() && serverUid.isValid()) { //客户端id和服务端id同时存在且合法
-            int64_t clientUserTime = clientUid.time();
-            int64_t serverUserTime = serverUid.time();
-            if (clientUserTime < serverUserTime) {
-                return clientUid.text();
+                                                          //            int64_t clientUserTime = clientUid.time();
+                                                          //            int64_t serverUserTime = serverUid.time();
+                                                          //            if (clientUserTime < serverUserTime) {
+                                                          //                 return clientUid.text();
+                                                          //            }
+            if (cookieEncUid != serverEncUid) {
+                plantNewCookie(serverUid.cipher(), resp);
             }
             return serverUid.text();
         } else if (!clientUid.isValid() && serverUid.isValid()) { //客户端id不合法,服务端id合法
