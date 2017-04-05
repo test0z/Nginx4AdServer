@@ -170,6 +170,9 @@ namespace bidding {
             if (app.has_app_bundle_id()) {
                 queryCondition.adxpid = app.app_bundle_id();
             }
+            if (queryCondition.adxpid.empty() && adzInfo.has_placement_id()) {
+                queryCondition.adxpid == std::to_string(adzInfo.placement_id());
+            }
         } else if (adzInfo.has_placement_id()) {
             queryCondition.adxpid = std::to_string(adzInfo.placement_id());
         }
