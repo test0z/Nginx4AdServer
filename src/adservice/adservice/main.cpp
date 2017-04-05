@@ -28,6 +28,7 @@ extern "C" {
 #include "core/logic/click_query_task.h"
 #include "core/logic/mapping_query_task.h"
 #include "core/logic/show_query_task.h"
+#include "core/logic/tool_query_task.h"
 #include "core/logic/trace_task.h"
 #include "core/logpusher/log_pusher.h"
 #include "logging.h"
@@ -491,6 +492,10 @@ void dispatchRequest(adservice::utility::HttpRequest & request, adservice::utili
         adservice::corelogic::HandleTraceTask task(request, response);
         task.setLogger(serviceLogger);
         task();
+    } else if (queryPath = "/tool") {
+        adservice::corelogic::HandleToolQueryTask task(request, response);
+        task.setLogger(serviceLogger);
+        task();
     } else {
         response.status(204);
         response.set_content_header("text/html");
@@ -525,6 +530,10 @@ void after_read_post_data(ngx_http_request_t * r)
     if (queryPath.find("bid") != std::string::npos) {
         adservice::corelogic::HandleBidQueryTask task(httpRequest, httpResponse);
         task.setLogger(bidServiceLogger);
+        task();
+    } else if (queryPath == "/tool") {
+        adservice::corelogic::HandleToolQueryTask task(httpRequest, httpResponse);
+        task.setLogger(serviceLogger);
         task();
     } else if (queryPath == "/debug") { // debug module
         //根据debug 请求的包，将它解析成一个正常的请求，同时打上debug 标记
