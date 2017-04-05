@@ -3,15 +3,13 @@
 	"io_threads": ${adselect.io_threads},
 	"node_ip": "${adselect.io_threads}",
 	"service_addr": "${adselect.service_addr}",
-    	"indexes_publish_addr": "${adselect.indexes_publish_addr}",
-    	"indexes_feedback_addr": "${adselect.indexes_feedback_addr}",
-	"adservice_process_num": ${adselect.adservice_process_num},
+	"indexes_publish_addr": "${adselect.indexes_publish_addr}",
+	"indexes_feedback_addr": "${adselect.indexes_feedback_addr}",
 	"mysql_host":"${adselect.mysql_host}",
 	"mysql_user": "${adselect.mysql_user}",
 	"mysql_password": "${adselect.mysql_password}",
-    	"aerospike": {
-        	"namespace": "${adselect.aerospike.namespace}",
-        	"nodes": [${adselect.aerospike.nodes}]
-    	}
-
+	"aerospike": {
+		"namespace": "${adselect.aerospike.namespace}",
+		"nodes": [${adselect.aerospike.nodes}]
+	}
 }

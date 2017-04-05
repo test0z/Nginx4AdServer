@@ -42,15 +42,6 @@ namespace corelogic {
                         throw std::string("action not support,action:") + action;
                     }
                 });
-                use("config", [](cppcms::json::value & m, HttpResponse & resp) {
-                    std::string & action = m.get(TOOL_PARAM_ACTION, "");
-                    std::string & configtype = m.get("configtype", "");
-                    if (configtype.empty()) {
-                        throw "configtype is empty";
-                    }
-                    if (action == "update") {
-                    }
-                });
                 use("useridtool", [](cppcms::json::value & m, HttpResponse & resp) {
                     std::string & action = m.get(TOOL_PARAM_ACTION, "");
                     std::string & input = m.get("input", "");

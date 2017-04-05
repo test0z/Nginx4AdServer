@@ -12,21 +12,47 @@ void * debugSession = nullptr;
 MT::common::Aerospike aerospikeClient;
 
 
+class PerformanceWatcher{
+       public:
+           PerformanceWatcher(const std::string& n):name(n){
+              beginTimeMs = time::getCurrentTimeStampMs();
+           }
+
+           ~PerformanceWatcher(){
+               int64_t endTime = time::getCurrentTimeStampMs();
+               LOG_DEBUG<<name<<" time collapses:"<<(endTime-beginTimeMs)<<"ms";
+           }
+
+       private:
+           int64_t beginTimeMs;
+           std::string name;
+       };
+
+
 void testTemplateEngine(const std::string& templateFile,const std::string& shadowFile){
     templateengine::TemplateEngine te(templateFile);
     const auto& m = te.getVariables(shadowFile);
-    for(auto& iter:m){
-        std::cout<<iter.first<<":"<<iter.second<<",";
+    {
+        PerformanceWatcher pw("testTemplateEngine fast version");
+        std::string out;
+        for(int i=0;i<1000000;i++){
+                te.bindFast(m,out);
+        }
     }
-    std::cout<<"template replace:"<<endl;
-    std::cout<<te.bind(m);
+    {
+        PerformanceWatcher pw("testTemplateEngine normal version");
+        for(int i=0;i<1000000;i++){
+                te.bind(m);
+        }
+    }
 }
 
-void testRegexp(const std::string shadowFile){
+void testRegexp(const std::string& regexpFile,const std::string& shadowFile){
+    const std::string & regexpContent = file::loadFile(regexpFile);
     const std::string & shadowFileContent = file::loadFile(shadowFile);
-    boost::regex regexpression("worker_processes  (.*);");
+    boost::regex regexpression(regexpContent);
     boost::smatch match;
-    if (boost::regex_search(shadowFileContent, match, regexpression)) {
+    if (boost::regex_match(shadowFileContent, match, regexpression)) {
         std::cout<<match.size()<<std::endl;
         for(uint32_t i=0;i<match.size();i++){
             std::cout<<"match:"<<match[i].matched<<",s:"<<match[i]<<std::endl;
@@ -36,8 +62,16 @@ void testRegexp(const std::string shadowFile){
 
 int main(int argc, char ** argv)
 {
-    if(argc>2){
-        testTemplateEngine(argv[1],argv[2]);
+    if(argc>=4){
+        std::string op=argv[1];
+        if(op=="testEngine"){
+                testTemplateEngine(argv[2],argv[3]);
+        }else{
+                testRegexp(argv[2],argv[3]);
+        }
+    }else{
+        testTemplateEngine("./nginx.conf.template","./nginx.conf");
     }
      return 0;
 }
+

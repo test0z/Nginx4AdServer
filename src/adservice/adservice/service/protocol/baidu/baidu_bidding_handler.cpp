@@ -182,32 +182,47 @@ namespace bidding {
         //从BID Request中获取请求的广告位信息,目前只取第一个
 
         std::vector<AdSelectCondition> queryConditions(bidRequest.adslot_size());
+        std::vector<PreSetAdplaceInfo> adplaceInfos(bidRequest.adslot_size());
         for (int i = 0; i < bidRequest.adslot_size(); i++) {
             AdSelectCondition & queryCondition = queryConditions[i];
             const BidRequest_AdSlot & adSlot = bidRequest.adslot(i);
+            PreSetAdplaceInfo & adplaceInfo = adplaceInfos[i];
+            queryCondition.pAdplaceInfo = &adplaceInfo;
             long pid = adSlot.ad_block_key();
             queryCondition.adxid = ADX_BAIDU;
             queryCondition.adxpid = std::to_string(pid);
             queryCondition.ip = bidRequest.ip();
             //获取广告位底价
             queryCondition.basePrice = adSlot.has_minimum_cpm() ? adSlot.minimum_cpm() : 0;
-            //获取广告位宽高
-            queryCondition.width = adSlot.width();
-            queryCondition.height = adSlot.height();
             //获取网站类型
             if (bidRequest.has_site_category()) {
                 TypeTableManager & typeTableManager = TypeTableManager::getInstance();
                 queryCondition.mttyContentType
                     = typeTableManager.getContentType(ADX_BAIDU, std::to_string(bidRequest.site_category()));
             }
-            if (!adSlot.allowed_non_nativead()) {
+            if (!adSlot.allowed_non_nativead()) { //要求返回原生广告
                 queryCondition.bannerType = BANNER_TYPE_PRIMITIVE;
                 const BidRequest_AdSlot_NativeAdParam_ImageEle & res_img = adSlot.nativead_param().image();
                 const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
-                // auto sizePair = adSizeMap.get({ queryCondition.width, queryCondition.height });
                 auto sizePair = adSizeMap.get({ res_img.width(), res_img.height() });
-                queryCondition.width = sizePair.first;
-                queryCondition.height = sizePair.second;
+                for (auto sizeIter : sizePair) {
+                    queryCondition.width = sizeIter.first;
+                    queryCondition.height = sizeIter.second;
+                    adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
+                }
+            } else if (bidRequest.has_mobile() && bidRequest.mobile().has_mobile_app()) { // app流量，也返回原生素材
+                queryCondition.bannerType = BANNER_TYPE_PRIMITIVE;
+                const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
+                auto sizePair = adSizeMap.get({ adSlot.width(), adSlot.height() });
+                for (auto sizeIter : sizePair) {
+                    queryCondition.width = sizeIter.first;
+                    queryCondition.height = sizeIter.second;
+                    adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
+                }
+            } else {
+                queryCondition.width = adSlot.width();
+                queryCondition.height = adSlot.height();
+                adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
             }
             //移动端处理
             if (i == 0) {
@@ -219,8 +234,6 @@ namespace bidding {
                             = adservice::utility::userclient::getMobileTypeFromUA(bidRequest.user_agent());
                     }
                     queryCondition.adxid = ADX_BAIDU_MOBILE;
-                    queryCondition.width = adSlot.actual_width();
-                    queryCondition.height = adSlot.actual_height();
                     queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
                     if (mobile.has_wireless_network_type())
                         queryCondition.mobileNetwork = getMobileNet(mobile.wireless_network_type());
@@ -232,14 +245,6 @@ namespace bidding {
                             queryCondition.mttyContentType = typeTableManager.getContentType(
                                 ADX_BAIDU_MOBILE, std::to_string(mobile.mobile_app().app_category()));
                         }
-                        queryCondition.bannerType = BANNER_TYPE_PRIMITIVE;
-                        AdSizeMap & adSize_map = AdSizeMap::getInstance();
-                        const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
-                        // const BidRequest_AdSlot_NativeAdParam_ImageEle & res_img = adSlot.nativead_param().image();
-                        // auto sizePair = adSizeMap.get({ res_img.width(), res_img.height() });
-                        auto sizePair = adSizeMap.get({ queryCondition.width, queryCondition.height });
-                        queryCondition.width = sizePair.first;
-                        queryCondition.height = sizePair.second;
                         if (mobile.for_advertising_id_size() > 0) {
                             const BidRequest_Mobile_ForAdvertisingID bid_fa_id = mobile.for_advertising_id(0);
                             getIDFA_AND(queryCondition, bid_fa_id);
@@ -254,7 +259,8 @@ namespace bidding {
                         boost::algorithm::to_upper(queryCondition.androidId);
                         boost::algorithm::to_upper(queryCondition.mac);
                         cookieMappingKeyMobile(md5_encode(queryCondition.idfa), md5_encode(queryCondition.imei),
-                                               md5_encode(queryCondition.androidId), md5_encode(queryCondition.mac));
+                                               md5_encode(queryCondition.androidId), md5_encode(queryCondition.mac),
+                                               queryCondition);
                     } else {
                         cookieMappingKeyWap(
                             ADX_BAIDU_MOBILE,
@@ -289,15 +295,9 @@ namespace bidding {
                 queryCondition.adxpid = firstqueryCondition.adxpid;
                 queryCondition.mttyContentType = firstqueryCondition.mttyContentType;
                 queryCondition.mobileNetwork = firstqueryCondition.mobileNetwork;
-                queryCondition.bannerType = firstqueryCondition.bannerType;
-                if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
-                    queryCondition.width = firstqueryCondition.width;
-                    queryCondition.height = firstqueryCondition.height;
-                }
             }
         }
         if (!filterCb(this, queryConditions)) {
-            // adInfo.bidSize = makeBidSize(bidRequest.adslot(0).width(), bidRequest.adslot(0).height());
             return bidFailedReturn();
         }
         return isBidAccepted = true;
@@ -337,8 +337,6 @@ namespace bidding {
         std::string strBannerJson = banner.json;
         cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
-        // if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE && queryCondition.bannerType ==
-        // BANNER_TYPE_PRIMITIVE) {
         if (queryCondition.bannerType == BANNER_TYPE_PRIMITIVE) {
             BidResponse_Ad_NativeAd * native_ad = adResult->mutable_native_ad();
 
@@ -356,12 +354,20 @@ namespace bidding {
             int img_total = 0;
             // std::string type_img = mtlsArray[0].get("p2", "");
             int type = boost::lexical_cast<int>(mtlsArray[0].get("p2", ""));
-            if (type == 3) {
+            if (type == 3) { //三图
                 img_total = 3;
-            } else if (type < 3) {
+            } else if (type < 3) { //大图，小图
                 img_total = 1;
             } else {
                 img_total = 0;
+            }
+            int img_w = res_img.width();
+            int img_h = res_img.height();
+            if (img_w == 0 && img_h == 0) {
+                const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
+                auto sizePair = adSizeMap.rget({ banner.width, banner.height });
+                img_w = sizePair.first;
+                img_h = sizePair.second;
             }
             //取组图最多三个
             for (int i = 0; i < img_total; i++) {
@@ -376,20 +382,9 @@ namespace bidding {
                 else
                     adservice::utility::url::url_replace(img_url, "https://", "http://");
                 native_img->set_url(img_url);
-                native_img->set_width(res_img.width());
-                native_img->set_height(res_img.height());
+                native_img->set_width(img_w);
+                native_img->set_height(img_h);
             }
-            /* else {
-            BidResponse_Ad_NativeAd_Image * native_img = native_ad->add_image();
-            std::string img_url = mtlsArray[0].get("p6", "");
-            if (adSlot.secure())
-                adservice::utility::url::url_replace(img_url, "http://", "https://");
-            else
-                adservice::utility::url::url_replace(img_url, "https://", "http://");
-            native_img->set_url(img_url);
-            native_img->set_width(res_img.width());
-            native_img->set_height(res_img.height());
-        }*/
             string logo_url = mtlsArray[0].get("p15", "");
             if (!logo_url.empty()) {
                 if (adSlot.secure())
@@ -401,7 +396,6 @@ namespace bidding {
                 logo->set_width(res_logo.width());
                 logo->set_height(res_logo.height());
             }
-            // native_ad->set_desc(mtlsArray[0].get("",""));
             url::URLHelper showUrlParam;
             getShowPara(showUrlParam, bidRequest.id());
             showUrlParam.add(URL_IMP_OF, "3");
