@@ -23,7 +23,6 @@ namespace bidding {
     using namespace adservice::utility::userclient;
     using namespace adservice::utility::json;
     using namespace adservice::utility::cypher;
-    using namespace adservice::utility::AdSizeMap;
 
 #define AD_BD_CLICK_MACRO "%%CLICK_URL_0%%"
 #define AD_BD_PRICE_MACRO "%%PRICE%%"
