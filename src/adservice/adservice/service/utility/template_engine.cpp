@@ -88,7 +88,7 @@ namespace utility {
                 }
                 p += currentPos.param.length() + 3;
                 pos += currentPos.param.length() + 3;
-                if (paramIdx + 1 < params.size()) {
+                if (paramIdx + 1 < (int)params.size()) {
                     currentPos = params[++paramIdx];
                 } else {
                     currentPos.pos = 0x7FFFFFFF;
@@ -133,7 +133,7 @@ namespace utility {
                 }
                 p += currentPos.param.length() + 3;
                 pos += currentPos.param.length() + 3;
-                if (paramIdx + 1 < params.size()) {
+                if (paramIdx + 1 < (int)params.size()) {
                     currentPos = params[++paramIdx];
                 } else {
                     currentPos.pos = 0x7FFFFFFF;

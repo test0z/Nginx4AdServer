@@ -267,7 +267,7 @@ namespace bidding {
                 int h = asset.get("img.h", 0);
                 auto sizePair = adSizeMap.get({ w, h });
                 for (auto sizeIter : sizePair) {
-                    if (sizePair.first == banner.width && sizePair.second == banner.height) {
+                    if (sizeIter.first == banner.width && sizeIter.second == banner.height) {
                         outputAsset["id"] = asset.get("id", 0);
                         outputAsset["img"]["w"] = w;
                         outputAsset["img"]["h"] = h;

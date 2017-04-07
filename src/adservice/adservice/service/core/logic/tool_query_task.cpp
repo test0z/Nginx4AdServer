@@ -16,7 +16,7 @@ namespace corelogic {
 
     namespace {
 
-        typedef ActionHandler std::function<void(cppcms::json::value & paramMap, HttpResponse & resp)>;
+        typedef std::function<void(cppcms::json::value & paramMap, HttpResponse & resp)> ActionHandler;
 
         class ActionRouter {
         public:
@@ -24,8 +24,8 @@ namespace corelogic {
             {
                 use("urltool", [](cppcms::json::value & m, HttpResponse & resp) {
 
-                    std::string & action = m.get(TOOL_PARAM_ACTION, "");
-                    std::string & uri = m.get("uri", "");
+                    const std::string & action = m.get(TOOL_PARAM_ACTION, "");
+                    const std::string & uri = m.get("uri", "");
                     if (action == "encode") {
                         url::URLHelper url1(uri, false);
                         resp.set_body(url1.cipherUrl());
@@ -43,8 +43,8 @@ namespace corelogic {
                     }
                 });
                 use("useridtool", [](cppcms::json::value & m, HttpResponse & resp) {
-                    std::string & action = m.get(TOOL_PARAM_ACTION, "");
-                    std::string & input = m.get("input", "");
+                    const std::string & action = m.get(TOOL_PARAM_ACTION, "");
+                    const std::string & input = m.get("input", "");
                     if (action == "decode") {
                         MT::User::UserID clientUid(input, true);
                         resp.set_body(clientUid.text());
@@ -65,9 +65,9 @@ namespace corelogic {
                 return *this;
             }
 
-            void route(const std::string & action, ParamMap & m, HttpResponse & resp)
+            void route(const std::string & action, cppcms::json::value & m, HttpResponse & resp)
             {
-                auto & iter = handlers.find(action);
+                auto iter = handlers.find(action);
                 if (iter == handlers.end()) {
                     throw "action handler not found.";
                 } else {
@@ -103,8 +103,8 @@ namespace corelogic {
         cppcms::json::value requestData;
         json::parseJson(data.c_str(), requestData);
         if (!requestData.is_null() && !requestData.is_undefined()) {
-            std::string & actionType = requestData.get(TOOL_PARAM_ACTIONTYPE, "");
-            std::string & auth = requestData.get(TOOL_PARAM_AUTH, "");
+            const std::string & actionType = requestData.get(TOOL_PARAM_ACTIONTYPE, "");
+            const std::string & auth = requestData.get(TOOL_PARAM_AUTH, "");
             if (auth.empty()
                 || md5_encode(stringtool::toupper(auth)) != md5_encode(stringtool::toupper("zhimakaimen"))) {
                 resp.status(403, "forbidden");
@@ -112,7 +112,7 @@ namespace corelogic {
             }
             if (!actionType.empty()) {
                 try {
-                    toolActionRoute.exec(actionType, paramMap, resp);
+                    toolActionRouter.route(actionType, requestData, resp);
                     return;
                 } catch (const std::string & errStr) {
                     resp.status(400, "query param invalid");

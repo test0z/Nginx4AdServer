@@ -273,18 +273,23 @@ namespace bidding {
             contentImage->set_image_height(sizePair.second);
             auto logoImage = creative->mutable_logo();
             logoImage->set_image_url(mtlsArray[0].get("p15", ""));
+            std::string iosDownloadUrl = mtlsArray[0].get("p10", "");
+            std::string androidDownloadUrl = mtlsArray[0].get("p11", "");
+            std::string downloadUrl = isIOS ? iosDownloadUrl : androidDownloadUrl;
             url::URLHelper clickUrlParam;
-            getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
+            getClickPara(clickUrlParam, bidRequest.bid(), "", downloadUrl.empty() ? destUrl : downloadUrl);
             std::string linkUrl
                 = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
             auto linkObj = creative->mutable_link();
             linkObj->set_click_url(linkUrl);
-            //            std::string iosDownloadUrl = mtlsArray[0].get("p10", "");
-            //            std::string androidDownloadUrl = mtlsArray[0].get("p11", "");
-            //            bool supportDownload = !iosDownloadUrl.empty() || !androidDownloadUrl.empty();
-            //            if (supportDownload) {
-            //                linkObj->landing_type() = 1;
-            //            }
+            for (int32_t ind = 0; ind < adzInfo.native().landing_type_size(); ind++) {
+                if (!downloadUrl.empty() && adzInfo.native().landing_type(ind) == 1) { //支持下载类
+                    linkObj->set_landing_type(1);
+                    break;
+                } else {
+                    linkObj->set_landing_type(adzInfo.native().landing_type(ind));
+                }
+            }
             url::URLHelper showUrlParam;
             getShowPara(showUrlParam, bidRequest.bid());
             showUrlParam.add(URL_IMP_OF, "3");

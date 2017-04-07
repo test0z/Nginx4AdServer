@@ -23,7 +23,6 @@ namespace bidding {
     using namespace adservice::utility::userclient;
     using namespace adservice::utility::json;
     using namespace adservice::utility::cypher;
-    using namespace adservice::utility::AdSizeMap;
 
 #define AD_BD_CLICK_MACRO "%%CLICK_URL_0%%"
 #define AD_BD_PRICE_MACRO "%%PRICE%%"
@@ -384,7 +383,7 @@ namespace bidding {
                 native_img->set_width(img_w);
                 native_img->set_height(img_h);
             }
-            string logo_url = mtlsArray[0].get("p15", "");
+            std::string logo_url = mtlsArray[0].get("p15", "");
             if (!logo_url.empty()) {
                 if (adSlot.secure())
                     adservice::utility::url::url_replace(logo_url, "http://", "https://");

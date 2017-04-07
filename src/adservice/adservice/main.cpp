@@ -492,7 +492,7 @@ void dispatchRequest(adservice::utility::HttpRequest & request, adservice::utili
         adservice::corelogic::HandleTraceTask task(request, response);
         task.setLogger(serviceLogger);
         task();
-    } else if (queryPath = "/tool") {
+    } else if (queryPath == "/tool") {
         adservice::corelogic::HandleToolQueryTask task(request, response);
         task.setLogger(serviceLogger);
         task();
