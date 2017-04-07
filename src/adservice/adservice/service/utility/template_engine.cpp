@@ -105,7 +105,7 @@ namespace utility {
                 size += iter.second.length();
             }
             output.resize(size + 1);
-            auto out = utput.begin();
+            auto out = output.begin();
             const char * p = templateFileContent.c_str();
             int pos = 0;
             int paramIdx = -1;

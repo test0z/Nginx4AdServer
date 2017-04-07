@@ -407,8 +407,6 @@ namespace corelogic {
             log.adInfo.cost = adplace.costPrice;
             ipManager.getAreaCodeByIp(condition.ip.data(), log.geoInfo.country, log.geoInfo.province, log.geoInfo.city);
             std::string bannerJson = banner.json;
-            // bool isIOS
-            //    = condition.mobileDevice == SOLUTION_DEVICE_IPHONE || condition.mobileDevice == SOLUTION_DEVICE_IPAD;
             cppcms::json::value mtAdInfo = bannerJson2HttpsIOS(true, bannerJson, banner.bannerType);
             auto idSeq = CookieMappingManager::IdSeq();
             log.adInfo.imp_id = std::to_string(idSeq.time()) + std::to_string(idSeq.id());
@@ -425,10 +423,11 @@ namespace corelogic {
         } else { // DSP of=0,of=2,of=3
             bool showCreative = true;
             dspSetParam(paramMap, showCreative, needLog);
+            MT::common::Banner adBanner;
+            int64_t bId = std::stoll(paramMap[URL_CREATIVE_ID]);
+            bool adselectOK = adSelectClient->getBannerById(bId, adBanner);
             if (showCreative) { //需要显示创意
-                MT::common::Banner adBanner;
-                int64_t bId = std::stoll(paramMap[URL_CREATIVE_ID]);
-                if (!adSelectClient->getBannerById(bId, adBanner)) {
+                if (!adselectOK) {
                     log.adInfo.bannerId = 0;
                     log.reqStatus = 500;
                     return;
@@ -438,6 +437,8 @@ namespace corelogic {
                 char buffer[8192];
                 int len = buildResponseForDsp(adBanner, paramMap, bannerJson, templateFmt, buffer, sizeof(buffer));
                 respBody = std::string(buffer, buffer + len);
+            } else if (adselectOK) {
+                bgid = adBanner.bgId;
             }
 
             requestCounter.increaseShowForDSP();
@@ -463,7 +464,7 @@ namespace corelogic {
         }
 
         // 用户曝光频次控制
-        if (!log.userId.empty() && bgid > 0) {
+        if (!log.userId.empty() && needLog) {
             try {
                 MT::common::ASKey dailyKey(globalConfig.aerospikeConfig.nameSpace.c_str(), "user-freq",
                                            log.userId + "d");

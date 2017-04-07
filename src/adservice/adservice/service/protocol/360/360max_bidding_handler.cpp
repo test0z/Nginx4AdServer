@@ -20,7 +20,7 @@ namespace bidding {
 #define AD_MAX_CLICK_MACRO "%%CLICK_URL_ESC%%"
 #define AD_MAX_CLICK_UNENC_MACRO "%%CLICK_URL_UNESC%%"
 #define AD_MAX_PRICE_MACRO "%%WIN_PRICE%%"
-#define MAX_COOKIEMAPPING_URL "http://ck.adserver.com/mvdid=1"
+#define MAX_COOKIEMAPPING_URL "http://ck.adx.com/mvdid=134"
 
     inline int max(const int & a, const int & b)
     {
@@ -148,6 +148,7 @@ namespace bidding {
                 queryCondition.height = sizeIter.second;
                 pAdplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
             }
+            queryCondition.bannerType = BANNER_TYPE_PRIMITIVE;
         } else { //非原生请求
             queryCondition.width = adzInfo.width();
             queryCondition.height = adzInfo.height();
@@ -263,16 +264,27 @@ namespace bidding {
             nativeAd->add_category(adxIndustryType);
             auto creative = nativeAd->add_creatives();
             creative->set_title(mtlsArray[0].get("p0", ""));
-            creative->set_template_id(adzInfo.native().template_id(0));
+            creative->set_sub_title(mtlsArray[0].get("p3", ""));
+            creative->set_description(mtlsArray[0].get("p5", ""));
+            creative->set_button_name("Call To Action");
             auto contentImage = creative->mutable_content_image();
             contentImage->set_image_url(mtlsArray[0].get("p6", ""));
             contentImage->set_image_width(sizePair.first);
             contentImage->set_image_height(sizePair.second);
+            auto logoImage = creative->mutable_logo();
+            logoImage->set_image_url(mtlsArray[0].get("p15", ""));
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
             std::string linkUrl
                 = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
-            creative->mutable_link()->set_click_url(linkUrl);
+            auto linkObj = creative->mutable_link();
+            linkObj->set_click_url(linkUrl);
+            //            std::string iosDownloadUrl = mtlsArray[0].get("p10", "");
+            //            std::string androidDownloadUrl = mtlsArray[0].get("p11", "");
+            //            bool supportDownload = !iosDownloadUrl.empty() || !androidDownloadUrl.empty();
+            //            if (supportDownload) {
+            //                linkObj->landing_type() = 1;
+            //            }
             url::URLHelper showUrlParam;
             getShowPara(showUrlParam, bidRequest.bid());
             showUrlParam.add(URL_IMP_OF, "3");
