@@ -16,7 +16,9 @@
 #include "protocol/sohu/sohu_bidding_handler.h"
 #include "protocol/tanx/tanx_bidding_handler.h"
 #include "protocol/tencent_gdt/gdt_bidding_handler.h"
+#include "protocol/yidian/yidian_bidding_handler.h"
 #include "protocol/youku/youku_bidding_handlerv2.h"
+
 #include "utility/utility.h"
 
 #include "core/adselectv2/ad_select_client.h"
@@ -79,6 +81,8 @@ namespace corelogic {
         ADD_MODULE_ENTRY(BID_QUERY_PATH_LIEBAO, ADX_LIEBAO_MOBILE);
         // 360MAX
         ADD_MODULE_ENTRY(BID_QUERY_PATH_360MAX, ADX_360_MAX_PC);
+        //一点资讯
+        ADD_MODULE_ENTRY(BID_QUERY_PATH_YIDIAN, ADX_YIDIAN);
 
         std::sort<int *>(moduleIdx, moduleIdx + moduleCnt, [](const int & a, const int & b) {
             return moduleAdx[a].moduleHash < moduleAdx[b].moduleHash;
@@ -132,6 +136,8 @@ namespace corelogic {
             return new LieBaoBiddingHandler();
         case ADX_360_MAX_PC:
             return new JuxiaoMaxBiddingHandler();
+        case ADX_YIDIAN:
+            return new YidianBidingHandler();
         default:
             return NULL;
         }
