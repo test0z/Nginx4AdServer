@@ -530,14 +530,6 @@ namespace corelogic {
                 LOG_INFO << "handleShowRequests:" << handleShowRequests;
             }
         }
-        if (needLog) {
-            auto trafficControl = MT::common::traffic::TrafficControllProxy::getInstance();
-            if (log.adInfo.priceType == PRICETYPE_RRTB_CPM || log.adInfo.priceType == PRICETYPE_RTB) {
-                trafficControl->recordCPMShow(log.adInfo.sid, log.adInfo.advId, log.adInfo.bidPrice / 1000.0);
-            } else if (log.adInfo.priceType == PRICETYPE_RCPC || log.adInfo.priceType == PRICETYPE_RRTB_CPC) {
-                trafficControl->recordCPCShow(log.adInfo.sid);
-            }
-        }
     }
 }
 }

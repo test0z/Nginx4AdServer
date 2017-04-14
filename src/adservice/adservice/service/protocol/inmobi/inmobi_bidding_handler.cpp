@@ -357,7 +357,11 @@ namespace bidding {
             std::string landingUrl = mtlsArray[0]["p9"].str();
             nativeObject["assets"] = assetsArray;
             nativeObject["link"] = cppcms::json::value();
-            nativeObject["link"]["url"] = landingUrl;
+            url::URLHelper clickUrlParam;
+            getClickPara(clickUrlParam, requestId, "", landingUrl);
+            std::string clickUrl
+                = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+            nativeObject["link"]["url"] = clickUrl;
             admObject["native"] = nativeObject;
             bidValue["admobject"] = admObject;
         }
