@@ -109,6 +109,7 @@ namespace corelogic {
                 || md5_encode(stringtool::toupper(auth)) != md5_encode(stringtool::toupper("zhimakaimen"))) {
                 resp.status(403, "forbidden");
                 resp.set_body("wrong way to go dude ^_^");
+                return;
             }
             if (!actionType.empty()) {
                 try {

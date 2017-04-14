@@ -20,7 +20,7 @@ namespace bidding {
 #define AD_MAX_CLICK_MACRO "%%CLICK_URL_ESC%%"
 #define AD_MAX_CLICK_UNENC_MACRO "%%CLICK_URL_UNESC%%"
 #define AD_MAX_PRICE_MACRO "%%WIN_PRICE%%"
-#define MAX_COOKIEMAPPING_URL "http://ck.adx.com/mvdid=134"
+#define MAX_COOKIEMAPPING_URL "http://cm.mediav.com/s?mvdid=134"
 
     inline int max(const int & a, const int & b)
     {
@@ -139,7 +139,7 @@ namespace bidding {
         queryCondition.adxid = ADX_360_MAX_PC;
         queryCondition.adxpid = pid;
         queryCondition.ip = bidRequest.ip();
-        queryCondition.basePrice = (adzInfo.has_min_cpm_price() ? adzInfo.min_cpm_price() : 0) / 1000;
+        queryCondition.basePrice = (adzInfo.has_min_cpm_price() ? adzInfo.min_cpm_price() : 0) / 10000;
         if (adzInfo.has_native()) { //原生请求
             const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
             auto sizePair = adSizeMap.get({ adzInfo.width(), adzInfo.height() });
@@ -173,9 +173,9 @@ namespace bidding {
                 queryCondition.mobileNetwork = getNetWork(device.network());
             }
             if (mobile.has_is_app() && mobile.is_app()) { // app
-                if (mobile.has_package_name()) {
-                    queryCondition.adxpid = mobile.package_name();
-                }
+                                                          //                if (mobile.has_package_name()) {
+                //                    queryCondition.adxpid = mobile.package_name();
+                //                }
                 if (mobile.app_category_size() > 0) {
                     TypeTableManager & typeTableManager = TypeTableManager::getInstance();
                     queryCondition.mttyContentType
@@ -231,10 +231,13 @@ namespace bidding {
         const MT::common::Banner & banner = result.banner;
         std::string adxAdvIdStr = banner.adxAdvId;
         int adxAdvId = extractRealValue(adxAdvIdStr.data(), ADX_360_MAX_PC);
+        if (adxAdvId == 0) {
+            adxAdvId = finalSolution.advId;
+        }
         std::string adxIndustryTypeStr = banner.adxIndustryType;
         int adxIndustryType = extractRealValue(adxIndustryTypeStr.data(), ADX_360_MAX_PC);
         const BidRequest_AdSlot & adzInfo = bidRequest.adslot(seq);
-        int maxCpmPrice = (int)result.bidPrice * 1000;
+        int maxCpmPrice = (int)result.bidPrice * 10000;
 
         adResult->set_max_cpm_price(maxCpmPrice);
         adResult->set_adslot_id(adzInfo.id());
@@ -260,11 +263,13 @@ namespace bidding {
             adResult->set_width(sizePair.first);
             adResult->set_height(sizePair.second);
             auto nativeAd = adResult->add_native_ad();
+            nativeAd->set_advertiser_id(std::to_string(adxAdvId));
+            nativeAd->set_creative_id(std::to_string(adInfo.bannerId));
             nativeAd->set_max_cpm_price(maxCpmPrice);
             nativeAd->add_category(adxIndustryType);
             auto creative = nativeAd->add_creatives();
             creative->set_title(mtlsArray[0].get("p0", ""));
-            creative->set_sub_title(mtlsArray[0].get("p3", ""));
+            creative->set_sub_title(mtlsArray[0].get("p1", ""));
             creative->set_description(mtlsArray[0].get("p5", ""));
             creative->set_button_name("Call To Action");
             auto contentImage = creative->mutable_content_image();
@@ -281,7 +286,8 @@ namespace bidding {
             std::string linkUrl
                 = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
             auto linkObj = creative->mutable_link();
-            linkObj->set_click_url(linkUrl);
+            linkObj->set_click_url(std::string(AD_MAX_CLICK_UNENC_MACRO) + url::urlEncode(linkUrl));
+            linkObj->set_landing_type(0);
             for (int32_t ind = 0; ind < adzInfo.native().landing_type_size(); ind++) {
                 if (!downloadUrl.empty() && adzInfo.native().landing_type(ind) == 1) { //支持下载类
                     linkObj->set_landing_type(1);
@@ -298,8 +304,10 @@ namespace bidding {
                 nativeAd->set_deal_id(std::stoi(finalSolution.dDealId));
                 showUrlParam.add(URL_DEAL_ID, finalSolution.dDealId);
             }
-            adResult->set_nurl(std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?"
-                               + showUrlParam.cipherParam());
+            std::string impressionTrack
+                = std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?" + showUrlParam.cipherParam();
+            nativeAd->add_impression_tracks()->assign(impressionTrack);
+            // adResult->set_nurl(impressionTrack);
         } else { //非原生广告
             std::string destUrl = mtlsArray[0].get("p1", "");
             adResult->add_destination_url(destUrl);

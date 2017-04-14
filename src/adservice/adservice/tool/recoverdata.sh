@@ -6,7 +6,7 @@ for server in e10 e11 e12 e13 ;
 do
 	dataDir=/tmp/recoverdata/$server
 	mkdir -p $dataDir
-	copydirfrom $server /opt/adservice/logs/201702* $dataDir/
+        copydirfrom $server "/opt/adservice/logs/201704*" $dataDir/
 	echo "copydata from $server ok"
 	for d in `ls -d $dataDir/*`;
 	do

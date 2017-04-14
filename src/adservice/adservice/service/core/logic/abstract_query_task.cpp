@@ -88,7 +88,7 @@ namespace corelogic {
                 return kupai_price_decode(input);
             case ADX_360_MAX_PC:
             case ADX_360_MAX_MOBILE:
-                return max360_price_decode(input);
+                return max360_price_decode(input) / 10000;
             default:
                 return 0;
             }
