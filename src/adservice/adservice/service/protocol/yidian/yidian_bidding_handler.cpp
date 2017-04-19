@@ -30,27 +30,25 @@ namespace bidding {
         if (select.mobileDevice == SOLUTION_DEVICE_ANDROID) {
             select.imei = stringtool::toupper(imei);
             select.idfa = "";
-            select.mac = "";
-            select.androidId = "";
         } else if (select.mobileDevice == SOLUTION_DEVICE_IPHONE) {
             select.idfa = stringtool::toupper(idfa);
             select.imei = "";
-            select.mac = "";
-            select.androidId = "";
         } else {
             select.idfa = "";
             select.imei = "";
-            select.mac = "";
-            select.androidId = "";
         }
+        select.mac = "";
+        select.androidId = "";
     }
     void getPriceType(OUT int & pricetype, const int & mtty_type)
     {
         switch (mtty_type) {
         case PRICETYPE_CPM:
+        case PRICETYPE_RRTB_CPM:
             pricetype = 1;
             return;
         case PRICETYPE_CPC:
+        case PRICETYPE_RRTB_CPC:
             pricetype = 2;
             return;
         default:
@@ -60,6 +58,7 @@ namespace bidding {
     }
     bool YidianBidingHandler::parseRequestData(const std::string & data)
     {
+        bidRequest.undefined();
         bidResponse.undefined();
         return parseJson(data.c_str(), bidRequest);
     }
@@ -92,39 +91,39 @@ namespace bidding {
         adplaceInfo.flowType = SOLUTION_FLOWTYPE_MOBILE;
         const cppcms::json::value & device_object = bidRequest.find("device");
         /*获取设备信息*/
-        queryCondition.ip = device_object.get<std::string>("ip");
-        std::string os_type = device_object.get<std::string>("os");
-        std::string idfa = device_object.get<std::string>("ifa");
-        std::string imei = device_object.get<std::string>("imeiplain");
+        queryCondition.ip = device_object.get("ip", "");
+        std::string os_type = device_object.get("os", "");
+        std::string idfa = device_object.get("ifa", "");
+        std::string imei = device_object.get("imeiplain", "");
         GetDevice(queryCondition.mobileDevice, os_type);
         GetAdFlag(queryCondition, idfa, imei);
-        std::string pid = device_object.get<std::string>("bundle");
+        std::string pid = device_object.get("bundle", "");
         queryCondition.adxpid = pid;
-        cookieMappingKeyMobile(queryCondition.idfa, queryCondition.imei, queryCondition.androidId, queryCondition.mac,
-                               queryCondition);
-        int ad_type = boost::lexical_cast<int>(bidRequest.get<std::string>("tagid"));
+        cookieMappingKeyMobile(md5_encode(queryCondition.idfa), md5_encode(queryCondition.imei),
+                               md5_encode(queryCondition.androidId), md5_encode(queryCondition.mac), queryCondition);
+        int ad_type = boost::lexical_cast<int>(bidRequest.get("tagid", ""));
         int width = 0;
         int height = 0;
         const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
         switch (ad_type) {
         case 0: {
             const cppcms::json::value & Osplash = bidRequest.find("splash");
-            queryCondition.width = Osplash.get<int>("w", 0);
-            queryCondition.height = Osplash.get<int>("h", 0);
+            queryCondition.width = Osplash.get("w", 0);
+            queryCondition.height = Osplash.get("h", 0);
             adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
             Adtype = 0;
         } break;
         case 1: {
             const cppcms::json::value & Olist = bidRequest.find("list");
-            width = Olist.get<int>("w", 0);
-            height = Olist.get<int>("h", 0);
-            maxduration = Olist.get<int>("maxduration", 0);
+            width = Olist.get("w", 0);
+            height = Olist.get("h", 0);
+            maxduration = Olist.get("maxduration", 0);
             Adtype = 1;
         } break;
         case 2: {
             const cppcms::json::value & Ocontent = bidRequest.find("content");
-            width = Ocontent.get<int>("w", 0);
-            height = Ocontent.get<int>("h", 0);
+            width = Ocontent.get("w", 0);
+            height = Ocontent.get("h", 0);
             Adtype = 2;
         } break;
 
@@ -153,10 +152,8 @@ namespace bidding {
 	"tagid":"",
 	"bid_type":0,
      "price":"",
-     "clickmonitor_urls":[
-        ],
-      "viewmonitor_urls":[
-        ]
+     "clickmonitor_urls":[],
+      "viewmonitor_urls":[]
 })";
     static const char * SPLASH_TEMPLATE = R"(
 {
@@ -203,10 +200,10 @@ namespace bidding {
                      || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         fillAdInfo(queryCondition, result, bidRequest.get<std::string>("id"));
         getPriceType(priceType, finalSolution.priceType);
-        bidRequest["bidtype"] = priceType;
+        bidResponse["bid_type"] = priceType;
         std::ostringstream os;
         os << result.bidPrice;
-        bidRequest["price"] = os.str();
+        bidResponse["price"] = os.str();
         std::string strBannerJson = banner.json;
         cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
         std::string landingurl = "";
@@ -302,33 +299,38 @@ namespace bidding {
                 adservice::utility::url::url_replace(img_url, "https://", "http://");*/
             adObject["image_url"] = img_url;
             adObject["click_type"] = 0;
+            adObject["id"] = 1;
         }
         adObject["click_url"] = landingurl;
+        {
 
-        cppcms::json::array & click_urls = bidResponse["clickmonitor_urls"].array();
-        cppcms::json::array & view_urls = bidResponse["viewmonitor_urls"].array();
+            cppcms::json::array & click_urls = bidResponse["clickmonitor_urls"].array();
+            cppcms::json::array & view_urls = bidResponse["viewmonitor_urls"].array();
 
-        url::URLHelper clickUrlParam;
-        getClickPara(clickUrlParam, requestId, "", landingurl);
-        clickurl = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
-        click_urls.push_back(clickurl);
+            url::URLHelper clickUrlParam;
+            getClickPara(clickUrlParam, requestId, "", landingurl);
+            clickurl
+                = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+            click_urls.push_back(clickurl);
 
-        url::URLHelper showUrlParam;
-        getShowPara(showUrlParam, requestId);
-        showUrlParam.add(URL_IMP_OF, "3");
-        showUrlParam.add(URL_EXCHANGE_PRICE, os.str());
-        monitor_url = std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?" + showUrlParam.cipherParam();
-        view_urls.push_back(monitor_url);
-        std::string objStr = toJson(adObject);
+            url::URLHelper showUrlParam;
+            getShowPara(showUrlParam, requestId);
+            showUrlParam.add(URL_IMP_OF, "3");
+            showUrlParam.add(URL_EXCHANGE_PRICE, os.str());
+            monitor_url
+                = std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?" + showUrlParam.cipherParam();
+            view_urls.push_back(monitor_url);
+        }
+        // std::string objStr = toJson(adObject);
         switch (Adtype) {
         case 0:
-            bidResponse["splash"] = objStr;
+            bidResponse["splash"] = adObject;
             break;
         case 1:
-            bidResponse["list"] = objStr;
+            bidResponse["list"] = adObject;
             break;
         case 2:
-            bidResponse["content"] = objStr;
+            bidResponse["content"] = adObject;
             break;
         }
         redoCookieMapping(queryCondition.adxid, "");
