@@ -142,6 +142,7 @@ CORE_LIBS="-L/usr/lib -L/usr/lib64 -L/usr/local/lib -L/usr/local/lib64 $CORE_LIB
 /usr/local/lib/libboost_thread.a
 /usr/local/lib/libboost_filesystem.a
 /usr/local/lib/libboost_system.a
+/usr/local/lib/libboost_regex.a
 /usr/local/lib/libprotobuf.a
 /usr/local/lib/libboost_iostreams.a
 /usr/local/lib/libmysqlcppconn-static.a

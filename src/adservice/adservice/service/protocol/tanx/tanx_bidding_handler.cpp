@@ -190,9 +190,11 @@ namespace bidding {
             if (device.has_network()) {
                 queryCondition.mobileNetwork = getNetWork(device.network());
             }
-            if (mobile.has_is_app() && mobile.is_app()) {                          // app
-                if (adzInfo.view_type_size() > 0 && adzInfo.view_type(0) == 104) { //无线墙原生
+            if (mobile.has_is_app() && mobile.is_app()) { // app
+                if (adzInfo.view_type_size() > 0 && adzInfo.view_type(0) >= 104
+                    && adzInfo.view_type(0) <= 111) { //原生native
                     const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
+                    pAdplaceInfo.sizeArray.clear();
                     auto sizePair = adSizeMap.get({ queryCondition.width, queryCondition.height });
                     for (auto sizeIter : sizePair) {
                         queryCondition.width = sizeIter.first;
@@ -232,16 +234,16 @@ namespace bidding {
         } else {
             queryCondition.mobileDevice = getMobileTypeFromUA(bidRequest.user_agent());
             queryCondition.pcOS = getOSTypeFromUA(bidRequest.user_agent());
-            if (queryCondition.mobileDevice != SOLUTION_DEVICE_OTHER) { // wap
-                queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
-                queryCondition.adxid = ADX_TANX_MOBILE;
-                cookieMappingKeyWap(ADX_TANX_MOBILE, bidRequest.has_tid() ? bidRequest.tid() : "");
-            } else { // pc
-                queryCondition.pcOS = getOSTypeFromUA(bidRequest.user_agent());
-                queryCondition.pcBrowserStr = getBrowserTypeFromUA(bidRequest.user_agent());
-                queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
-                cookieMappingKeyPC(ADX_TANX, bidRequest.has_tid() ? bidRequest.tid() : "");
-            }
+            // if (queryCondition.mobileDevice != SOLUTION_DEVICE_OTHER) { // wap
+            //    queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
+            //    queryCondition.adxid = ADX_TANX_MOBILE;
+            //    cookieMappingKeyWap(ADX_TANX_MOBILE, bidRequest.has_tid() ? bidRequest.tid() : "");
+            //} else { // pc
+            queryCondition.pcOS = getOSTypeFromUA(bidRequest.user_agent());
+            queryCondition.pcBrowserStr = getBrowserTypeFromUA(bidRequest.user_agent());
+            queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
+            cookieMappingKeyPC(ADX_TANX, bidRequest.has_tid() ? bidRequest.tid() : "");
+            //}
         }
         queryCookieMapping(cmInfo.queryKV, queryCondition);
 
@@ -296,22 +298,58 @@ namespace bidding {
             std::string clickUrl
                 = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
             adResult->add_click_through_url(clickUrl);
-            if (bidRequest.mobile().ad_num() > 1) {
-                std::string resourceAddress = mtlsArray[0]["p6"].str();
-                adResult->set_resource_address(resourceAddress);
-            } else {
-                auto mobileCreative = adResult->mutable_mobile_creative();
-                mobileCreative->set_version(bidRequest.version());
-                mobileCreative->set_bid(bidRequest.bid());
-                auto creative = mobileCreative->add_creatives();
-                creative->set_img_url(mtlsArray[0].get("p6", ""));
-                creative->set_img_size(adzInfo.size());
-                creative->set_title(mtlsArray[0].get("p0", ""));
-                creative->set_click_url(clickUrl);
-                creative->set_destination_url(destUrl);
-                creative->set_creative_id(std::to_string(banner.bId));
-                mobileCreative->set_native_template_id(bidRequest.mobile().native_template_id(0));
+            std::string iosDownloadUrl = mtlsArray[0].get("p10", "");
+            std::string androidDownloadUrl = mtlsArray[0].get("p11", "");
+            bool supportDownload = !iosDownloadUrl.empty() || !androidDownloadUrl.empty();
+            auto mobileCreative = adResult->mutable_mobile_creative();
+            mobileCreative->set_version(bidRequest.version());
+            mobileCreative->set_bid(bidRequest.bid());
+            auto creative = mobileCreative->add_creatives();
+            creative->set_img_url(mtlsArray[0].get("p6", ""));
+            creative->set_img_size(adzInfo.size());
+            creative->set_title(mtlsArray[0].get("p0", ""));
+            creative->set_click_url(clickUrl);
+            creative->set_destination_url(destUrl);
+            creative->set_creative_id(std::to_string(banner.bId));
+            std::string nativeTmpId;
+            for (int32_t nativeCounter = 0; nativeCounter != bidRequest.mobile().native_ad_template_size();
+                 nativeCounter++) {
+                auto & nativeTemplate = bidRequest.mobile().native_ad_template(nativeCounter);
+                auto & areaCreative = nativeTemplate.areas(0).creative();
+                if ((!supportDownload && areaCreative.action_fields_size() > 0 && areaCreative.action_fields(0) == 1)
+                    && nativeCounter != bidRequest.mobile().native_ad_template_size() - 1) {
+                    continue;
+                }
+                nativeTmpId = nativeTemplate.native_template_id();
+                for (int32_t f = 0; f < areaCreative.required_fields_size(); f++) {
+                    int32_t field = areaCreative.required_fields(f);
+                    switch (field) {
+                    case 2: // ad_words
+                    {
+                        auto newAttr = creative->add_attr();
+                        newAttr->set_name("ad_words");
+                        newAttr->set_value(mtlsArray[0].get("p0", ""));
+                    } break;
+                    default:
+                        break;
+                    }
+                }
+                break;
             }
+            if (supportDownload) { //不管action_type是否为1,都设置下载属性
+                auto downloadAttr = creative->add_attr();
+                downloadAttr->set_name("download_url");
+                auto downloadTypeAttr = creative->add_attr();
+                downloadTypeAttr->set_name("download_type");
+                if (isIOS) {
+                    downloadAttr->set_value(iosDownloadUrl);
+                    downloadTypeAttr->set_value("4");
+                } else {
+                    downloadAttr->set_value(androidDownloadUrl);
+                    downloadTypeAttr->set_value("2");
+                }
+            }
+            mobileCreative->set_native_template_id(nativeTmpId);
             url::URLHelper showUrlParam;
             getShowPara(showUrlParam, bidRequest.bid());
             showUrlParam.add(URL_IMP_OF, "3");

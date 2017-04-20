@@ -179,19 +179,19 @@ namespace bidding {
             if (assets.size() > 0) {
                 for (uint32_t i = 0; i < assets.size(); i++) {
                     const cppcms::json::value & asset = assets[i];
+                    int type = asset.get("img.type", 500);
                     int w = asset.get("img.wmin", 0);
                     int h = asset.get("img.hmin", 0);
-                    auto sizePair = adSizeMap.get({ w, h });
-                    for (auto & sizeIter : sizePair) {
-                        queryCondition.width = sizeIter.first;
-                        queryCondition.height = sizeIter.second;
-                        adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
+                    if (w != 0 && h != 0 && type == 3) {
+                        auto sizePair = adSizeMap.get({ w, h });
+                        for (auto & sizeIter : sizePair) {
+                            queryCondition.width = sizeIter.first;
+                            queryCondition.height = sizeIter.second;
+                            adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
+                        }
                     }
                 }
                 queryCondition.pAdplaceInfo = &adplaceInfo;
-                if (adplaceInfo.sizeArray.size() > 0) {
-                    adplaceInfo.isAdFlow = true;
-                }
             } else {
                 return false;
             }
@@ -323,68 +323,44 @@ namespace bidding {
             cppcms::json::value admObject;
             cppcms::json::value nativeObject;
             cppcms::json::array assetsArray;
-            const adservice::utility::AdSizeMap & adSizeMap = adservice::utility::AdSizeMap::getInstance();
-            if (queryCondition.pAdplaceInfo->isAdFlow) { //信息流
-                const std::vector<MT::common::Banner> & adFlowBanners = result.adFlowBanners;
-                std::unordered_set<int64_t> selectedBids;
-                int titleAssetId = -1;
-                int dataAssetId = -1;
-                for (uint32_t i = 0; i < assets.size(); i++) {
-                    const cppcms::json::value & asset = assets[i];
-                    int w = asset.get("img.wmin", 0);
-                    int h = asset.get("img.hmin", 0);
-                    if (w != 0 && h != 0) {
-                        for (const MT::common::Banner & b : adFlowBanners) {
-                            auto psize = adSizeMap.rget({ b.width, b.height });
-                            if (psize.first == w && psize.second == h
-                                && selectedBids.find(b.bId) == selectedBids.end()) {
-                                cppcms::json::value bJson;
-                                std::string tmpJson = b.json;
-                                urlHttp2HttpsIOS(isIOS, tmpJson);
-                                if (!parseJson(tmpJson.c_str(), bJson)) {
-                                    continue;
-                                }
-                                cppcms::json::value assetObj;
-                                assetObj["id"] = asset.get("id", 1);
-                                assetObj["img"] = cppcms::json::value();
-                                assetObj["img"]["w"] = w;
-                                assetObj["img"]["h"] = h;
-                                auto & tmpMtls = bJson["mtls"].array();
-                                assetObj["img"]["url"] = tmpMtls[0].get("p6", "");
-                                assetsArray.push_back(assetObj);
-                                if (titleAssetId != -1) {
-                                    cppcms::json::value titleAssetObj;
-                                    titleAssetObj["id"] = titleAssetId;
-                                    titleAssetObj["title"] = cppcms::json::value();
-                                    titleAssetObj["title"]["text"] = tmpMtls[0].get("p0", "");
-                                    assetsArray.push_back(titleAssetObj);
-                                    titleAssetId = -1;
-                                }
-                                if (dataAssetId != -1) {
-                                    cppcms::json::value dataAssetObj;
-                                    dataAssetObj["id"] = dataAssetId;
-                                    dataAssetObj["data"] = cppcms::json::value();
-                                    dataAssetObj["data"]["value"] = tmpMtls[0].get("p5", "");
-                                    assetsArray.push_back(dataAssetObj);
-                                    dataAssetId = -1;
-                                }
-                                selectedBids.insert(b.bId);
-                            }
-                        }
-                    } else {
-                        if (!asset.find("data").is_undefined() && asset.get("data.type", 0) == 2) {
-                            dataAssetId = asset.get("id", -1);
-                        }
-                        if (!asset.find("title").is_undefined()) {
-                            titleAssetId = asset.get("id", -1);
-                        }
+            // const adservice::utility::AdSizeMap & adSizeMap = adservice::utility::AdSizeMap::getInstance();
+            for (uint32_t i = 0; i < assets.size(); i++) {
+                const cppcms::json::value & asset = assets[i];
+                int w = asset.get("img.wmin", 0);
+                int h = asset.get("img.hmin", 0);
+                int imageType = asset.get("img.type", 500);
+                cppcms::json::value assetObj;
+                assetObj["id"] = asset.get("id", 1);
+                if (w != 0 && h != 0) {                     // image
+                    if (imageType == 1 || imageType == 2) { // logo or icon
+                        assetObj["img"] = cppcms::json::value();
+                        assetObj["img"]["url"] = mtlsArray[0].get("p15", "");
+                    } else if (imageType == 3) { // main
+                        assetObj["img"] = cppcms::json::value();
+                        assetObj["img"]["w"] = w;
+                        assetObj["img"]["h"] = h;
+                        assetObj["img"]["url"] = mtlsArray[0].get("p6", "");
                     }
+                } else if (!asset.find("data").is_undefined() && asset.get("data.type", 0) == 2) { // description
+                    assetObj["data"] = cppcms::json::value();
+                    assetObj["data"]["value"] = tmpMtls[0].get("p5", "");
+                } else if (!asset.find("title").is_undefined()) { // title
+                    assetObj["title"] = cppcms::json::value();
+                    assetObj["title"]["text"] = tmpMtls[0].get("p0", "");
+                } else {
+                    assetObj["data"] = cppcms::json::value();
+                    assetObj["data"]["value"] = "";
                 }
+                assetsArray.push_back(assetObj);
             }
             std::string landingUrl = mtlsArray[0]["p9"].str();
             nativeObject["assets"] = assetsArray;
             nativeObject["link"] = cppcms::json::value();
-            nativeObject["link"]["url"] = landingUrl;
+            url::URLHelper clickUrlParam;
+            getClickPara(clickUrlParam, requestId, "", landingUrl);
+            std::string clickUrl
+                = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+            nativeObject["link"]["url"] = clickUrl;
             admObject["native"] = nativeObject;
             bidValue["admobject"] = admObject;
         }

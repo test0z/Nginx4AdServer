@@ -88,7 +88,7 @@ namespace utility {
                 }
                 p += currentPos.param.length() + 3;
                 pos += currentPos.param.length() + 3;
-                if (paramIdx + 1 < params.size()) {
+                if (paramIdx + 1 < (int)params.size()) {
                     currentPos = params[++paramIdx];
                 } else {
                     currentPos.pos = 0x7FFFFFFF;
@@ -105,7 +105,7 @@ namespace utility {
                 size += iter.second.length();
             }
             output.resize(size + 1);
-            auto out = utput.begin();
+            auto out = output.begin();
             const char * p = templateFileContent.c_str();
             int pos = 0;
             int paramIdx = -1;
@@ -133,7 +133,7 @@ namespace utility {
                 }
                 p += currentPos.param.length() + 3;
                 pos += currentPos.param.length() + 3;
-                if (paramIdx + 1 < params.size()) {
+                if (paramIdx + 1 < (int)params.size()) {
                     currentPos = params[++paramIdx];
                 } else {
                     currentPos.pos = 0x7FFFFFFF;

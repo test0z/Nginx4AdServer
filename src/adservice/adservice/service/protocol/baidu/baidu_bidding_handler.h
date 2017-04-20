@@ -5,7 +5,7 @@
 #ifndef ADCORE_BAIDU_BIDDING_HANDLER_H
 #define ADCORE_BAIDU_BIDDING_HANDLER_H
 
-#include "protocol/baidu/baidu_bidding.h"
+#include "protocol/baidu/baidu_bidding.pb.h"
 #include "protocol/base/abstract_bidding_handler.h"
 
 namespace protocol {

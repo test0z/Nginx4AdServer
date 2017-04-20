@@ -338,7 +338,6 @@ namespace bidding {
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         if (queryCondition.bannerType == BANNER_TYPE_PRIMITIVE) {
             BidResponse_Ad_NativeAd * native_ad = adResult->mutable_native_ad();
-
             const BidRequest_AdSlot_NativeAdParam_ImageEle & res_img = adSlot.nativead_param().image();
             const BidRequest_AdSlot_NativeAdParam_ImageEle & res_logo = adSlot.nativead_param().logo_icon();
             BidResponse_Ad_NativeAd_Image * logo = native_ad->mutable_logo_icon();
@@ -384,7 +383,7 @@ namespace bidding {
                 native_img->set_width(img_w);
                 native_img->set_height(img_h);
             }
-            string logo_url = mtlsArray[0].get("p15", "");
+            std::string logo_url = mtlsArray[0].get("p15", "");
             if (!logo_url.empty()) {
                 if (adSlot.secure())
                     adservice::utility::url::url_replace(logo_url, "http://", "https://");

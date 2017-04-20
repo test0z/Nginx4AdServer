@@ -207,12 +207,6 @@ namespace corelogic {
             LOG_ERROR << "click ip area not equal to url param area,sid:" << log.adInfo.sid << ",clickip:" << userIp
                       << ",clickArea:" << clickIpArea << ",paramArea:" << paramArea;
         }
-        auto trafficControl = MT::common::traffic::TrafficControllProxy::getInstance();
-        if (log.adInfo.priceType == PRICETYPE_RRTB_CPM || log.adInfo.priceType == PRICETYPE_RTB) {
-            trafficControl->recordCPMClick(log.adInfo.sid);
-        } else if (log.adInfo.priceType == PRICETYPE_RCPC || log.adInfo.priceType == PRICETYPE_RRTB_CPC) {
-            trafficControl->recordCPCClick(log.adInfo.sid, log.adInfo.advId, log.adInfo.bidPrice); //与历史兼容
-        }
     }
 
     void HandleClickQueryTask::onError(std::exception & e, adservice::utility::HttpResponse & resp)

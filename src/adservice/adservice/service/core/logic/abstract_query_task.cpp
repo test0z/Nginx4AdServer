@@ -89,7 +89,7 @@ namespace corelogic {
                 return kupai_price_decode(input);
             case ADX_360_MAX_PC:
             case ADX_360_MAX_MOBILE:
-                return max360_price_decode(input);
+                return max360_price_decode(input) / 10000;
             default:
                 return 0;
             }
@@ -394,6 +394,22 @@ namespace corelogic {
             adservice::log::LogPusherPtr logPusher = adservice::log::LogPusher::getLogger(loggerName, logConfigKey);
             if (logPusher.use_count() > 0) {
                 logPusher->push(logString, isImportant);
+            }
+        }
+        if (log.logType == protocol::log::SHOW) {
+            auto trafficControl = MT::common::traffic::TrafficControllProxy::getInstance();
+            if (log.adInfo.priceType == PRICETYPE_RRTB_CPM || log.adInfo.priceType == PRICETYPE_RTB) {
+                trafficControl->recordCPMShowAsync(log.adInfo.sid, log.adInfo.advId, log.adInfo.bidPrice / 1000.0);
+            } else if (log.adInfo.priceType == PRICETYPE_RCPC || log.adInfo.priceType == PRICETYPE_RRTB_CPC) {
+                trafficControl->recordCPCShow(log.adInfo.sid);
+            }
+        } else if (log.logType == protocol::log::CLICK) {
+            auto trafficControl = MT::common::traffic::TrafficControllProxy::getInstance();
+            if (log.adInfo.priceType == PRICETYPE_RRTB_CPM || log.adInfo.priceType == PRICETYPE_RTB) {
+                trafficControl->recordCPMClickAsync(log.adInfo.sid);
+            } else if (log.adInfo.priceType == PRICETYPE_RCPC || log.adInfo.priceType == PRICETYPE_RRTB_CPC) {
+                trafficControl->recordCPCClick(log.adInfo.sid, log.adInfo.advId,
+                                               log.adInfo.bidPrice / 1000.0); //与历史兼容
             }
         }
         if (log.logType == protocol::log::SHOW && (log.adInfo.adxid == 4 || log.adInfo.adxid > 99)) { //脏数据来源检测

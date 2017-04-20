@@ -74,18 +74,28 @@ namespace server {
         adservice::core::model::MtUserMapping
         getUserMappingByKey(const std::string & key, const std::string & value, bool isDevice);
 
-        bool updateMappingAdxUid(const std::string & userId, int64_t adxId, const std::string & value);
+        bool updateMappingAdxUid(const std::string & userId,
+                                 int64_t adxId,
+                                 const std::string & value,
+                                 int64_t ttl = DAY_SECOND * 30);
 
-        bool updateUserMappingAsync(adservice::core::model::MtUserMapping & mapping);
+        bool updateUserMappingAsync(adservice::core::model::MtUserMapping & mapping, int64_t ttl = DAY_SECOND * 30);
 
-        bool updateMappingAdxUidAsync(const std::string & userId, int64_t adxId, const std::string & value);
+        bool updateMappingAdxUidAsync(const std::string & userId,
+                                      int64_t adxId,
+                                      const std::string & value,
+                                      int64_t ttl = DAY_SECOND * 30);
 
         bool updateMappingDeviceAsync(const std::string & userId,
                                       const std::string & deviceIdType,
                                       const std::string & value,
-                                      const std::string & originDeviceValue);
+                                      const std::string & originDeviceValue,
+                                      int64_t ttl = DAY_SECOND * 30);
 
-        void touchMapping(const std::string & key, const std::string & value, const std::string & userId);
+        void touchMapping(const std::string & key,
+                          const std::string & value,
+                          const std::string & userId,
+                          int64_t ttl = DAY_SECOND * 30);
 
         adservice::core::model::UserIDEntity newIdSeq();
 

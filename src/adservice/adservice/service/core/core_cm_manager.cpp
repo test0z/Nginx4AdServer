@@ -34,13 +34,17 @@ namespace server {
     }
 
     // cm_reconstruct
-    bool CookieMappingManager::updateMappingAdxUid(const std::string & userId, int64_t adxId, const std::string & value)
+    bool CookieMappingManager::updateMappingAdxUid(const std::string & userId,
+                                                   int64_t adxId,
+                                                   const std::string & value,
+                                                   int64_t ttl)
     {
         core::model::MtUserMapping mapping;
         mapping.userId = userId;
         std::string k = core::model::MtUserMapping::adxUidKey(adxId);
         mapping.outerUserKey = k;
         mapping.outerUserId = value;
+        mapping.ttl = ttl;
         MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), k, value);
         try {
             aerospikeClient.put(key, mapping);
@@ -53,14 +57,17 @@ namespace server {
         return true;
     }
 
-    bool
-    CookieMappingManager::updateMappingAdxUidAsync(const std::string & userId, int64_t adxId, const std::string & value)
+    bool CookieMappingManager::updateMappingAdxUidAsync(const std::string & userId,
+                                                        int64_t adxId,
+                                                        const std::string & value,
+                                                        int64_t ttl)
     {
         core::model::MtUserMapping mapping;
         mapping.userId = userId;
         std::string k = core::model::MtUserMapping::adxUidKey(adxId);
         mapping.outerUserKey = k;
         mapping.outerUserId = value;
+        mapping.ttl = ttl;
         MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), k, value);
         try {
             aerospikeClient.putAsync(key, mapping);
@@ -76,13 +83,15 @@ namespace server {
     bool CookieMappingManager::updateMappingDeviceAsync(const std::string & userId,
                                                         const std::string & deviceIdType,
                                                         const std::string & value,
-                                                        const std::string & originDeviceValue)
+                                                        const std::string & originDeviceValue,
+                                                        int64_t ttl)
     {
         core::model::MtUserMapping mapping;
         mapping.userId = userId;
         std::string k = deviceIdType;
         mapping.outerUserKey = k;
         mapping.outerUserId = value;
+        mapping.ttl = ttl;
         if (!originDeviceValue.empty()) {
             mapping.needDeviceOriginId = true;
             mapping.outerUserOriginId = originDeviceValue;
@@ -141,11 +150,13 @@ namespace server {
         }
     }
 
-    void
-    CookieMappingManager::touchMapping(const std::string & k, const std::string & value, const std::string & userId)
+    void CookieMappingManager::touchMapping(const std::string & k,
+                                            const std::string & value,
+                                            const std::string & userId,
+                                            int64_t ttl)
     {
         MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), k, value);
-        MT::common::ASOperation touchOperation(1, DAY_SECOND * 30);
+        MT::common::ASOperation touchOperation(1, ttl);
         touchOperation.addTouch();
         try {
             TouchFallbackData * data = new TouchFallbackData(k, value, userId);

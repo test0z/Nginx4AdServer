@@ -318,7 +318,6 @@ static void msg_consume(rd_kafka_message_t * rkmessage, void * opaque)
                             for(auto iter:cpcFees){
                                 printf("sid:%ld fees:%ld\n",iter.first,iter.second);
                             }
-                            fflush(STDOUT);
                         }
                     }
                 } catch (avro::Exception & e) {

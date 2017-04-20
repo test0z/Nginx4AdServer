@@ -35,7 +35,10 @@ namespace adselectv2 {
 
     void makeRequest(bool isSSP, AdSelectCondition & selectCondition, MT::common::SelectRequest & request)
     {
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
         MT::common::SourceType & source = request.source;
 
         source.insert({ "d_adplacetype", (int64_t)selectCondition.adplaceType });

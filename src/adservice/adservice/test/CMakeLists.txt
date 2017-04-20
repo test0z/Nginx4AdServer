@@ -39,11 +39,11 @@ ADD_EXECUTABLE(url_test ./urlhelper_test.cpp
 ADD_EXECUTABLE(te_test ./template_engine_test.cpp
     ../logging.cpp
     ../service/utility/template_engine.cpp
-    ../service/utility/file.cpp)
+    ../service/utility/file.cpp
+    ../service/utility/mttytime.cpp)
 
 ADD_EXECUTABLE(price_test ./price_test.cpp
-    ../service/protocol/netease/nex_price.cpp
-    ../service/protocol/youku/youku_price.cpp
+    ../service/protocol/360/360max_price.cpp
     ../service/utility/cypher.cpp
     ../service/utility/url.cpp
     ../service/utility/random.cpp)
@@ -60,7 +60,7 @@ ADD_EXECUTABLE(executor_test ./executor_test.cpp
     ../service/utility/json.cpp)
 
 SET(LINK_LIBRARY 
-    rt
+#    rt
     dl
     pthread
     ssl

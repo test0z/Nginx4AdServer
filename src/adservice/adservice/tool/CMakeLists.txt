@@ -42,7 +42,6 @@ ADD_EXECUTABLE(locallog_collector ./locallog_collector.cpp
     ../service/core/core_executor.cpp
     ../service/core/logpusher/log_pusher.cpp
     ../service/core/logpusher/kafka_log_producer.cpp
-    ../service/core/core_threadlocal_manager.cpp
     ../service/core/config_types.cpp
     )
 

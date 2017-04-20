@@ -3,6 +3,7 @@
 
 #include "common/spinlock.h"
 #include <mtty/aerospike.h>
+#include <mtty/constants.h>
 #include <string>
 #include <unordered_map>
 
@@ -50,6 +51,7 @@ namespace core {
             std::string outerUserOriginId; //未加密的device id或者平台id
             std::string cypherUserId;
             bool needDeviceOriginId{ false };
+            int64_t ttl{ DAY_SECOND * 30 };
         };
     }
 }
