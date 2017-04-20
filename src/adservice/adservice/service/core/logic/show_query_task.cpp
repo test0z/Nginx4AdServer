@@ -18,6 +18,7 @@
 #include "core/core_cm_manager.h"
 #include "core/core_ip_manager.h"
 #include "logging.h"
+#include "service/protocol/dsps/dsp_handler_manager.h"
 #include "utility/utility.h"
 #include <mtty/trafficcontrollproxy.h>
 #include <mtty/usershowcounter.h>
@@ -33,6 +34,11 @@ namespace protocol {
 namespace bidding {
 
     extern cppcms::json::value bannerJson2HttpsIOS(bool isIOS, const std::string & bannerJson, int bannerType);
+}
+
+namespace dsp {
+
+    extern DSPHandlerManager dspHandlerManager;
 }
 }
 
@@ -71,251 +77,382 @@ namespace corelogic {
             stringSafeNumber(paramMap[URL_SSP_PID]);
     }
 
-    /**
-     * 因为业务数据库数据插入ElasticSearch时会对引号进行转义
-     * 此函数用于反转义引号
-     */
-    void tripslash(char * str)
-    {
-        char *p1 = str, *p2 = p1;
-        while (*p2 != '\0') {
-            if (*p2 == '\\' && p2[1] == '\'') {
-                p2++;
+    namespace {
+
+        /**
+         * 因为业务数据库数据插入ElasticSearch时会对引号进行转义
+         * 此函数用于反转义引号
+         */
+        void tripslash(char * str)
+        {
+            char *p1 = str, *p2 = p1;
+            while (*p2 != '\0') {
+                if (*p2 == '\\' && p2[1] == '\'') {
+                    p2++;
+                }
+                *p1++ = *p2++;
             }
-            *p1++ = *p2++;
+            *p1 = '\0';
         }
-        *p1 = '\0';
-    }
 
-    void tripslash2(char * str)
-    {
-        char *p1 = str, *p2 = p1;
-        while (*p2 != '\0') {
-            if (*p2 == '\\' && p2[1] == '\"') {
-                p2++;
+        void tripslash2(char * str)
+        {
+            char *p1 = str, *p2 = p1;
+            while (*p2 != '\0') {
+                if (*p2 == '\\' && p2[1] == '\"') {
+                    p2++;
+                }
+                *p1++ = *p2++;
             }
-            *p1++ = *p2++;
+            *p1 = '\0';
         }
-        *p1 = '\0';
-    }
 
-    /**
-     * 判断曝光的类型
-     * of=0 DSP,此为默认的情况
-     * of=1 SSP
-     * of=2 移动展示
-     * of=3 移动日志
-     * of=4 移动SSP
-     */
-    bool isShowForSSP(ParamMap & paramMap)
-    {
-        ParamMap::const_iterator iter = paramMap.find(URL_IMP_OF);
-        if (iter == paramMap.end()) {
-            return false;
-        } else {
-            return iter->second == OF_SSP || iter->second == OF_SSP_MOBILE;
+        /**
+         * 判断曝光的类型
+         * of=0 DSP,此为默认的情况
+         * of=1 SSP
+         * of=2 移动展示
+         * of=3 移动日志
+         * of=4 移动SSP
+         */
+        bool isShowForSSP(ParamMap & paramMap)
+        {
+            ParamMap::const_iterator iter = paramMap.find(URL_IMP_OF);
+            if (iter == paramMap.end()) {
+                return false;
+            } else {
+                return iter->second == OF_SSP || iter->second == OF_SSP_MOBILE;
+            }
         }
-    }
 
-    /**
-     * 判断是否移动曝光
-     */
-    bool isShowForMobile(ParamMap & paramMap)
-    {
-        ParamMap::const_iterator iter = paramMap.find(URL_IMP_OF);
-        if (iter == paramMap.end()) {
-            return false;
-        } else {
-            return iter->second == OF_DSP_MOBILE_SHOW || iter->second == OF_DSP_MOBILE_LOG;
+        /**
+         * 判断是否移动曝光
+         */
+        bool isShowForMobile(ParamMap & paramMap)
+        {
+            ParamMap::const_iterator iter = paramMap.find(URL_IMP_OF);
+            if (iter == paramMap.end()) {
+                return false;
+            } else {
+                return iter->second == OF_DSP_MOBILE_SHOW || iter->second == OF_DSP_MOBILE_LOG;
+            }
         }
-    }
 
-    /**
-     * 根据OF类型判定是否需要显示创意和纪录日志,http://redmine.mtty.com/redmine/issues/48
-     */
-    void dspSetParam(ParamMap & paramMap, bool & showCreative, bool & shouldLog)
-    {
-        ParamMap::const_iterator iter = paramMap.find(URL_IMP_OF);
-        if (iter == paramMap.end() || iter->second == OF_DSP) {
-            showCreative = true;
-            shouldLog = true;
-        } else if (iter->second == OF_DSP_MOBILE_SHOW) {
-            showCreative = true;
-            shouldLog = false;
-        } else if (iter->second == OF_DSP_MOBILE_LOG) {
-            showCreative = false;
-            shouldLog = true;
+        /**
+         * 根据OF类型判定是否需要显示创意和纪录日志,http://redmine.mtty.com/redmine/issues/48
+         */
+        void dspSetParam(ParamMap & paramMap, bool & showCreative, bool & shouldLog)
+        {
+            ParamMap::const_iterator iter = paramMap.find(URL_IMP_OF);
+            if (iter == paramMap.end() || iter->second == OF_DSP) {
+                showCreative = true;
+                shouldLog = true;
+            } else if (iter->second == OF_DSP_MOBILE_SHOW) {
+                showCreative = true;
+                shouldLog = false;
+            } else if (iter->second == OF_DSP_MOBILE_LOG) {
+                showCreative = false;
+                shouldLog = true;
+            }
         }
-    }
 
-    int buildResponseForDsp(const MT::common::Banner & banner, ParamMap & paramMap, std::string & json,
-                            const char * templateFmt, char * buffer, int bufferSize)
-    {
-        cppcms::json::value mtAdInfo;
-        utility::json::parseJson(json.c_str(), mtAdInfo);
-        //准备ADX宏
-        char adxbuffer[1024];
-        std::string adxMacro;
-        urlDecode_f(paramMap[URL_ADX_MACRO], adxMacro, adxbuffer);
-        adxMacro += ADX_MACRO_SUFFIX;
-        //填充JSON对象
-        mtAdInfo["pid"] = paramMap[URL_MTTYADPLACE_ID];
-        mtAdInfo["adxpid"] = paramMap[URL_ADPLACE_ID];
-        mtAdInfo["impid"] = paramMap[URL_EXPOSE_ID];
-        mtAdInfo["unid"] = paramMap[URL_ADX_ID];
-        mtAdInfo["plid"] = "";
-        mtAdInfo["gpid"] = paramMap[URL_EXEC_ID];
-        mtAdInfo["arid"] = paramMap[URL_AREA_ID];
-        mtAdInfo["xcurl"] = adxMacro;
-        mtAdInfo["of"] = OF_DSP;
-        mtAdInfo["pricetype"] = paramMap[URL_PRICE_TYPE];
-        mtAdInfo["price"] = paramMap[URL_BID_PRICE];
-        mtAdInfo["ppid"] = paramMap[URL_PRODUCTPACKAGE_ID];
-        std::string width = std::to_string(banner.width);
-        std::string height = std::to_string(banner.height);
-        mtAdInfo["width"] = width;
-        mtAdInfo["height"] = height;
-        mtAdInfo["oid"] = paramMap[URL_ORDER_ID];
-        int32_t flowType = paramMap.find(URL_FLOWTYPE) != paramMap.end() ? std::stoi(paramMap[URL_FLOWTYPE])
-                                                                         : SOLUTION_FLOWTYPE_UNKNOWN;
-        if (flowType == SOLUTION_FLOWTYPE_MOBILE) {
-            mtAdInfo["rs"] = true;
-        }
-        URLHelper clickUrl(SNIPPET_CLICK_URL_HTTPS, false);
-        for (auto iter : paramMap) {
-            clickUrl.add(iter.first, iter.second);
-        }
-        clickUrl.add(URL_IMP_OF, OF_DSP);
-        clickUrl.add(URL_ADX_MACRO, adxMacro);
-        clickUrl.add(URL_DEVICE_IDFA, paramMap[URL_DEVICE_IDFA]);
-        clickUrl.add(URL_DEVICE_IMEI, paramMap[URL_DEVICE_IMEI]);
-        clickUrl.add(URL_DEVICE_ANDOROIDID, paramMap[URL_DEVICE_ANDOROIDID]);
-        clickUrl.add(URL_DEVICE_MAC, paramMap[URL_DEVICE_MAC]);
-        cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
-        cppcms::json::array & mtls = mtlsArray.array();
-        char landingPageBuffer[1024];
-        std::string landingUrl
-            = banner.bannerType == BANNER_TYPE_PRIMITIVE ? mtls[0].get("p9", "") : mtls[0].get("p1", "");
-        url_replace(landingUrl, "{{click}}", "");
-        std::string encodedLandingUrl;
-        urlEncode_f(landingUrl, encodedLandingUrl, landingPageBuffer);
-        clickUrl.add(URL_LANDING_URL, encodedLandingUrl);
-        mtAdInfo["clickurl"] = clickUrl.cipherUrl();
-        std::string jsonResult = utility::json::toJson(mtAdInfo);
-        int len = snprintf(buffer, bufferSize - 1, templateFmt, jsonResult.c_str());
-        if (len >= bufferSize) {
-            LOG_WARN << "in buildResponseForDsp buffer overflow,length:" << len;
-            return bufferSize;
-        }
-        return len;
-    }
-
-    int buildResponseForSsp(const MT::common::SelectResult & selectResult, ParamMap & paramMap,
-                            cppcms::json::value & mtAdInfo, const char * templateFmt, char * buffer, int bufferSize,
-                            const std::string & userIp, const std::string & referer, const std::string & impId)
-    {
-        const MT::common::Solution & solution = selectResult.solution;
-        const MT::common::Banner & banner = selectResult.banner;
-        const MT::common::ADPlace & adplace = selectResult.adplace;
-        std::string pid = std::to_string(adplace.pId);
-        mtAdInfo["pid"] = pid;
-        mtAdInfo["adxpid"] = pid;
-        mtAdInfo["impid"] = impId;
-        std::string adxid = std::to_string(adplace.adxId);
-        mtAdInfo["unid"] = adxid;
-        mtAdInfo["plid"] = "";
-        std::string sid = std::to_string(solution.sId);
-        mtAdInfo["gpid"] = sid;
-        IpManager & ipManager = IpManager::getInstance();
-        std::string address = ipManager.getAreaCodeStrByIp(userIp.data());
-        mtAdInfo["arid"] = address;
-        mtAdInfo["xcurl"] = "";
-        std::string width = std::to_string(banner.width);
-        std::string height = std::to_string(banner.height);
-        mtAdInfo["width"] = width;
-        mtAdInfo["height"] = height;
-        std::string priceType = std::to_string(solution.priceType);
-        mtAdInfo["pricetype"] = priceType;
-        std::string price = encodePrice(selectResult.feePrice);
-        mtAdInfo["price"] = price;
-        std::string ppid = std::to_string(selectResult.ppid);
-        mtAdInfo["ppid"] = ppid;
-        mtAdInfo["oid"] = selectResult.orderId;
-        mtAdInfo["ctype"] = banner.bannerType;
-        int advId = solution.advId;
-        int bId = banner.bId;
-        int resultLen = 0;
-        URLHelper clickUrl(SSP_CLICK_URL, false);
-        clickUrl.add(URL_ADPLACE_ID, pid);
-        clickUrl.add(URL_MTTYADPLACE_ID, pid);
-        clickUrl.add(URL_ADX_ID, adxid);
-        clickUrl.add(URL_EXPOSE_ID, impId);
-        clickUrl.add(URL_ADOWNER_ID, std::to_string(advId));
-        clickUrl.add(URL_EXEC_ID, sid);
-        clickUrl.add(URL_PRODUCTPACKAGE_ID, ppid);
-        clickUrl.add(URL_PRICE_TYPE, priceType);
-        clickUrl.add(URL_BID_PRICE, price);
-        clickUrl.add(URL_CREATIVE_ID, std::to_string(bId));
-        clickUrl.add(URL_REFERER, referer);
-        clickUrl.add(URL_CLICK_ID, "000");
-        clickUrl.add(URL_AREA_ID, address);
-        clickUrl.add(URL_SITE_ID, std::to_string(adplace.mId));
-        clickUrl.add(URL_ORDER_ID, std::to_string(selectResult.orderId));
-        //需求http://redmine.mtty.com/redmine/issues/144
-        cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
-        cppcms::json::array & mtls = mtlsArray.array();
-        char landingPageBuffer[1024];
-        std::string landingUrl
-            = banner.bannerType == BANNER_TYPE_PRIMITIVE ? mtls[0].get("p9", "") : mtls[0].get("p1", "");
-        std::string encodedLandingUrl;
-        urlEncode_f(landingUrl, encodedLandingUrl, landingPageBuffer);
-        clickUrl.add(URL_LANDING_URL, encodedLandingUrl);
-        if (banner.bannerType != BANNER_TYPE_PRIMITIVE) {
-            mtls[0].set("p5", clickUrl.cipherUrl());
-        } else {
-            mtls[0].set("p9", clickUrl.cipherUrl());
-        }
-        if (paramMap[URL_IMP_OF] == OF_SSP_MOBILE) {
-            //只输出标准json
-            std::string jsonResult = utility::json::toJson(mtAdInfo);
-            resultLen = snprintf(buffer, bufferSize - 1, "%s", jsonResult.c_str());
-        } else {
+        int buildResponseForDsp(const MT::common::Banner & banner, ParamMap & paramMap, std::string & json,
+                                const char * templateFmt, char * buffer, int bufferSize)
+        {
+            cppcms::json::value mtAdInfo;
+            utility::json::parseJson(json.c_str(), mtAdInfo);
+            //准备ADX宏
+            char adxbuffer[1024];
+            std::string adxMacro;
+            urlDecode_f(paramMap[URL_ADX_MACRO], adxMacro, adxbuffer);
+            adxMacro += ADX_MACRO_SUFFIX;
+            //填充JSON对象
+            mtAdInfo["pid"] = paramMap[URL_MTTYADPLACE_ID];
+            mtAdInfo["adxpid"] = paramMap[URL_ADPLACE_ID];
+            mtAdInfo["impid"] = paramMap[URL_EXPOSE_ID];
+            mtAdInfo["unid"] = paramMap[URL_ADX_ID];
+            mtAdInfo["plid"] = "";
+            mtAdInfo["gpid"] = paramMap[URL_EXEC_ID];
+            mtAdInfo["arid"] = paramMap[URL_AREA_ID];
+            mtAdInfo["xcurl"] = adxMacro;
+            mtAdInfo["of"] = OF_DSP;
+            mtAdInfo["pricetype"] = paramMap[URL_PRICE_TYPE];
+            mtAdInfo["price"] = paramMap[URL_BID_PRICE];
+            mtAdInfo["ppid"] = paramMap[URL_PRODUCTPACKAGE_ID];
+            std::string width = std::to_string(banner.width);
+            std::string height = std::to_string(banner.height);
+            mtAdInfo["width"] = width;
+            mtAdInfo["height"] = height;
+            mtAdInfo["oid"] = paramMap[URL_ORDER_ID];
+            int32_t flowType = paramMap.find(URL_FLOWTYPE) != paramMap.end() ? std::stoi(paramMap[URL_FLOWTYPE])
+                                                                             : SOLUTION_FLOWTYPE_UNKNOWN;
+            if (flowType == SOLUTION_FLOWTYPE_MOBILE) {
+                mtAdInfo["rs"] = true;
+            }
+            URLHelper clickUrl(SNIPPET_CLICK_URL_HTTPS, false);
+            for (auto iter : paramMap) {
+                clickUrl.add(iter.first, iter.second);
+            }
+            clickUrl.add(URL_IMP_OF, OF_DSP);
+            clickUrl.add(URL_ADX_MACRO, adxMacro);
+            clickUrl.add(URL_DEVICE_IDFA, paramMap[URL_DEVICE_IDFA]);
+            clickUrl.add(URL_DEVICE_IMEI, paramMap[URL_DEVICE_IMEI]);
+            clickUrl.add(URL_DEVICE_ANDOROIDID, paramMap[URL_DEVICE_ANDOROIDID]);
+            clickUrl.add(URL_DEVICE_MAC, paramMap[URL_DEVICE_MAC]);
+            cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
+            cppcms::json::array & mtls = mtlsArray.array();
+            char landingPageBuffer[1024];
+            std::string landingUrl
+                = banner.bannerType == BANNER_TYPE_PRIMITIVE ? mtls[0].get("p9", "") : mtls[0].get("p1", "");
+            url_replace(landingUrl, "{{click}}", "");
+            std::string encodedLandingUrl;
+            urlEncode_f(landingUrl, encodedLandingUrl, landingPageBuffer);
+            clickUrl.add(URL_LANDING_URL, encodedLandingUrl);
             mtAdInfo["clickurl"] = clickUrl.cipherUrl();
             std::string jsonResult = utility::json::toJson(mtAdInfo);
-            resultLen = snprintf(buffer, bufferSize - 1, templateFmt, paramMap["callback"].c_str(), jsonResult.c_str());
+            int len = snprintf(buffer, bufferSize - 1, templateFmt, jsonResult.c_str());
+            if (len >= bufferSize) {
+                LOG_WARN << "in buildResponseForDsp buffer overflow,length:" << len;
+                return bufferSize;
+            }
+            return len;
         }
-        if (resultLen >= bufferSize) {
-            LOG_WARN << "in buildResponseForSsp buffer overflow,length:" << resultLen;
-            return bufferSize;
-        }
-        return resultLen;
-    }
 
-    /**
-     * 根据输入参数获取设备类型
-     */
-    int getDeviceTypeForSsp(ParamMap & paramMap)
-    {
-        std::string devType
-            = paramMap.find(URL_SSP_DEVICE) != paramMap.end() ? paramMap[URL_SSP_DEVICE] : SSP_DEVICE_UNKNOWN;
-        std::string platform
-            = paramMap.find(URL_SSP_PLATFORM) != paramMap.end() ? paramMap[URL_SSP_PLATFORM] : SSP_PLATFORM_UNKNOWN;
-        if (devType == SSP_DEVICE_MOBILEPHONE) {
-            if (platform == SSP_PLATFORM_IOS) {
-                return SOLUTION_DEVICE_IPHONE;
-            } else if (platform == SSP_PLATFORM_ANDROID) {
-                return SOLUTION_DEVICE_ANDROID;
-            } else if (platform == SSP_PLATFORM_WINDOWSPHONE) {
-                return SOLUTION_DEVICE_WINDOWSPHONE;
+        int buildResponseForSsp(const MT::common::SelectResult & selectResult, ParamMap & paramMap,
+                                cppcms::json::value & mtAdInfo, const char * templateFmt, char * buffer, int bufferSize,
+                                const std::string & userIp, const std::string & referer, const std::string & impId)
+        {
+            const MT::common::Solution & solution = selectResult.solution;
+            const MT::common::Banner & banner = selectResult.banner;
+            const MT::common::ADPlace & adplace = selectResult.adplace;
+            std::string pid = std::to_string(adplace.pId);
+            mtAdInfo["pid"] = pid;
+            mtAdInfo["adxpid"] = pid;
+            mtAdInfo["impid"] = impId;
+            std::string adxid = std::to_string(adplace.adxId);
+            mtAdInfo["unid"] = adxid;
+            mtAdInfo["plid"] = "";
+            std::string sid = std::to_string(solution.sId);
+            mtAdInfo["gpid"] = sid;
+            IpManager & ipManager = IpManager::getInstance();
+            std::string address = ipManager.getAreaCodeStrByIp(userIp.data());
+            mtAdInfo["arid"] = address;
+            mtAdInfo["xcurl"] = "";
+            std::string width = std::to_string(banner.width);
+            std::string height = std::to_string(banner.height);
+            mtAdInfo["width"] = width;
+            mtAdInfo["height"] = height;
+            std::string priceType = std::to_string(solution.priceType);
+            mtAdInfo["pricetype"] = priceType;
+            std::string price = encodePrice(selectResult.feePrice);
+            mtAdInfo["price"] = price;
+            std::string ppid = std::to_string(selectResult.ppid);
+            mtAdInfo["ppid"] = ppid;
+            mtAdInfo["oid"] = selectResult.orderId;
+            mtAdInfo["ctype"] = banner.bannerType;
+            int advId = solution.advId;
+            int bId = banner.bId;
+            int resultLen = 0;
+            URLHelper clickUrl(SSP_CLICK_URL, false);
+            clickUrl.add(URL_ADPLACE_ID, pid);
+            clickUrl.add(URL_MTTYADPLACE_ID, pid);
+            clickUrl.add(URL_ADX_ID, adxid);
+            clickUrl.add(URL_EXPOSE_ID, impId);
+            clickUrl.add(URL_ADOWNER_ID, std::to_string(advId));
+            clickUrl.add(URL_EXEC_ID, sid);
+            clickUrl.add(URL_PRODUCTPACKAGE_ID, ppid);
+            clickUrl.add(URL_PRICE_TYPE, priceType);
+            clickUrl.add(URL_BID_PRICE, price);
+            clickUrl.add(URL_CREATIVE_ID, std::to_string(bId));
+            clickUrl.add(URL_REFERER, referer);
+            clickUrl.add(URL_CLICK_ID, "000");
+            clickUrl.add(URL_AREA_ID, address);
+            clickUrl.add(URL_SITE_ID, std::to_string(adplace.mId));
+            clickUrl.add(URL_ORDER_ID, std::to_string(selectResult.orderId));
+            //需求http://redmine.mtty.com/redmine/issues/144
+            cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
+            cppcms::json::array & mtls = mtlsArray.array();
+            char landingPageBuffer[1024];
+            std::string landingUrl
+                = banner.bannerType == BANNER_TYPE_PRIMITIVE ? mtls[0].get("p9", "") : mtls[0].get("p1", "");
+            std::string encodedLandingUrl;
+            urlEncode_f(landingUrl, encodedLandingUrl, landingPageBuffer);
+            clickUrl.add(URL_LANDING_URL, encodedLandingUrl);
+            if (banner.bannerType != BANNER_TYPE_PRIMITIVE) {
+                mtls[0].set("p5", clickUrl.cipherUrl());
+            } else {
+                mtls[0].set("p9", clickUrl.cipherUrl());
             }
-        } else if (devType == SSP_DEVICE_PAD) {
-            if (platform == SSP_PLATFORM_IOS) {
-                return SOLUTION_DEVICE_IPAD;
-            } else if (platform == SSP_PLATFORM_ANDROID) {
-                return SOLUTION_DEVICE_ANDROIDPAD;
+            if (paramMap[URL_IMP_OF] == OF_SSP_MOBILE) {
+                //只输出标准json
+                std::string jsonResult = utility::json::toJson(mtAdInfo);
+                resultLen = snprintf(buffer, bufferSize - 1, "%s", jsonResult.c_str());
+            } else {
+                mtAdInfo["clickurl"] = clickUrl.cipherUrl();
+                std::string jsonResult = utility::json::toJson(mtAdInfo);
+                resultLen
+                    = snprintf(buffer, bufferSize - 1, templateFmt, paramMap["callback"].c_str(), jsonResult.c_str());
+            }
+            if (resultLen >= bufferSize) {
+                LOG_WARN << "in buildResponseForSsp buffer overflow,length:" << resultLen;
+                return bufferSize;
+            }
+            return resultLen;
+        }
+
+        /**
+         * 根据输入参数获取设备类型
+         */
+        int getDeviceTypeForSsp(ParamMap & paramMap)
+        {
+            std::string devType
+                = paramMap.find(URL_SSP_DEVICE) != paramMap.end() ? paramMap[URL_SSP_DEVICE] : SSP_DEVICE_UNKNOWN;
+            std::string platform
+                = paramMap.find(URL_SSP_PLATFORM) != paramMap.end() ? paramMap[URL_SSP_PLATFORM] : SSP_PLATFORM_UNKNOWN;
+            if (devType == SSP_DEVICE_MOBILEPHONE) {
+                if (platform == SSP_PLATFORM_IOS) {
+                    return SOLUTION_DEVICE_IPHONE;
+                } else if (platform == SSP_PLATFORM_ANDROID) {
+                    return SOLUTION_DEVICE_ANDROID;
+                } else if (platform == SSP_PLATFORM_WINDOWSPHONE) {
+                    return SOLUTION_DEVICE_WINDOWSPHONE;
+                }
+            } else if (devType == SSP_DEVICE_PAD) {
+                if (platform == SSP_PLATFORM_IOS) {
+                    return SOLUTION_DEVICE_IPAD;
+                } else if (platform == SSP_PLATFORM_ANDROID) {
+                    return SOLUTION_DEVICE_ANDROIDPAD;
+                }
+            }
+            return SOLUTION_DEVICE_OTHER;
+        }
+
+        /**
+         * 根据参数填充condition对象
+         * @brief fillQueryConditionForSSP
+         * @param paramMap
+         * @param log
+         * @param condition
+         */
+        void fillQueryConditionForSSP(ParamMap & paramMap, protocol::log::LogItem & log,
+                                      adselectv2::AdSelectCondition & condition)
+        {
+            condition.mttyPid = std::stoi(paramMap[URL_SSP_PID]);
+            condition.ip = log.ipInfo.proxy;
+            server::IpManager & ipManager = IpManager::getInstance();
+            condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
+            condition.mobileDevice = getDeviceTypeForSsp(paramMap);
+            if (log.userAgent.empty() && paramMap.find(URL_SSP_USERAGENT) != paramMap.end()) {
+                utility::url::urlDecode_f(paramMap[URL_SSP_USERAGENT], log.userAgent);
+            }
+            if (condition.mobileDevice == SOLUTION_DEVICE_OTHER) {
+                condition.mobileDevice = utility::userclient::getMobileTypeFromUA(log.userAgent);
+            }
+            condition.pcOS = utility::userclient::getOSTypeFromUA(log.userAgent);
+            condition.flowType
+                = condition.mobileDevice != SOLUTION_DEVICE_OTHER ? SOLUTION_FLOWTYPE_MOBILE : SOLUTION_FLOWTYPE_PC;
+            condition.dHour = adSelectTimeCodeUtc();
+            std::string deviceId = paramMap[URL_SSP_DEVICEID];
+            std::string cmDeviceKey;
+            if (condition.mobileDevice == SOLUTION_DEVICE_ANDROID
+                || condition.mobileDevice == SOLUTION_DEVICE_ANDROIDPAD) {
+                condition.imei = deviceId;
+                cmDeviceKey = adservice::core::model::MtUserMapping::imeiKey();
+            } else if (condition.mobileDevice == SOLUTION_DEVICE_IPHONE
+                       || condition.mobileDevice == SOLUTION_DEVICE_IPAD) {
+                condition.idfa = deviceId;
+                cmDeviceKey = adservice::core::model::MtUserMapping::idfaKey();
+            }
+
+            if (!deviceId.empty() && !cmDeviceKey.empty()) { //存在设备ID进行cookiemapping query
+                auto & cmManager = adservice::server::CookieMappingManager::getInstance();
+                adservice::core::model::MtUserMapping mapping
+                    = cmManager.getUserMappingByKey(cmDeviceKey, deviceId, true);
+                if (mapping.isValid()) {
+                    condition.mtUserId = mapping.userId;
+                    log.userId = mapping.userId;
+                } else {
+                    condition.mtUserId = log.userId;
+                    cmManager.updateMappingDeviceAsync(log.userId, cmDeviceKey, deviceId, "", DAY_SEONDS * 600);
+                }
+            } else {
+                condition.mtUserId = log.userId;
+            }
+            if (condition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
+                condition.adxid = ADX_SSP_MOBILE;
+            } else {
+                condition.adxid = ADX_SSP_PC;
+            }
+            if (paramMap.find(URL_SSP_NETWORK) != paramMap.end()) {
+                condition.mobileNetwork = std::stoi(paramMap[URL_SSP_NETWORK]);
+            }
+            if (paramMap.find(URL_SSP_SCREENWIDTH) != paramMap.end() && paramMap.find(URL_SSP_SCREENHEIGHT)) {
+                condition.width = std::stoi(paramMap[URL_SSP_SCREENWIDTH]);
+                condition.height = std::stoi(paramMap[URL_SSP_SCREENHEIGHT]);
+            }
+            if (paramMap.find(URL_SSP_CARRIER) != paramMap.end()) {
+                condition.mobileNetWorkProvider = std::stoi(paramMap[URL_SSP_CARRIER]);
             }
         }
-        return SOLUTION_DEVICE_OTHER;
+
+        /**
+         * 向其他DSP发送竞价请求
+         * @brief askOtherDsp
+         * @param condition
+         * @param dspSolutions
+         * @param result
+         * @return
+         */
+        bool askOtherDsp(adselectv2::AdSelectCondition & condition, std::vector<MT::common::Solution> & dspSolutions,
+                         MT::common::SelectResult & result)
+        {
+            try {
+                protocol::dsp::DSPPromise allBidPromise;
+                const MT::common::ADPlace & adplace = result.adplace;
+                for (auto solution : dspSolutions) {
+                    //暂且不考虑dspSolutions中有重复advId的情况,如果有，那可能是多个deal
+                    auto handler = protocol::dsp::dspHandlerManager.getHandler(solution.advId);
+                    allBidPromise.after(handler->sendBid(condition, adplace));
+                }
+                //等待所有请求
+                allBidPromise.sync();
+                std::vector<protocol::dsp::DSPBidResult> dspResults(dspSolutions.size());
+                for (auto solution : dspSolutions) {
+                    auto handler = protocol::dsp::dspHandlerManager.getHandler(solution.advId);
+                    const protocol::dsp::DSPBidResult & dspResult = handler->getResult();
+                    if (dspResult.resultOk) {
+                        dspResults.push_back(dspResult);
+                    }
+                }
+                if (dspResults.empty()) {
+                    return false;
+                }
+                //排序取第二高价
+                //排序
+                std::sort(dspResults.begin(), dspResults.end(),
+                          [](const protocol::dsp::DSPBidResult & a, const protocol::dsp::DSPBidResult & b) {
+                              return a.bidPrice > b.bidPrice;
+                          });
+                //从第二名中随机选取，若不存在第二名从第一名中随机选取
+                int finalIdx = adservice::utility::rankingtool::randomIndex(
+                    dspResults.size(), [&dspResults](int idx) { return dspResults[i].bidPrice; }, { 0, 100, 0 }, true);
+                protocol::dsp::DSPBidResult & dspResult = dspResults[finalIdx];
+                result.banner = dspResult.banner;
+                for (auto solution : dspSolutions) {
+                    if (solution.advId == dspResult.dspId) {
+                        result.solution = solution;
+                        break;
+                    }
+                }
+                return true;
+            } catch (protocol::dsp::DSPHandlerException & dspException) {
+                LOG_ERROR << "askOtherDSP has dsp handler exception:" << dspException.what()
+                          << ",backtrace:" << dspException.backtrace();
+            } catch (std::exception & e) {
+                LOG_ERROR << "askOtherDsp has exception:" << e.what();
+            }
+            return false;
+        }
     }
 
     void HandleShowQueryTask::customLogic(ParamMap & paramMap, protocol::log::LogItem & log,
@@ -330,46 +467,11 @@ namespace corelogic {
 
         int64_t bgid = -1;
         if (isSSP) { // SSP
-            std::string & queryPid = paramMap[URL_SSP_PID];
-            bool isAdxPid = false;
-            if (queryPid.empty() || queryPid == "0") {
-                queryPid = paramMap[URL_SSP_ADX_PID];
-                if (queryPid.empty()) { // URL 参数有问题
-                    requestCounter.increaseShowForSSPFailed();
-
-                    LOG_ERROR << "in show module,ssp url pid is empty";
-                    return;
-                }
-                isAdxPid = true;
-            }
-            adselectv2::AdSelectCondition condition;
-            if (isAdxPid)
-                condition.adxpid = queryPid;
-            else
-                condition.mttyPid = std::stoi(queryPid);
-            condition.ip = log.ipInfo.proxy;
-            server::IpManager & ipManager = IpManager::getInstance();
-            condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
-            condition.mobileDevice = getDeviceTypeForSsp(paramMap);
-            if (userAgent.empty() && paramMap.find(URL_SSP_USERAGENT) != paramMap.end()) {
-                char buffer[1024];
-                utility::url::urlDecode_f(paramMap[URL_SSP_USERAGENT], userAgent, buffer);
-            }
-            if (condition.mobileDevice == SOLUTION_DEVICE_OTHER) {
-                condition.mobileDevice = utility::userclient::getMobileTypeFromUA(userAgent);
-            }
-            condition.pcOS = utility::userclient::getOSTypeFromUA(userAgent);
-            condition.flowType
-                = condition.mobileDevice != SOLUTION_DEVICE_OTHER ? SOLUTION_FLOWTYPE_MOBILE : SOLUTION_FLOWTYPE_PC;
-            condition.dHour = adSelectTimeCodeUtc();
-            condition.mtUserId = log.userId;
-            if (condition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
-                condition.adxid = ADX_SSP_MOBILE;
-            } else {
-                condition.adxid = ADX_SSP_PC;
-            }
+            adselectv2::AdSelectCondition & condition;
+            fillQueryConditionForSSP(paramMap, log, condition);
             MT::common::SelectResult selectResult;
-            if (!adSelectClient->search(seqId, true, condition, selectResult)) {
+            bool selectOk = adSelectClient->search(seqId, true, condition, selectResult);
+            if (!selectOk) {
                 requestCounter.increaseShowForSSPFailed();
 
                 LOG_DEBUG << "ssp module:adselect failed";
@@ -379,7 +481,14 @@ namespace corelogic {
                 log.adInfo.pid = std::to_string(tmpadplace.pId);
                 log.adInfo.adxpid = tmpadplace.adxPId;
                 log.reqStatus = 500;
-                return;
+            }
+            if (!selectOk || selectResult.solution.advId == ADV_BASE) { //麦田SSP找不到正常客户,将流量转给其他DSP
+                MT::common::SelectResult dspResult;
+                if (askOtherDsp(condition, result.otherDspSolutions, dspResult)) { //其他DSP有应答
+                    selectResult = dspResult;
+                } else if (!selectOk) { //其他DSP无应答而且没有打底投放
+                    return;
+                } //其他DSP无应答但有打底投放
             }
 
             const MT::common::Banner & banner = selectResult.banner;

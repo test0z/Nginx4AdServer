@@ -34,6 +34,8 @@ namespace utility {
          */
         void urlEncode_f(const char * in, int len, std::string & output, char * buffer);
 
+        void urlEncode_f(const std::string & input, std::string & output);
+
         inline void urlEncode_f(const std::string & input, std::string & output, char * buffer)
         {
             urlEncode_f(input.data(), input.length(), output, buffer);
@@ -48,6 +50,8 @@ namespace utility {
         {
             urlDecode_f(input.data(), input.length(), output, buffer);
         }
+
+        void urlDecode_f(const std::string & input, std::string & output);
 
         typedef std::map<std::string, std::string> ParamMap;
 

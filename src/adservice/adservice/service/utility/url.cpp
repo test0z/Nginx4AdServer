@@ -120,6 +120,24 @@ namespace utility {
             output.assign(buffer, buffer + j);
         }
 
+        void urlDecode_f(const std::string & input, std::string & output)
+        {
+            static UrlDecodeTable table;
+            output.resize(intput.length() << 2);
+            auto out = output.begin();
+            const char * in = input.c_str();
+            for (int i = 0; i < len;) {
+                if (in[i] == '%') {
+                    *out += (table.map[(int)in[i + 1]] << 4) + table.map[(int)in[i + 2]];
+                    i += 3;
+                } else {
+                    *out = in[i];
+                    i++;
+                }
+                out++;
+            }
+        }
+
         void urlEncode_f(const char * in, int len, std::string & output, char * buffer)
         {
             static UrlEncodeTable table;
@@ -137,6 +155,25 @@ namespace utility {
             }
             buffer[j] = '\0';
             output.assign(buffer, buffer + j);
+        }
+
+        void urlEncode_f(const std::string & input, std::string & output)
+        {
+            static UrlEncodeTable table;
+            output.resize(input.length() + 1);
+            int i = 0;
+            auto out = output.begin();
+            while (i < len) {
+                if (table.entry[(int)in[i]]) {
+                    *out++ = in[i++];
+                } else {
+                    *out++ = '%';
+                    *out++ = table.map[(int)in[i]][0];
+                    *out++ = table.map[(int)in[i]][1];
+                    i++;
+                }
+            }
+            *out = '\0';
         }
 
         void getParam(ParamMap & m, const char * buffer, char seperator)

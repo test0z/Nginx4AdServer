@@ -1,0 +1,189 @@
+package protocol.dsp;
+
+message BidRequest {
+
+    //------------------------------------------- 协议基础信息
+
+    // mtty生成的唯一的竞价ID
+    required string bid = 1;
+
+    // 用户的IP地址， ipv4
+    // 例如：192.168.1.1
+    optional string ip = 2;
+
+    //------------------------------------------- 广告位基础信息
+    message Imp {
+        // 曝光id，目前固定为空字符串
+        required string impid = 1;
+
+        // 广告位id
+        required string tagid = 2;
+        
+        // 媒体的唯一标识, 和创意审核状态查询api配合使用
+        required float bidfloor = 3;
+
+        message Banner {
+            // 广告位宽度
+            required uint32 width = 1;
+            // 广告位高度
+            required uint32 height = 2;
+            // 允许的mime类型
+            repeated string mimes = 3;
+        }
+
+        optional Banner banner = 4;
+
+        message Native {
+
+            message Asset{
+                message Title{
+                    required uint32 len = 1;
+                }
+                optional Title title = 1;
+                message Img{
+                    // 原生图片宽
+                    required uint32 w = 1;
+                    // 原生图片高
+                    required uint32 h = 2;
+                    // 允许的mime类型
+                    repeated string mimes = 3;
+                }
+                optional Img img = 2;
+            }
+        }
+
+        optional Native native = 5;
+
+        message Pmp {
+            message Deal {
+                // deal id
+                optional string dealId = 1;
+                // deal 价格
+                optional float bidfloor = 2;
+            }
+            repeated Deal deals = 1;
+        }
+
+        optional Pmp pmp = 6;
+
+        required uint32 secure = 7 [default = 0];
+
+    }
+    repeated Imp imp = 3;
+
+    message Site {
+        // 媒体站点名称
+        optional string name = 1;
+        // 来源页
+        optional string ref = 2;
+    }
+
+    optional Site site = 4;
+
+    message App {
+        // app 名称
+        optional string appname = 1;
+        // app 包名
+        optional string packagename = 2;
+    }
+
+    optional App app = 5;
+
+    message Device {
+
+        enum OSType {
+            OS_WINDOWS = 1;
+            OS_MAC = 2;
+            OS_LINUX = 3;
+            OS_ANDROID = 4;
+            OS_IOS = 5;
+            OS_UNKNOWN = 6;
+        }
+
+        enum DeviceType {
+            DEVICE_IPHONE = 1;
+            DEVICE_ANDOIDPHONE = 2;
+            DEVICE_IPAD = 3;
+            DEVICE_WINDOWSPHONE = 4;
+            DEVICE_ANDROIDPAD = 5;
+            DEVICE_TV = 6;
+            DEVICE_UNKNOWN = 7;
+        }
+
+        // user agent
+        required string ua = 1 [default = ""];
+        // 操作系统
+        required OSType os = 2 [default = OS_UNKNOWN];
+        // 设备类型
+        required DeviceType devtype = 3 [default = DEVICE_UNKNOWN];
+        // IOS系移动设备idfa md5
+        optional string idfamd5 = 4;
+        // Android系移动设备imei md5
+        optional string imeimd5 = 5;
+    }
+
+    optional Device device = 6;
+
+    message User {
+        // 麦田用户ID
+        required string muid = 1;
+        // 用户标签ID
+        repeated string tags = 2;
+    }
+
+    optional User user = 7;
+
+}
+
+message BidResponse {
+
+    // bid request id,与BidRequest中的bid保持一致
+    required string id = 1;
+    // bidid,DSP 给出的竞价id
+    optional string bidid = 2;
+
+    message SeatBid {
+        message Bid{
+            //DSP对该次出价分配的ID
+            required string id = 1;
+            //Bid Request中对应的曝光ID
+            required string impid = 2;
+
+            message Native {
+                message Asset {
+                    // asset 类型,1 title, 2 logo, 3 image ,4 description
+                    optional uint32 type = 1;
+                    // 如果type为2，3 需要填写图片url
+                    optional string imgurl = 2;
+                    // 如果为图片类型，图片宽度
+                    optional uint32 imgw = 3;
+                    // 如果为图片类型，图片高度
+                    optional uint32 imgh = 4;
+                    // 	如果type为1，4, data为内容
+                    optional string data = 5;
+                }
+            }
+
+            optional Native native = 3;
+
+            //DSP 出价，单位是分/千次曝光，即CPM
+            required float price = 4;
+            // win notice 地址
+            required string nurl = 5;
+            // adm素材类型，0:静态创意 1:动态创意
+            required uint32 admtype = 6;
+            // 广告素材URL。如果是动态创意，这个字段存放的是创意的HTML标签，标签中支持两种宏替换，%%CLICK_URL_ESC%%（Exchange的点击监测地址）和%%WINNING_PRICE%%（竞价最终价格 ）
+            required string adm = 7;
+            // 曝光监测URL
+            repeated string pvm = 8;
+            // 点击目标URL，静态创意时我方将通过此链接进行广告跳转
+            required string clickm = 9;
+            // 	DSP参加的deal id
+            optional string dealId = 10;
+        }
+        repeated Bid bid = 1;
+    }
+
+    // 返回的竞价信息
+    repeated SeatBid seatbid = 3;
+}

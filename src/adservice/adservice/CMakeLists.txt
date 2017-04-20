@@ -75,6 +75,9 @@ SET(SRC_LIST
     ./service/protocol/360/360max_bidding_handler.cpp
     ./service/protocol/360/max-bidding.pb.cpp
     ./service/protocol/360/360max_price.cpp
+    ./service/protocol/dsps/dsp_handler_manager.cpp
+    ./service/protocol/dsps/dsp_handlers/default_dsp_handler.cpp
+    ./service/protocol/dsps/mtty_bidding.pb.cpp
     ./service/utility/cypher.cpp
     ./service/utility/escape.cpp
     ./service/utility/file.cpp

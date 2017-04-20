@@ -31,6 +31,7 @@
 #include "compress.h"
 #include "template_engine.h"
 #include <tuple>
+#include <functional>
 #include <boost/algorithm/string.hpp>
 #include "google/protobuf/message.h"
 #include "logging.h"
@@ -311,6 +312,15 @@ void adservice_free(void* ptr);
             inline std::string toupper(const std::string& input){
                 return boost::to_upper_copy<std::string>(input);
             }
+
+       }
+
+       namespace rankingtool{
+
+           int randomIndex(int indexCnt, const std::function<double(int)> && getScore,
+                       const std::vector<int> & rankWeight = { 45, 75, 100 },
+                       bool remainUseLastRank = false ,
+                       bool descend = true);
 
        }
 
