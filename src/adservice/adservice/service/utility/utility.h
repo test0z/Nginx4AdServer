@@ -314,22 +314,6 @@ void adservice_free(void* ptr);
 
        }
 
-       class PerformanceWatcher{
-       public:
-           PerformanceWatcher(const std::string& n):name(n){
-              beginTimeMs = time::getCurrentTimeStampMs();
-           }
-
-           ~PerformanceWatcher(){
-               int64_t endTime = time::getCurrentTimeStampMs();
-               LOG_DEBUG<<name<<" time collapses:"<<(endTime-beginTimeMs)<<"ms";
-           }
-
-       private:
-           int64_t beginTimeMs;
-           std::string name;
-       };
-
    }
 }
  

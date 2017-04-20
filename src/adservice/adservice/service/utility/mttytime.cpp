@@ -3,6 +3,7 @@
 //
 
 #include "mttytime.h"
+#include "logging.h"
 
 namespace adservice {
 namespace utility {

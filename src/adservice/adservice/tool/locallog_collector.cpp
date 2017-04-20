@@ -222,11 +222,14 @@ int main(int argc, const char ** argv)
     if (strcmp(operation, "check") == 0) {
         syncCB = std::bind(&verifydata, std::placeholders::_1, std::placeholders::_2);
     } else if (strcmp(operation, "sync") == 0) {
-        globalConfig.logConfig.kafkaBroker = "192.168.2.52";
-        globalConfig.logConfig.kafkaMQMaxSize = "100000";
-        globalConfig.logConfig.kafkaTopic = "mt-log";
-        globalConfig.logConfig.localLoggerThreads = 3;
-        globalConfig.logConfig.kafkaLogEnable = true;
+        LogConfig logConfig;
+        logConfig.kafkaBroker = "192.168.2.138";
+        logConfig.kafkaMQMaxSize = "100000";
+        logConfig.kafkaTopic = "mtty-log";
+        logConfig.localLoggerThreads = 3;
+        logConfig.kafkaLogEnable = true;
+        logConfig.partitionCnt = 12;
+        globalConfig.logConfig.insert({ CONFIG_LOG, logConfig });
         serviceLogger = adservice::log::LogPusher::getLogger(MTTY_SERVICE_LOGGER, CONFIG_LOG, 3, false);
         serviceLogger->start();
         syncCB = std::bind(&pushLog2Kafka, std::placeholders::_1, std::placeholders::_2);

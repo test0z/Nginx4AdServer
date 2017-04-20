@@ -18,6 +18,30 @@ namespace bidding {
     using namespace adservice::utility::cypher;
     using namespace adservice::core::model;
 
+    static std::unordered_set<std::string> excludeIDFAs
+        = { "9F89C84A559F573636A47FF8DAED0D33", "00000000-0000-0000-0000-000000000000" };
+
+    static std::unordered_set<std::string> excludeIMEIs = { "5284047F4FFB4E04824A2FD1D1F0CD62", "000000000000000",
+                                                            "21371D265B5711B289344B479F583909", "012345678912345" };
+
+    static std::unordered_set<std::string> excludeMACs = { "02:00:00:00:00:00", "0F607264FC6318A92B9E13C65DB7CD3C",
+                                                           "00:00:00:00:00:00", "528C8E6CD4A3C6598999A0E9DF15AD32" };
+
+    static bool filterIDFA(const std::string & idfa)
+    {
+        return excludeIDFAs.find(idfa) != excludeIDFAs.end();
+    }
+
+    static bool filterIMEI(const std::string & imei)
+    {
+        return excludeIMEIs.find(imei) != excludeIMEIs.end();
+    }
+
+    static bool filterMAC(const std::string & mac)
+    {
+        return excludeMACs.find(mac) != excludeMACs.end();
+    }
+
     void extractSize(const std::string & size, int & width, int & height)
     {
         const char *start = size.data(), *p = start;
@@ -328,10 +352,11 @@ namespace bidding {
                                                    const std::string & appUserId)
     {
         cmInfo.queryKV.clearDeviceMapping();
-        return cmInfo.queryKV.rebindDevice(MtUserMapping::idfaKey(), idfa, selectCondition.idfa)
-            .rebindDevice(MtUserMapping::imeiKey(), imei, selectCondition.imei)
+        return cmInfo.queryKV
+            .rebindDevice(MtUserMapping::idfaKey(), filterIDFA(selectCondition.idfa) ? "" : idfa, selectCondition.idfa)
+            .rebindDevice(MtUserMapping::imeiKey(), filterIMEI(selectCondition.imei) ? "" : imei, selectCondition.imei)
             .rebindDevice(MtUserMapping::androidIdKey(), androidId, selectCondition.androidId)
-            .rebindDevice(MtUserMapping::macKey(), mac, selectCondition.mac)
+            .rebindDevice(MtUserMapping::macKey(), filterMAC(selectCondition.mac) ? "" : mac, selectCondition.mac)
             .rebindDevice(MtUserMapping::adxUidKey(appAdxId), appUserId, "");
     }
 
@@ -394,8 +419,9 @@ namespace bidding {
             } else { // device id
                 CookieMappingManager & cmManager = CookieMappingManager::getInstance();
                 for (auto kvPair : cmInfo.queryKV.deviceMappings) {
-                    cmManager.updateMappingDeviceAsync(cmInfo.userMapping.userId, kvPair.first, kvPair.second.first,
-                                                       kvPair.second.second);
+                    cmManager.updateMappingDeviceAsync(
+                        cmInfo.userMapping.userId, kvPair.first, kvPair.second.first, kvPair.second.second,
+                        kvPair.first.find("adx") != std::string::npos ? DAY_SECOND * 900 : DAY_SECOND * 30);
                 }
             }
             cmInfo.needReMapping = false;
@@ -405,14 +431,17 @@ namespace bidding {
                 cmManager.touchMapping(cmInfo.queryKV.key, cmInfo.queryKV.value, cmInfo.userMapping.userId);
             } else {
                 for (auto kvPair : cmInfo.queryKV.deviceMappings) {
-                    cmManager.touchMapping(kvPair.first, kvPair.second.first, cmInfo.userMapping.userId);
+                    cmManager.touchMapping(kvPair.first, kvPair.second.first, cmInfo.userMapping.userId,
+                                           kvPair.first.find("adx") != std::string::npos ? DAY_SECOND * 900
+                                                                                         : DAY_SECOND * 30);
                 }
             }
         } else if (cmInfo.needFixMapping) { //计划赶不上变化，修数据吧
             CookieMappingManager & cmManager = CookieMappingManager::getInstance();
             for (auto kvPair : cmInfo.queryKV.deviceMappings) {
-                cmManager.updateMappingDeviceAsync(cmInfo.userMapping.userId, kvPair.first, kvPair.second.first,
-                                                   kvPair.second.second);
+                cmManager.updateMappingDeviceAsync(
+                    cmInfo.userMapping.userId, kvPair.first, kvPair.second.first, kvPair.second.second,
+                    kvPair.first.find("adx") != std::string::npos ? DAY_SECOND * 900 : DAY_SECOND * 30);
             }
         }
         return "";

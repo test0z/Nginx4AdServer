@@ -5,29 +5,11 @@
 
 
 using namespace adservice::utility;
-
+using namespace adservice::utility::time;
 
 bool inDebugSession = false;
 void * debugSession = nullptr;
 MT::common::Aerospike aerospikeClient;
-
-
-class PerformanceWatcher{
-       public:
-           PerformanceWatcher(const std::string& n):name(n){
-              beginTimeMs = time::getCurrentTimeStampMs();
-           }
-
-           ~PerformanceWatcher(){
-               int64_t endTime = time::getCurrentTimeStampMs();
-               LOG_DEBUG<<name<<" time collapses:"<<(endTime-beginTimeMs)<<"ms";
-           }
-
-       private:
-           int64_t beginTimeMs;
-           std::string name;
-       };
-
 
 void testTemplateEngine(const std::string& templateFile,const std::string& shadowFile){
     templateengine::TemplateEngine te(templateFile);

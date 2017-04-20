@@ -47,7 +47,7 @@ std::string getUidByDeviceId(const std::string& setName,const std::string& pk)
 {
     std::string md5deviceId = cypher::md5_encode(pk);
     CookieMappingManager & cmManager = CookieMappingManager::getInstance();
-    model::MtUserMapping userMapping = cmManager.getUserMappingByKey(setName,md5deviceId);
+    model::MtUserMapping userMapping = cmManager.getUserMappingByKey(setName,md5deviceId,true);
     if (userMapping.isValid()) {
         return userMapping.userId;
     }else{
