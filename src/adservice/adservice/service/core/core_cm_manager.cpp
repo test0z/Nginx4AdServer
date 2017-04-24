@@ -33,25 +33,25 @@ namespace server {
         }
         return mapping;
     }
-    adservice::core::model::MtUserMapping
-    getUserDeviceMappingByBin(const std::string & bin, const std::string value, const std::string & key, bool isDevice)
+    adservice::core::model::MtUserMapping CookieMappingManager::getUserDeviceMappingByBin(const std::string & bin,
+                                                                                          const std::string & value,
+                                                                                          const std::string & key)
     {
         if (isDevice) {
             mapping.needDeviceOriginId = true;
         }
         MT::common::ASQuery query(globalConfig.aerospikeConfig.nameSpace, key, 1);
         query.whereEqStr(bin, value);
-        std::vector<std::shared_ptr<MT::common::ASEntity>> udata;
+        std::vector<std::shared_ptr<adservice::core::model::MtUserMapping>> udata;
         try {
-            aerospikeClient.queryWhere(query, &udata, MT::common::Aerospike::QueryWhereCallback);
+            aerospikeClient.queryWhere(query, &udata, adservice::core::model::QueryWhereCallback);
         } catch (MT::common::AerospikeExcption & e) {
             LOG_ERROR << "获取设备信息失败" << key << value << ",errorcode:" << e.error().code
                       << ",error:" << e.error().message;
         }
         if (udata.size()) {
 
-            adservice::core::model::MtUserMapping * MtUserMapping_p
-                = dynamic_cast<adservice::core::model::MtUserMapping *>(udata[0].get());
+            adservice::core::model::MtUserMapping * MtUserMapping_p = udata[0].get();
             return *MtUserMapping_p;
         }
         return adservice::core::model::MtUserMapping();

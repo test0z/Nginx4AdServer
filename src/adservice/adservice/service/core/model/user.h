@@ -10,8 +10,11 @@
 namespace adservice {
 namespace core {
     namespace model {
+        bool QueryWhereCallback(const as_val * val, void * udata);
 
         class MtUserMapping : public MT::common::ASEntity {
+            friend bool QueryWhereCallback(const as_val * val, void * udata);
+
         public:
             MtUserMapping()
             {
