@@ -61,6 +61,8 @@ namespace corelogic {
         // 协议，0为http，1为https
         const std::string URL_PROTOCOL = "i";
 
+        const std::string deviceType[] = { "idfa", "imei", "androidId", "mac" };
+
         void fillLog(protocol::log::LogItem & log,
                      ParamMap & paramMap,
                      const core::model::SourceRecord & sourceRecord,
@@ -242,6 +244,7 @@ namespace corelogic {
                     device = paramMap[URL_DEVICE_TYPE];
 
         std::string sourceId = paramMap["g"];
+
         if (sourceId.empty()) {
 
             /* 根据用户id和广告主id获取source_id */
@@ -269,6 +272,20 @@ namespace corelogic {
             } catch (MT::common::AerospikeExcption & e) {
                 LOG_ERROR << "获取source record失败！sourceId:" << sourceId << "，code:" << e.error().code
                           << ", error:" << e.error().message;
+            }
+            if (requestTypeStr == "14") {
+                const std::string & user_id = sourceRecord.mtUid();
+                for (int i = 0; i < 4; i++) {
+                    CookieMappingManager & cmManager = CookieMappingManager::getInstance();
+                    adservice::core::model::MtUserMapping temp
+                        = cmManager.getUserDeviceMappingByBin("usr_id", user_id, deviceType[i], true);
+                    if (!temp.outerUserId.empty() || !temp.outerUserOriginId.empty()) {
+                        paramMap[URL_USER_OR_ORDER_ID]
+                            = (temp.outerUserOriginId.empty() ? temp.outerUserId : temp.outerUserOriginId);
+                        paramMap[URL_USER_OR_PRODUCT_NAME] = deviceType[i];
+                        break;
+                    }
+                }
             }
 
             requestCounter.increaseTraceSuccess();
