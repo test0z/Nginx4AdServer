@@ -150,6 +150,7 @@ void protobuf_AssignDesc_mtty_5fbidding_2eproto() {
       -1);
   BidRequest_Imp_Native_descriptor_ = BidRequest_Imp_descriptor_->nested_type(1);
   static const int BidRequest_Imp_Native_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_Imp_Native, assets_),
   };
   BidRequest_Imp_Native_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -368,6 +369,7 @@ void protobuf_AssignDesc_mtty_5fbidding_2eproto() {
       -1);
   BidResponse_SeatBid_Bid_Native_descriptor_ = BidResponse_SeatBid_Bid_descriptor_->nested_type(0);
   static const int BidResponse_SeatBid_Bid_Native_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_SeatBid_Bid_Native, assets_),
   };
   BidResponse_SeatBid_Bid_Native_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -499,54 +501,58 @@ void protobuf_AddDesc_mtty_5fbidding_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\022mtty_bidding.proto\022\014protocol.dsp\"\226\013\n\nB"
+    "\n\022mtty_bidding.proto\022\014protocol.dsp\"\322\013\n\nB"
     "idRequest\022\013\n\003bid\030\001 \002(\t\022\n\n\002ip\030\002 \001(\t\022)\n\003im"
     "p\030\003 \003(\0132\034.protocol.dsp.BidRequest.Imp\022+\n"
     "\004site\030\004 \001(\0132\035.protocol.dsp.BidRequest.Si"
     "te\022)\n\003app\030\005 \001(\0132\034.protocol.dsp.BidReques"
     "t.App\022/\n\006device\030\006 \001(\0132\037.protocol.dsp.Bid"
     "Request.Device\022+\n\004user\030\007 \001(\0132\035.protocol."
-    "dsp.BidRequest.User\032\323\004\n\003Imp\022\r\n\005impid\030\001 \002"
+    "dsp.BidRequest.User\032\216\005\n\003Imp\022\r\n\005impid\030\001 \002"
     "(\t\022\r\n\005tagid\030\002 \002(\t\022\020\n\010bidfloor\030\003 \002(\002\0223\n\006b"
     "anner\030\004 \001(\0132#.protocol.dsp.BidRequest.Im"
     "p.Banner\0223\n\006native\030\005 \001(\0132#.protocol.dsp."
     "BidRequest.Imp.Native\022-\n\003pmp\030\006 \001(\0132 .pro"
     "tocol.dsp.BidRequest.Imp.Pmp\022\021\n\006secure\030\007"
     " \002(\r:\0010\0326\n\006Banner\022\r\n\005width\030\001 \002(\r\022\016\n\006heig"
-    "ht\030\002 \002(\r\022\r\n\005mimes\030\003 \003(\t\032\320\001\n\006Native\032\305\001\n\005A"
-    "sset\022>\n\005title\030\001 \001(\0132/.protocol.dsp.BidRe"
-    "quest.Imp.Native.Asset.Title\022:\n\003img\030\002 \001("
-    "\0132-.protocol.dsp.BidRequest.Imp.Native.A"
-    "sset.Img\032\024\n\005Title\022\013\n\003len\030\001 \002(\r\032*\n\003Img\022\t\n"
-    "\001w\030\001 \002(\r\022\t\n\001h\030\002 \002(\r\022\r\n\005mimes\030\003 \003(\t\032e\n\003Pm"
-    "p\0224\n\005deals\030\001 \003(\0132%.protocol.dsp.BidReque"
-    "st.Imp.Pmp.Deal\032(\n\004Deal\022\016\n\006dealId\030\001 \001(\t\022"
-    "\020\n\010bidfloor\030\002 \001(\002\032!\n\004Site\022\014\n\004name\030\001 \001(\t\022"
-    "\013\n\003ref\030\002 \001(\t\032+\n\003App\022\017\n\007appname\030\001 \001(\t\022\023\n\013"
-    "packagename\030\002 \001(\t\032\303\003\n\006Device\022\014\n\002ua\030\001 \002(\t"
-    ":\000\022>\n\002os\030\002 \002(\0162&.protocol.dsp.BidRequest"
-    ".Device.OSType:\nOS_UNKNOWN\022K\n\007devtype\030\003 "
-    "\002(\0162*.protocol.dsp.BidRequest.Device.Dev"
-    "iceType:\016DEVICE_UNKNOWN\022\017\n\007idfamd5\030\004 \001(\t"
-    "\022\017\n\007imeimd5\030\005 \001(\t\"^\n\006OSType\022\016\n\nOS_WINDOW"
-    "S\020\001\022\n\n\006OS_MAC\020\002\022\014\n\010OS_LINUX\020\003\022\016\n\nOS_ANDR"
-    "OID\020\004\022\n\n\006OS_IOS\020\005\022\016\n\nOS_UNKNOWN\020\006\"\233\001\n\nDe"
-    "viceType\022\021\n\rDEVICE_IPHONE\020\001\022\026\n\022DEVICE_AN"
-    "DOIDPHONE\020\002\022\017\n\013DEVICE_IPAD\020\003\022\027\n\023DEVICE_W"
-    "INDOWSPHONE\020\004\022\025\n\021DEVICE_ANDROIDPAD\020\005\022\r\n\t"
-    "DEVICE_TV\020\006\022\022\n\016DEVICE_UNKNOWN\020\007\032\"\n\004User\022"
-    "\014\n\004muid\030\001 \002(\t\022\014\n\004tags\030\002 \003(\t\"\300\003\n\013BidRespo"
-    "nse\022\n\n\002id\030\001 \002(\t\022\r\n\005bidid\030\002 \001(\t\0222\n\007seatbi"
-    "d\030\003 \003(\0132!.protocol.dsp.BidResponse.SeatB"
-    "id\032\341\002\n\007SeatBid\0222\n\003bid\030\001 \003(\0132%.protocol.d"
-    "sp.BidResponse.SeatBid.Bid\032\241\002\n\003Bid\022\n\n\002id"
-    "\030\001 \002(\t\022\r\n\005impid\030\002 \002(\t\022<\n\006native\030\003 \001(\0132,."
-    "protocol.dsp.BidResponse.SeatBid.Bid.Nat"
-    "ive\022\r\n\005price\030\004 \002(\002\022\014\n\004nurl\030\005 \002(\t\022\017\n\007admt"
-    "ype\030\006 \002(\r\022\013\n\003adm\030\007 \002(\t\022\013\n\003pvm\030\010 \003(\t\022\016\n\006c"
-    "lickm\030\t \002(\t\022\016\n\006dealId\030\n \001(\t\032Y\n\006Native\032O\n"
-    "\005Asset\022\014\n\004type\030\001 \001(\r\022\016\n\006imgurl\030\002 \001(\t\022\014\n\004"
-    "imgw\030\003 \001(\r\022\014\n\004imgh\030\004 \001(\r\022\014\n\004data\030\005 \001(\t", 1918);
+    "ht\030\002 \002(\r\022\r\n\005mimes\030\003 \003(\t\032\213\002\n\006Native\0229\n\006as"
+    "sets\030\001 \003(\0132).protocol.dsp.BidRequest.Imp"
+    ".Native.Asset\032\305\001\n\005Asset\022>\n\005title\030\001 \001(\0132/"
+    ".protocol.dsp.BidRequest.Imp.Native.Asse"
+    "t.Title\022:\n\003img\030\002 \001(\0132-.protocol.dsp.BidR"
+    "equest.Imp.Native.Asset.Img\032\024\n\005Title\022\013\n\003"
+    "len\030\001 \002(\r\032*\n\003Img\022\t\n\001w\030\001 \002(\r\022\t\n\001h\030\002 \002(\r\022\r"
+    "\n\005mimes\030\003 \003(\t\032e\n\003Pmp\0224\n\005deals\030\001 \003(\0132%.pr"
+    "otocol.dsp.BidRequest.Imp.Pmp.Deal\032(\n\004De"
+    "al\022\016\n\006dealId\030\001 \001(\t\022\020\n\010bidfloor\030\002 \001(\002\032!\n\004"
+    "Site\022\014\n\004name\030\001 \001(\t\022\013\n\003ref\030\002 \001(\t\032+\n\003App\022\017"
+    "\n\007appname\030\001 \001(\t\022\023\n\013packagename\030\002 \001(\t\032\304\003\n"
+    "\006Device\022\014\n\002ua\030\001 \002(\t:\000\022>\n\002os\030\002 \002(\0162&.prot"
+    "ocol.dsp.BidRequest.Device.OSType:\nOS_UN"
+    "KNOWN\022K\n\007devtype\030\003 \002(\0162*.protocol.dsp.Bi"
+    "dRequest.Device.DeviceType:\016DEVICE_UNKNO"
+    "WN\022\017\n\007idfamd5\030\004 \001(\t\022\017\n\007imeimd5\030\005 \001(\t\"^\n\006"
+    "OSType\022\016\n\nOS_WINDOWS\020\001\022\n\n\006OS_MAC\020\002\022\014\n\010OS"
+    "_LINUX\020\003\022\016\n\nOS_ANDROID\020\004\022\n\n\006OS_IOS\020\005\022\016\n\n"
+    "OS_UNKNOWN\020\006\"\234\001\n\nDeviceType\022\021\n\rDEVICE_IP"
+    "HONE\020\001\022\027\n\023DEVICE_ANDROIDPHONE\020\002\022\017\n\013DEVIC"
+    "E_IPAD\020\003\022\027\n\023DEVICE_WINDOWSPHONE\020\004\022\025\n\021DEV"
+    "ICE_ANDROIDPAD\020\005\022\r\n\tDEVICE_TV\020\006\022\022\n\016DEVIC"
+    "E_UNKNOWN\020\007\032\"\n\004User\022\014\n\004muid\030\001 \002(\t\022\014\n\004tag"
+    "s\030\002 \003(\t\"\205\004\n\013BidResponse\022\n\n\002id\030\001 \002(\t\022\r\n\005b"
+    "idid\030\002 \001(\t\0222\n\007seatbid\030\003 \003(\0132!.protocol.d"
+    "sp.BidResponse.SeatBid\032\246\003\n\007SeatBid\0222\n\003bi"
+    "d\030\001 \003(\0132%.protocol.dsp.BidResponse.SeatB"
+    "id.Bid\032\346\002\n\003Bid\022\n\n\002id\030\001 \002(\t\022\r\n\005impid\030\002 \002("
+    "\t\022<\n\006native\030\003 \001(\0132,.protocol.dsp.BidResp"
+    "onse.SeatBid.Bid.Native\022\r\n\005price\030\004 \002(\002\022\014"
+    "\n\004nurl\030\005 \002(\t\022\017\n\007admtype\030\006 \002(\r\022\013\n\003adm\030\007 \002"
+    "(\t\022\013\n\003pvm\030\010 \003(\t\022\016\n\006clickm\030\t \002(\t\022\016\n\006dealI"
+    "d\030\n \001(\t\032\235\001\n\006Native\022B\n\006assets\030\001 \003(\01322.pro"
+    "tocol.dsp.BidResponse.SeatBid.Bid.Native"
+    ".Asset\032O\n\005Asset\022\014\n\004type\030\001 \001(\r\022\016\n\006imgurl\030"
+    "\002 \001(\t\022\014\n\004imgw\030\003 \001(\r\022\014\n\004imgh\030\004 \001(\r\022\014\n\004dat"
+    "a\030\005 \001(\t", 2047);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "mtty_bidding.proto", &protobuf_RegisterTypes);
   BidRequest::default_instance_ = new BidRequest();
@@ -1889,6 +1895,7 @@ void BidRequest_Imp_Native_Asset::InternalSwap(BidRequest_Imp_Native_Asset* othe
 // -------------------------------------------------------------------
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int BidRequest_Imp_Native::kAssetsFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 BidRequest_Imp_Native::BidRequest_Imp_Native()
@@ -1950,6 +1957,7 @@ BidRequest_Imp_Native* BidRequest_Imp_Native::New(::google::protobuf::Arena* are
 
 void BidRequest_Imp_Native::Clear() {
 // @@protoc_insertion_point(message_clear_start:protocol.dsp.BidRequest.Imp.Native)
+  assets_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   if (_internal_metadata_.have_unknown_fields()) {
     mutable_unknown_fields()->Clear();
@@ -1965,14 +1973,35 @@ bool BidRequest_Imp_Native::MergePartialFromCodedStream(
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
     if (!p.second) goto handle_unusual;
-  handle_unusual:
-    if (tag == 0 ||
-        ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-        ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-      goto success;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated .protocol.dsp.BidRequest.Imp.Native.Asset assets = 1;
+      case 1: {
+        if (tag == 10) {
+          DO_(input->IncrementRecursionDepth());
+         parse_loop_assets:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
+                input, add_assets()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(10)) goto parse_loop_assets;
+        input->UnsafeDecrementRecursionDepth();
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
     }
-    DO_(::google::protobuf::internal::WireFormat::SkipField(
-          input, tag, mutable_unknown_fields()));
   }
 success:
   // @@protoc_insertion_point(parse_success:protocol.dsp.BidRequest.Imp.Native)
@@ -1986,6 +2015,12 @@ failure:
 void BidRequest_Imp_Native::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:protocol.dsp.BidRequest.Imp.Native)
+  // repeated .protocol.dsp.BidRequest.Imp.Native.Asset assets = 1;
+  for (unsigned int i = 0, n = this->assets_size(); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1, this->assets(i), output);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1996,6 +2031,13 @@ void BidRequest_Imp_Native::SerializeWithCachedSizes(
 ::google::protobuf::uint8* BidRequest_Imp_Native::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:protocol.dsp.BidRequest.Imp.Native)
+  // repeated .protocol.dsp.BidRequest.Imp.Native.Asset assets = 1;
+  for (unsigned int i = 0, n = this->assets_size(); i < n; i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageNoVirtualToArray(
+        1, this->assets(i), false, target);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -2007,6 +2049,14 @@ void BidRequest_Imp_Native::SerializeWithCachedSizes(
 int BidRequest_Imp_Native::ByteSize() const {
 // @@protoc_insertion_point(message_byte_size_start:protocol.dsp.BidRequest.Imp.Native)
   int total_size = 0;
+
+  // repeated .protocol.dsp.BidRequest.Imp.Native.Asset assets = 1;
+  total_size += 1 * this->assets_size();
+  for (int i = 0; i < this->assets_size(); i++) {
+    total_size +=
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        this->assets(i));
+  }
 
   if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
@@ -2041,6 +2091,7 @@ void BidRequest_Imp_Native::MergeFrom(const BidRequest_Imp_Native& from) {
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
+  assets_.MergeFrom(from.assets_);
   if (from._internal_metadata_.have_unknown_fields()) {
     mutable_unknown_fields()->MergeFrom(from.unknown_fields());
   }
@@ -2062,6 +2113,7 @@ void BidRequest_Imp_Native::CopyFrom(const BidRequest_Imp_Native& from) {
 
 bool BidRequest_Imp_Native::IsInitialized() const {
 
+  if (!::google::protobuf::internal::AllAreInitialized(this->assets())) return false;
   return true;
 }
 
@@ -2070,6 +2122,8 @@ void BidRequest_Imp_Native::Swap(BidRequest_Imp_Native* other) {
   InternalSwap(other);
 }
 void BidRequest_Imp_Native::InternalSwap(BidRequest_Imp_Native* other) {
+  assets_.UnsafeArenaSwap(&other->assets_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
@@ -3180,6 +3234,9 @@ bool BidRequest_Imp::IsInitialized() const {
   if (has_banner()) {
     if (!this->banner_->IsInitialized()) return false;
   }
+  if (has_native()) {
+    if (!this->native_->IsInitialized()) return false;
+  }
   return true;
 }
 
@@ -3903,7 +3960,7 @@ bool BidRequest_Device_DeviceType_IsValid(int value) {
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const BidRequest_Device_DeviceType BidRequest_Device::DEVICE_IPHONE;
-const BidRequest_Device_DeviceType BidRequest_Device::DEVICE_ANDOIDPHONE;
+const BidRequest_Device_DeviceType BidRequest_Device::DEVICE_ANDROIDPHONE;
 const BidRequest_Device_DeviceType BidRequest_Device::DEVICE_IPAD;
 const BidRequest_Device_DeviceType BidRequest_Device::DEVICE_WINDOWSPHONE;
 const BidRequest_Device_DeviceType BidRequest_Device::DEVICE_ANDROIDPAD;
@@ -5594,6 +5651,36 @@ void BidRequest_Imp_Native_Asset::set_allocated_img(::protocol::dsp::BidRequest_
 // -------------------------------------------------------------------
 
 // BidRequest_Imp_Native
+
+// repeated .protocol.dsp.BidRequest.Imp.Native.Asset assets = 1;
+int BidRequest_Imp_Native::assets_size() const {
+  return assets_.size();
+}
+void BidRequest_Imp_Native::clear_assets() {
+  assets_.Clear();
+}
+const ::protocol::dsp::BidRequest_Imp_Native_Asset& BidRequest_Imp_Native::assets(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.dsp.BidRequest.Imp.Native.assets)
+  return assets_.Get(index);
+}
+::protocol::dsp::BidRequest_Imp_Native_Asset* BidRequest_Imp_Native::mutable_assets(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.dsp.BidRequest.Imp.Native.assets)
+  return assets_.Mutable(index);
+}
+::protocol::dsp::BidRequest_Imp_Native_Asset* BidRequest_Imp_Native::add_assets() {
+  // @@protoc_insertion_point(field_add:protocol.dsp.BidRequest.Imp.Native.assets)
+  return assets_.Add();
+}
+::google::protobuf::RepeatedPtrField< ::protocol::dsp::BidRequest_Imp_Native_Asset >*
+BidRequest_Imp_Native::mutable_assets() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.dsp.BidRequest.Imp.Native.assets)
+  return &assets_;
+}
+const ::google::protobuf::RepeatedPtrField< ::protocol::dsp::BidRequest_Imp_Native_Asset >&
+BidRequest_Imp_Native::assets() const {
+  // @@protoc_insertion_point(field_list:protocol.dsp.BidRequest.Imp.Native.assets)
+  return assets_;
+}
 
 // -------------------------------------------------------------------
 
@@ -7336,6 +7423,7 @@ void BidResponse_SeatBid_Bid_Native_Asset::InternalSwap(BidResponse_SeatBid_Bid_
 // -------------------------------------------------------------------
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int BidResponse_SeatBid_Bid_Native::kAssetsFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 BidResponse_SeatBid_Bid_Native::BidResponse_SeatBid_Bid_Native()
@@ -7397,6 +7485,7 @@ BidResponse_SeatBid_Bid_Native* BidResponse_SeatBid_Bid_Native::New(::google::pr
 
 void BidResponse_SeatBid_Bid_Native::Clear() {
 // @@protoc_insertion_point(message_clear_start:protocol.dsp.BidResponse.SeatBid.Bid.Native)
+  assets_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   if (_internal_metadata_.have_unknown_fields()) {
     mutable_unknown_fields()->Clear();
@@ -7412,14 +7501,35 @@ bool BidResponse_SeatBid_Bid_Native::MergePartialFromCodedStream(
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
     if (!p.second) goto handle_unusual;
-  handle_unusual:
-    if (tag == 0 ||
-        ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-        ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-      goto success;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated .protocol.dsp.BidResponse.SeatBid.Bid.Native.Asset assets = 1;
+      case 1: {
+        if (tag == 10) {
+          DO_(input->IncrementRecursionDepth());
+         parse_loop_assets:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
+                input, add_assets()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(10)) goto parse_loop_assets;
+        input->UnsafeDecrementRecursionDepth();
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
     }
-    DO_(::google::protobuf::internal::WireFormat::SkipField(
-          input, tag, mutable_unknown_fields()));
   }
 success:
   // @@protoc_insertion_point(parse_success:protocol.dsp.BidResponse.SeatBid.Bid.Native)
@@ -7433,6 +7543,12 @@ failure:
 void BidResponse_SeatBid_Bid_Native::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:protocol.dsp.BidResponse.SeatBid.Bid.Native)
+  // repeated .protocol.dsp.BidResponse.SeatBid.Bid.Native.Asset assets = 1;
+  for (unsigned int i = 0, n = this->assets_size(); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1, this->assets(i), output);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -7443,6 +7559,13 @@ void BidResponse_SeatBid_Bid_Native::SerializeWithCachedSizes(
 ::google::protobuf::uint8* BidResponse_SeatBid_Bid_Native::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:protocol.dsp.BidResponse.SeatBid.Bid.Native)
+  // repeated .protocol.dsp.BidResponse.SeatBid.Bid.Native.Asset assets = 1;
+  for (unsigned int i = 0, n = this->assets_size(); i < n; i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageNoVirtualToArray(
+        1, this->assets(i), false, target);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -7454,6 +7577,14 @@ void BidResponse_SeatBid_Bid_Native::SerializeWithCachedSizes(
 int BidResponse_SeatBid_Bid_Native::ByteSize() const {
 // @@protoc_insertion_point(message_byte_size_start:protocol.dsp.BidResponse.SeatBid.Bid.Native)
   int total_size = 0;
+
+  // repeated .protocol.dsp.BidResponse.SeatBid.Bid.Native.Asset assets = 1;
+  total_size += 1 * this->assets_size();
+  for (int i = 0; i < this->assets_size(); i++) {
+    total_size +=
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        this->assets(i));
+  }
 
   if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
@@ -7488,6 +7619,7 @@ void BidResponse_SeatBid_Bid_Native::MergeFrom(const BidResponse_SeatBid_Bid_Nat
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
+  assets_.MergeFrom(from.assets_);
   if (from._internal_metadata_.have_unknown_fields()) {
     mutable_unknown_fields()->MergeFrom(from.unknown_fields());
   }
@@ -7517,6 +7649,8 @@ void BidResponse_SeatBid_Bid_Native::Swap(BidResponse_SeatBid_Bid_Native* other)
   InternalSwap(other);
 }
 void BidResponse_SeatBid_Bid_Native::InternalSwap(BidResponse_SeatBid_Bid_Native* other) {
+  assets_.UnsafeArenaSwap(&other->assets_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
@@ -9102,6 +9236,36 @@ void BidResponse_SeatBid_Bid_Native_Asset::clear_data() {
 // -------------------------------------------------------------------
 
 // BidResponse_SeatBid_Bid_Native
+
+// repeated .protocol.dsp.BidResponse.SeatBid.Bid.Native.Asset assets = 1;
+int BidResponse_SeatBid_Bid_Native::assets_size() const {
+  return assets_.size();
+}
+void BidResponse_SeatBid_Bid_Native::clear_assets() {
+  assets_.Clear();
+}
+const ::protocol::dsp::BidResponse_SeatBid_Bid_Native_Asset& BidResponse_SeatBid_Bid_Native::assets(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.dsp.BidResponse.SeatBid.Bid.Native.assets)
+  return assets_.Get(index);
+}
+::protocol::dsp::BidResponse_SeatBid_Bid_Native_Asset* BidResponse_SeatBid_Bid_Native::mutable_assets(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.dsp.BidResponse.SeatBid.Bid.Native.assets)
+  return assets_.Mutable(index);
+}
+::protocol::dsp::BidResponse_SeatBid_Bid_Native_Asset* BidResponse_SeatBid_Bid_Native::add_assets() {
+  // @@protoc_insertion_point(field_add:protocol.dsp.BidResponse.SeatBid.Bid.Native.assets)
+  return assets_.Add();
+}
+::google::protobuf::RepeatedPtrField< ::protocol::dsp::BidResponse_SeatBid_Bid_Native_Asset >*
+BidResponse_SeatBid_Bid_Native::mutable_assets() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.dsp.BidResponse.SeatBid.Bid.Native.assets)
+  return &assets_;
+}
+const ::google::protobuf::RepeatedPtrField< ::protocol::dsp::BidResponse_SeatBid_Bid_Native_Asset >&
+BidResponse_SeatBid_Bid_Native::assets() const {
+  // @@protoc_insertion_point(field_list:protocol.dsp.BidResponse.SeatBid.Bid.Native.assets)
+  return assets_;
+}
 
 // -------------------------------------------------------------------
 

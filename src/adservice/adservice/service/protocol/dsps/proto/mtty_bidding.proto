@@ -50,6 +50,9 @@ message BidRequest {
                 }
                 optional Img img = 2;
             }
+
+            repeated Asset assets = 1;
+
         }
 
         optional Native native = 5;
@@ -102,7 +105,7 @@ message BidRequest {
 
         enum DeviceType {
             DEVICE_IPHONE = 1;
-            DEVICE_ANDOIDPHONE = 2;
+            DEVICE_ANDROIDPHONE = 2;
             DEVICE_IPAD = 3;
             DEVICE_WINDOWSPHONE = 4;
             DEVICE_ANDROIDPAD = 5;
@@ -162,6 +165,7 @@ message BidResponse {
                     // 	如果type为1，4, data为内容
                     optional string data = 5;
                 }
+                repeated Asset assets = 1;
             }
 
             optional Native native = 3;

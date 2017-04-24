@@ -7,15 +7,25 @@
 
 #include "core/core_cm_manager.h"
 #include "core/model/user.h"
+#include "protocol/dsps/dsp_handler_manager.h"
 #include "utility/utility.h"
+#include <mtty/mtuser.h>
 
 extern MT::common::RequestCounter requestCounter;
+
+namespace protocol {
+namespace dsp {
+
+    extern DSPHandlerManager dspHandlerManager;
+}
+}
 
 namespace adservice {
 namespace corelogic {
 
     using namespace adservice::server;
     using namespace adservice::core;
+    using namespace protocol::dsp;
 
     namespace {
         std::string getAdxMappingKey(int64_t adxId)
@@ -66,6 +76,8 @@ namespace corelogic {
             }
             return true;
         }
+
+        const std::string URL_PARAM_DSPID = "dspid";
     }
 
     std::string HandleMappingQueryTask::imageData;
@@ -104,30 +116,41 @@ namespace corelogic {
 
         try {
             const std::string & uId = log.userId;
-            // todo:获取url中和cookiemapping相关的参数,更新到这个uid对应的记录中，并且设置映射表条目的过期时间
-            CookieMappingManager & cmManager = CookieMappingManager::getInstance();
-            int64_t adxId = checkAdxId(userAgent, log.adInfo.adxid);
-            std::string adxUidKey = getAdxMappingKey(adxId);
-            std::string adxUid = paramMap.find(adxUidKey) != paramMap.end() ? paramMap[adxUidKey] : "";
-            if (!adxUid.empty() && isAdxUidValid(adxId, adxUid)) {
-                char buf[1024];
-                std::string decodeAdxUid;
-                utility::url::urlDecode_f(adxUid, decodeAdxUid, buf);
-                bool bSuccess = cmManager.updateMappingAdxUid(uId, adxId, decodeAdxUid);
-                if (!bSuccess) {
-                    LOG_WARN << "failed to update cookie mapping,uid:" << uId << ",adxId:" << adxId
-                             << ",adxUid:" << adxUid;
+            std::string relocateUrl = "http://mtty-cdn.mtty.com/1x1.gif";
+            if (paramMap.find(URL_PARAM_DSPID) == paramMap.end()) { //我方作为DSP时的cookie mapping 逻辑
+                // todo:获取url中和cookiemapping相关的参数,更新到这个uid对应的记录中，并且设置映射表条目的过期时间
+                CookieMappingManager & cmManager = CookieMappingManager::getInstance();
+                int64_t adxId = checkAdxId(userAgent, log.adInfo.adxid);
+                std::string adxUidKey = getAdxMappingKey(adxId);
+                std::string adxUid = paramMap.find(adxUidKey) != paramMap.end() ? paramMap[adxUidKey] : "";
+                if (!adxUid.empty() && isAdxUidValid(adxId, adxUid)) {
+                    char buf[1024];
+                    std::string decodeAdxUid;
+                    utility::url::urlDecode_f(adxUid, decodeAdxUid, buf);
+                    bool bSuccess = cmManager.updateMappingAdxUid(uId, adxId, decodeAdxUid);
+                    if (!bSuccess) {
+                        LOG_WARN << "failed to update cookie mapping,uid:" << uId << ",adxId:" << adxId
+                                 << ",adxUid:" << adxUid;
+                    }
+                }
+            } else { //我方作为流量售卖方时的逻辑
+                int64_t dspId = std::stoi(paramMap[URL_PARAM_DSPID]);
+                auto & dspHandler = dspHandlerManager.getHandler(dspId);
+                std::string cookieMappingUrl = dspHandler->getCookieMappingUrl();
+                if (!cookieMappingUrl.empty()) {
+                    MT::User::UserID user(log.userId, false);
+                    relocateUrl = cookieMappingUrl + "&muid=" + user.cipher();
                 }
             }
-            needLog = false;
             //生成1x1图片
             resp.status(302, "OK");
-            resp.set_header("Location", "http://mtty-cdn.mtty.com/1x1.gif");
+            resp.set_header("Location", relocateUrl);
             resp.set_body("m");
             resp.set_header("Pragma", "no-cache");
             resp.set_header("Cache-Control", "no-cache,no-store;must-revalidate");
             resp.set_header("P3p",
                             "CP=\"CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR\"");
+            needLog = false;
         } catch (std::exception & e) {
             log.reqStatus = 500;
             LOG_ERROR << "exception thrown during HandleMappingQueryTask::customLogic,e:" << e.what();

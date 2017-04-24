@@ -393,6 +393,8 @@ namespace corelogic {
             if (paramMap.find(URL_SSP_CARRIER) != paramMap.end()) {
                 condition.mobileNetWorkProvider = std::stoi(paramMap[URL_SSP_CARRIER]);
             }
+            condition.userAgent = log.userAgent;
+            condition.referer = log.referer;
         }
 
         /**
@@ -438,12 +440,38 @@ namespace corelogic {
                     dspResults.size(), [&dspResults](int idx) { return dspResults[i].bidPrice; }, { 0, 100, 0 }, true);
                 protocol::dsp::DSPBidResult & dspResult = dspResults[finalIdx];
                 result.banner = dspResult.banner;
+                result.bidPrice = dspResult.bidPrice;
+                result.feePrice = dspResult.bidPrice;
                 for (auto solution : dspSolutions) {
-                    if (solution.advId == dspResult.dspId) {
+                    if (solution.advId == dspResult.dspId && dspResult.dealId == std::to_string(solution.sId)) {
                         result.solution = solution;
                         break;
                     }
                 }
+                std::string auctionPrice = std::to_string(dspResult.bidPrice);
+                adservice::utility::url::URLHelper exchangeClickUrl(SSP_CLICK_URL, false);
+                exchangeClickUrl.add(URL_ADX_ID, condition.adxid);
+                exchangeClickUrl.add(URL_ADPLACE_ID, condition.mttyPid);
+                exchangeClickUrl.add(URL_ADOWNER_ID, dspResult.dspId);
+                std::string clickUrlEnc;
+                adservice::utility::url::urlEncode_f(exchangeClickUrl.toUrl() + "&" URL_LANDING_URL "=", clickUrlEnc);
+                //宏替换
+                if (!dspResult.htmlSnippet.empty()) { //
+                    adservice::utility::url::url_replace_all(dspResult.htmlSnippet, "%%WINNING_PRICE%%", auctionPrice);
+                    adservice::utility::url::url_replace_all(dspResult.htmlSnippet, "%%CLICK_URL_ESC%%", clickUrlEnc);
+                    //把htmlsnippet放到banner中去
+                }
+                for (auto & url : dspResult.laterAccessUrls) {
+                    adservice::utility::url::url_replace_all(url, "%%WINNING_PRICE%%", auctionPrice);
+                }
+                std::vector<std::string> toSendUrls = dspResult.laterAccessUrls;
+                //异步发送win notice或曝光监测链接
+                protocol::dsp::dspHandlerManager.getExecutor().run([toSendUrls]() {
+                    for (auto & url : toSendUrls) {
+                        // httpClientProxy.getAsync(url);
+                    }
+                });
+                //记录日志
                 return true;
             } catch (protocol::dsp::DSPHandlerException & dspException) {
                 LOG_ERROR << "askOtherDSP has dsp handler exception:" << dspException.what()

@@ -19,12 +19,18 @@ namespace dsp {
             dspId = 0;
             resultOk = false;
             bidPrice = 0.0;
+            dealId = "";
             banner = MT::common::Banner();
+            laterAccessUrls.clear();
+            htmlSnippet = "";
         }
         int64_t dspId;
         bool resultOk{ false };
         double bidPrice{ 0.0 };
         MT::common::Banner banner;
+        std::string dealId;
+        std::string htmlSnippet;
+        std::vector<std::string> laterAccessUrls;
     };
 
     typedef std::function<void(void)> DSPPromiseListener;
@@ -127,7 +133,10 @@ namespace dsp {
 
     class DSPHandlerInterface {
     public:
-        DSPHandlerInterface(int64_t dspId, const std::string & targetUrl, int64_t timeout)
+        DSPHandlerInterface(int64_t dspId,
+                            const std::string & targetUrl,
+                            const std::string & cookiemappingUrl,
+                            int64_t timeout)
             : dspId_(dspId)
             , dspUrl_(targetUrl)
             , timeoutMs_(timeout)
@@ -152,6 +161,11 @@ namespace dsp {
             return dspUrl;
         }
 
+        const std::string & getCookieMappingUrl()
+        {
+            return cookiemappingUrl_;
+        }
+
         int64_t getDSPId()
         {
             return dspId;
@@ -166,10 +180,11 @@ namespace dsp {
         BidRequest conditionToBidRequest(adselectv2::AdSelectCondition & selectCondition,
                                          const MT::common::ADPlace & adplace);
 
-        DSPBidResult bidResponseToDspResult(BidResponse & bidResponse);
+        DSPBidResult bidResponseToDspResult(BidResponse & bidResponse, const MT::common::ADPlace & adplace);
 
     protected:
         std::string dspUrl_;
+        std::string cookiemappingUrl_;
         int64_t dspId_;
         int64_t timeoutMs_;
         DSPBidResult dspResult_;

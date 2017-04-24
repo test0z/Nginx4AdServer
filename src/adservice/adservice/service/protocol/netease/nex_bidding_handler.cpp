@@ -254,7 +254,7 @@ namespace bidding {
         std::string strBannerJson = banner.json;
         cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
-        std::string tview = bannerJson["tview"].str();
+        std::string tview = bannerJson.get("tview", "");
 
         cppcms::json::value extValue;
         url::URLHelper showUrl;

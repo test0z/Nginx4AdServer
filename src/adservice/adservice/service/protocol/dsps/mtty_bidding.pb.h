@@ -82,7 +82,7 @@ inline bool BidRequest_Device_OSType_Parse(
 }
 enum BidRequest_Device_DeviceType {
   BidRequest_Device_DeviceType_DEVICE_IPHONE = 1,
-  BidRequest_Device_DeviceType_DEVICE_ANDOIDPHONE = 2,
+  BidRequest_Device_DeviceType_DEVICE_ANDROIDPHONE = 2,
   BidRequest_Device_DeviceType_DEVICE_IPAD = 3,
   BidRequest_Device_DeviceType_DEVICE_WINDOWSPHONE = 4,
   BidRequest_Device_DeviceType_DEVICE_ANDROIDPAD = 5,
@@ -625,12 +625,25 @@ class BidRequest_Imp_Native : public ::google::protobuf::Message /* @@protoc_ins
 
   // accessors -------------------------------------------------------
 
+  // repeated .protocol.dsp.BidRequest.Imp.Native.Asset assets = 1;
+  int assets_size() const;
+  void clear_assets();
+  static const int kAssetsFieldNumber = 1;
+  const ::protocol::dsp::BidRequest_Imp_Native_Asset& assets(int index) const;
+  ::protocol::dsp::BidRequest_Imp_Native_Asset* mutable_assets(int index);
+  ::protocol::dsp::BidRequest_Imp_Native_Asset* add_assets();
+  ::google::protobuf::RepeatedPtrField< ::protocol::dsp::BidRequest_Imp_Native_Asset >*
+      mutable_assets();
+  const ::google::protobuf::RepeatedPtrField< ::protocol::dsp::BidRequest_Imp_Native_Asset >&
+      assets() const;
+
   // @@protoc_insertion_point(class_scope:protocol.dsp.BidRequest.Imp.Native)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
+  ::google::protobuf::RepeatedPtrField< ::protocol::dsp::BidRequest_Imp_Native_Asset > assets_;
   friend void  protobuf_AddDesc_mtty_5fbidding_2eproto();
   friend void protobuf_AssignDesc_mtty_5fbidding_2eproto();
   friend void protobuf_ShutdownFile_mtty_5fbidding_2eproto();
@@ -1351,8 +1364,8 @@ class BidRequest_Device : public ::google::protobuf::Message /* @@protoc_inserti
   typedef BidRequest_Device_DeviceType DeviceType;
   static const DeviceType DEVICE_IPHONE =
     BidRequest_Device_DeviceType_DEVICE_IPHONE;
-  static const DeviceType DEVICE_ANDOIDPHONE =
-    BidRequest_Device_DeviceType_DEVICE_ANDOIDPHONE;
+  static const DeviceType DEVICE_ANDROIDPHONE =
+    BidRequest_Device_DeviceType_DEVICE_ANDROIDPHONE;
   static const DeviceType DEVICE_IPAD =
     BidRequest_Device_DeviceType_DEVICE_IPAD;
   static const DeviceType DEVICE_WINDOWSPHONE =
@@ -1977,12 +1990,25 @@ class BidResponse_SeatBid_Bid_Native : public ::google::protobuf::Message /* @@p
 
   // accessors -------------------------------------------------------
 
+  // repeated .protocol.dsp.BidResponse.SeatBid.Bid.Native.Asset assets = 1;
+  int assets_size() const;
+  void clear_assets();
+  static const int kAssetsFieldNumber = 1;
+  const ::protocol::dsp::BidResponse_SeatBid_Bid_Native_Asset& assets(int index) const;
+  ::protocol::dsp::BidResponse_SeatBid_Bid_Native_Asset* mutable_assets(int index);
+  ::protocol::dsp::BidResponse_SeatBid_Bid_Native_Asset* add_assets();
+  ::google::protobuf::RepeatedPtrField< ::protocol::dsp::BidResponse_SeatBid_Bid_Native_Asset >*
+      mutable_assets();
+  const ::google::protobuf::RepeatedPtrField< ::protocol::dsp::BidResponse_SeatBid_Bid_Native_Asset >&
+      assets() const;
+
   // @@protoc_insertion_point(class_scope:protocol.dsp.BidResponse.SeatBid.Bid.Native)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
+  ::google::protobuf::RepeatedPtrField< ::protocol::dsp::BidResponse_SeatBid_Bid_Native_Asset > assets_;
   friend void  protobuf_AddDesc_mtty_5fbidding_2eproto();
   friend void protobuf_AssignDesc_mtty_5fbidding_2eproto();
   friend void protobuf_ShutdownFile_mtty_5fbidding_2eproto();
@@ -2784,6 +2810,36 @@ inline void BidRequest_Imp_Native_Asset::set_allocated_img(::protocol::dsp::BidR
 // -------------------------------------------------------------------
 
 // BidRequest_Imp_Native
+
+// repeated .protocol.dsp.BidRequest.Imp.Native.Asset assets = 1;
+inline int BidRequest_Imp_Native::assets_size() const {
+  return assets_.size();
+}
+inline void BidRequest_Imp_Native::clear_assets() {
+  assets_.Clear();
+}
+inline const ::protocol::dsp::BidRequest_Imp_Native_Asset& BidRequest_Imp_Native::assets(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.dsp.BidRequest.Imp.Native.assets)
+  return assets_.Get(index);
+}
+inline ::protocol::dsp::BidRequest_Imp_Native_Asset* BidRequest_Imp_Native::mutable_assets(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.dsp.BidRequest.Imp.Native.assets)
+  return assets_.Mutable(index);
+}
+inline ::protocol::dsp::BidRequest_Imp_Native_Asset* BidRequest_Imp_Native::add_assets() {
+  // @@protoc_insertion_point(field_add:protocol.dsp.BidRequest.Imp.Native.assets)
+  return assets_.Add();
+}
+inline ::google::protobuf::RepeatedPtrField< ::protocol::dsp::BidRequest_Imp_Native_Asset >*
+BidRequest_Imp_Native::mutable_assets() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.dsp.BidRequest.Imp.Native.assets)
+  return &assets_;
+}
+inline const ::google::protobuf::RepeatedPtrField< ::protocol::dsp::BidRequest_Imp_Native_Asset >&
+BidRequest_Imp_Native::assets() const {
+  // @@protoc_insertion_point(field_list:protocol.dsp.BidRequest.Imp.Native.assets)
+  return assets_;
+}
 
 // -------------------------------------------------------------------
 
@@ -4251,6 +4307,36 @@ inline void BidResponse_SeatBid_Bid_Native_Asset::set_allocated_data(::std::stri
 // -------------------------------------------------------------------
 
 // BidResponse_SeatBid_Bid_Native
+
+// repeated .protocol.dsp.BidResponse.SeatBid.Bid.Native.Asset assets = 1;
+inline int BidResponse_SeatBid_Bid_Native::assets_size() const {
+  return assets_.size();
+}
+inline void BidResponse_SeatBid_Bid_Native::clear_assets() {
+  assets_.Clear();
+}
+inline const ::protocol::dsp::BidResponse_SeatBid_Bid_Native_Asset& BidResponse_SeatBid_Bid_Native::assets(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.dsp.BidResponse.SeatBid.Bid.Native.assets)
+  return assets_.Get(index);
+}
+inline ::protocol::dsp::BidResponse_SeatBid_Bid_Native_Asset* BidResponse_SeatBid_Bid_Native::mutable_assets(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.dsp.BidResponse.SeatBid.Bid.Native.assets)
+  return assets_.Mutable(index);
+}
+inline ::protocol::dsp::BidResponse_SeatBid_Bid_Native_Asset* BidResponse_SeatBid_Bid_Native::add_assets() {
+  // @@protoc_insertion_point(field_add:protocol.dsp.BidResponse.SeatBid.Bid.Native.assets)
+  return assets_.Add();
+}
+inline ::google::protobuf::RepeatedPtrField< ::protocol::dsp::BidResponse_SeatBid_Bid_Native_Asset >*
+BidResponse_SeatBid_Bid_Native::mutable_assets() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.dsp.BidResponse.SeatBid.Bid.Native.assets)
+  return &assets_;
+}
+inline const ::google::protobuf::RepeatedPtrField< ::protocol::dsp::BidResponse_SeatBid_Bid_Native_Asset >&
+BidResponse_SeatBid_Bid_Native::assets() const {
+  // @@protoc_insertion_point(field_list:protocol.dsp.BidResponse.SeatBid.Bid.Native.assets)
+  return assets_;
+}
 
 // -------------------------------------------------------------------
 
