@@ -75,7 +75,7 @@ namespace server {
                                                                   bool isDevice);
 
         adservice::core::model::MtUserMapping
-        getUserDeviceMappingByBin(const std::string & bin, const std::string value, const std::string & key);
+        getUserDeviceMappingByBin(const std::string & bin, const std::string & value, const std::string & key);
 
         bool updateMappingAdxUid(const std::string & userId,
                                  int64_t adxId,
