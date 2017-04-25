@@ -1,5 +1,7 @@
 package protocol.dsp;
 
+//mtty bidding protocol version 1.0
+
 message BidRequest {
 
     //------------------------------------------- 协议基础信息
