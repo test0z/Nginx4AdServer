@@ -302,7 +302,6 @@ namespace bidding {
         std::string strBannerJson = banner.json;
         cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
-
         url::URLHelper showUrl;
         getShowPara(showUrl, requestId);
         if (!queryCondition.dealId.empty() && finalSolution.dDealId != "0") { // deal 加特殊参数w
