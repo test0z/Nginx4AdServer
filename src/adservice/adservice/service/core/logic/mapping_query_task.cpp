@@ -16,7 +16,7 @@ extern MT::common::RequestCounter requestCounter;
 namespace protocol {
 namespace dsp {
 
-    extern DSPHandlerManager dspHandlerManager;
+    extern thread_local DSPHandlerManager dspHandlerManager;
 }
 }
 
@@ -135,7 +135,7 @@ namespace corelogic {
                 }
             } else { //我方作为流量售卖方时的逻辑
                 int64_t dspId = std::stoi(paramMap[URL_PARAM_DSPID]);
-                auto & dspHandler = dspHandlerManager.getHandler(dspId);
+                auto dspHandler = dspHandlerManager.getHandler(dspId);
                 std::string cookieMappingUrl = dspHandler->getCookieMappingUrl();
                 if (!cookieMappingUrl.empty()) {
                     MT::User::UserID user(log.userId, false);

@@ -41,7 +41,7 @@ namespace dsp {
         {
             switch (selectCondition.mobileDevice) {
             case SOLUTION_DEVICE_ANDROID:
-                return BidRequest_Device_DeviceType::BidRequest_Device_DeviceType_DEVICE_ANDOIDPHONE;
+                return BidRequest_Device_DeviceType::BidRequest_Device_DeviceType_DEVICE_ANDROIDPHONE;
             case SOLUTION_DEVICE_ANDROIDPAD:
                 return BidRequest_Device_DeviceType::BidRequest_Device_DeviceType_DEVICE_ANDROIDPAD;
             case SOLUTION_DEVICE_IPHONE:
@@ -53,6 +53,11 @@ namespace dsp {
             default:
                 return BidRequest_Device_DeviceType::BidRequest_Device_DeviceType_DEVICE_UNKNOWN;
             }
+        }
+
+        int getFormatIdByMaterialUrl(const std::string & url)
+        {
+            return 6;
         }
     }
 
@@ -66,7 +71,7 @@ namespace dsp {
         //异步回调
         // operationPromise相当于一个异步操作的回执
         DSPPromisePtr operationPromise = std::make_shared<DSPPromise>();
-        auto callback = [this](const std::string & res) {
+        auto callback = [this, &adplace, &operationPromise](const std::string & res) {
             BidResponse bidResponse;
             utility::serialize::getProtoBufObject(bidResponse, res);
             this->dspResult_ = std::move(this->bidResponseToDspResult(bidResponse, adplace));
@@ -106,13 +111,13 @@ namespace dsp {
             auto pmp = imp->mutable_pmp();
             for (auto dealId : dealIds) {
                 auto deal = pmp->add_deals();
-                deal->set_dealid(dealId);
+                deal->set_dealid(std::to_string(dealId));
                 deal->set_bidfloor(adplace.basePrice);
             }
         }
-        bool isIOS = selectCondition.pcOs == SOLUTION_OS_IOS;
+        bool isIOS = selectCondition.pcOS == SOLUTION_OS_IOS;
         imp->set_secure(isIOS ? 1 : 0);
-        if (adplace.flowtype == 2) { // app
+        if (adplace.flowType == 2) { // app
             auto app = bidRequest.mutable_app();
             app->set_appname(adplace.adPlaceName);
         } else { // pc or wap
@@ -146,10 +151,10 @@ namespace dsp {
                          << ",offer price < baseprice, offerprice:" << bid.price()
                          << ",baseprice:" << adplace.basePrice;
                 result.resultOk = false;
-                return;
+                return result;
             }
             MT::common::Banner & banner = result.banner;
-            cppcms::json::value & bannerJson;
+            cppcms::json::value bannerJson;
             bannerJson["advid"] = std::to_string(dspId_);
             // bannerJson["cid"]
             bannerJson["mtls"] = cppcms::json::array();
@@ -157,18 +162,17 @@ namespace dsp {
             if (adplace.supportBanner.find(STR_BANNERTYPE_PRIMITIVE) != std::string::npos) {
                 bannerJson["ctype"] = STR_BANNERTYPE_PRIMITIVE;
                 banner.bannerType = BANNER_TYPE_PRIMITIVE;
-                // bannerJson["formatid"]
                 auto & native = bid.native();
                 int64_t photoIdx = 0;
                 auto & adSizeManager = adservice::utility::AdSizeMap::getInstance();
-                for (uint32_t i = 0; i < native.assets_size(); i++) {
+                for (int i = 0; i < native.assets_size(); i++) {
                     auto & asset = native.assets(i);
                     if (asset.type() == 1) { // title
                         mtlsInst["p0"] = asset.data();
                     } else if (asset.type() == 2) { // logo
                         mtlsInst["p15"] = asset.imgurl();
                     } else if (asset.type() == 3) { // image
-                        mtlsInst[std::string("p") + std::stoi(6 + photoIdx++)] = asset.imageurl();
+                        mtlsInst[std::string("p") + std::to_string(6 + photoIdx++)] = asset.imgurl();
                         int w = asset.imgw();
                         int h = asset.imgh();
                         auto sizes = adSizeManager.get({ w, h });
@@ -176,7 +180,7 @@ namespace dsp {
                             mtlsInst["p2"] = std::to_string(sizeIter.first);
                             break;
                         }
-                    } else if (asset.type == 4) { // description
+                    } else if (asset.type() == 4) { // description
                         mtlsInst["p5"] = asset.data();
                     }
                 }
@@ -198,21 +202,24 @@ namespace dsp {
                         banner.bannerType = BANNER_TYPE_MOBILE;
                     }
                 } else { //动态创意
-                    result.htmlSnippet = bid.adm();
+                    bannerJson["html"] = bid.adm();
                     banner.bannerType = BANNER_TYPE_HTML;
                 }
             }
-            bannerJson["mtls"].push_back(mtlsInst);
+            bannerJson["mtls"].array().push_back(mtlsInst);
             result.dealId = bid.dealid();
             if (!bid.nurl().empty()) {
                 result.laterAccessUrls.push_back(bid.nurl());
             }
+            cppcms::json::array tviews;
             for (uint32_t i = 0; bid.pvm_size(); i++) {
                 const std::string & url = bid.pvm(i);
-                if (url.empty()) {
-                    result.laterAccessUrls.push_back(url);
+                if (!url.empty()) {
+                    tviews.push_back(url);
                 }
             }
+            bannerJson["tviews"] = tviews;
+            banner.json = adservice::utility::json::toJson(bannerJson);
         } else {
             result.resultOk = false;
         }

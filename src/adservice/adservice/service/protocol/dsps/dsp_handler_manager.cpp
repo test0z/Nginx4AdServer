@@ -1,4 +1,5 @@
 #include "dsp_handler_manager.h"
+#include <string>
 
 namespace protocol {
 namespace dsp {
@@ -6,8 +7,11 @@ namespace dsp {
     thread_local DSPHandlerManager dspHandlerManager;
 
     DSPHandlerManager::DSPHandlerManager()
+        : executor("DSPExecutor")
     {
-        handlers = { { 1234L, new DefaultDSPHandler(1234L, "http://www.google.com", 100) } };
+        addHandler(1234L, std::make_shared<DefaultDSPHandler>(1234L, "http://www.google.com",
+                                                              "http://www.google.com/cm", 100));
+        executor.start();
     }
 
     DSPHandlerInterfacePtr DSPHandlerManager::getHandler(int64_t dspId)
@@ -16,7 +20,7 @@ namespace dsp {
         if (iter != handlers.end()) {
             return iter->second;
         }
-        throw DSPHandlerException(std::stoi(dspId) + " handler not Found");
+        throw DSPHandlerException(std::to_string(dspId) + " handler not Found");
     }
 }
 }

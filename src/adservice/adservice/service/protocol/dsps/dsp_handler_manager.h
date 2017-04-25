@@ -29,10 +29,7 @@ namespace dsp {
 
     class DSPHandlerManager {
     public:
-        DSPHandlerManager()
-        {
-            executor.start();
-        }
+        DSPHandlerManager();
 
         ~DSPHandlerManager()
         {
@@ -44,6 +41,12 @@ namespace dsp {
         adservice::server::Executor & getExecutor()
         {
             return executor;
+        }
+
+    private:
+        void addHandler(int64_t id, DSPHandlerInterfacePtr handler)
+        {
+            handlers.insert({ id, handler });
         }
 
     private:

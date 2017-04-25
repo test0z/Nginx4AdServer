@@ -53,11 +53,24 @@ namespace utility {
 
     namespace rankingtool {
 
+        namespace {
+
+            bool nextRankDescend(double lastScore, double score)
+            {
+                return score < lastScore - 1e-6;
+            }
+
+            bool nextRankAsscend(double lastScore, double score)
+            {
+                return score > lastScore + 1e-6;
+            }
+        }
+
         int randomIndex(int indexCnt, const std::function<double(int)> && getScore, const std::vector<int> & rankWeight,
                         bool remainUseLastRank, bool descend)
         {
             std::vector<int> rankWeightAcc(rankWeight.size());
-            for (int sum = 0, i = 0; i < rankWeight.size(); i++) {
+            for (uint32_t sum = 0, i = 0; i < rankWeight.size(); i++) {
                 sum += rankWeight[i];
                 rankWeightAcc[i] = sum;
             }
@@ -65,12 +78,11 @@ namespace utility {
             std::vector<int> rankIdx(TOP_RANK + 1, 0);
             int actualRank = 0;
             double lastScore = descend ? getScore(0) + 1 : getScore(0) - 1;
-            auto next = descend ? [&lastScore](double score) { return score < lastScore - 1e-6; }
-                                : [&lastScore](double score) { return score > lastScore + 1e-6; };
+            auto next = descend ? &nextRankDescend : &nextRankAsscend;
 
             for (int i = 0; i < indexCnt && actualRank <= TOP_RANK; ++i) {
                 double s = getScore(i);
-                if (next(s)) {
+                if (next(lastScore, s)) {
                     if (remainUseLastRank && actualRank == TOP_RANK) {
                         continue;
                     }

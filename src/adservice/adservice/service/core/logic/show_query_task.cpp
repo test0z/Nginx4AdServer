@@ -20,6 +20,7 @@
 #include "logging.h"
 #include "service/protocol/dsps/dsp_handler_manager.h"
 #include "utility/utility.h"
+#include <mtty/constants.h>
 #include <mtty/trafficcontrollproxy.h>
 #include <mtty/usershowcounter.h>
 
@@ -38,7 +39,7 @@ namespace bidding {
 
 namespace dsp {
 
-    extern DSPHandlerManager dspHandlerManager;
+    extern thread_local DSPHandlerManager dspHandlerManager;
 }
 }
 
@@ -373,7 +374,7 @@ namespace corelogic {
                     log.userId = mapping.userId;
                 } else {
                     condition.mtUserId = log.userId;
-                    cmManager.updateMappingDeviceAsync(log.userId, cmDeviceKey, deviceId, "", DAY_SEONDS * 600);
+                    cmManager.updateMappingDeviceAsync(log.userId, cmDeviceKey, deviceId, "", DAY_SECOND * 600);
                 }
             } else {
                 condition.mtUserId = log.userId;
@@ -386,7 +387,8 @@ namespace corelogic {
             if (paramMap.find(URL_SSP_NETWORK) != paramMap.end()) {
                 condition.mobileNetwork = std::stoi(paramMap[URL_SSP_NETWORK]);
             }
-            if (paramMap.find(URL_SSP_SCREENWIDTH) != paramMap.end() && paramMap.find(URL_SSP_SCREENHEIGHT)) {
+            if (paramMap.find(URL_SSP_SCREENWIDTH) != paramMap.end()
+                && paramMap.find(URL_SSP_SCREENHEIGHT) != paramMap.end()) {
                 condition.width = std::stoi(paramMap[URL_SSP_SCREENWIDTH]);
                 condition.height = std::stoi(paramMap[URL_SSP_SCREENHEIGHT]);
             }
@@ -437,7 +439,8 @@ namespace corelogic {
                           });
                 //从第二名中随机选取，若不存在第二名从第一名中随机选取
                 int finalIdx = adservice::utility::rankingtool::randomIndex(
-                    dspResults.size(), [&dspResults](int idx) { return dspResults[i].bidPrice; }, { 0, 100, 0 }, true);
+                    dspResults.size(), [&dspResults](int idx) { return dspResults[idx].bidPrice; }, { 0, 100, 0 },
+                    true);
                 protocol::dsp::DSPBidResult & dspResult = dspResults[finalIdx];
                 result.banner = dspResult.banner;
                 result.bidPrice = dspResult.bidPrice;
@@ -450,17 +453,15 @@ namespace corelogic {
                 }
                 std::string auctionPrice = std::to_string(dspResult.bidPrice);
                 adservice::utility::url::URLHelper exchangeClickUrl(SSP_CLICK_URL, false);
-                exchangeClickUrl.add(URL_ADX_ID, condition.adxid);
-                exchangeClickUrl.add(URL_ADPLACE_ID, condition.mttyPid);
-                exchangeClickUrl.add(URL_ADOWNER_ID, dspResult.dspId);
+                exchangeClickUrl.add(URL_ADX_ID, std::to_string(condition.adxid));
+                exchangeClickUrl.add(URL_ADPLACE_ID, std::to_string(condition.mttyPid));
+                exchangeClickUrl.add(URL_ADOWNER_ID, std::to_string(dspResult.dspId));
                 std::string clickUrlEnc;
                 adservice::utility::url::urlEncode_f(exchangeClickUrl.toUrl() + "&" URL_LANDING_URL "=", clickUrlEnc);
                 //宏替换
-                if (!dspResult.htmlSnippet.empty()) { //
-                    adservice::utility::url::url_replace_all(dspResult.htmlSnippet, "%%WINNING_PRICE%%", auctionPrice);
-                    adservice::utility::url::url_replace_all(dspResult.htmlSnippet, "%%CLICK_URL_ESC%%", clickUrlEnc);
-                    //把htmlsnippet放到banner中去
-                }
+                adservice::utility::url::url_replace_all(dspResult.banner.json, "%%WINNING_PRICE%%", auctionPrice);
+                adservice::utility::url::url_replace_all(dspResult.banner.json, "%%CLICK_URL_ESC%%", clickUrlEnc);
+
                 for (auto & url : dspResult.laterAccessUrls) {
                     adservice::utility::url::url_replace_all(url, "%%WINNING_PRICE%%", auctionPrice);
                 }
@@ -475,7 +476,7 @@ namespace corelogic {
                 return true;
             } catch (protocol::dsp::DSPHandlerException & dspException) {
                 LOG_ERROR << "askOtherDSP has dsp handler exception:" << dspException.what()
-                          << ",backtrace:" << dspException.backtrace();
+                          << ",backtrace:" << dspException.trace();
             } catch (std::exception & e) {
                 LOG_ERROR << "askOtherDsp has exception:" << e.what();
             }
@@ -495,7 +496,7 @@ namespace corelogic {
 
         int64_t bgid = -1;
         if (isSSP) { // SSP
-            adselectv2::AdSelectCondition & condition;
+            adselectv2::AdSelectCondition condition;
             fillQueryConditionForSSP(paramMap, log, condition);
             MT::common::SelectResult selectResult;
             bool selectOk = adSelectClient->search(seqId, true, condition, selectResult);
@@ -512,7 +513,7 @@ namespace corelogic {
             }
             if (!selectOk || selectResult.solution.advId == ADV_BASE) { //麦田SSP找不到正常客户,将流量转给其他DSP
                 MT::common::SelectResult dspResult;
-                if (askOtherDsp(condition, result.otherDspSolutions, dspResult)) { //其他DSP有应答
+                if (askOtherDsp(condition, selectResult.otherDspSolutions, dspResult)) { //其他DSP有应答
                     selectResult = dspResult;
                 } else if (!selectOk) { //其他DSP无应答而且没有打底投放
                     return;
@@ -542,6 +543,7 @@ namespace corelogic {
                 log.adInfo.bidPrice = selectResult.feePrice; // offerprice
             }
             log.adInfo.cost = adplace.costPrice;
+            auto & ipManager = adservice::server::IpManager::getInstance();
             ipManager.getAreaCodeByIp(condition.ip.data(), log.geoInfo.country, log.geoInfo.province, log.geoInfo.city);
             std::string bannerJson = banner.json;
             cppcms::json::value mtAdInfo = bannerJson2HttpsIOS(true, bannerJson, banner.bannerType);

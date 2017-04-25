@@ -3,7 +3,9 @@
 
 #include "core/adselectv2/ad_select_interface.h"
 #include "protocol/dsps/mtty_bidding.pb.h"
+#include <condition_variable>
 #include <mtty/types.h>
+#include <mutex>
 #include <queue>
 #include <string>
 
@@ -22,14 +24,12 @@ namespace dsp {
             dealId = "";
             banner = MT::common::Banner();
             laterAccessUrls.clear();
-            htmlSnippet = "";
         }
         int64_t dspId;
         bool resultOk{ false };
         double bidPrice{ 0.0 };
         MT::common::Banner banner;
         std::string dealId;
-        std::string htmlSnippet;
         std::vector<std::string> laterAccessUrls;
     };
 
@@ -76,10 +76,9 @@ namespace dsp {
         {
             isDone = true;
             std::queue<DSPPromiseListener> listenerQueue;
-            {
-                std::lock_guard<std::mutex> lock(statusMutex);
-                listenerQueue.swap(listeners);
-            }
+            std::unique_lock<std::mutex> lock(statusMutex);
+            listenerQueue.swap(listeners);
+            lock.unlock();
             while (!listenerQueue.empty()) {
                 lock.lock();
                 auto & listener = listenerQueue.front();
@@ -99,23 +98,25 @@ namespace dsp {
 
         void wakeup()
         {
+            std::unique_lock<std::mutex> lock(conditionMutex);
             doneCondition.notify_all();
         }
 
         void sync()
         {
             while (true) {
-                bool allChildFinished = true;
-                for (DSPPromisePtr & child : childPromises) {
-                    if (!child->isDone) {
-                        allChildFinished = false;
-                        break;
+                std::unique_lock<std::mutex> lock(conditionMutex);
+                bool ok = doneCondition.wait_for(lock, std::chrono::milliseconds(1), [this] {
+                    bool allChildFinished = true;
+                    for (DSPPromisePtr & child : this->childPromises) {
+                        if (!child->isDone) {
+                            allChildFinished = false;
+                            break;
+                        }
                     }
-                }
-                if (!allChildFinished) {
-                    std::unique_lock<std::mutex> lock(conditionMutex);
-                    doneCondition.wait_for(lock, 1); //有可能出现先notify但是后wait的情况，需要加屏障
-                } else {
+                    return allChildFinished;
+                });
+                if (ok) {
                     break;
                 }
             };
@@ -137,8 +138,8 @@ namespace dsp {
                             const std::string & targetUrl,
                             const std::string & cookiemappingUrl,
                             int64_t timeout)
-            : dspId_(dspId)
-            , dspUrl_(targetUrl)
+            : dspUrl_(targetUrl)
+            , dspId_(dspId)
             , timeoutMs_(timeout)
         {
         }
@@ -153,12 +154,12 @@ namespace dsp {
 
         const DSPBidResult & getResult()
         {
-            return dspResult;
+            return dspResult_;
         }
 
         const std::string & getDspUrl()
         {
-            return dspUrl;
+            return dspUrl_;
         }
 
         const std::string & getCookieMappingUrl()
@@ -168,12 +169,12 @@ namespace dsp {
 
         int64_t getDSPId()
         {
-            return dspId;
+            return dspId_;
         }
 
         int64_t getTimeout()
         {
-            return timeoutMs;
+            return timeoutMs_;
         }
 
     protected:
