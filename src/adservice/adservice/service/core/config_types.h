@@ -47,7 +47,7 @@ struct AdDataConfig {
 struct AerospikeConfig {
     std::vector<MT::common::ASConnection> connections;
     std::string nameSpace;
-    std::unordered_map<int64_t, std::string> funcNamespacess{
+    std::unordered_map<std::string, std::string> funcNamespacess{
         { AS_NAMESPACE_COOKIEMAPPING, "nonmem" }, { AS_NAMESPACE_CROWD, "nonmem" },
         { AS_NAMESPACE_TRACE, "nonmem" },         { AS_NAMESPACE_REQCOUNTER, "nonmem" },
         { AS_NAMESPACE_FREQ, "nondisk" },         { AS_NAMESPACE_ORDER, "inmem" },
