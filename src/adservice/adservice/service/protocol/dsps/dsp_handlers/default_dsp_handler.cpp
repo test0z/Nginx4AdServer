@@ -2,6 +2,7 @@
 #include "core/core_ad_sizemap.h"
 #include "logging.h"
 #include "utility/utility.h"
+#include <boost/algorithm/string/predicate.hpp>
 #include <mtty/constants.h>
 #include <mtty/mtuser.h>
 
@@ -55,9 +56,21 @@ namespace dsp {
             }
         }
 
-        int getFormatIdByMaterialUrl(const std::string & url)
+        std::string getFormatIdByMaterialUrl(const std::string & url)
         {
-            return 6;
+            if (boost::algorithm::ends_with(url, "png")) {
+                return "1";
+            } else if (boost::algorithm::ends_with(url, "jpg")) {
+                return "2";
+            } else if (boost::algorithm::ends_with(url, "gif")) {
+                return "3";
+            } else if (boost::algorithm::ends_with(url, "flv")) {
+                return "4";
+            } else if (boost::algorithm::ends_with(url, "swf")) {
+                return "5";
+            } else {
+                return "6";
+            }
         }
     }
 
@@ -180,6 +193,7 @@ namespace dsp {
                             mtlsInst["p2"] = std::to_string(sizeIter.first);
                             break;
                         }
+                        bannerJson["formatid"] = getFormatIdByMaterialUrl(asset.imgurl());
                     } else if (asset.type() == 4) { // description
                         mtlsInst["p5"] = asset.data();
                     }
@@ -190,7 +204,6 @@ namespace dsp {
                 mtlsInst["p9"] = bid.clickm();
             } else {
                 bannerJson["ctype"] = adplace.supportBanner;
-                // bannerJson["formatid"]
                 if (bid.admtype() == 0) { //静态创意
                     mtlsInst["p0"] = bid.adm();
                     mtlsInst["p1"] = bid.clickm();
@@ -201,7 +214,9 @@ namespace dsp {
                     } else {
                         banner.bannerType = BANNER_TYPE_MOBILE;
                     }
+                    bannerJson["formatid"] = getFormatIdByMaterialUrl(bid.adm());
                 } else { //动态创意
+                    bannerJson["formatid"] = "6";
                     bannerJson["html"] = bid.adm();
                     banner.bannerType = BANNER_TYPE_HTML;
                 }
