@@ -55,6 +55,7 @@ namespace corelogic {
             case ADX_YOUKU_MOBILE:
                 return youku_price_decode(input);
             case ADX_BAIDU:
+            case ADX_BAIDU_MOBILE:
                 return baidu_price_decode(input);
             case ADX_GUANGYIN:
             case ADX_GUANGYIN_MOBILE:
@@ -63,6 +64,7 @@ namespace corelogic {
             case ADX_GDT_MOBILE:
                 return gdt_price_decode(input);
             case ADX_NETEASE_MOBILE:
+            case ADX_YIDIAN:
                 return std::stoi(input);
             case ADX_SOHU_PC:
             case ADX_SOHU_MOBILE:
