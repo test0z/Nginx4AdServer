@@ -4,6 +4,7 @@
 #include "utility/utility.h"
 #include <chrono>
 #include <mtty/aerospike.h>
+#include <mtty/constants.h>
 
 extern GlobalConfig globalConfig;
 extern MT::common::Aerospike aerospikeClient;
@@ -14,17 +15,21 @@ namespace server {
     CookieMappingManager CookieMappingManager::instance_;
 
     //改成根据key查询
-    adservice::core::model::MtUserMapping
-    CookieMappingManager::getUserMappingByKey(const std::string & k, const std::string & v, bool isDevice)
+    adservice::core::model::MtUserMapping CookieMappingManager::getUserMappingByKey(const std::string & k,
+                                                                                    const std::string & v,
+                                                                                    bool isDevice,
+                                                                                    bool & isTimeout)
     {
         adservice::core::model::MtUserMapping mapping;
         mapping.outerUserKey = k;
         if (isDevice) {
             mapping.needDeviceOriginId = true;
         }
+        isTimeout = false;
         try {
-            MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), k, v.c_str());
-            aerospikeClient.get(key, mapping);
+            MT::common::ASKey key(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_COOKIEMAPPING), k, v.c_str());
+            isTimeout
+                = (false == aerospikeClient.getWithTimeout(key, mapping, globalConfig.aerospikeConfig.getTimeoutMS));
         } catch (MT::common::AerospikeExcption & e) {
             //            LOG_DEBUG << " 查询cookie mapping 失败，" << e.what() << ",code: " << e.error().code
             //                      << ",msg:" << e.error().message << ",调用堆栈：" << std::endl
@@ -45,7 +50,7 @@ namespace server {
         mapping.outerUserKey = k;
         mapping.outerUserId = value;
         mapping.ttl = ttl;
-        MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), k, value);
+        MT::common::ASKey key(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_COOKIEMAPPING), k, value);
         try {
             aerospikeClient.put(key, mapping);
         } catch (MT::common::AerospikeExcption & e) {
@@ -68,7 +73,7 @@ namespace server {
         mapping.outerUserKey = k;
         mapping.outerUserId = value;
         mapping.ttl = ttl;
-        MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), k, value);
+        MT::common::ASKey key(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_COOKIEMAPPING), k, value);
         try {
             aerospikeClient.putAsync(key, mapping);
         } catch (MT::common::AerospikeExcption & e) {
@@ -96,7 +101,7 @@ namespace server {
             mapping.needDeviceOriginId = true;
             mapping.outerUserOriginId = originDeviceValue;
         }
-        MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), k, value);
+        MT::common::ASKey key(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_COOKIEMAPPING), k, value);
         try {
             aerospikeClient.putAsync(key, mapping);
         } catch (MT::common::AerospikeExcption & e) {
@@ -115,7 +120,7 @@ namespace server {
                   .count();
         adservice::core::model::UserIDEntity idEntity(time);
         try {
-            MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "userid-counter", time);
+            MT::common::ASKey key(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_IDSEQ), "id-counter", time);
             MT::common::ASOperation op(2, 15);
             op.addRead("id");
             op.addIncr("id", (int64_t)1ll);
@@ -155,7 +160,7 @@ namespace server {
                                             const std::string & userId,
                                             int64_t ttl)
     {
-        MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), k, value);
+        MT::common::ASKey key(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_COOKIEMAPPING), k, value);
         MT::common::ASOperation touchOperation(1, ttl);
         touchOperation.addTouch();
         try {

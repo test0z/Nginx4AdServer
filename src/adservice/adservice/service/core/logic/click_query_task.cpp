@@ -31,7 +31,8 @@ namespace corelogic {
 
         core::model::SourceId generateSourceId()
         {
-            MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "source_id_seq", "last_source_id");
+            MT::common::ASKey key(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_IDSEQ), "id-counter",
+                                  "last_source_id");
 
             MT::common::ASOperation op(2);
             op.addRead("val");
@@ -70,7 +71,8 @@ namespace corelogic {
 
             // 填充数据
             core::model::SourceRecord sourceRecord(paramMap, log);
-            MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "source_id", sourceId.get().c_str());
+            MT::common::ASKey key(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_TRACE), "source_id",
+                                  sourceId.get().c_str());
             try {
                 aerospikeClient.put(key, sourceRecord);
             } catch (MT::common::AerospikeExcption & e) {
@@ -81,8 +83,8 @@ namespace corelogic {
             }
 
             /* 记录索引信息，方便t模块根据用户ID和广告主ID查询到source id */
-            MT::common::ASKey indexKey(globalConfig.aerospikeConfig.nameSpace.c_str(), "source_id_index",
-                                       (userId + ownerId).c_str());
+            MT::common::ASKey indexKey(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_TRACE),
+                                       "source_id_index", (userId + ownerId).c_str());
             try {
                 aerospikeClient.put(indexKey, sourceId);
             } catch (MT::common::AerospikeExcption & e) {
@@ -186,7 +188,8 @@ namespace corelogic {
             try {
                 orderId = std::stoll(paramMap[URL_ORDER_ID]);
 
-                MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "order-counter", orderId);
+                MT::common::ASKey key(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_ORDER), "order-counter",
+                                      orderId);
                 MT::common::ASOperation op(1);
                 op.addIncr("c", (int64_t)1);
 

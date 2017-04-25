@@ -77,6 +77,22 @@ struct LocationConf {
     ngx_str_t asnode;
     // aerospike 默认namespace
     ngx_str_t asnamespace;
+    // aerospike ns cookiemapping
+    ngx_str_t as_namespace_cookiemapping;
+    // aerospike ns crowd
+    ngx_str_t as_namespace_crowd;
+    // aerospike ns freq
+    ngx_str_t as_namespace_freq;
+    // aerospike ns idseq
+    ngx_str_t as_namespace_idseq;
+    // aerospike ns order
+    ngx_str_t as_namespace_order;
+    // aerospike ns trace
+    ngx_str_t as_namespace_trace;
+    // aerospike ns trafficcontroll
+    ngx_str_t as_namespace_trafficcontroll;
+    // aerospike get api timeout ms
+    ngx_uint_t as_get_timeout_ms;
     // working directory
     ngx_str_t workdir;
     // disable cookiemapping
@@ -123,6 +139,14 @@ static ngx_command_t commands[]
         COMMAND_ITEM("adselect_timeout", LocationConf, adselecttimeout, parseConfStr),
         COMMAND_ITEM("as_node", LocationConf, asnode, parseConfStr),
         COMMAND_ITEM("as_namespace", LocationConf, asnamespace, parseConfStr),
+        COMMAND_ITEM("as_namespace_cookiemapping", LocationConf, as_namespace_cookiemapping, parseConfStr),
+        COMMAND_ITEM("as_namespace_crowd", LocationConf, as_namespace_crowd, parseConfStr),
+        COMMAND_ITEM("as_namespace_freq", LocationConf, as_namespace_freq, parseConfStr),
+        COMMAND_ITEM("as_namespace_idseq", LocationConf, as_namespace_idseq, parseConfStr),
+        COMMAND_ITEM("as_namespace_order", LocationConf, as_namespace_order, parseConfStr),
+        COMMAND_ITEM("as_namespace_trace", LocationConf, as_namespace_trace, parseConfStr),
+        COMMAND_ITEM("as_namespace_trafficcontroll", LocationConf, as_namespace_trafficcontroll, parseConfStr),
+        COMMAND_ITEM("as_get_timeout_ms", LocationConf, as_get_timeout_ms, parseConfNum),
         COMMAND_ITEM("workdir", LocationConf, workdir, parseConfStr),
         COMMAND_ITEM("disable_cm", LocationConf, disabledCookieMapping, parseConfStr),
         ngx_null_command };
@@ -158,6 +182,14 @@ static void * createLocationConf(ngx_conf_t * cf)
     ngx_str_null(&conf->adselecttimeout);
     ngx_str_null(&conf->asnode);
     ngx_str_null(&conf->asnamespace);
+    ngx_str_null(&conf->as_namespace_cookiemapping);
+    ngx_str_null(&conf->as_namespace_crowd);
+    ngx_str_null(&conf->as_namespace_freq);
+    ngx_str_null(&conf->as_namespace_idseq);
+    ngx_str_null(&conf->as_namespace_order);
+    ngx_str_null(&conf->as_namespace_trace);
+    ngx_str_null(&conf->as_namespace_trafficcontroll);
+    conf->as_get_timeout_ms = NGX_CONF_UNSET_UINT;
     ngx_str_null(&conf->workdir);
     ngx_str_null(&conf->disabledCookieMapping);
     return conf;
@@ -186,6 +218,14 @@ static char * mergeLocationConf(ngx_conf_t * cf, void * parent, void * child)
     ngx_conf_merge_str_value(conf->adselecttimeout, prev->adselecttimeout, "0:15|21:-1|98:-1|99:-1");
     ngx_conf_merge_str_value(conf->asnode, prev->asnode, "");
     ngx_conf_merge_str_value(conf->asnamespace, prev->asnamespace, "mtty");
+    ngx_conf_merge_str_value(conf->as_namespace_cookiemapping, prev->as_namespace_cookiemapping, "nonmem");
+    ngx_conf_merge_str_value(conf->as_namespace_crowd, prev->as_namespace_crowd, "nonmem");
+    ngx_conf_merge_str_value(conf->as_namespace_freq, prev->as_namespace_freq, "nondisk");
+    ngx_conf_merge_str_value(conf->as_namespace_idseq, prev->as_namespace_freq, "inmem");
+    ngx_conf_merge_str_value(conf->as_namespace_order, prev->as_namespace_order, "inmem");
+    ngx_conf_merge_str_value(conf->as_namespace_trace, prev->as_namespace_trace, "nonmem");
+    ngx_conf_merge_str_value(conf->as_namespace_trafficcontroll, prev->as_namespace_trafficcontroll, "inmem");
+    ngx_conf_merge_uint_value(conf->as_get_timeout_ms, prev->as_get_timeout_ms, 10);
     ngx_conf_merge_str_value(conf->workdir, prev->workdir, "/usr/local/nginx/sbin/");
     ngx_conf_merge_str_value(conf->disabledCookieMapping, prev->disabledCookieMapping, "no");
     return NGX_CONF_OK;
@@ -326,6 +366,16 @@ static void global_init(LocationConf * conf)
     parseConfigAdselectTimeout(NGX_STR_2_STD_STR(conf->adselecttimeout), globalConfig.adselectConfig.adselectTimeout);
 
     globalConfig.aerospikeConfig.nameSpace = NGX_STR_2_STD_STR(conf->asnamespace);
+    globalConfig.aerospikeConfig.funcNamespacess[AS_NAMESPACE_COOKIEMAPPING]
+        = NGX_STR_2_STD_STR(conf->as_namespace_cookiemapping);
+    globalConfig.aerospikeConfig.funcNamespacess[AS_NAMESPACE_CROWD] = NGX_STR_2_STD_STR(conf->as_namespace_crowd);
+    globalConfig.aerospikeConfig.funcNamespacess[AS_NAMESPACE_FREQ] = NGX_STR_2_STD_STR(conf->as_namespace_freq);
+    globalConfig.aerospikeConfig.funcNamespacess[AS_NAMESPACE_IDSEQ] = NGX_STR_2_STD_STR(conf->as_namespace_idseq);
+    globalConfig.aerospikeConfig.funcNamespacess[AS_NAMESPACE_ORDER] = NGX_STR_2_STD_STR(conf->as_namespace_order);
+    globalConfig.aerospikeConfig.funcNamespacess[AS_NAMESPACE_TRACE] = NGX_STR_2_STD_STR(conf->as_namespace_trace);
+    globalConfig.aerospikeConfig.funcNamespacess[AS_NAMESPACE_TRAFFICCONTROL]
+        = NGX_STR_2_STD_STR(conf->as_namespace_trafficcontroll);
+    globalConfig.aerospikeConfig.getTimeoutMS = conf->as_get_timeout_ms;
     std::string asNode = NGX_STR_2_STD_STR(conf->asnode);
     parseConfigAeroSpikeNode(asNode, globalConfig.aerospikeConfig);
     aerospikeClient.setConnection(globalConfig.aerospikeConfig.connections);
