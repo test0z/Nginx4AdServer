@@ -84,6 +84,7 @@ namespace bidding {
         std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
         AdSelectCondition & queryCondition = queryConditions[0];
         PreSetAdplaceInfo & adplaceInfo = adplaceInfos[0];
+        queryCondition.isFromSSP = true;
         queryCondition.pAdplaceInfo = &adplaceInfo;
         queryCondition.adxid = ADX_YIDIAN;
         queryCondition.basePrice = 1;
