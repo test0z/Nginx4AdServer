@@ -247,8 +247,9 @@ namespace bidding {
         std::string cookieMappingUrl = redoCookieMapping(ADX_360_MAX_PC, MAX_COOKIEMAPPING_URL);
         bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
                      || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
+        bool isNeedHttps = isIOS || bidRequest.is_https();
         std::string strBannerJson = banner.json;
-        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
+        cppcms::json::value bannerJson = bannerJson2HttpsIOS(isNeedHttps, strBannerJson, banner.bannerType);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
         adResult->set_creative_id(std::to_string(adInfo.bannerId));
         adResult->set_advertiser_id(std::to_string(adxAdvId)); // adx_advid
