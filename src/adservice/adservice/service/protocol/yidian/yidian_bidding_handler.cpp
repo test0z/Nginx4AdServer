@@ -107,24 +107,24 @@ namespace bidding {
         switch (ad_type) {
         case 0: {
             const cppcms::json::value & Osplash = bidRequest.find("splash");
-            queryCondition.width = Osplash.get("w", 0);
-            queryCondition.height = Osplash.get("h", 0);
+            queryCondition.width = 640;
+            queryCondition.height = 1136;
             queryCondition.adxpid = "10000";
             adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
             Adtype = 0;
         } break;
         case 1: {
             const cppcms::json::value & Olist = bidRequest.find("list");
-            width = Olist.get("w", 0);
-            height = Olist.get("h", 0);
+            width = 360;
+            height = 234;
             maxduration = Olist.get("maxduration", 0);
             queryCondition.adxpid = "10001";
             Adtype = 1;
         } break;
         case 2: {
             const cppcms::json::value & Ocontent = bidRequest.find("content");
-            width = Ocontent.get("w", 0);
-            height = Ocontent.get("h", 0);
+            width = 900;
+            height = 450;
             queryCondition.adxpid = "10002";
             Adtype = 2;
         } break;
