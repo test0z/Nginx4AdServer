@@ -79,6 +79,7 @@ namespace bidding {
         std::string pid = adzinfo.get("space_id", "0");
         std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
         AdSelectCondition & queryCondition = queryConditions[0];
+        queryCondition.isFromSSP = true;
         queryCondition.adxid = ADX_NETEASE_MOBILE;
         queryCondition.adxpid = pid;
         const cppcms::json::value & geo = bidRequest.find("geo");

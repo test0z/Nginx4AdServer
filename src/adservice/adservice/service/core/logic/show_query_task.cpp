@@ -343,6 +343,7 @@ namespace corelogic {
                 isAdxPid = true;
             }
             adselectv2::AdSelectCondition condition;
+            condition.isFromSSP = true;
             if (isAdxPid)
                 condition.adxpid = queryPid;
             else
