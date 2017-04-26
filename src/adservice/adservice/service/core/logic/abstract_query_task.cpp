@@ -64,6 +64,7 @@ namespace corelogic {
             case ADX_GDT_MOBILE:
                 return gdt_price_decode(input);
             case ADX_NETEASE_MOBILE:
+            case ADX_YIDIAN:
                 return std::stoi(input);
             case ADX_SOHU_PC:
             case ADX_SOHU_MOBILE:
