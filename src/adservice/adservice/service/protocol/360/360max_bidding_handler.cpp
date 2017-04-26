@@ -173,9 +173,6 @@ namespace bidding {
                 queryCondition.mobileNetwork = getNetWork(device.network());
             }
             if (mobile.has_is_app() && mobile.is_app()) { // app
-                                                          //                if (mobile.has_package_name()) {
-                //                    queryCondition.adxpid = mobile.package_name();
-                //                }
                 if (mobile.app_category_size() > 0) {
                     TypeTableManager & typeTableManager = TypeTableManager::getInstance();
                     queryCondition.mttyContentType

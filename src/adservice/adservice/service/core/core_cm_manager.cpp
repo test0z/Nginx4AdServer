@@ -135,10 +135,12 @@ namespace server {
         std::string key;
         std::string value;
         std::string userId;
-        TouchFallbackData(const std::string & k, const std::string & v, const std::string & u)
+        std::string originId;
+        TouchFallbackData(const std::string & k, const std::string & v, const std::string & u, const std::string & o)
             : key(k)
             , value(v)
             , userId(u)
+            , originId(o)
         {
         }
     };
@@ -148,7 +150,8 @@ namespace server {
         if (err != nullptr && err->code == 2 && udata != nullptr) { // if the mapping doesn't exist,update the mapping
             TouchFallbackData * touchData = (TouchFallbackData *)udata;
             CookieMappingManager & cmManager = CookieMappingManager::getInstance();
-            cmManager.updateMappingDeviceAsync(touchData->userId, touchData->key, touchData->value, "");
+            cmManager.updateMappingDeviceAsync(
+                touchData->userId, touchData->key, touchData->value, touchData->originId);
         }
         if (udata != nullptr) {
             delete (TouchFallbackData *)udata;
@@ -158,13 +161,14 @@ namespace server {
     void CookieMappingManager::touchMapping(const std::string & k,
                                             const std::string & value,
                                             const std::string & userId,
+                                            const std::string & originId,
                                             int64_t ttl)
     {
         MT::common::ASKey key(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_COOKIEMAPPING), k, value);
         MT::common::ASOperation touchOperation(1, ttl);
         touchOperation.addTouch();
         try {
-            TouchFallbackData * data = new TouchFallbackData(k, value, userId);
+            TouchFallbackData * data = new TouchFallbackData(k, value, userId, originId);
             aerospikeClient.operateAsync(key, touchOperation, touchMappingAsyncCallback, (void *)data);
         } catch (MT::common::AerospikeExcption & e) {
         } catch (std::bad_alloc & e) {
