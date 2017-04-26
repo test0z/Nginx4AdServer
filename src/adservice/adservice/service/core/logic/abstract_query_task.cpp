@@ -98,7 +98,7 @@ namespace corelogic {
         void calcPrice(int adx, bool isDeal, int decodePrice, int offerPrice, int & cost, int & bidPrice,
                        protocol::log::LogPhaseType logPhase, int priceType = PRICETYPE_RRTB_CPM)
         {
-            if (isDeal || adx == ADX_NETEASE_MOBILE) {
+            if (isDeal || adx == ADX_NETEASE_MOBILE || adx == ADX_YIDIAN) {
                 cost = decodePrice;
                 bidPrice = offerPrice == 0 ? cost : offerPrice;
             } else {

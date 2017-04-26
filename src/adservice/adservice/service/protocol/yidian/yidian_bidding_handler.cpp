@@ -49,6 +49,7 @@ namespace bidding {
             return;
         case PRICETYPE_CPC:
         case PRICETYPE_RRTB_CPC:
+        case PRICETYPE_RCPC:
             pricetype = 2;
             return;
         default:
@@ -111,6 +112,7 @@ namespace bidding {
             queryCondition.width = Osplash.get("w", 0);
             queryCondition.height = Osplash.get("h", 0);
             adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
+            queryCondition.adxpid = 10000;
             Adtype = 0;
         } break;
         case 1: {
@@ -118,12 +120,14 @@ namespace bidding {
             width = Olist.get("w", 0);
             height = Olist.get("h", 0);
             maxduration = Olist.get("maxduration", 0);
+            queryCondition.adxpid = 10001;
             Adtype = 1;
         } break;
         case 2: {
             const cppcms::json::value & Ocontent = bidRequest.find("content");
             width = Ocontent.get("w", 0);
             height = Ocontent.get("h", 0);
+            queryCondition.adxpid = 10002;
             Adtype = 2;
         } break;
 

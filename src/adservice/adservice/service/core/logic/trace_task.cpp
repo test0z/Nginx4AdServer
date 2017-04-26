@@ -273,8 +273,9 @@ namespace corelogic {
                 LOG_ERROR << "获取source record失败！sourceId:" << sourceId << "，code:" << e.error().code
                           << ", error:" << e.error().message;
             }
-            if (requestTypeStr == "14") {
-                const std::string & user_id = sourceRecord.mtUid();
+            const std::string & user_id = sourceRecord.mtUid();
+            if (requestTypeStr == "14" && !user_id.empty()) {
+
                 for (int i = 0; i < 4; i++) {
                     CookieMappingManager & cmManager = CookieMappingManager::getInstance();
                     adservice::core::model::MtUserMapping temp
