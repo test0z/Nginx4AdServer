@@ -232,6 +232,38 @@ namespace utility {
         std::stringstream bodyStream;
         bool needGzipResponse{ false };
     };
+
+    class HttpClientProxy {
+    public:
+        static std::shared_ptr<HttpClientProxy> getInstance()
+        {
+            return instance_;
+        }
+
+    private:
+        static std::shared_ptr<HttpClientProxy> instance_{ nullptr };
+
+    private:
+        HttpClientProxy()
+        {
+        }
+
+    public:
+        typedef std::function<void(int, int, const std::string &)> ResponseCallback;
+
+        HttpResponse getSync(const std::string & url, uint32_t timeoutMs);
+
+        void getAsync(const std::string & url, uint32_t timeoutMS,
+                      const ResponseCallback & callback = defaultResponseCallback_);
+
+        HttpResponse postSync(const std::string & url, uint32_t timeoutMs, const std::string & postData);
+
+        void postAsync(const std::string & url, uint32_t timeoutMs,
+                       const ResponseCallback & callback = defaultResponseCallback_);
+
+    public:
+        static ResponseCallback defaultResponseCallback_;
+    };
 }
 }
 

@@ -22,5 +22,9 @@ namespace utility {
         else
             return "";
     }
+
+    std::shared_ptr<HttpClientProxy> HttpClientProxy::instance_ = std::make_shared<HttpClientProxy>();
+
+    HttpClientProxy::ResponseCallback HttpClientProxy::defaultResponseCallback_ = [](int, int, const std::string &) {};
 }
 }

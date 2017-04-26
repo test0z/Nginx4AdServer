@@ -469,7 +469,8 @@ namespace corelogic {
                 //异步发送win notice或曝光监测链接
                 protocol::dsp::dspHandlerManager.getExecutor().run([toSendUrls]() {
                     for (auto & url : toSendUrls) {
-                        // httpClientProxy.getAsync(url);
+                        auto httpClientProxy = adservice::utility::HttpClientProxy::getInstance();
+                        httpClientProxy->getAsync(url, 0);
                     }
                 });
                 //记录日志
