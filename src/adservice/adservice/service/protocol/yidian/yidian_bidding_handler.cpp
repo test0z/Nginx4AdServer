@@ -78,9 +78,6 @@ namespace bidding {
     }
     bool YidianBidingHandler::filter(const BiddingFilterCallback & filterCb)
     {
-        if (!bidRequest.find("istest").is_undefined() && bidRequest["istest"].boolean()) {
-            return bidFailedReturn();
-        }
         std::vector<PreSetAdplaceInfo> adplaceInfos{ PreSetAdplaceInfo() };
         std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
         AdSelectCondition & queryCondition = queryConditions[0];
