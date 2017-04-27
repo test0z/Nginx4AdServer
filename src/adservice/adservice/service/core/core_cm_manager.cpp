@@ -42,9 +42,7 @@ namespace server {
                                                                                           const std::string & value,
                                                                                           const std::string & key)
     {
-        if (isDevice) {
-            mapping.needDeviceOriginId = true;
-        }
+
         // MT::common::ASQuery query(globalConfig.aerospikeConfig.nameSpace, key, 1);
         MT::common::ASQuery query(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_COOKIEMAPPING), key, 1);
         query.whereEqStr(bin, value);
