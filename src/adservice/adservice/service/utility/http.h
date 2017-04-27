@@ -5,6 +5,8 @@
 #ifndef MTCORENGINX_HTTP_H
 #define MTCORENGINX_HTTP_H
 
+#include "common/spinlock.h"
+#include <cpprest/http_client.h>
 #include <iostream>
 #include <map>
 #include <sstream>
@@ -240,13 +242,18 @@ namespace utility {
             return instance_;
         }
 
-    private:
-        static std::shared_ptr<HttpClientProxy> instance_{ nullptr };
+        static bool registerClient(const std::string & host, uint32_t timeoutMS = 100);
 
     private:
-        HttpClientProxy()
-        {
-        }
+        static std::shared_ptr<web::http::client::http_client> getClient(const std::string & host);
+
+    private:
+        static std::shared_ptr<HttpClientProxy> instance_{ nullptr };
+        static std::unordered_map<std::string, std::shared_ptr<web::http::client::http_client>> cachedClients;
+
+    private:
+        HttpClientProxy();
+        ~HttpClientProxy();
 
     public:
         typedef std::function<void(int, int, const std::string &)> ResponseCallback;
@@ -261,8 +268,12 @@ namespace utility {
         void postAsync(const std::string & url, const std::string & postData, uint32_t timeoutMs,
                        const ResponseCallback & callback = defaultResponseCallback_);
 
-    public:
+        void postAsync(const std::string & url, const std::string & postData, const std::string & contentType,
+                       uint32_t timeoutMs, const ResponseCallback & callback = defaultResponseCallback_);
+
+    private:
         static ResponseCallback defaultResponseCallback_;
+        static spinlock slock_{ 0 };
     };
 }
 }

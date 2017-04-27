@@ -547,6 +547,15 @@ namespace utility {
             return data;
         }
 
+        std::string URLHelper::toQuery()
+        {
+            std::string data = toUrlParam();
+            std::string result;
+            result += path.empty() ? "/" : path;
+            result += data.empty() ? "" : std::string("?") + data;
+            return result;
+        }
+
         std::string URLHelper::toUrl()
         {
             std::string data = toUrlParam();
@@ -556,6 +565,16 @@ namespace utility {
             result += port.empty() ? "" : std::string(":") + port;
             result += path.empty() ? "" : path;
             result += data.empty() ? "" : std::string("?") + data;
+            return result;
+        }
+
+        std::string URLHelper::toUrlNoParam()
+        {
+            std::string result;
+            result += protocolName.empty() ? "http://" : protocolName + "://";
+            result += host.empty() ? "" : host;
+            result += port.empty() ? "" : std::string(":") + port;
+            result += path.empty() ? "" : path;
             return result;
         }
 

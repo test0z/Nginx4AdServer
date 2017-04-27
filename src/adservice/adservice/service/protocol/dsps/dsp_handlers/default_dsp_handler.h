@@ -3,6 +3,7 @@
 
 #include "core/adselectv2/ad_select_interface.h"
 #include "protocol/dsps/mtty_bidding.pb.h"
+#include "utility/utility.h"
 #include <condition_variable>
 #include <mtty/types.h>
 #include <mutex>
@@ -139,9 +140,12 @@ namespace dsp {
                             const std::string & cookiemappingUrl,
                             int64_t timeout)
             : dspUrl_(targetUrl)
+            , cookiemappingUrl_(cookiemappingUrl)
             , dspId_(dspId)
             , timeoutMs_(timeout)
         {
+            utility::HttpClientProxy::registerClient(targetUrl, timeout);
+            utility::HttpClientProxy::registerClient(cookiemappingUrl, timeout);
         }
 
         /**

@@ -310,6 +310,18 @@ namespace utility {
             std::string toUrlParam();
 
             /**
+             * @brief toUrlNoParam
+             * @return
+             */
+            std::string toUrlNoParam();
+
+            /**
+             * @brief toQuery
+             * @return
+             */
+            std::string toQuery();
+
+            /**
              * 从url字符串反向解析
              * @brief fromUrl
              * @return
