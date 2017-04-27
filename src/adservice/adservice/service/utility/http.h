@@ -256,9 +256,9 @@ namespace utility {
         void getAsync(const std::string & url, uint32_t timeoutMS,
                       const ResponseCallback & callback = defaultResponseCallback_);
 
-        HttpResponse postSync(const std::string & url, uint32_t timeoutMs, const std::string & postData);
+        HttpResponse postSync(const std::string & url, const std::string & postData, uint32_t timeoutMs);
 
-        void postAsync(const std::string & url, uint32_t timeoutMs,
+        void postAsync(const std::string & url, const std::string & postData, uint32_t timeoutMs,
                        const ResponseCallback & callback = defaultResponseCallback_);
 
     public:

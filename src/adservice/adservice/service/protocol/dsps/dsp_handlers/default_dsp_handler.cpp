@@ -86,16 +86,19 @@ namespace dsp {
         DSPPromisePtr operationPromise = std::make_shared<DSPPromise>();
         //发送异步请求,确保在timeout之内一定调用callback,无论成功或失败
         auto httpClientProxy = adservice::utility::HttpClientProxy::getInstance();
-        httpClientProxy->getAsync(
-            dspUrl_, timeoutMs_, [this, &adplace, &operationPromise](int error, int status, const std::string & res) {
-                if (error == 0) {
-                    BidResponse bidResponse;
-                    if (utility::serialize::getProtoBufObject(bidResponse, res)) {
-                        this->dspResult_ = std::move(this->bidResponseToDspResult(bidResponse, adplace));
-                    }
-                }
-                operationPromise->done();
-            };);
+        httpClientProxy->postAsync(dspUrl_,
+                                   reqBody,
+                                   timeoutMs_,
+                                   [this, &adplace, &operationPromise](int error, int status, const std::string & res) {
+                                       if (error == 0) {
+                                           BidResponse bidResponse;
+                                           if (utility::serialize::getProtoBufObject(bidResponse, res)) {
+                                               this->dspResult_
+                                                   = std::move(this->bidResponseToDspResult(bidResponse, adplace));
+                                           }
+                                       }
+                                       operationPromise->done();
+                                   };);
         return operationPromise;
     }
 
@@ -222,7 +225,7 @@ namespace dsp {
                     bannerJson["formatid"] = getFormatIdByMaterialUrl(bid.adm());
                 } else { //动态创意
                     bannerJson["formatid"] = "6";
-                    bannerJson["html"] = bid.adm();
+                    bannerJson["p0"] = bid.adm();
                     banner.bannerType = BANNER_TYPE_HTML;
                 }
             }
