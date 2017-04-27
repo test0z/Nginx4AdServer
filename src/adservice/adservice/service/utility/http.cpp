@@ -107,7 +107,7 @@ namespace utility {
         std::string hostName = requestUrl.toUrlParam();
         auto client = getClient(hostName);
         client->client_config().set_timeout(std::chrono::milliseconds(timeoutMs));
-        client->request(web::http::methods::POST, requestUrl.toQuery(), postData)
+        client->request(web::http::methods::POST, requestUrl.toQuery(), postData, contentType)
             .then([&callback](web::http::http_response response) {
                 response.content_ready().then([&callback](web::http::http_response response) {
                     callback(false, response.status_code(), response.extract_string().get());
