@@ -98,6 +98,7 @@ namespace server {
         void touchMapping(const std::string & key,
                           const std::string & value,
                           const std::string & userId,
+                          const std::string & originId = "",
                           int64_t ttl = DAY_SECOND * 30);
 
         adservice::core::model::UserIDEntity newIdSeq();

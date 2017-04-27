@@ -402,14 +402,14 @@ namespace corelogic {
             if (log.adInfo.priceType == PRICETYPE_RRTB_CPM || log.adInfo.priceType == PRICETYPE_RTB) {
                 trafficControl->recordCPMShowAsync(log.adInfo.sid, log.adInfo.advId, log.adInfo.bidPrice / 1000.0);
             } else if (log.adInfo.priceType == PRICETYPE_RCPC || log.adInfo.priceType == PRICETYPE_RRTB_CPC) {
-                trafficControl->recordCPCShow(log.adInfo.sid);
+                trafficControl->recordCPCShowAsync(log.adInfo.sid);
             }
         } else if (log.logType == protocol::log::CLICK) {
             auto trafficControl = MT::common::traffic::TrafficControllProxy::getInstance();
             if (log.adInfo.priceType == PRICETYPE_RRTB_CPM || log.adInfo.priceType == PRICETYPE_RTB) {
                 trafficControl->recordCPMClickAsync(log.adInfo.sid);
             } else if (log.adInfo.priceType == PRICETYPE_RCPC || log.adInfo.priceType == PRICETYPE_RRTB_CPC) {
-                trafficControl->recordCPCClick(log.adInfo.sid, log.adInfo.advId,
+                trafficControl->recordCPCClickAsync(log.adInfo.sid, log.adInfo.advId,
                                                log.adInfo.bidPrice / 1000.0); //与历史兼容
             }
         }

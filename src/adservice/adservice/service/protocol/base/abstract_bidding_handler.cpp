@@ -434,9 +434,11 @@ namespace bidding {
             } else { // device id
                 CookieMappingManager & cmManager = CookieMappingManager::getInstance();
                 for (auto kvPair : cmInfo.queryKV.deviceMappings) {
-                    cmManager.updateMappingDeviceAsync(
-                        cmInfo.userMapping.userId, kvPair.first, kvPair.second.first, kvPair.second.second,
-                        kvPair.first.find("adx") != std::string::npos ? DAY_SECOND * 900 : DAY_SECOND * 30);
+                    // deviceMapping中有可能包含移动APP的用户ID,这类ID也归类到ADX的移动平台ID
+                    bool isAdxKey = kvPair.first.find("adx") != std::string::npos;
+                    cmManager.updateMappingDeviceAsync(cmInfo.userMapping.userId, kvPair.first, kvPair.second.first,
+                                                       kvPair.second.second,
+                                                       isAdxKey ? DAY_SECOND * 30 : DAY_SECOND * 900);
                 }
             }
             cmInfo.needReMapping = false;
@@ -446,17 +448,18 @@ namespace bidding {
                 cmManager.touchMapping(cmInfo.queryKV.key, cmInfo.queryKV.value, cmInfo.userMapping.userId);
             } else {
                 for (auto kvPair : cmInfo.queryKV.deviceMappings) {
+                    bool isAdxKey = kvPair.first.find("adx") != std::string::npos;
                     cmManager.touchMapping(kvPair.first, kvPair.second.first, cmInfo.userMapping.userId,
-                                           kvPair.first.find("adx") != std::string::npos ? DAY_SECOND * 900
-                                                                                         : DAY_SECOND * 30);
+                                           isAdxKey ? "" : kvPair.second.second,
+                                           isAdxKey ? DAY_SECOND * 30 : DAY_SECOND * 900);
                 }
             }
         } else if (cmInfo.needFixMapping) { //计划赶不上变化，修数据吧
             CookieMappingManager & cmManager = CookieMappingManager::getInstance();
             for (auto kvPair : cmInfo.queryKV.deviceMappings) {
-                cmManager.updateMappingDeviceAsync(
-                    cmInfo.userMapping.userId, kvPair.first, kvPair.second.first, kvPair.second.second,
-                    kvPair.first.find("adx") != std::string::npos ? DAY_SECOND * 900 : DAY_SECOND * 30);
+                bool isAdxKey = kvPair.first.find("adx") != std::string::npos;
+                cmManager.updateMappingDeviceAsync(cmInfo.userMapping.userId, kvPair.first, kvPair.second.first,
+                                                   kvPair.second.second, isAdxKey ? DAY_SECOND * 30 : DAY_SECOND * 900);
             }
         }
         return "";
