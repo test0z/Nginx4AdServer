@@ -115,8 +115,7 @@ namespace bidding {
                                        queryCondition.adxid,
                                        bidRequest.has_user() && bidRequest.user().has_suid() ? bidRequest.user().suid()
                                                                                              : "");
-            } else if (queryCondition.mobileDevice != SOLUTION_DEVICE_OTHER
-                       || strcasecmp(device.type().data(), "Wap") == 0) { // wap
+            } else if (strcasecmp(device.type().data(), "Wap") == 0) { // wap
                 queryCondition.mobileDevice = queryCondition.mobileDevice == SOLUTION_DEVICE_OTHER
                                                   ? getSohuDeviceType(device.mobiletype())
                                                   : queryCondition.mobileDevice;

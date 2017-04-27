@@ -249,8 +249,9 @@ namespace corelogic {
 
             /* 根据用户id和广告主id获取source_id */
             core::model::SourceId sourceIdEntity;
-            MT::common::ASKey key(
-                globalConfig.aerospikeConfig.nameSpace.c_str(), "source_id_index", (userId + ownerId).c_str());
+            MT::common::ASKey key(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_TRACE),
+                                  "source_id_index",
+                                  (userId + ownerId).c_str());
             try {
                 aerospikeClient.get(key, sourceIdEntity);
                 sourceId = sourceIdEntity.get();
@@ -263,7 +264,8 @@ namespace corelogic {
         core::model::SourceRecord sourceRecord;
         if (!sourceId.empty()) {
             // 判断是否是一次到达，如果是pv，即y=6，限时10秒，否则请求类型保持原样
-            MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "source_id", sourceId.c_str());
+            MT::common::ASKey key(
+                globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_TRACE), "source_id", sourceId.c_str());
             try {
                 aerospikeClient.get(key, sourceRecord);
                 if (requestTypeStr == "6" && log.timeStamp - sourceRecord.time() <= 10) {

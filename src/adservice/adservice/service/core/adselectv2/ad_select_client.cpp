@@ -36,8 +36,17 @@ namespace adselectv2 {
     void makeRequest(bool isSSP, AdSelectCondition & selectCondition, MT::common::SelectRequest & request)
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+>>>>>>> master
+=======
+<<<<<<< HEAD
+=======
+
+>>>>>>> baidu_dev
+=======
+>>>>>>> 3746428aaab54718ce52eab858feacf3712cd112
 >>>>>>> master
         MT::common::SourceType & source = request.source;
 
@@ -72,7 +81,7 @@ namespace adselectv2 {
         source.insert({ "overflow_hour", (int64_t)(std::stoll(selectCondition.dHour) % 100) });
         source.insert({ "banner_type", (int64_t)selectCondition.bannerType });
         source.insert({ "mtuser", selectCondition.mtUserId });
-        request.fromSSP = isSSP;
+        request.fromSSP = isSSP || selectCondition.isFromSSP;
         request.mttyPid = selectCondition.mttyPid;
         request.adxId = selectCondition.adxid;
         request.adxPid = selectCondition.adxpid;

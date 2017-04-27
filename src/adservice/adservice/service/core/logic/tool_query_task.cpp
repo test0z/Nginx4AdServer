@@ -59,7 +59,7 @@ namespace corelogic {
                 });
             }
 
-            ActionRouter & use(const std::string & action, ActionHandler & handler)
+            ActionRouter & use(const std::string & action, const ActionHandler & handler)
             {
                 handlers.insert({ action, handler });
                 return *this;

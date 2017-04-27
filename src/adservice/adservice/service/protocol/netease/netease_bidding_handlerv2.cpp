@@ -79,6 +79,7 @@ namespace bidding {
         std::string pid = adzinfo.get("space_id", "0");
         std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
         AdSelectCondition & queryCondition = queryConditions[0];
+        queryCondition.isFromSSP = true;
         queryCondition.adxid = ADX_NETEASE_MOBILE;
         queryCondition.adxpid = pid;
         const cppcms::json::value & geo = bidRequest.find("geo");
@@ -188,14 +189,14 @@ namespace bidding {
             = std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?" + showUrlParam.cipherParam();
         std::vector<std::string> materialUrls;
         if (bannerType == BANNER_TYPE_PRIMITIVE) {
-            materialUrls.push_back(mtlsArray[0]["p6"].str());
-            materialUrls.push_back(mtlsArray[0]["p7"].str());
-            materialUrls.push_back(mtlsArray[0]["p8"].str());
-            landingUrl = mtlsArray[0]["p9"].str();
+            materialUrls.push_back(mtlsArray[0].get("p6", ""));
+            materialUrls.push_back(mtlsArray[0].get("p7", ""));
+            materialUrls.push_back(mtlsArray[0].get("p8", ""));
+            landingUrl = mtlsArray[0].get("p9", "");
             if (queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE) {
-                downloadUrl = mtlsArray[0]["p10"].str();
+                downloadUrl = mtlsArray[0].get("p10", "");
             } else if (queryCondition.mobileDevice == SOLUTION_DEVICE_ANDROID) {
-                downloadUrl = mtlsArray[0]["p11"].str();
+                downloadUrl = mtlsArray[0].get("p11", "");
             }
             int style = 0;
             auto & sizeStyleMap = adplaceStyleMap.getSizeStyleMap();
@@ -204,22 +205,22 @@ namespace bidding {
                 ;
 
             if (style == 3) {
-                mainTitle = mtlsArray[0]["p1"].str();
-                std::string bakMainTitle = mtlsArray[0]["p0"].str();
+                mainTitle = mtlsArray[0].get("p1", "");
+                std::string bakMainTitle = mtlsArray[0].get("p0", "");
                 if (mainTitle.length() < bakMainTitle.length()) {
                     mainTitle = bakMainTitle;
                 }
             } else {
-                mainTitle = mtlsArray[0]["p0"].str();
+                mainTitle = mtlsArray[0].get("p0", "");
             }
             bidResponse["style"] = std::to_string(style);
             if (style == 13) {
-                bidResponse["videoUrl"] = mtlsArray[0]["p16"].str();
+                bidResponse["videoUrl"] = mtlsArray[0].get("p16", "");
             }
         } else {
-            std::string materialUrl = mtlsArray[0]["p0"].str();
+            std::string materialUrl = mtlsArray[0].get("p0", "");
             materialUrls.push_back(materialUrl);
-            landingUrl = mtlsArray[0]["p1"].str();
+            landingUrl = mtlsArray[0].get("p1", "");
         }
         bidResponse["mainTitle"] = mainTitle;
         bidResponse["valid_time"] = 86400000;

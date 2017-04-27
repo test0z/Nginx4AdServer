@@ -176,6 +176,9 @@ namespace bidding {
         } else if (adzInfo.has_placement_id()) {
             queryCondition.adxpid = std::to_string(adzInfo.placement_id());
         }
+        if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
+            queryCondition.adxid = ADX_GDT_MOBILE;
+        }
         queryCondition.pAdplaceInfo = &adplaceInfo;
         if (!filterCb(this, queryConditions)) {
             return bidFailedReturn();

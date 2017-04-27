@@ -71,8 +71,8 @@ namespace server {
         }
 
     public:
-        adservice::core::model::MtUserMapping getUserMappingByKey(const std::string & key, const std::string & value,
-                                                                  bool isDevice);
+        adservice::core::model::MtUserMapping
+        getUserMappingByKey(const std::string & key, const std::string & value, bool isDevice, bool & isTimeout);
 
         adservice::core::model::MtUserMapping
         getUserDeviceMappingByBin(const std::string & bin, const std::string & value, const std::string & key);

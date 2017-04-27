@@ -343,10 +343,10 @@ namespace bidding {
                     }
                 } else if (!asset.find("data").is_undefined() && asset.get("data.type", 0) == 2) { // description
                     assetObj["data"] = cppcms::json::value();
-                    assetObj["data"]["value"] = tmpMtls[0].get("p5", "");
+                    assetObj["data"]["value"] = mtlsArray[0].get("p5", "");
                 } else if (!asset.find("title").is_undefined()) { // title
                     assetObj["title"] = cppcms::json::value();
-                    assetObj["title"]["text"] = tmpMtls[0].get("p0", "");
+                    assetObj["title"]["text"] = mtlsArray[0].get("p0", "");
                 } else {
                     assetObj["data"] = cppcms::json::value();
                     assetObj["data"]["value"] = "";
