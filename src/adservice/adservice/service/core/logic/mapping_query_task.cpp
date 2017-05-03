@@ -143,9 +143,7 @@ namespace corelogic {
                 }
             }
             //生成1x1图片
-            resp.status(302, "OK");
-            resp.set_header("Location", relocateUrl);
-            resp.set_body("m");
+            resp.status(204, "OK");
             resp.set_header("Pragma", "no-cache");
             resp.set_header("Cache-Control", "no-cache,no-store;must-revalidate");
             resp.set_header("P3p",

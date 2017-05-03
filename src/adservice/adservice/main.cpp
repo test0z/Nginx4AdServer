@@ -366,6 +366,8 @@ static void global_init(LocationConf * conf)
         = std::make_shared<MT::common::traffic::TrafficControllProxy>(aerospikeClient);
     MT::common::traffic::TrafficControllProxy::instance_->start(std::cerr);
 
+    adservice::utility::HttpClientProxy::instance_ = std::make_shared<HttpClientProxy>();
+
     char cwd[256];
     getcwd(cwd, sizeof(cwd));
     std::cerr << "current working directory:" << cwd << std::endl;

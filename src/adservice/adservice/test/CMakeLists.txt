@@ -21,6 +21,7 @@ FIND_LIBRARY(LIB_AEROSPIKE NAMES "libaerospike.a" aerospike)
 FIND_LIBRARY(LIB_EV NAMES "libev.a" ev)
 FIND_LIBRARY(LIB_MTTY mtty)
 FIND_LIBRARY(LIB_CPPCMS NAMES "libcppcms.a" cppcms)
+FIND_LIBRARY(LIB_CURL NAMES "libcurl.a" curl)
 
 ADD_EXECUTABLE(cookiemapping_test ./cookiemapping_test.cpp
     ../service/core/core_cm_manager.cpp
@@ -41,6 +42,13 @@ ADD_EXECUTABLE(te_test ./template_engine_test.cpp
     ../service/utility/template_engine.cpp
     ../service/utility/file.cpp
     ../service/utility/mttytime.cpp)
+
+ADD_EXECUTABLE(httpclient_test ./httpclient_test.cpp
+    ../logging.cpp
+    ../service/core/core_executor.cpp
+    ../service/utility/http.cpp
+    ../service/utility/mttytime.cpp
+    ../service/utility/promise.cpp)
 
 ADD_EXECUTABLE(price_test ./price_test.cpp
     ../service/protocol/360/360max_price.cpp
@@ -87,3 +95,4 @@ TARGET_LINK_LIBRARIES(ip_test ${LINK_LIBRARY})
 TARGET_LINK_LIBRARIES(json_test ${LINK_LIBRARY} ${LIB_CPPCMS})
 TARGET_LINK_LIBRARIES(executor_test ${LINK_LIBRARY} ${LIB_CPPCMS})
 TARGET_LINK_LIBRARIES(te_test ${LINK_LIBRARY})
+TARGET_LINK_LIBRARIES(httpclient_test ${LINK_LIBRARY} ${LIB_CURL})

@@ -75,7 +75,8 @@ $ngx_addon_dir/service/utility/url.cpp
 $ngx_addon_dir/service/utility/userclient.cpp
 $ngx_addon_dir/service/utility/http.cpp
 $ngx_addon_dir/service/utility/compress.cpp
-$ngx_addon_dir/service/utility/template_engine.cpp"
+$ngx_addon_dir/service/utility/template_engine.cpp
+$ngx_addon_dir/service/utility/promise.cpp"
 
 #CORE_DEPS="$CORE_DEPS $ngx_addon_dir/logging.h
 #$ngx_addon_dir/service/common/constants.h

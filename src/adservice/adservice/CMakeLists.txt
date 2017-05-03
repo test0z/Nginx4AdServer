@@ -88,6 +88,7 @@ SET(SRC_LIST
     ./service/utility/userclient.cpp
     ./service/utility/compress.cpp
     ./service/utility/template_engine.cpp
+    ./service/utility/promise.cpp
     ./service/common/atomic.cpp
     ./service/common/functions.cpp
     ./service/common/platform.cpp

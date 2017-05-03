@@ -30,6 +30,7 @@
 #include "http.h"
 #include "compress.h"
 #include "template_engine.h"
+#include "promise.h"
 #include <tuple>
 #include <functional>
 #include <boost/algorithm/string.hpp>

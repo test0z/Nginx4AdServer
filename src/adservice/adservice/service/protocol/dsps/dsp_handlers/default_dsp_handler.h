@@ -4,16 +4,14 @@
 #include "core/adselectv2/ad_select_interface.h"
 #include "protocol/dsps/mtty_bidding.pb.h"
 #include "utility/utility.h"
-#include <condition_variable>
 #include <mtty/types.h>
-#include <mutex>
-#include <queue>
 #include <string>
 
 namespace protocol {
 namespace dsp {
 
     using namespace adservice;
+    using namespace adservice::utility::future;
 
     class DSPBidResult {
     public:
@@ -34,11 +32,11 @@ namespace dsp {
         std::vector<std::string> laterAccessUrls;
     };
 
-    typedef std::function<void(void)> DSPPromiseListener;
+    typedef PromiseListener DSPPromiseListener;
 
-    class DSPPromise;
+    typedef Promise DSPPromise;
 
-    typedef std::shared_ptr<DSPPromise> DSPPromisePtr;
+    typedef PromisePtr DSPPromisePtr;
 
     class DSPPromise {
     public:
@@ -144,8 +142,6 @@ namespace dsp {
             , dspId_(dspId)
             , timeoutMs_(timeout)
         {
-            utility::HttpClientProxy::registerClient(targetUrl, timeout);
-            utility::HttpClientProxy::registerClient(cookiemappingUrl, timeout);
         }
 
         /**

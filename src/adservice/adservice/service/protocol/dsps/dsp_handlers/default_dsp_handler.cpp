@@ -82,24 +82,17 @@ namespace dsp {
         std::string reqBody;
         utility::serialize::writeProtoBufObject(request, &reqBody);
         //异步回调
-        // operationPromise相当于一个异步操作的回执
-        DSPPromisePtr operationPromise = std::make_shared<DSPPromise>();
         //发送异步请求,确保在timeout之内一定调用callback,无论成功或失败
         auto httpClientProxy = adservice::utility::HttpClientProxy::getInstance();
-        httpClientProxy->postAsync(dspUrl_,
-                                   reqBody,
-                                   timeoutMs_,
-                                   [this, &adplace, &operationPromise](int error, int status, const std::string & res) {
-                                       if (error == 0) {
-                                           BidResponse bidResponse;
-                                           if (utility::serialize::getProtoBufObject(bidResponse, res)) {
-                                               this->dspResult_
-                                                   = std::move(this->bidResponseToDspResult(bidResponse, adplace));
-                                           }
-                                       }
-                                       operationPromise->done();
-                                   };);
-        return operationPromise;
+        return httpClientProxy->postAsync(
+            dspUrl_, reqBody, timeoutMs_, [this, &adplace](int error, int status, const std::string & res) {
+                if (error == 0) {
+                    BidResponse bidResponse;
+                    if (utility::serialize::getProtoBufObject(bidResponse, res)) {
+                        this->dspResult_ = std::move(this->bidResponseToDspResult(bidResponse, adplace));
+                    }
+                }
+            });
     }
 
     BidRequest DSPHandlerInterface::conditionToBidRequest(adselectv2::AdSelectCondition & selectCondition,

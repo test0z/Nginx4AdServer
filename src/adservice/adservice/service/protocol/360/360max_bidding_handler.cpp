@@ -271,7 +271,7 @@ namespace bidding {
             creative->set_title(mtlsArray[0].get("p0", ""));
             creative->set_sub_title(mtlsArray[0].get("p1", ""));
             creative->set_description(mtlsArray[0].get("p5", ""));
-            creative->set_button_name("Call To Action");
+            creative->set_button_name("麦田广告");
             auto contentImage = creative->mutable_content_image();
             contentImage->set_image_url(mtlsArray[0].get("p6", ""));
             contentImage->set_image_width(sizePair.first);

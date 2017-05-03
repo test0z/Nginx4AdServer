@@ -5,12 +5,19 @@
 #ifndef MTCORENGINX_HTTP_H
 #define MTCORENGINX_HTTP_H
 
-#include "common/spinlock.h"
-#include <cpprest/http_client.h>
+#include "core/core_executor.h"
+#include "promise.h"
+#include <atomic>
+#include <booster/backtrace.h>
+#include <curl/curl.h>
+#include <ev.h>
 #include <iostream>
 #include <map>
+#include <mutex>
+#include <queue>
 #include <sstream>
 #include <string>
+#include <thread>
 
 namespace adservice {
 namespace utility {
@@ -122,6 +129,20 @@ namespace utility {
 
     class HttpResponse {
     public:
+        HttpResponse()
+        {
+        }
+
+        HttpResponse(const HttpResponse && other)
+        {
+            respStatus = other.respStatus;
+            statusMsg = std::move(other.statusMsg);
+            headers = std::move(other.headers);
+            body = std::move(other.body);
+            needGzipResponse = other.needGzipResponse;
+            bodyStream << other.bodyStream.str();
+        }
+
         void setResponseGzip(bool t)
         {
             needGzipResponse = t;
@@ -190,7 +211,7 @@ namespace utility {
 
         void set_body(const std::string & bodyMessage);
 
-        std::string get_body();
+        std::string get_body() const;
 
         std::string get_debug_message();
 
@@ -235,6 +256,51 @@ namespace utility {
         bool needGzipResponse{ false };
     };
 
+    class HttpClientException : public booster::exception {
+    public:
+        HttpClientException(const std::string & what)
+            : what_(what)
+        {
+        }
+
+        const char * what() const noexcept override
+        {
+            return what_.c_str();
+        }
+
+    private:
+        std::string what_;
+    };
+
+    typedef std::function<void(int, int, const std::string &)> HttpResponseCallback;
+
+    class HttpClientCallbackPack {
+    public:
+        int64_t deadline{ 0 };
+        std::atomic<bool> callbackCalled{ false };
+        HttpResponseCallback transferFinishedCallback;
+        future::PromisePtr promisePtr;
+
+        HttpClientCallbackPack()
+        {
+            promisePtr = std::make_shared<future::Promise>();
+        }
+    };
+
+    typedef std::shared_ptr<HttpClientCallbackPack> HttpClientCallbackPackPtr;
+
+    class HttpClientCallbackPackPtrCMP {
+    public:
+        bool operator()(const HttpClientCallbackPackPtr & x, const HttpClientCallbackPackPtr & y) const
+        {
+            return x->deadline > y->deadline;
+        }
+    };
+
+    typedef std::priority_queue<HttpClientCallbackPackPtr, std::vector<HttpClientCallbackPackPtr>,
+                                HttpClientCallbackPackPtrCMP>
+        TimeoutQueue;
+
     class HttpClientProxy {
     public:
         static std::shared_ptr<HttpClientProxy> getInstance()
@@ -242,38 +308,82 @@ namespace utility {
             return instance_;
         }
 
-        static bool registerClient(const std::string & host, uint32_t timeoutMS = 100);
+        static std::shared_ptr<HttpClientProxy> instance_;
 
-    private:
-        static std::shared_ptr<web::http::client::http_client> getClient(const std::string & host);
-
-    private:
-        static std::shared_ptr<HttpClientProxy> instance_{ nullptr };
-        static std::unordered_map<std::string, std::shared_ptr<web::http::client::http_client>> cachedClients;
-
-    private:
-        HttpClientProxy();
         ~HttpClientProxy();
+        HttpClientProxy();
 
     public:
-        typedef std::function<void(int, int, const std::string &)> ResponseCallback;
-
         HttpResponse getSync(const std::string & url, uint32_t timeoutMs);
 
-        void getAsync(const std::string & url, uint32_t timeoutMS,
-                      const ResponseCallback & callback = defaultResponseCallback_);
+        future::PromisePtr getAsync(const std::string & url, uint32_t timeoutMS,
+                                    const HttpResponseCallback & callback = nullptr);
 
-        HttpResponse postSync(const std::string & url, const std::string & postData, uint32_t timeoutMs);
+        HttpResponse postSync(const std::string & url, const std::string & postData, const std::string & constentType,
+                              uint32_t timeoutMs);
 
-        void postAsync(const std::string & url, const std::string & postData, uint32_t timeoutMs,
-                       const ResponseCallback & callback = defaultResponseCallback_);
+        future::PromisePtr postAsync(const std::string & url, const std::string & postData,
+                                     const std::string & contentType, uint32_t timeoutMs,
+                                     const HttpResponseCallback & callback = defaultResponseCallback_);
 
-        void postAsync(const std::string & url, const std::string & postData, const std::string & contentType,
-                       uint32_t timeoutMs, const ResponseCallback & callback = defaultResponseCallback_);
+        CURLM * getCurlM()
+        {
+            return multiCurl_;
+        }
+
+        struct ev_loop * loop()
+        {
+            return loop_;
+        }
+
+        struct ev_timer * wakeupTimer()
+        {
+            return &wakeupTimer_;
+        }
+
+        std::mutex & taskMutex()
+        {
+            return asyncCurlMutex_;
+        }
+
+        std::vector<CURL *> & pendingCurls()
+        {
+            return pendingCurls_;
+        }
+
+        std::shared_ptr<adservice::server::Executor> getExecutor()
+        {
+            return executor_;
+        }
+
+        TimeoutQueue & getTimeoutQueue()
+        {
+            return timeoutList_;
+        }
+
+        void setVerbose(bool verbose)
+        {
+            verbose_ = verbose;
+        }
+
+        bool isVerbose()
+        {
+            return verbose_;
+        }
 
     private:
-        static ResponseCallback defaultResponseCallback_;
-        static spinlock slock_{ 0 };
+        static HttpResponseCallback defaultResponseCallback_;
+        struct ev_loop * loop_;
+        struct ev_timer wakeupTimer_;
+        struct ev_timer taskTimer_;
+        CURLM * multiCurl_;
+        int presudoFd_;
+        struct ev_io presudoWatcher_;
+        std::vector<CURL *> pendingCurls_;
+        std::mutex asyncCurlMutex_;
+        std::shared_ptr<adservice::server::Executor> executor_;
+        TimeoutQueue timeoutList_;
+        bool verbose_{ false };
     };
 }
 }
