@@ -11,6 +11,7 @@
 #include "protocol/inmobi/inmobi_bidding_handler.h"
 #include "protocol/kupai/kupai_bidding_handler.h"
 #include "protocol/liebao/liebao_bidding_handler.h"
+#include "protocol/mtty/mtty_bidding_handler.h"
 #include "protocol/netease/netease_bidding_handlerv2.h"
 #include "protocol/netease/nex_bidding_handler.h"
 #include "protocol/sohu/sohu_bidding_handler.h"
@@ -83,6 +84,8 @@ namespace corelogic {
         ADD_MODULE_ENTRY(BID_QUERY_PATH_360MAX, ADX_360_MAX_PC);
         //一点资讯
         ADD_MODULE_ENTRY(BID_QUERY_PATH_YIDIAN, ADX_YIDIAN);
+        //麦田
+        ADD_MODULE_ENTRY(BID_QUERY_PATH_MTTY, ADX_MTTY);
 
         std::sort<int *>(moduleIdx, moduleIdx + moduleCnt, [](const int & a, const int & b) {
             return moduleAdx[a].moduleHash < moduleAdx[b].moduleHash;
@@ -138,6 +141,8 @@ namespace corelogic {
             return new JuxiaoMaxBiddingHandler();
         case ADX_YIDIAN:
             return new YidianBidingHandler();
+        case ADX_MTTY:
+            return new MttyBiddingHandler();
         default:
             return NULL;
         }

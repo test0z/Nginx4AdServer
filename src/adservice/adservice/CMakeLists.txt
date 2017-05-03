@@ -76,6 +76,7 @@ SET(SRC_LIST
     ./service/protocol/dsps/dsp_handler_manager.cpp
     ./service/protocol/dsps/dsp_handlers/default_dsp_handler.cpp
     ./service/protocol/dsps/mtty_bidding.pb.cpp
+    ./service/protocol/mtty/mtty_bidding_handler.cpp
     ./service/utility/cypher.cpp
     ./service/utility/escape.cpp
     ./service/utility/file.cpp
