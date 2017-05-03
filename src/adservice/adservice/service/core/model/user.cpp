@@ -14,6 +14,24 @@ namespace core {
         const std::string MAPPING_KEY_USER = "user_id";
         const std::string MAPPING_OUTER_ORIGINID = "origin_id";
 
+        bool QueryWhereCallback(const as_val * val, void * udata)
+        {
+            if (val == nullptr) {
+                return true;
+            }
+            as_record * record = as_record_fromval(val);
+            std::vector<std::shared_ptr<adservice::core::model::MtUserMapping>> * localVector
+                = static_cast<std::vector<std::shared_ptr<adservice::core::model::MtUserMapping>> *>(udata);
+            if (record != nullptr) {
+                std::shared_ptr<adservice::core::model::MtUserMapping> entity
+                    = std::make_shared<adservice::core::model::MtUserMapping>();
+                entity->needDeviceOriginId = true;
+                entity->record(record);
+                localVector->push_back(entity);
+            }
+            return true;
+        }
+
         std::string MtUserMapping::adxUidKey(int64_t adxId)
         {
             std::string asBinName = "adxuid_";

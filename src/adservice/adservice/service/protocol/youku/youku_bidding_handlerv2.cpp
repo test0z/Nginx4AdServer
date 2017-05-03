@@ -325,7 +325,7 @@ namespace bidding {
         std::string strBannerJson = banner.json;
         cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
         cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
-        std::string tview = bannerJson["tview"].str();
+        std::string tview = bannerJson.get("tview", "");
 
         cppcms::json::value extValue;
         url::URLHelper showUrl;
@@ -363,11 +363,11 @@ namespace bidding {
             cppcms::json::value nativeObj;
             nativeObj["native_template_id"] = nativeTemplateId;
             bidValue["native"] = nativeObj;
-            landingUrl = mtlsArray[0]["p9"].str();
+            landingUrl = mtlsArray[0].get("p9", "");
         } else {
-            std::string materialUrl = mtlsArray[0]["p0"].str();
+            std::string materialUrl = mtlsArray[0].get("p0", "");
             bidValue["adm"] = materialUrl;
-            landingUrl = mtlsArray[0]["p1"].str();
+            landingUrl = mtlsArray[0].get("p1", "");
         }
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, requestId, "", landingUrl);

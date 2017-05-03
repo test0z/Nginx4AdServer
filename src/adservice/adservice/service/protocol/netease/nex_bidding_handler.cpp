@@ -280,7 +280,7 @@ namespace bidding {
         std::string landingUrl;
         std::string mainTitle;
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
-            landingUrl = mtlsArray[0]["p9"].str();
+            landingUrl = mtlsArray[0].get("p9", "");
             extValue["linkUrl"] = landingUrl;
             int style = 0;
             auto & sizeStyleMap = adplaceStyleMap.getSizeStyleMap();
@@ -289,10 +289,10 @@ namespace bidding {
                 ;
 
             std::vector<std::string> materialUrls;
-            materialUrls.push_back(mtlsArray[0]["p6"].str());
+            materialUrls.push_back(mtlsArray[0].get("p6", ""));
             if (style == 11) {
-                materialUrls.push_back(mtlsArray[0]["p7"].str());
-                materialUrls.push_back(mtlsArray[0]["p8"].str());
+                materialUrls.push_back(mtlsArray[0].get("p7", ""));
+                materialUrls.push_back(mtlsArray[0].get("p8", ""));
             }
             cppcms::json::array admArray;
             for (auto & murl : materialUrls) {
@@ -303,13 +303,13 @@ namespace bidding {
             }
             extValue["adm"] = admArray;
             if (style == 3) {
-                mainTitle = mtlsArray[0]["p1"].str();
-                std::string bakMainTitle = mtlsArray[0]["p0"].str();
+                mainTitle = mtlsArray[0].get("p1", "");
+                std::string bakMainTitle = mtlsArray[0].get("p0", "");
                 if (mainTitle.length() < bakMainTitle.length()) {
                     mainTitle = bakMainTitle;
                 }
             } else {
-                mainTitle = mtlsArray[0]["p0"].str();
+                mainTitle = mtlsArray[0].get("p0", "");
             }
             extValue["title"] = mainTitle;
             extValue["style"] = style;

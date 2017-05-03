@@ -90,8 +90,8 @@ namespace corelogic {
     }
 
     /**
-             * 根据模块路径获取对应的Adx
-             */
+     * 根据模块路径获取对应的Adx
+     */
     int HandleBidQueryTask::getAdxId(const std::string & path)
     {
         auto key = fnv_hash(path.c_str(), path.length());

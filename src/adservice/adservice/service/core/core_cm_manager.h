@@ -72,7 +72,10 @@ namespace server {
 
     public:
         adservice::core::model::MtUserMapping
-        getUserMappingByKey(const std::string & key, const std::string & value, bool isDevice);
+        getUserMappingByKey(const std::string & key, const std::string & value, bool isDevice, bool & isTimeout);
+
+        adservice::core::model::MtUserMapping
+        getUserDeviceMappingByBin(const std::string & bin, const std::string & value, const std::string & key);
 
         bool updateMappingAdxUid(const std::string & userId,
                                  int64_t adxId,
@@ -95,6 +98,7 @@ namespace server {
         void touchMapping(const std::string & key,
                           const std::string & value,
                           const std::string & userId,
+                          const std::string & originId = "",
                           int64_t ttl = DAY_SECOND * 30);
 
         adservice::core::model::UserIDEntity newIdSeq();

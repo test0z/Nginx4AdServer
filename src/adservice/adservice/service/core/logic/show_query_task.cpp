@@ -589,7 +589,8 @@ namespace corelogic {
             try {
                 orderId = log.adInfo.orderId;
 
-                MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "order-counter", orderId);
+                MT::common::ASKey key(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_ORDER), "order-counter",
+                                      orderId);
                 MT::common::ASOperation op(1);
                 op.addIncr("s", (int64_t)1);
 
@@ -606,9 +607,9 @@ namespace corelogic {
         // 用户曝光频次控制
         if (!log.userId.empty() && needLog) {
             try {
-                MT::common::ASKey dailyKey(globalConfig.aerospikeConfig.nameSpace.c_str(), "user-freq",
+                MT::common::ASKey dailyKey(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_FREQ), "user-freq",
                                            log.userId + "d");
-                MT::common::ASKey hourlyKey(globalConfig.aerospikeConfig.nameSpace.c_str(), "user-freq",
+                MT::common::ASKey hourlyKey(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_FREQ), "user-freq",
                                             log.userId + "h");
 
                 if (!aerospikeClient.exists(dailyKey)) {

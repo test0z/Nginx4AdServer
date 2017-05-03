@@ -61,6 +61,8 @@ namespace corelogic {
         // 协议，0为http，1为https
         const std::string URL_PROTOCOL = "i";
 
+        const std::string deviceType[] = { "idfa", "imei", "androidId", "mac" };
+
         void fillLog(protocol::log::LogItem & log,
                      ParamMap & paramMap,
                      const core::model::SourceRecord & sourceRecord,
@@ -242,12 +244,14 @@ namespace corelogic {
                     device = paramMap[URL_DEVICE_TYPE];
 
         std::string sourceId = paramMap["g"];
+
         if (sourceId.empty()) {
 
             /* 根据用户id和广告主id获取source_id */
             core::model::SourceId sourceIdEntity;
-            MT::common::ASKey key(
-                globalConfig.aerospikeConfig.nameSpace.c_str(), "source_id_index", (userId + ownerId).c_str());
+            MT::common::ASKey key(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_TRACE),
+                                  "source_id_index",
+                                  (userId + ownerId).c_str());
             try {
                 aerospikeClient.get(key, sourceIdEntity);
                 sourceId = sourceIdEntity.get();
@@ -260,7 +264,8 @@ namespace corelogic {
         core::model::SourceRecord sourceRecord;
         if (!sourceId.empty()) {
             // 判断是否是一次到达，如果是pv，即y=6，限时10秒，否则请求类型保持原样
-            MT::common::ASKey key(globalConfig.aerospikeConfig.nameSpace.c_str(), "source_id", sourceId.c_str());
+            MT::common::ASKey key(
+                globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_TRACE), "source_id", sourceId.c_str());
             try {
                 aerospikeClient.get(key, sourceRecord);
                 if (requestTypeStr == "6" && log.timeStamp - sourceRecord.time() <= 10) {
@@ -269,6 +274,21 @@ namespace corelogic {
             } catch (MT::common::AerospikeExcption & e) {
                 LOG_ERROR << "获取source record失败！sourceId:" << sourceId << "，code:" << e.error().code
                           << ", error:" << e.error().message;
+            }
+            const std::string & user_id = sourceRecord.mtUid();
+            if (requestTypeStr == "14" && !user_id.empty()) {
+
+                for (int i = 0; i < 4; i++) {
+                    CookieMappingManager & cmManager = CookieMappingManager::getInstance();
+                    adservice::core::model::MtUserMapping temp
+                        = cmManager.getUserDeviceMappingByBin("user_id", user_id, deviceType[i]);
+                    if (!temp.outerUserId.empty() || !temp.outerUserOriginId.empty()) {
+                        paramMap[URL_USER_OR_ORDER_ID]
+                            = (temp.outerUserOriginId.empty() ? temp.outerUserId : temp.outerUserOriginId);
+                        paramMap[URL_USER_OR_PRODUCT_NAME] = deviceType[i];
+                        break;
+                    }
+                }
             }
 
             requestCounter.increaseTraceSuccess();

@@ -14,6 +14,9 @@ namespace bidding {
     using namespace adservice::utility::cypher;
     using namespace adservice::server;
 
+    std::vector<std::pair<int, int>> YidianSizeMap{ { 1, 0 }, { 2, 12 }, { 3, 0 } };
+    std::unordered_map<int, std::pair<int, int>> splashMap{ { 56, { 640, 1136 } }, { 66, { 640, 960 } } };
+
     void GetDevice(int & os, std::string & os_type)
     {
         boost::algorithm::to_upper(os_type);
@@ -49,6 +52,7 @@ namespace bidding {
             return;
         case PRICETYPE_CPC:
         case PRICETYPE_RRTB_CPC:
+        case PRICETYPE_RCPC:
             pricetype = 2;
             return;
         default:
@@ -77,18 +81,22 @@ namespace bidding {
     }
     bool YidianBidingHandler::filter(const BiddingFilterCallback & filterCb)
     {
-        if (!bidRequest.find("istest").is_undefined() && bidRequest["istest"].boolean()) {
-            return bidFailedReturn();
-        }
         std::vector<PreSetAdplaceInfo> adplaceInfos{ PreSetAdplaceInfo() };
         std::vector<AdSelectCondition> queryConditions{ AdSelectCondition() };
         AdSelectCondition & queryCondition = queryConditions[0];
         PreSetAdplaceInfo & adplaceInfo = adplaceInfos[0];
+        queryCondition.isFromSSP = true;
         queryCondition.pAdplaceInfo = &adplaceInfo;
         queryCondition.adxid = ADX_YIDIAN;
         queryCondition.basePrice = 1;
         queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
         adplaceInfo.flowType = SOLUTION_FLOWTYPE_MOBILE;
+        std::string dealId = bidRequest.get("deal_id", "");
+        if (!dealId.empty()) {
+            std::ostringstream deal_os;
+            deal_os << ',' << dealId << ',';
+            queryCondition.dealId = deal_os.str();
+        }
         const cppcms::json::value & device_object = bidRequest.find("device");
         /*获取设备信息*/
         queryCondition.ip = device_object.get("ip", "");
@@ -104,26 +112,40 @@ namespace bidding {
         int ad_type = boost::lexical_cast<int>(bidRequest.get("tagid", ""));
         int width = 0;
         int height = 0;
-        const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
+        // const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
         switch (ad_type) {
         case 0: {
             const cppcms::json::value & Osplash = bidRequest.find("splash");
-            queryCondition.width = Osplash.get("w", 0);
-            queryCondition.height = Osplash.get("h", 0);
+            width = Osplash.get("w", 0);
+            height = Osplash.get("h", 0);
+            int tempdata = ((float)width / height) * 100;
+            LOG_DEBUG << tempdata;
+            auto it = splashMap.find(tempdata);
+            if (it != splashMap.end()) {
+                queryCondition.width = it->second.first;
+                queryCondition.height = it->second.second;
+                LOG_DEBUG << queryCondition.width << queryCondition.height;
+            } else {
+                queryCondition.width = 640;
+                queryCondition.height = 1136;
+            }
+            queryCondition.adxpid = "10000";
             adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
             Adtype = 0;
         } break;
         case 1: {
             const cppcms::json::value & Olist = bidRequest.find("list");
-            width = Olist.get("w", 0);
-            height = Olist.get("h", 0);
+            // width = 360;
+            // height = 234;
             maxduration = Olist.get("maxduration", 0);
+            queryCondition.adxpid = "10001";
             Adtype = 1;
         } break;
         case 2: {
-            const cppcms::json::value & Ocontent = bidRequest.find("content");
-            width = Ocontent.get("w", 0);
-            height = Ocontent.get("h", 0);
+            // const cppcms::json::value & Ocontent = bidRequest.find("content");
+            // width = 900;
+            // height = 450;
+            queryCondition.adxpid = "10002";
             Adtype = 2;
         } break;
 
@@ -132,8 +154,7 @@ namespace bidding {
         }
         if (Adtype) {
             queryCondition.bannerType = BANNER_TYPE_PRIMITIVE;
-            auto sizePair = adSizeMap.get({ width, height });
-            for (auto sizeIter : sizePair) {
+            for (auto sizeIter : YidianSizeMap) {
                 queryCondition.width = sizeIter.first;
                 queryCondition.height = sizeIter.second;
                 adplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
