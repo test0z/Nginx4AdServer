@@ -84,15 +84,19 @@ namespace dsp {
         //异步回调
         //发送异步请求,确保在timeout之内一定调用callback,无论成功或失败
         auto httpClientProxy = adservice::utility::HttpClientProxy::getInstance();
-        return httpClientProxy->postAsync(
-            dspUrl_, reqBody, timeoutMs_, [this, &adplace](int error, int status, const std::string & res) {
-                if (error == 0) {
-                    BidResponse bidResponse;
-                    if (utility::serialize::getProtoBufObject(bidResponse, res)) {
-                        this->dspResult_ = std::move(this->bidResponseToDspResult(bidResponse, adplace));
-                    }
-                }
-            });
+        return httpClientProxy->postAsync(dspUrl_,
+                                          reqBody,
+                                          "application/octet-stream",
+                                          timeoutMs_,
+                                          [this, &adplace](int error, int status, const std::string & res) {
+                                              if (error == 0) {
+                                                  BidResponse bidResponse;
+                                                  if (utility::serialize::getProtoBufObject(bidResponse, res)) {
+                                                      this->dspResult_ = std::move(
+                                                          this->bidResponseToDspResult(bidResponse, adplace));
+                                                  }
+                                              }
+                                          });
     }
 
     BidRequest DSPHandlerInterface::conditionToBidRequest(adselectv2::AdSelectCondition & selectCondition,

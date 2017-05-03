@@ -74,16 +74,15 @@ namespace utility {
             CURLMsg * msg;
             int handleRemains;
             CURL * easy;
-            CURLcode res;
             CURLM * curlm = HttpClientProxy::instance_->getCurlM();
             ConnectionInfo * connectionInfo{ nullptr };
             while ((msg = curl_multi_info_read(curlm, &handleRemains))) {
                 if (msg->msg == CURLMSG_DONE) { //已完成清理easy handle
                     easy = msg->easy_handle;
-                    res = msg->data.result;
+                    CURLcode res = msg->data.result;
                     int err = 0;
-                    if (msg->data.result != CURLE_OK) { // transfer failed
-                        err = msg->data.result;
+                    if (res != CURLE_OK) { // transfer failed
+                        err = res;
                     } // else transfer ok
                     curl_easy_getinfo(easy, CURLINFO_PRIVATE, &connectionInfo);
                     int64_t responseCode;
