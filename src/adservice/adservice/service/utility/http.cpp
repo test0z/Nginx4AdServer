@@ -240,6 +240,9 @@ namespace utility {
             curl_easy_setopt(curl, CURLOPT_PRIVATE, connInfo);
             curl_easy_setopt(curl, CURLOPT_TCP_KEEPALIVE, 1L);
             curl_easy_setopt(curl, CURLOPT_TCP_KEEPINTVL, 60L);
+            curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
+            curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+            curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
             if (verbose) {
                 curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
             }
