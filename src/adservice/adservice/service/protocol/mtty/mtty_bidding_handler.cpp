@@ -40,7 +40,7 @@ namespace bidding {
         }
         std::vector<AdSelectCondition> queryConditions(bidRequest_.imp_size());
         std::vector<PreSetAdplaceInfo> adplaceInfos(bidRequest_.imp_size());
-        for (uint32_t i = 0; i < bidRequest_.imp_size(); i++) {
+        for (int i = 0; i < bidRequest_.imp_size(); i++) {
             auto & imp = bidRequest_.imp(0);
             AdSelectCondition & queryCondition = queryConditions[i];
             PreSetAdplaceInfo & presetAdplace = adplaceInfos[i];
@@ -56,14 +56,14 @@ namespace bidding {
                 presetAdplace.sizeArray.push_back({ banner.width(), banner.height() });
             } else { //原生
                 auto & native = imp.native();
-                AdSizeMap & adsizeMap = AdSizeMap::getInstance();
-                for (uint32_t ni = 0; ni < native.assets_size(); ni++) {
+                const AdSizeMap & adsizeMap = AdSizeMap::getInstance();
+                for (int ni = 0; ni < native.assets_size(); ni++) {
                     auto & asset = native.assets(ni);
                     if (!asset.has_img()) {
                         continue;
                     }
-                    auto & img = asset.mutable_img();
-                    auto sizes = adsizeMap.get({ img->w(), img->h() });
+                    auto & img = asset.img();
+                    auto sizes = adsizeMap.get({ img.w(), img.h() });
                     for (auto & sizeIter : sizes) {
                         presetAdplace.sizeArray.push_back({ sizeIter.first, sizeIter.second });
                         queryCondition.width = sizeIter.first;
@@ -75,7 +75,7 @@ namespace bidding {
                 auto & pmp = imp.pmp();
                 std::stringstream ss;
                 ss << ",";
-                for (uint32_t k = 0; k < pmp.deals_size(); k++) {
+                for (int k = 0; k < pmp.deals_size(); k++) {
                     auto & deal = pmp.deals(k);
                     if (deal.bidfloor() < queryCondition.basePrice) {
                         queryCondition.basePrice = deal.bidfloor();
@@ -129,9 +129,9 @@ namespace bidding {
     void MttyBiddingHandler::buildBidResult(const AdSelectCondition & queryCondition,
                                             const MT::common::SelectResult & result, int seq)
     {
-        if (!bidResponse_.has_bid()) {
+        if (!bidResponse_.has_bidid()) {
             bidResponse_.Clear();
-            bidResponse_.set_bid(bidRequest.bid());
+            bidResponse_.set_bidid(bidRequest_.bid());
             bidResponse_.clear_seatbid();
         }
         const MT::common::Solution & finalSolution = result.solution;
@@ -149,12 +149,16 @@ namespace bidding {
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) { //原生
             bid->set_admtype(0);
             auto native = bid->mutable_native();
+            const AdSizeMap & adsizeMap = AdSizeMap::getInstance();
             for (int i = 6; i < 9; i++) {
-                std::string imgUrl = mtlsArray[0].get(std::string("p") + std::stoi(i), "");
+                std::string imgUrl = mtlsArray[0].get(std::string("p") + std::to_string(i), "");
                 if (!imgUrl.empty()) {
                     auto imgAsset = native->add_assets();
                     imgAsset->set_type(3);
                     imgAsset->set_imgurl(imgUrl);
+                    auto realSize = adsizeMap.rget({ banner.width, banner.height });
+                    imgAsset->set_imgw(realSize.first);
+                    imgAsset->set_imgh(realSize.second);
                 }
             }
             auto titleAsset = native->add_assets();
@@ -162,10 +166,10 @@ namespace bidding {
             titleAsset->set_data(mtlsArray[0].get("p0", ""));
         } else if (banner.bannerType == BANNER_TYPE_HTML) { // HTML 动态创意
             bid->set_admtype(1);
-            bid->set_adm(mtlsArray.get("p0", ""));
+            bid->set_adm(mtlsArray[0].get("p0", ""));
         } else { //普通图片创意
             bid->set_admtype(0);
-            bid->set_adm(mtlsArray.get("p0", ""));
+            bid->set_adm(mtlsArray[0].get("p0", ""));
         }
         if (!queryCondition.dealId.empty() && queryCondition.dealId != "0") {
             bid->set_dealid(finalSolution.dDealId);
@@ -188,7 +192,7 @@ namespace bidding {
     void MttyBiddingHandler::reject(adservice::utility::HttpResponse & response)
     {
         bidResponse_.Clear();
-        bidResponse_.set_bid(bidRequest_.bid());
+        bidResponse_.set_bidid(bidRequest_.bid());
         std::string result;
         if (!writeProtoBufObject(bidResponse_, &result)) {
             LOG_ERROR << "failed to write protobuf object in MttyBiddingHandler::reject";

@@ -367,8 +367,9 @@ namespace corelogic {
 
             if (!deviceId.empty() && !cmDeviceKey.empty()) { //存在设备ID进行cookiemapping query
                 auto & cmManager = adservice::server::CookieMappingManager::getInstance();
+                bool isCMTimeout = false;
                 adservice::core::model::MtUserMapping mapping
-                    = cmManager.getUserMappingByKey(cmDeviceKey, deviceId, true);
+                    = cmManager.getUserMappingByKey(cmDeviceKey, deviceId, true, isCMTimeout);
                 if (mapping.isValid()) {
                     condition.mtUserId = mapping.userId;
                     log.userId = mapping.userId;

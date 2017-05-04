@@ -335,7 +335,8 @@ namespace utility {
             return 0;
         }
     }
-
+    // todo:目前没有额外IO线程,所有的IO都集中在libev的loop thread中,下一步的优化需要加入额外的IOthread,是的libev loop
+    // 足够轻
     HttpClientProxy::HttpClientProxy()
     {
         executor_ = std::make_shared<adservice::server::Executor>("HttpClientProxyExecutor", true, 3, 5000);
