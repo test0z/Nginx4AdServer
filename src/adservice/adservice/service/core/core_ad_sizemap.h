@@ -58,6 +58,8 @@ namespace utility {
 
         void initStatic();
 
+        static int started;
+
     private:
         std::map<int, std::map<std::pair<int, int>, std::vector<std::pair<int, int>>>> sizemap;
         std::map<std::pair<int, int>, std::pair<int, int>> rsizemap;
