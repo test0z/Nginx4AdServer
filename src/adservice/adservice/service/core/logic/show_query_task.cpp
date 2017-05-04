@@ -209,26 +209,14 @@ namespace corelogic {
             std::string encodedLandingUrl;
             urlEncode_f(landingUrl, encodedLandingUrl, landingPageBuffer);
             clickUrl.add(URL_LANDING_URL, encodedLandingUrl);
-            if (banner.bannerType != BANNER_TYPE_PRIMITIVE) {
-                mtls[0].set("p5", clickUrl.cipherUrl());
-            } else {
-                mtls[0].set("p9", clickUrl.cipherUrl());
+            mtAdInfo["clickurl"] = clickUrl.cipherUrl();
+            std::string jsonResult = utility::json::toJson(mtAdInfo);
+            int len = snprintf(buffer, bufferSize - 1, templateFmt, jsonResult.c_str());
+            if (len >= bufferSize) {
+                LOG_WARN << "in buildResponseForDsp buffer overflow,length:" << len;
+                return bufferSize;
             }
-            if (paramMap[URL_IMP_OF] == OF_SSP_MOBILE) {
-                //只输出标准json
-                std::string jsonResult = utility::json::toJson(mtAdInfo);
-                resultLen = snprintf(buffer, bufferSize - 1, "%s", jsonResult.c_str());
-            } else {
-                mtAdInfo["clickurl"] = clickUrl.cipherUrl();
-                std::string jsonResult = utility::json::toJson(mtAdInfo);
-                int len = snprintf(buffer, bufferSize - 1, templateFmt, jsonResult.c_str());
-                if (len >= bufferSize) {
-                    LOG_WARN << "in buildResponseForDsp buffer overflow,length:" << len;
-                    return bufferSize;
-                }
-                return len;
-            }
-            return resultLen;
+            return len;
         }
 
         int buildResponseForSsp(const MT::common::SelectResult & selectResult, ParamMap & paramMap,
