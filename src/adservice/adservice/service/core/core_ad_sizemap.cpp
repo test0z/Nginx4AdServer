@@ -1,4 +1,7 @@
 #include "core_ad_sizemap.h"
+#include "config_types.h"
+
+extern GlobalConfig globalConfig;
 
 namespace adservice {
 namespace utility {
@@ -14,6 +17,11 @@ namespace utility {
     {
         sizemap[MATERIAL_TYPE_PIC] = std::map<std::pair<int, int>, std::vector<std::pair<int, int>>>();
         sizemap[MATERIAL_TYPE_VIDEO] = std::map<std::pair<int, int>, std::vector<std::pair<int, int>>>();
+        initFromDB();
+    }
+
+    void AdSizeMap::initStatic()
+    {
         add(std::make_pair(270, 202), std::make_pair(1, 0));
         add(std::make_pair(240, 180), std::make_pair(1, 1));
         add(std::make_pair(360, 234), std::make_pair(1, 2));
@@ -27,6 +35,7 @@ namespace utility {
         add(std::make_pair(160, 160), std::make_pair(1, 10));
         add(std::make_pair(200, 150), std::make_pair(1, 11));
         add(std::make_pair(180, 100), std::make_pair(1, 12));
+        add(std::make_pair(140, 88), std::make_pair(1, 13));
         add(std::make_pair(984, 328), std::make_pair(2, 0));
         add(std::make_pair(1200, 800), std::make_pair(2, 1));
         add(std::make_pair(1280, 720), std::make_pair(2, 2));
@@ -49,9 +58,41 @@ namespace utility {
         add(std::make_pair(720, 405), std::make_pair(2, 19));
         add(std::make_pair(720, 360), std::make_pair(2, 20));
         add(std::make_pair(720, 480), std::make_pair(2, 21));
+        add(std::make_pair(660, 220), std::make_pair(2, 22));
         add(std::make_pair(270, 202), std::make_pair(3, 0));
         add(std::make_pair(160, 160), std::make_pair(3, 1));
         add(std::make_pair(984, 328), std::make_pair(4, 0), MATERIAL_TYPE_VIDEO);
+    }
+
+    void AdSizeMap::initFromDB()
+    {
+        DBConfig & dbConfig = globalConfig.dbConfig;
+        try {
+            sql::Driver * driver;
+            sql::Connection * con;
+            sql::Statement * stmt;
+            sql::ResultSet * res;
+            driver = get_driver_instance();
+            con = driver->connect(dbConfig.accessUrl, dbConfig.userName, dbConfig.password);
+            con->setSchema(dbConfig.dbName);
+            stmt = con->createStatement();
+            res = stmt->executeQuery("select rwidth,rheight,width,height from native_size_map ");
+
+            while (res->next()) {
+                int64_t rwidth = res->getInt64("rwidth");
+                int64_t rheight = res->getInt64("rheight");
+                int64_t width = res->getInt64("width");
+                int64_t height = res->getInt64("height");
+                add({ rwidth, rheight }, { width, height });
+            }
+            delete res;
+            delete stmt;
+            delete con;
+        } catch (sql::SQLException & e) {
+            std::cerr << "sql::SQLException:" << e.what() << ",errorcode:" << e.getErrorCode()
+                      << ",sqlstate:" << e.getSQLState() << std::endl;
+            initStatic();
+        }
     }
 }
 }

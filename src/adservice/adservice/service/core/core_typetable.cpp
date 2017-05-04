@@ -1,6 +1,7 @@
 #include "core_typetable.h"
 #include "common/atomic.h"
 #include "common/functions.h"
+#include "config_types.h"
 #include "logging.h"
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -10,6 +11,8 @@
 #include <cppconn/resultset.h>
 #include <cppconn/statement.h>
 #include <vector>
+
+extern GlobalConfig globalConfig;
 
 namespace adservice {
 namespace server {
@@ -33,14 +36,15 @@ namespace server {
 
     void TypeTableManager::loadContentTypeData(const char * contenttypefile)
     {
+        DBConfig & dbConfig = globalConfig.dbConfig;
         try {
             sql::Driver * driver;
             sql::Connection * con;
             sql::Statement * stmt;
             sql::ResultSet * res;
             driver = get_driver_instance();
-            con = driver->connect("tcp://rm-2zek1ct2g06ergoum.mysql.rds.aliyuncs.com:3306", "mtty_root", "Mtkj*8888");
-            con->setSchema("mtdb");
+            con = driver->connect(dbConfig.accessUrl, dbConfig.userName, dbConfig.password);
+            con->setSchema(dbConfig.dbName);
             stmt = con->createStatement();
             res = stmt->executeQuery("select adxid,adx_category_id,common_category_id from content_category_map ");
 

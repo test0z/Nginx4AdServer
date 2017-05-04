@@ -245,8 +245,7 @@ namespace bidding {
         getShowPara(showUrlParam, bidRequest_.id());
         showUrlParam.add("of", "3");
         showUrlParam.addMacro("p", "%%AUCTION_PRICE%%");
-        adResult->set_iurl(std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?"
-                           + showUrlParam.cipherParam());
+        adResult->set_iurl(getShowBaseUrl(isIOS) + "?" + showUrlParam.cipherParam());
 
         std::string strBannerJson = banner.json;
         cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
@@ -275,8 +274,7 @@ namespace bidding {
             bannerJson["rs"] = queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE;
             URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest_.id(), "", landingUrl);
-            bannerJson["clickurl"]
-                = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+            bannerJson["clickurl"] = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
             std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
             char admBuffer[4096];
             snprintf(admBuffer, sizeof(admBuffer), adm_template, mtadInfoStr.data());

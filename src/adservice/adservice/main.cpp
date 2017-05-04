@@ -97,6 +97,23 @@ struct LocationConf {
     ngx_str_t workdir;
     // disable cookiemapping
     ngx_str_t disabledCookieMapping;
+    //数据库链接
+    ngx_str_t db_access_url;
+    //库名
+    ngx_str_t db_scheme_name;
+    //用户
+    ngx_str_t db_user;
+    //密码
+    ngx_str_t db_password;
+
+    // ssl 曝光url
+    ngx_str_t ssl_show_base_url;
+    //非ssl 曝光url
+    ngx_str_t show_base_url;
+    // ssl 点击url
+    ngx_str_t ssl_click_base_url;
+    //非ssl 点击url
+    ngx_str_t click_base_url;
 };
 
 static ngx_int_t adservice_init(ngx_conf_t * cf);
@@ -149,6 +166,14 @@ static ngx_command_t commands[]
         COMMAND_ITEM("as_get_timeout_ms", LocationConf, as_get_timeout_ms, parseConfNum),
         COMMAND_ITEM("workdir", LocationConf, workdir, parseConfStr),
         COMMAND_ITEM("disable_cm", LocationConf, disabledCookieMapping, parseConfStr),
+        COMMAND_ITEM("db_access_url", LocationConf, db_access_url, parseConfStr),
+        COMMAND_ITEM("db_scheme_name", LocationConf, db_scheme_name, parseConfStr),
+        COMMAND_ITEM("db_user", LocationConf, db_user, parseConfStr),
+        COMMAND_ITEM("db_password", LocationConf, db_password, parseConfStr),
+        COMMAND_ITEM("ssl_show_base_url", LocationConf, ssl_show_base_url, parseConfStr),
+        COMMAND_ITEM("show_base_url", LocationConf, show_base_url, parseConfStr),
+        COMMAND_ITEM("ssl_click_base_url", LocationConf, ssl_click_base_url, parseConfStr),
+        COMMAND_ITEM("click_base_url", LocationConf, click_base_url, parseConfStr),
         ngx_null_command };
 
 #define INIT_NGX_STR(str, initvalue)                                 \
@@ -192,6 +217,14 @@ static void * createLocationConf(ngx_conf_t * cf)
     conf->as_get_timeout_ms = NGX_CONF_UNSET_UINT;
     ngx_str_null(&conf->workdir);
     ngx_str_null(&conf->disabledCookieMapping);
+    ngx_str_null(&conf->db_access_url);
+    ngx_str_null(&conf->db_scheme_name);
+    ngx_str_null(&conf->db_user);
+    ngx_str_null(&conf->db_password);
+    ngx_str_null(&conf->ssl_show_base_url);
+    ngx_str_null(&conf->ssl_click_base_url);
+    ngx_str_null(&conf->show_base_url);
+    ngx_str_null(&conf->click_base_url);
     return conf;
 }
 
@@ -228,6 +261,15 @@ static char * mergeLocationConf(ngx_conf_t * cf, void * parent, void * child)
     ngx_conf_merge_uint_value(conf->as_get_timeout_ms, prev->as_get_timeout_ms, 10);
     ngx_conf_merge_str_value(conf->workdir, prev->workdir, "/usr/local/nginx/sbin/");
     ngx_conf_merge_str_value(conf->disabledCookieMapping, prev->disabledCookieMapping, "no");
+    ngx_conf_merge_str_value(conf->db_access_url, prev->db_access_url,
+                             "tcp://rm-2zek1ct2g06ergoum.mysql.rds.aliyuncs.com:3306");
+    ngx_conf_merge_str_value(conf->db_scheme_name, prev->db_scheme_name, "mtdb");
+    ngx_conf_merge_str_value(conf->db_user, prev->db_user, "mtty_root");
+    ngx_conf_merge_str_value(conf->db_password, prev->db_password, "Mtkj*8888");
+    ngx_conf_merge_str_value(conf->ssl_show_base_url, prev->ssl_show_base_url, "https://show.mtty.com/s");
+    ngx_conf_merge_str_value(conf->show_base_url, prev->show_base_url, "http://show.mtty.com/s");
+    ngx_conf_merge_str_value(conf->ssl_click_base_url, prev->ssl_click_base_url, "https://click.mtty.com/c");
+    ngx_conf_merge_str_value(conf->click_base_url, prev->click_base_url, "http://click.mtty.com/c");
     return NGX_CONF_OK;
 }
 
@@ -380,6 +422,16 @@ static void global_init(LocationConf * conf)
     parseConfigAeroSpikeNode(asNode, globalConfig.aerospikeConfig);
     aerospikeClient.setConnection(globalConfig.aerospikeConfig.connections);
     aerospikeClient.connect();
+
+    globalConfig.dbConfig.accessUrl = NGX_STR_2_STD_STR(conf->db_access_url);
+    globalConfig.dbConfig.dbName = NGX_STR_2_STD_STR(conf->db_scheme_name);
+    globalConfig.dbConfig.userName = NGX_STR_2_STD_STR(conf->db_user);
+    globalConfig.dbConfig.password = NGX_STR_2_STD_STR(conf->db_password);
+
+    globalConfig.urlConfig.sslShowUrl = NGX_STR_2_STD_STR(conf->ssl_show_base_url);
+    globalConfig.urlConfig.nonSSLShowUrl = NGX_STR_2_STD_STR(conf->show_base_url);
+    globalConfig.urlConfig.sslClickUrl = NGX_STR_2_STD_STR(conf->ssl_click_base_url);
+    globalConfig.urlConfig.nonSSLClickUrl = NGX_STR_2_STD_STR(conf->click_base_url);
 
     std::string workdir = NGX_STR_2_STD_STR(conf->workdir);
     chdir(workdir.c_str());

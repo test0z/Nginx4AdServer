@@ -245,7 +245,7 @@ namespace corelogic {
         int advId = solution.advId;
         int bId = banner.bId;
         int resultLen = 0;
-        URLHelper clickUrl(SSP_CLICK_URL, false);
+        URLHelper clickUrl(globalConfig.urlConfig.sslClickUrl, false);
         clickUrl.add(URL_ADPLACE_ID, pid);
         clickUrl.add(URL_MTTYADPLACE_ID, pid);
         clickUrl.add(URL_ADX_ID, adxid);

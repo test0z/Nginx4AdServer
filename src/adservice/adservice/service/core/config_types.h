@@ -65,6 +65,20 @@ struct CookieMappingConfig {
     bool disabledCookieMapping{ false };
 };
 
+struct DBConfig {
+    const std::string accessUrl{ "tcp://rm-2zek1ct2g06ergoum.mysql.rds.aliyuncs.com:3306" };
+    const std::string dbName{ "mtdb" };
+    const std::string userName{ "mtty_root" };
+    const std::string password{ "Mtkj*8888" };
+};
+
+struct URLConfig {
+    const std::string sslShowUrl{ "https://show.mtty.com/s" };
+    const std::string nonSSLShowUrl{ "http://show.mtty.com/s" };
+    const std::string sslClickUrl{ "https://click.mtty.com/c" };
+    const std::string nonSSLClickUrl{ "http://click.mtty.com/c" };
+};
+
 struct GlobalConfig {
     ServerConfig serverConfig;
     std::unordered_map<std::string, LogConfig> logConfig;
@@ -72,6 +86,8 @@ struct GlobalConfig {
     AdDataConfig addataConfig;
     AerospikeConfig aerospikeConfig;
     CookieMappingConfig cmConfig;
+    DBConfig dbConfig;
+    URLConfig urlConfig;
 };
 
 #endif // ADCORE_CONFIG_TYPES_H

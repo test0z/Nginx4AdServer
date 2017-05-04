@@ -110,6 +110,24 @@ namespace bidding {
         return std::string(buf);
     }
 
+    const std::string & AbstractBiddingHandler::getShowBaseUrl(bool ssl)
+    {
+        if (ssl) {
+            return globalConfig.urlConfig.sslShowUrl;
+        } else {
+            return globalConfig.urlConfig.nonSSLShowUrl;
+        }
+    }
+
+    const std::string & AbstractBiddingHandler::getClickBaseUrl(bool ssl)
+    {
+        if (ssl) {
+            return globalConfig.urlConfig.sslClickUrl;
+        } else {
+            return globalConfig.urlConfig.nonSSLClickUrl;
+        }
+    }
+
     bool AbstractBiddingHandler::fillLogItem(const AdSelectCondition & queryCondition, protocol::log::LogItem & logItem,
                                              bool isAccepted)
     {
@@ -260,9 +278,8 @@ namespace bidding {
         for (auto iter : extParamMap) {
             showUrlParam.add(iter.first, iter.second);
         }
-        int len = snprintf(html, sizeof(html), SNIPPET_IFRAME, width, height,
-                           useHttps ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL, "", showUrlParam.cipherParam().c_str(),
-                           cookieMappingUrl);
+        int len = snprintf(html, sizeof(html), SNIPPET_IFRAME, width, height, getShowBaseUrl(useHttps).c_str(), "",
+                           showUrlParam.cipherParam().c_str(), cookieMappingUrl);
         return std::string(html, html + len);
     }
 
