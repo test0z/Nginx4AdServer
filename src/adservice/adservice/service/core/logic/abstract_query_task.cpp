@@ -71,7 +71,7 @@ namespace corelogic {
                 return sohu_price_decode(input);
             case ADX_INMOBI:
                 try {
-                    return int(std::stof(input) * 100);
+                    return int(std::stof(input) * 1.06 * 100);
                 } catch (...) {
                     LOG_ERROR << "adx inmobi price error,input:" << input;
                     return 0;
@@ -410,7 +410,7 @@ namespace corelogic {
                 trafficControl->recordCPMClickAsync(log.adInfo.sid);
             } else if (log.adInfo.priceType == PRICETYPE_RCPC || log.adInfo.priceType == PRICETYPE_RRTB_CPC) {
                 trafficControl->recordCPCClickAsync(log.adInfo.sid, log.adInfo.advId,
-                                               log.adInfo.bidPrice / 1000.0); //与历史兼容
+                                                    log.adInfo.bidPrice / 1000.0); //与历史兼容
             }
         }
         if (log.logType == protocol::log::SHOW && (log.adInfo.adxid == 4 || log.adInfo.adxid > 99)) { //脏数据来源检测
