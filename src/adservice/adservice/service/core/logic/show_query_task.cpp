@@ -411,6 +411,7 @@ namespace corelogic {
         bool askOtherDsp(adselectv2::AdSelectCondition & condition, std::vector<MT::common::Solution> & dspSolutions,
                          MT::common::SelectResult & result)
         {
+            LOG_DEBUG << "向其他DSP转发SSP流量";
             try {
                 protocol::dsp::DSPPromise allBidPromise;
                 const MT::common::ADPlace & adplace = result.adplace;
@@ -428,8 +429,10 @@ namespace corelogic {
                     if (dspResult.resultOk) {
                         dspResults.push_back(dspResult);
                     }
+                    LOG_DEBUG << "DSPID:" << solution.advId << ",是否出价:" << (dspResult.resultOk ? "是" : "否");
                 }
                 if (dspResults.empty()) {
+                    LOG_DEBUG << "所有DSP均无应答或超时";
                     return false;
                 }
                 //排序取第二高价
@@ -452,6 +455,7 @@ namespace corelogic {
                         break;
                     }
                 }
+                LOG_DEBUG << "最终选择DSP" << result.solution.advId << ",出价:" << dspResult.bidPrice;
                 std::string auctionPrice = std::to_string(dspResult.bidPrice);
                 adservice::utility::url::URLHelper exchangeClickUrl(SSP_CLICK_URL, false);
                 exchangeClickUrl.add(URL_ADX_ID, std::to_string(condition.adxid));

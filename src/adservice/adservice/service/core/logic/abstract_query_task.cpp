@@ -71,7 +71,7 @@ namespace corelogic {
                 return sohu_price_decode(input);
             case ADX_INMOBI:
                 try {
-                    return int(std::stof(input) * 100);
+                    return int(std::stof(input) * 1.06 * 100);
                 } catch (...) {
                     LOG_ERROR << "adx inmobi price error,input:" << input;
                     return 0;

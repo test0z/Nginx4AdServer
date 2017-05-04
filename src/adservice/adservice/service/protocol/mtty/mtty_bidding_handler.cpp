@@ -146,7 +146,9 @@ namespace bidding {
         std::string strBannerJson = banner.json;
         cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();
+        std::string landingUrl;
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) { //原生
+            landingUrl = mtlsArray[0].get("p9", "");
             bid->set_admtype(0);
             auto native = bid->mutable_native();
             const AdSizeMap & adsizeMap = AdSizeMap::getInstance();
@@ -167,13 +169,24 @@ namespace bidding {
         } else if (banner.bannerType == BANNER_TYPE_HTML) { // HTML 动态创意
             bid->set_admtype(1);
             bid->set_adm(mtlsArray[0].get("p0", ""));
+            landingUrl = mtlsArray[0].get("p1", "");
         } else { //普通图片创意
             bid->set_admtype(0);
             bid->set_adm(mtlsArray[0].get("p0", ""));
+            landingUrl = mtlsArray[0].get("p1", "");
         }
         if (!queryCondition.dealId.empty() && queryCondition.dealId != "0") {
             bid->set_dealid(finalSolution.dDealId);
         }
+        url::URLHelper showUrl(getShowBaseUrl(isIOS), false);
+        getShowPara(showUrl, bidRequest_.bid());
+        showUrl.add(URL_IMP_OF, "3");
+        showUrl.addMacro(URL_EXCHANGE_PRICE, "%%WINNING_PRICE%%");
+        auto newPvm = bid->add_pvm();
+        *newPvm = showUrl.cipherUrl();
+        url::URLHelper clickUrl(getClickBaseUrl(isIOS), false);
+        getClickPara(clickUrl, bidRequest_.bid(), "", landingUrl);
+        bid->set_clickm(clickUrl.cipherUrl());
     }
 
     void MttyBiddingHandler::match(adservice::utility::HttpResponse & response)

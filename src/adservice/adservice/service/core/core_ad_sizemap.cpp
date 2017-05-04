@@ -26,7 +26,6 @@ namespace utility {
     {
         sizemap[MATERIAL_TYPE_PIC] = std::map<std::pair<int, int>, std::vector<std::pair<int, int>>>();
         sizemap[MATERIAL_TYPE_VIDEO] = std::map<std::pair<int, int>, std::vector<std::pair<int, int>>>();
-        initFromDB();
     }
 
     void AdSizeMap::initStatic()

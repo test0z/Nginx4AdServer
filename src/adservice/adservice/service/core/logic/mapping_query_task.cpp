@@ -117,7 +117,12 @@ namespace corelogic {
         try {
             const std::string & uId = log.userId;
             std::string relocateUrl = "http://mtty-cdn.mtty.com/1x1.gif";
-            if (paramMap.find(URL_PARAM_DSPID) == paramMap.end()) { //我方作为DSP时的cookie mapping 逻辑
+            bool forDSP = true;
+            auto dspIter = paramMap.find(URL_PARAM_DSPID);
+            if (dspIter != paramMap.end() && !dspIter->second.empty()) {
+                forDSP = false;
+            }
+            if (forDSP) { //我方作为DSP时的cookie mapping 逻辑
                 // todo:获取url中和cookiemapping相关的参数,更新到这个uid对应的记录中，并且设置映射表条目的过期时间
                 CookieMappingManager & cmManager = CookieMappingManager::getInstance();
                 int64_t adxId = checkAdxId(userAgent, log.adInfo.adxid);
