@@ -27,7 +27,6 @@ $ngx_addon_dir/service/core/core_cm_manager.cpp
 $ngx_addon_dir/service/libutil/AdAcbm.cpp
 $ngx_addon_dir/service/libutil/AdIpc.cpp
 $ngx_addon_dir/service/libutil/AdMd5.cpp
-$ngx_addon_dir/service/protocol/yidian/yidian_bidding_handler.cpp
 $ngx_addon_dir/service/protocol/baidu/baidu_bidding_handler.cpp
 $ngx_addon_dir/service/protocol/baidu/baidu_price.cpp
 $ngx_addon_dir/service/protocol/baidu/baidu_bidding.pb.cpp
@@ -60,6 +59,7 @@ $ngx_addon_dir/service/protocol/360/360max_bidding_handler.cpp
 $ngx_addon_dir/service/protocol/360/360max_price.cpp
 $ngx_addon_dir/service/protocol/360/max-bidding.pb.cpp
 $ngx_addon_dir/service/protocol/debug/debug.pb.cpp
+$ngx_addon_dir/service/protocol/yidian/yidian_bidding_handler.cpp
 $ngx_addon_dir/service/utility/cypher.cpp
 $ngx_addon_dir/service/utility/escape.cpp
 $ngx_addon_dir/service/utility/file.cpp

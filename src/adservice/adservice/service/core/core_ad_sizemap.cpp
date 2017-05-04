@@ -1,5 +1,9 @@
 #include "core_ad_sizemap.h"
 #include "config_types.h"
+#include <cppconn/driver.h>
+#include <cppconn/exception.h>
+#include <cppconn/resultset.h>
+#include <cppconn/statement.h>
 
 extern GlobalConfig globalConfig;
 
