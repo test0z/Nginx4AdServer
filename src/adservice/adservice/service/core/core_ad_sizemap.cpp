@@ -1,4 +1,5 @@
 #include "core_ad_sizemap.h"
+#include "common/atomic.h"
 #include "config_types.h"
 #include <cppconn/driver.h>
 #include <cppconn/exception.h>
@@ -11,9 +12,13 @@ namespace adservice {
 namespace utility {
 
     AdSizeMap AdSizeMap::instance_;
+    int AdSizeMap::started = 0;
 
     const AdSizeMap & AdSizeMap::getInstance()
     {
+        if (started == 0) {
+            instance_.initFromDB();
+        }
         return instance_;
     }
 
@@ -70,6 +75,9 @@ namespace utility {
 
     void AdSizeMap::initFromDB()
     {
+        if (!ATOM_CAS(&started, 0, 1)) {
+            return;
+        }
         DBConfig & dbConfig = globalConfig.dbConfig;
         try {
             sql::Driver * driver;
