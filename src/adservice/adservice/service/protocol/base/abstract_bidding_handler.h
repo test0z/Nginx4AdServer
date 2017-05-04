@@ -171,6 +171,10 @@ namespace bidding {
          */
         std::string redoCookieMapping(int64_t adxId, const std::string & adxCookieMappingUrl);
 
+        const std::string & getShowBaseUrl(bool ssl);
+
+        const std::string & getClickBaseUrl(bool ssl);
+
         inline bool bidFailedReturn()
         {
             return (isBidAccepted = false);

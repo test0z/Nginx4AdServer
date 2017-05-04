@@ -267,8 +267,7 @@ namespace bidding {
         showUrl.addMacro(URL_EXCHANGE_PRICE, AD_NEX_PRICE);
         bidValue["nurl"] = "http://mtty-cdn.mtty.com/1x1.gif";
         bidValue["pvm"] = cppcms::json::array();
-        bidValue["pvm"].array().push_back(std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?"
-                                          + showUrl.cipherParam());
+        bidValue["pvm"].array().push_back(getShowBaseUrl(isIOS) + "?" + showUrl.cipherParam());
         cppcms::json::value bannerFeedbackJson;
         if (!banner.feedback.empty()) {
             parseJson(banner.feedback.c_str(), bannerFeedbackJson);
@@ -316,8 +315,7 @@ namespace bidding {
         }
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, requestId, "", landingUrl);
-        std::string cm
-            = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+        std::string cm = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
         cppcms::json::array clickm = cppcms::json::array();
         clickm.push_back(cm);
         bidValue["clickm"] = clickm;

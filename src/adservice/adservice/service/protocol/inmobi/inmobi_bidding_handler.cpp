@@ -310,7 +310,7 @@ namespace bidding {
         }
         showUrl.add(URL_IMP_OF, "3");
         showUrl.addMacro(URL_EXCHANGE_PRICE, INMOBI_PRICE_MACRO);
-        bidValue["nurl"] = std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?" + showUrl.cipherParam();
+        bidValue["nurl"] = getShowBaseUrl(isIOS) + "?" + showUrl.cipherParam();
         std::string crid = std::to_string(adInfo.bannerId);
         bidValue["crid"] = crid;
         if (banner.bannerType != BANNER_TYPE_PRIMITIVE) { //非原生创意
@@ -358,8 +358,7 @@ namespace bidding {
             nativeObject["link"] = cppcms::json::value();
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, requestId, "", landingUrl);
-            std::string clickUrl
-                = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+            std::string clickUrl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
             nativeObject["link"]["url"] = clickUrl;
             admObject["native"] = nativeObject;
             bidValue["admobject"] = admObject;

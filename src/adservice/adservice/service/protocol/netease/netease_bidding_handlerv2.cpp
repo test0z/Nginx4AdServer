@@ -185,8 +185,7 @@ namespace bidding {
         getShowPara(showUrlParam, requestId);
         showUrlParam.add(URL_IMP_OF, "3");
         showUrlParam.add(URL_EXCHANGE_PRICE, "1500");
-        bidResponse["showMonitorUrl"]
-            = std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?" + showUrlParam.cipherParam();
+        bidResponse["showMonitorUrl"] = getShowBaseUrl(isIOS) + "?" + showUrlParam.cipherParam();
         std::vector<std::string> materialUrls;
         if (bannerType == BANNER_TYPE_PRIMITIVE) {
             materialUrls.push_back(mtlsArray[0].get("p6", ""));
@@ -226,8 +225,7 @@ namespace bidding {
         bidResponse["valid_time"] = 86400000;
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, requestId, "", landingUrl);
-        bidResponse["linkUrl"]
-            = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+        bidResponse["linkUrl"] = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
         cppcms::json::array & resArray = bidResponse["resource_url"].array();
         for (auto & murl : materialUrls) {
             if (!murl.empty())

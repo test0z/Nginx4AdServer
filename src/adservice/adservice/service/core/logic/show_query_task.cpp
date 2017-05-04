@@ -190,7 +190,7 @@ namespace corelogic {
             if (flowType == SOLUTION_FLOWTYPE_MOBILE) {
                 mtAdInfo["rs"] = true;
             }
-            URLHelper clickUrl(SNIPPET_CLICK_URL_HTTPS, false);
+            URLHelper clickUrl(globalConfig.urlConfig.sslClickUrl, false);
             for (auto iter : paramMap) {
                 clickUrl.add(iter.first, iter.second);
             }
@@ -209,14 +209,26 @@ namespace corelogic {
             std::string encodedLandingUrl;
             urlEncode_f(landingUrl, encodedLandingUrl, landingPageBuffer);
             clickUrl.add(URL_LANDING_URL, encodedLandingUrl);
-            mtAdInfo["clickurl"] = clickUrl.cipherUrl();
-            std::string jsonResult = utility::json::toJson(mtAdInfo);
-            int len = snprintf(buffer, bufferSize - 1, templateFmt, jsonResult.c_str());
-            if (len >= bufferSize) {
-                LOG_WARN << "in buildResponseForDsp buffer overflow,length:" << len;
-                return bufferSize;
+            if (banner.bannerType != BANNER_TYPE_PRIMITIVE) {
+                mtls[0].set("p5", clickUrl.cipherUrl());
+            } else {
+                mtls[0].set("p9", clickUrl.cipherUrl());
             }
-            return len;
+            if (paramMap[URL_IMP_OF] == OF_SSP_MOBILE) {
+                //只输出标准json
+                std::string jsonResult = utility::json::toJson(mtAdInfo);
+                resultLen = snprintf(buffer, bufferSize - 1, "%s", jsonResult.c_str());
+            } else {
+                mtAdInfo["clickurl"] = clickUrl.cipherUrl();
+                std::string jsonResult = utility::json::toJson(mtAdInfo);
+                int len = snprintf(buffer, bufferSize - 1, templateFmt, jsonResult.c_str());
+                if (len >= bufferSize) {
+                    LOG_WARN << "in buildResponseForDsp buffer overflow,length:" << len;
+                    return bufferSize;
+                }
+                return len;
+            }
+            return resultLen;
         }
 
         int buildResponseForSsp(const MT::common::SelectResult & selectResult, ParamMap & paramMap,
@@ -254,7 +266,7 @@ namespace corelogic {
             int advId = solution.advId;
             int bId = banner.bId;
             int resultLen = 0;
-            URLHelper clickUrl(SSP_CLICK_URL, false);
+            URLHelper clickUrl(globalConfig.urlConfig.sslClickUrl, false);
             clickUrl.add(URL_ADPLACE_ID, pid);
             clickUrl.add(URL_MTTYADPLACE_ID, pid);
             clickUrl.add(URL_ADX_ID, adxid);

@@ -330,16 +330,14 @@ namespace bidding {
 
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, requestId, "", landingurl);
-            clickurl
-                = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+            clickurl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
             click_urls.push_back(clickurl);
 
             url::URLHelper showUrlParam;
             getShowPara(showUrlParam, requestId);
             showUrlParam.add(URL_IMP_OF, "3");
             showUrlParam.add(URL_EXCHANGE_PRICE, os.str());
-            monitor_url
-                = std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?" + showUrlParam.cipherParam();
+            monitor_url = getShowBaseUrl(isIOS) + "?" + showUrlParam.cipherParam();
             view_urls.push_back(monitor_url);
         }
         // std::string objStr = toJson(adObject);

@@ -93,7 +93,7 @@ namespace bidding {
         extractSize(bannerSize, width, height);
         std::string cmImage;
         if (!cookieMappingUrl.empty()) {
-            cmImage = cmImage + "<img src=\"" + cookieMappingUrl + "\"/>";
+            cmImage = cmImage + "<img width=\"0\" height=\"0\" src=\"" + cookieMappingUrl + "\"/>";
         }
         return generateHtmlSnippet(bid, width, height, NULL, cmImage.c_str(), useHttps);
     }
@@ -107,14 +107,13 @@ namespace bidding {
         getShowPara(showUrlParam, bid);
         showUrlParam.add(URL_IMP_OF, "3");
         showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_TX_PRICE_MACRO);
-        snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s", useHttps ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL,
+        snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s", getShowBaseUrl(useHttps).c_str(),
                  showUrlParam.cipherParam().c_str());
         showUrlParam.add(URL_IMP_OF, "2");
         showUrlParam.removeMacro(URL_EXCHANGE_PRICE);
         showUrlParam.addMacro(URL_ADX_MACRO, AD_TX_CLICK_MACRO);
         int len = snprintf(html, sizeof(html), SNIPPET_IFRAME_SUPPORT_CM, width, height,
-                           useHttps ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL, "", showUrlParam.cipherParam().c_str(),
-                           cookieMappingUrl);
+                           getShowBaseUrl(useHttps).c_str(), "", showUrlParam.cipherParam().c_str(), cookieMappingUrl);
         return std::string(html, html + len);
     }
 
@@ -275,7 +274,7 @@ namespace bidding {
         adResult->set_max_cpm_price(maxCpmPrice);
         adResult->set_adzinfo_id(adzInfo.id());
         adResult->set_ad_bid_count_idx(0);
-        adResult->add_creative_type(banner.bannerType);
+        adResult->add_creative_type(2);
         adResult->add_category(adxIndustryType);
         //缓存最终广告结果
         fillAdInfo(queryCondition, result, bidRequest.tid());
@@ -295,8 +294,7 @@ namespace bidding {
             adResult->add_destination_url(destUrl);
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
-            std::string clickUrl
-                = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+            std::string clickUrl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
             adResult->add_click_through_url(clickUrl);
             std::string iosDownloadUrl = mtlsArray[0].get("p10", "");
             std::string androidDownloadUrl = mtlsArray[0].get("p11", "");
@@ -354,7 +352,7 @@ namespace bidding {
             getShowPara(showUrlParam, bidRequest.bid());
             showUrlParam.add(URL_IMP_OF, "3");
             showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_TX_PRICE_MACRO);
-            snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s", (isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL),
+            snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s", getShowBaseUrl(isIOS).c_str(),
                      showUrlParam.cipherParam().c_str());
             adResult->set_feedback_address(feedbackUrl);
         } else { //非移动原生广告
@@ -381,8 +379,7 @@ namespace bidding {
                 bannerJson["rs"] = queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE;
                 url::URLHelper clickUrlParam;
                 getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
-                std::string clickUrl = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?"
-                                       + clickUrlParam.cipherParam();
+                std::string clickUrl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
                 bannerJson["clickurl"] = clickUrl;
                 std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
                 char admBuffer[4096];
@@ -393,7 +390,7 @@ namespace bidding {
                 getShowPara(showUrlParam, bidRequest.bid());
                 showUrlParam.add(URL_IMP_OF, "3");
                 showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_TX_PRICE_MACRO);
-                snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s", (isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL),
+                snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s", getShowBaseUrl(isIOS).c_str(),
                          showUrlParam.cipherParam().c_str());
                 adResult->set_feedback_address(feedbackUrl);
             }

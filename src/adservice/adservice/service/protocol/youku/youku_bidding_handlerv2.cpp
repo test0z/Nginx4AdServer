@@ -336,7 +336,7 @@ namespace bidding {
         }
         showUrl.add(URL_IMP_OF, "3");
         showUrl.addMacro(URL_EXCHANGE_PRICE, AD_YOUKU_PRICE);
-        bidValue["nurl"] = std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?" + showUrl.cipherParam();
+        bidValue["nurl"] = getShowBaseUrl(isIOS) + "?" + showUrl.cipherParam();
         std::string crid = std::to_string(adInfo.bannerId);
         bidValue["crid"] = crid;
         std::string landingUrl;
@@ -371,8 +371,7 @@ namespace bidding {
         }
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, requestId, "", landingUrl);
-        extValue["ldp"]
-            = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+        extValue["ldp"] = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
         extValue["pm"] = cppcms::json::array();
         if (!tview.empty()) {
             cppcms::json::array & extPmArray = extValue["pm"].array();

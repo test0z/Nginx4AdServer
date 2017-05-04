@@ -127,7 +127,7 @@ namespace bidding {
         int height = adSlot.height();
         std::string cmImage;
         if (!cookieMappingUrl.empty()) {
-            cmImage = cmImage + "<img src=\"" + cookieMappingUrl + "\"/>";
+            cmImage = cmImage + "<img width=\"0\" height=\"0\" src=\"" + cookieMappingUrl + "\"/>";
         }
         return generateHtmlSnippet(bid, width, height, NULL, cmImage.c_str(), useHttps);
     }
@@ -346,8 +346,7 @@ namespace bidding {
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.id(), "", landing_url);
             clickUrlParam.add(URL_IMP_OF, "2");
-            std::string click_url
-                = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+            std::string click_url = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
             adResult->add_target_url(click_url);
             int img_total = 0;
             // std::string type_img = mtlsArray[0].get("p2", "");
@@ -398,15 +397,13 @@ namespace bidding {
             getShowPara(showUrlParam, bidRequest.id());
             showUrlParam.add(URL_IMP_OF, "3");
             showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_BD_PRICE_MACRO);
-            std::string monitor_url
-                = std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?" + showUrlParam.cipherParam();
+            std::string monitor_url = getShowBaseUrl(isIOS) + "?" + showUrlParam.cipherParam();
             adResult->add_monitor_urls(monitor_url);
         } else {
             std::string landing_url = mtlsArray[0].get("p1", "");
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.id(), "", landing_url);
-            std::string click_url
-                = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+            std::string click_url = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
             adResult->add_target_url(click_url);
             adResult->set_landing_page(landing_url);
             if (queryCondition.flowType == SOLUTION_FLOWTYPE_PC) {
@@ -415,8 +412,7 @@ namespace bidding {
                 getShowPara(showUrlParam, bidRequest.id());
                 showUrlParam.add(URL_IMP_OF, "3");
                 showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_BD_PRICE_MACRO);
-                std::string monitor_url
-                    = std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?" + showUrlParam.cipherParam();
+                std::string monitor_url = getShowBaseUrl(isIOS) + "?" + showUrlParam.cipherParam();
                 adResult->add_monitor_urls(monitor_url);
             } else {
                 bannerJson["advid"] = finalSolution.advId;
@@ -436,8 +432,7 @@ namespace bidding {
                 url::URLHelper clickUrlParam;
                 getClickPara(clickUrlParam, bidRequest.id(), "", landing_url);
                 clickUrlParam.add(URL_IMP_OF, "2");
-                std::string clickUrl = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?"
-                                       + clickUrlParam.cipherParam();
+                std::string clickUrl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
                 bannerJson["clickurl"] = clickUrl;
                 std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
                 char admBuffer[4096];
@@ -448,8 +443,7 @@ namespace bidding {
                 getShowPara(showUrlParam, bidRequest.id());
                 showUrlParam.add(URL_IMP_OF, "3");
                 showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_BD_PRICE_MACRO);
-                std::string monitor_url
-                    = std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?" + showUrlParam.cipherParam();
+                std::string monitor_url = getShowBaseUrl(isIOS) + "?" + showUrlParam.cipherParam();
                 adResult->add_monitor_urls(monitor_url);
             }
         }

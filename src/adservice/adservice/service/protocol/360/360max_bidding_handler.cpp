@@ -74,7 +74,7 @@ namespace bidding {
         const BidRequest_AdSlot & adzInfo = bidRequest.adslot(0);
         std::string cmImage;
         if (!cookieMappingUrl.empty()) {
-            cmImage = cmImage + "<img src=\"" + cookieMappingUrl + "\"/>";
+            cmImage = cmImage + "<img width=\"0\" height=\"0\" src=\"" + cookieMappingUrl + "\"/>";
         }
         return generateHtmlSnippet(bid, adzInfo.width(), adzInfo.height(), NULL, cmImage.c_str(), useHttps);
     }
@@ -88,14 +88,13 @@ namespace bidding {
         getShowPara(showUrlParam, bid);
         showUrlParam.add(URL_IMP_OF, "3");
         showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_MAX_PRICE_MACRO);
-        snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s", useHttps ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL,
+        snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s", getShowBaseUrl(useHttps).c_str(),
                  showUrlParam.cipherParam().c_str());
         showUrlParam.add(URL_IMP_OF, "2");
         showUrlParam.removeMacro(URL_EXCHANGE_PRICE);
         showUrlParam.addMacro(URL_ADX_MACRO, AD_MAX_CLICK_MACRO);
         int len = snprintf(html, sizeof(html), SNIPPET_IFRAME_SUPPORT_CM, width, height,
-                           useHttps ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL, "", showUrlParam.cipherParam().c_str(),
-                           cookieMappingUrl);
+                           getShowBaseUrl(useHttps).c_str(), "", showUrlParam.cipherParam().c_str(), cookieMappingUrl);
         return std::string(html, html + len);
     }
 
@@ -238,7 +237,7 @@ namespace bidding {
 
         adResult->set_max_cpm_price(maxCpmPrice);
         adResult->set_adslot_id(adzInfo.id());
-        adResult->add_creative_type(banner.bannerType);
+        adResult->add_creative_type(1);
         adResult->add_category(adxIndustryType);
 
         //缓存最终广告结果
@@ -281,8 +280,7 @@ namespace bidding {
             std::string downloadUrl = isIOS ? iosDownloadUrl : androidDownloadUrl;
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.bid(), "", downloadUrl.empty() ? destUrl : downloadUrl);
-            std::string linkUrl
-                = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam();
+            std::string linkUrl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
             auto linkObj = creative->mutable_link();
             linkObj->set_click_url(std::string(AD_MAX_CLICK_UNENC_MACRO) + url::urlEncode(linkUrl));
             linkObj->set_landing_type(0);
@@ -302,8 +300,7 @@ namespace bidding {
                 nativeAd->set_deal_id(std::stoi(finalSolution.dDealId));
                 showUrlParam.add(URL_DEAL_ID, finalSolution.dDealId);
             }
-            std::string impressionTrack
-                = std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?" + showUrlParam.cipherParam();
+            std::string impressionTrack = getShowBaseUrl(isIOS) + "?" + showUrlParam.cipherParam();
             nativeAd->add_impression_tracks()->assign(impressionTrack);
             // adResult->set_nurl(impressionTrack);
         } else { //非原生广告
@@ -331,8 +328,7 @@ namespace bidding {
                 bannerJson["rs"] = true;
                 url::URLHelper clickUrlParam;
                 getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
-                bannerJson["clickurl"] = std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?"
-                                         + clickUrlParam.cipherParam();
+                bannerJson["clickurl"] = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
                 std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
                 char admBuffer[4096];
                 snprintf(admBuffer, sizeof(admBuffer), adservice::corelogic::HandleShowQueryTask::showAdxTemplate,
@@ -342,8 +338,7 @@ namespace bidding {
                 getShowPara(showUrlParam, bidRequest.bid());
                 showUrlParam.add(URL_IMP_OF, "3");
                 showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_MAX_PRICE_MACRO);
-                adResult->set_nurl(std::string(isIOS ? SNIPPET_SHOW_URL_HTTPS : SNIPPET_SHOW_URL) + "?"
-                                   + showUrlParam.cipherParam());
+                adResult->set_nurl(getShowBaseUrl(isIOS) + "?" + showUrlParam.cipherParam());
             }
         }
     }
