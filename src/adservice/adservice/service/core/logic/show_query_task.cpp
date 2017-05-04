@@ -181,7 +181,7 @@ namespace corelogic {
         if (flowType == SOLUTION_FLOWTYPE_MOBILE) {
             mtAdInfo["rs"] = true;
         }
-        URLHelper clickUrl(SNIPPET_CLICK_URL_HTTPS, false);
+        URLHelper clickUrl(globalConfig.urlConfig.sslClickUrl, false);
         for (auto iter : paramMap) {
             clickUrl.add(iter.first, iter.second);
         }
