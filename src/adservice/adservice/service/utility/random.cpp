@@ -49,6 +49,39 @@ namespace utility {
         {
             return rand.getDouble();
         }
+
+        int32_t randomAbsInt()
+        {
+            int32_t r = randomInt();
+            return r >= 0 ? r : -r;
+        }
+
+        int32_t randomFromRange(int32_t min, int32_t max)
+        {
+            return min + std::abs(randomInt() % (max - min + 1));
+        }
+
+        std::vector<int32_t> randomIds(int32_t min, int32_t max, int32_t cnt)
+        {
+            if (max < min) {
+                return std::vector<int32_t>();
+            }
+            if (cnt >= max - min + 1) {
+                cnt = max - min + 1;
+            }
+            int * t = new int[max - min + 1];
+            for (int i = max - min; i >= 0; i++) {
+                t[i] = i;
+            }
+            std::vector<int32_t> results;
+            for (int i = 0; i < cnt; i++) {
+                int r = i + randomAbsInt() % (cnt - i);
+                results.push_back(t[r] + min);
+                t[r] = t[i];
+            }
+            delete[] t;
+            return results;
+        }
     }
 
     namespace rankingtool {

@@ -347,12 +347,6 @@ namespace utility {
         ev_timer_init(&wakeupTimer_, curlm_wakeup_timer_callback, 0.0, 0.0);
         ev_timer_init(&taskTimer_, task_timer_listener, 0.0, 1 / 1000.0);
         ev_timer_start(loop_, &taskTimer_);
-        presudoFd_ = open("/tmp/httpclient.presudo", O_CREAT | O_RDONLY, 0);
-        if (presudoFd_ == -1) {
-            throw HttpClientException("failed to open httpclient.presudo");
-        }
-        ev_io_init(&presudoWatcher_, default_event_listener, presudoFd_, EV_READ);
-        ev_io_start(loop_, &presudoWatcher_);
         curl_multi_setopt(multiCurl_, CURLMOPT_SOCKETFUNCTION, socket_status_change_callback);
         curl_multi_setopt(multiCurl_, CURLMOPT_TIMERFUNCTION, multi_timer_cb);
         curl_multi_setopt(multiCurl_, CURLMOPT_MAXCONNECTS, 10000L);
@@ -369,8 +363,6 @@ namespace utility {
 
     HttpClientProxy::~HttpClientProxy()
     {
-        sleep(3);
-        ev_io_stop(loop_, &presudoWatcher_);
         ev_timer_stop(loop_, &wakeupTimer_);
         ev_timer_stop(loop_, &taskTimer_);
         curl_multi_cleanup(multiCurl_);

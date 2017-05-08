@@ -116,16 +116,18 @@ namespace utility {
 
     class PerformanceWatcher {
     public:
-        PerformanceWatcher(const std::string & n)
+        PerformanceWatcher(const std::string & n, int64_t warningTime = 20)
             : name(n)
+            , threshhold(warningTime)
         {
             beginTimeMs = time::getCurrentTimeStampMs();
         }
         ~PerformanceWatcher();
 
     private:
-        int64_t beginTimeMs;
         std::string name;
+        int64_t beginTimeMs;
+        int64_t threshhold;
     };
 }
 }

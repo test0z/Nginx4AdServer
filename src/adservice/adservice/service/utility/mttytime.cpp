@@ -125,8 +125,11 @@ namespace utility {
 
     PerformanceWatcher::~PerformanceWatcher()
     {
-        int64_t endTime = time::getCurrentTimeStampMs();
-        LOG_DEBUG << name << " time collapses:" << (endTime - beginTimeMs) << "ms";
+        int64_t spent = time::getCurrentTimeStampMs() - beginTimeMs;
+        LOG_DEBUG << name << " time collapses:" << spent << "ms";
+        if (spent >= threshhold) {
+            LOG_WARN << name << " consumes too much time " << spent << "ms";
+        }
     }
 }
 }

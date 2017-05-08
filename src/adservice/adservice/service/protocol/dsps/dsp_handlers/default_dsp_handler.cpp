@@ -99,6 +99,31 @@ namespace dsp {
                                           });
     }
 
+    std::shared_ptr<MT::common::HttpRequest>
+    DSPHandlerInterface::buildRequest(adselectv2::AdSelectCondition & selectCondition,
+                                      const MT::common::ADPlace & adplace)
+    {
+        this->dspResult_.resultOk = false;
+        BidRequest request = std::move(conditionToBidRequest(selectCondition, adplace));
+        std::string reqBody;
+        utility::serialize::writeProtoBufObject(request, &reqBody);
+        return std::make_shared<MT::common::HttpPost>(dspUrl_, reqBody, timeoutMs_);
+    }
+
+    virtual DSPBidResult & DSPHandlerInterface::parseResponse(std::shared_ptr<MT::common::HttpResponse> response,
+                                                              const MT::common::ADPlace & adplace)
+    {
+        if (response->hasError() || response->timedout()) {
+            this->dspResult_.resultOk = false;
+            return this->dspResult_;
+        }
+        BidResponse bidResponse;
+        if (utility::serialize::getProtoBufObject(bidResponse, res)) {
+            this->dspResult_ = std::move(this->bidResponseToDspResult(bidResponse, adplace));
+        }
+        return this->dspResult_;
+    }
+
     BidRequest DSPHandlerInterface::conditionToBidRequest(adselectv2::AdSelectCondition & selectCondition,
                                                           const MT::common::ADPlace & adplace)
     {

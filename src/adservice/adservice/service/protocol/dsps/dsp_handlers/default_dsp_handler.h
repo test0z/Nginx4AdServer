@@ -2,6 +2,7 @@
 #define DEFAULT_DSP_HANDLER_H__
 
 #include "core/adselectv2/ad_select_interface.h"
+#include "mtty/httpclient.h"
 #include "protocol/dsps/mtty_bidding.pb.h"
 #include "utility/utility.h"
 #include <mtty/types.h>
@@ -58,6 +59,12 @@ namespace dsp {
          */
         virtual DSPPromisePtr sendBid(adselectv2::AdSelectCondition & selectCondition,
                                       const MT::common::ADPlace & adplace);
+
+        virtual std::shared_ptr<MT::common::HttpRequest> buildRequest(adselectv2::AdSelectCondition & selectCondition,
+                                                                      const MT::common::ADPlace & adplace);
+
+        virtual DSPBidResult & parseResponse(std::shared_ptr<MT::common::HttpResponse> response,
+                                             const MT::common::ADPlace & adplace);
 
         const DSPBidResult & getResult()
         {

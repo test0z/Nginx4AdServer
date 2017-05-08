@@ -31,6 +31,8 @@ extern GlobalConfig globalConfig;
 
 extern MT::common::RequestCounter requestCounter;
 
+std::shared_ptr<MT::common::HttpClient> globalHttpClient = std::make_shared<MT::common::HttpClient>(true, true);
+
 namespace protocol {
 namespace bidding {
 
@@ -413,19 +415,25 @@ namespace corelogic {
         {
             LOG_DEBUG << "向其他DSP转发SSP流量";
             try {
-                protocol::dsp::DSPPromise allBidPromise;
+                // protocol::dsp::DSPPromise allBidPromise;
                 const MT::common::ADPlace & adplace = result.adplace;
+                std::vector<std::shared_ptr<MT::common::HttpRequest>> httpRequests;
                 for (auto solution : dspSolutions) {
                     //暂且不考虑dspSolutions中有重复advId的情况,如果有，那可能是多个deal
                     auto handler = protocol::dsp::dspHandlerManager.getHandler(solution.advId);
-                    allBidPromise.after(handler->sendBid(condition, adplace));
+                    // allBidPromise.after(handler->sendBid(condition, adplace));
+                    httpRequests.emplace_back(handler->buildRequest(condition, adplace));
                 }
                 //等待所有请求
-                allBidPromise.sync();
+                // allBidPromise.sync();
+                auto & httpResponses = globalHttpClient->execute(httpRequests);
                 std::vector<protocol::dsp::DSPBidResult> dspResults(dspSolutions.size());
+                int counter = 0;
                 for (auto solution : dspSolutions) {
                     auto handler = protocol::dsp::dspHandlerManager.getHandler(solution.advId);
-                    const protocol::dsp::DSPBidResult & dspResult = handler->getResult();
+                    auto & httpResponse = httpResponses[counter++];
+                    // const protocol::dsp::DSPBidResult & dspResult = handler->getResult();
+                    const protocol::dsp::DSPBidResult & dspResult = handler->parseResponse(httpResponse, adplace);
                     if (dspResult.resultOk) {
                         dspResults.push_back(dspResult);
                     }
@@ -493,6 +501,8 @@ namespace corelogic {
     void HandleShowQueryTask::customLogic(ParamMap & paramMap, protocol::log::LogItem & log,
                                           adservice::utility::HttpResponse & response)
     {
+        utility::PerformanceWatcher performanceWatcher("ShowQueryTask::customLogic");
+        (void)performanceWatcher;
         bool isSSP = isShowForSSP(paramMap);
         const char * templateFmt = isSSP ? showSspTemplate : showAdxTemplate;
 
@@ -566,6 +576,8 @@ namespace corelogic {
 
             requestCounter.increaseShowForSSPSuccess();
         } else { // DSP of=0,of=2,of=3
+            utility::PerformanceWatcher dspShowPW("dsp show process", 3);
+            (void)dspShowPW;
             bool showCreative = true;
             dspSetParam(paramMap, showCreative, needLog);
             MT::common::Banner adBanner;
@@ -590,6 +602,8 @@ namespace corelogic {
         }
 
         if (needLog && log.adInfo.ppid != DEFAULT_PRODUCT_PACKAGE_ID) {
+            utility::PerformanceWatcher ppidRecordPW("dsp show product package order-counter process", 3);
+            (void)ppidRecordPW;
             int64_t orderId = 0;
             try {
                 orderId = log.adInfo.orderId;
@@ -599,7 +613,7 @@ namespace corelogic {
                 MT::common::ASOperation op(1);
                 op.addIncr("s", (int64_t)1);
 
-                aerospikeClient.operate(key, op);
+                aerospikeClient.operateAsync(key, op);
             } catch (MT::common::AerospikeExcption & e) {
                 LOG_ERROR << "记录曝光失败，订单ID：" << orderId << "，" << e.what() << "，code:" << e.error().code
                           << e.error().message << "，调用堆栈：" << std::endl
@@ -611,6 +625,8 @@ namespace corelogic {
 
         // 用户曝光频次控制
         if (!log.userId.empty() && needLog) {
+            utility::PerformanceWatcher userFreqPW("dsp show user frequency record process", 3);
+            (void)userFreqPW;
             try {
                 MT::common::ASKey dailyKey(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_FREQ), "user-freq",
                                            log.userId + "d");
@@ -623,26 +639,26 @@ namespace corelogic {
 
                     adservice::core::model::UserShowCounter counter(log.adInfo.bannerId, bgid, log.adInfo.sid,
                                                                     (todayEnd - now).total_seconds());
-                    aerospikeClient.put(dailyKey, counter);
+                    aerospikeClient.putAsync(dailyKey, counter);
                 } else {
                     MT::common::ASMapOperation mapOP(3, -2);
                     mapOP.addMapIncr("banners", log.adInfo.bannerId, 1);
                     mapOP.addMapIncr("bannergroups", bgid, 1);
                     mapOP.addMapIncr("solutions", log.adInfo.sid, 1);
 
-                    aerospikeClient.operate(dailyKey, mapOP);
+                    aerospikeClient.operateAsync(dailyKey, mapOP);
                 }
 
                 if (!aerospikeClient.exists(hourlyKey)) {
                     adservice::core::model::UserShowCounter counter(log.adInfo.bannerId, bgid, log.adInfo.sid, 60 * 60);
-                    aerospikeClient.put(hourlyKey, counter);
+                    aerospikeClient.putAsync(hourlyKey, counter);
                 } else {
                     MT::common::ASMapOperation mapOP(3, -2);
                     mapOP.addMapIncr("banners", log.adInfo.bannerId, 1);
                     mapOP.addMapIncr("bannergroups", bgid, 1);
                     mapOP.addMapIncr("solutions", log.adInfo.sid, 1);
 
-                    aerospikeClient.operate(hourlyKey, mapOP);
+                    aerospikeClient.operateAsync(hourlyKey, mapOP);
                 }
             } catch (MT::common::AerospikeExcption & e) {
                 LOG_ERROR << "记录曝光频次失败，userId：" << log.userId << "，sid:" << log.adInfo.sid
