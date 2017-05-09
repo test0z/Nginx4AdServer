@@ -455,7 +455,7 @@ namespace corelogic {
                 MT::common::ASOperation op(1);
                 op.addIncr("s", (int64_t)1);
 
-                aerospikeClient.operate(key, op);
+                aerospikeClient.operateAsync(key, op);
             } catch (MT::common::AerospikeExcption & e) {
                 LOG_ERROR << "记录曝光失败，订单ID：" << orderId << "，" << e.what() << "，code:" << e.error().code
                           << e.error().message << "，调用堆栈：" << std::endl
@@ -479,26 +479,26 @@ namespace corelogic {
 
                     adservice::core::model::UserShowCounter counter(log.adInfo.bannerId, bgid, log.adInfo.sid,
                                                                     (todayEnd - now).total_seconds());
-                    aerospikeClient.put(dailyKey, counter);
+                    aerospikeClient.putAsync(dailyKey, counter);
                 } else {
                     MT::common::ASMapOperation mapOP(3, -2);
                     mapOP.addMapIncr("banners", log.adInfo.bannerId, 1);
                     mapOP.addMapIncr("bannergroups", bgid, 1);
                     mapOP.addMapIncr("solutions", log.adInfo.sid, 1);
 
-                    aerospikeClient.operate(dailyKey, mapOP);
+                    aerospikeClient.operateAsync(dailyKey, mapOP);
                 }
 
                 if (!aerospikeClient.exists(hourlyKey)) {
                     adservice::core::model::UserShowCounter counter(log.adInfo.bannerId, bgid, log.adInfo.sid, 60 * 60);
-                    aerospikeClient.put(hourlyKey, counter);
+                    aerospikeClient.putAsync(hourlyKey, counter);
                 } else {
                     MT::common::ASMapOperation mapOP(3, -2);
                     mapOP.addMapIncr("banners", log.adInfo.bannerId, 1);
                     mapOP.addMapIncr("bannergroups", bgid, 1);
                     mapOP.addMapIncr("solutions", log.adInfo.sid, 1);
 
-                    aerospikeClient.operate(hourlyKey, mapOP);
+                    aerospikeClient.operateAsync(hourlyKey, mapOP);
                 }
             } catch (MT::common::AerospikeExcption & e) {
                 LOG_ERROR << "记录曝光频次失败，userId：" << log.userId << "，sid:" << log.adInfo.sid
