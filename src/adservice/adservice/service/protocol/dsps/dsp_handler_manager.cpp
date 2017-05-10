@@ -9,8 +9,8 @@ namespace dsp {
     DSPHandlerManager::DSPHandlerManager()
         : executor("DSPExecutor")
     {
-        addHandler(1234L, std::make_shared<DefaultDSPHandler>(1234L, "http://www.google.com",
-                                                              "http://www.google.com/cm", 100));
+        addHandler(360L, std::make_shared<DefaultDSPHandler>(360L, "http://127.0.0.1:20007/mttybid",
+                                                             "http://127.0.0.1:20007/m", 100));
         executor.start();
     }
 

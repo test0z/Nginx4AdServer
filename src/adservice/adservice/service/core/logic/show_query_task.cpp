@@ -346,7 +346,7 @@ namespace corelogic {
             condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
             condition.mobileDevice = getDeviceTypeForSsp(paramMap);
             if (log.userAgent.empty() && paramMap.find(URL_SSP_USERAGENT) != paramMap.end()) {
-                utility::url::urlDecode_f(paramMap[URL_SSP_USERAGENT], log.userAgent);
+                log.userAgent = utility::url::urlDecode_f(paramMap[URL_SSP_USERAGENT]);
             }
             if (condition.mobileDevice == SOLUTION_DEVICE_OTHER) {
                 condition.mobileDevice = utility::userclient::getMobileTypeFromUA(log.userAgent);
@@ -413,21 +413,25 @@ namespace corelogic {
         bool askOtherDsp(adselectv2::AdSelectCondition & condition, std::vector<MT::common::Solution> & dspSolutions,
                          MT::common::SelectResult & result)
         {
+            adservice::utility::PerformanceWatcher pw("ssp::askOtherDsp");
+            (void)pw;
             LOG_DEBUG << "向其他DSP转发SSP流量";
             try {
                 // protocol::dsp::DSPPromise allBidPromise;
                 const MT::common::ADPlace & adplace = result.adplace;
                 std::vector<std::shared_ptr<MT::common::HttpRequest>> httpRequests;
                 for (auto solution : dspSolutions) {
+                    LOG_DEBUG << "向DSP " << solution.advId << "发送请求";
                     //暂且不考虑dspSolutions中有重复advId的情况,如果有，那可能是多个deal
                     auto handler = protocol::dsp::dspHandlerManager.getHandler(solution.advId);
                     // allBidPromise.after(handler->sendBid(condition, adplace));
+                    condition.dealId = std::to_string(solution.sId);
                     httpRequests.emplace_back(handler->buildRequest(condition, adplace));
                 }
                 //等待所有请求
                 // allBidPromise.sync();
                 auto & httpResponses = globalHttpClient->execute(httpRequests);
-                std::vector<protocol::dsp::DSPBidResult> dspResults(dspSolutions.size());
+                std::vector<protocol::dsp::DSPBidResult> dspResults;
                 int counter = 0;
                 for (auto solution : dspSolutions) {
                     auto handler = protocol::dsp::dspHandlerManager.getHandler(solution.advId);
@@ -458,19 +462,20 @@ namespace corelogic {
                 result.bidPrice = dspResult.bidPrice;
                 result.feePrice = dspResult.bidPrice;
                 for (auto solution : dspSolutions) {
-                    if (solution.advId == dspResult.dspId && dspResult.dealId == std::to_string(solution.sId)) {
+                    if (solution.advId == dspResult.dspId
+                        && (dspResult.dealId.empty() || dspResult.dealId == std::to_string(solution.sId))) {
                         result.solution = solution;
                         break;
                     }
                 }
                 LOG_DEBUG << "最终选择DSP" << result.solution.advId << ",出价:" << dspResult.bidPrice;
-                std::string auctionPrice = std::to_string(dspResult.bidPrice);
-                adservice::utility::url::URLHelper exchangeClickUrl(SSP_CLICK_URL, false);
+                std::string auctionPrice = std::to_string((int64_t)dspResult.bidPrice);
+                adservice::utility::url::URLHelper exchangeClickUrl(globalConfig.urlConfig.sslClickUrl, false);
                 exchangeClickUrl.add(URL_ADX_ID, std::to_string(condition.adxid));
                 exchangeClickUrl.add(URL_ADPLACE_ID, std::to_string(condition.mttyPid));
                 exchangeClickUrl.add(URL_ADOWNER_ID, std::to_string(dspResult.dspId));
-                std::string clickUrlEnc;
-                adservice::utility::url::urlEncode_f(exchangeClickUrl.toUrl() + "&" URL_LANDING_URL "=", clickUrlEnc);
+                std::string clickUrlEnc
+                    = adservice::utility::url::urlEncode_f(exchangeClickUrl.toUrl() + "&" URL_LANDING_URL "=");
                 //宏替换
                 adservice::utility::url::url_replace_all(dspResult.banner.json, "%%WINNING_PRICE%%", auctionPrice);
                 adservice::utility::url::url_replace_all(dspResult.banner.json, "%%CLICK_URL_ESC%%", clickUrlEnc);
@@ -482,8 +487,10 @@ namespace corelogic {
                 //异步发送win notice或曝光监测链接
                 protocol::dsp::dspHandlerManager.getExecutor().run([toSendUrls]() {
                     for (auto & url : toSendUrls) {
-                        auto httpClientProxy = adservice::utility::HttpClientProxy::getInstance();
-                        httpClientProxy->getAsync(url, 0);
+                        LOG_DEBUG << "request url async " << url;
+                        // auto httpClientProxy = adservice::utility::HttpClientProxy::getInstance();
+                        // httpClientProxy->getAsync(url, 0);
+                        globalHttpClient->executeNoWait(std::make_shared<MT::common::HttpGet>(url, 0, true));
                     }
                 });
                 //记录日志
@@ -529,6 +536,7 @@ namespace corelogic {
             }
             if (!selectOk || selectResult.solution.advId == ADV_BASE) { //麦田SSP找不到正常客户,将流量转给其他DSP
                 MT::common::SelectResult dspResult;
+                dspResult.adplace = selectResult.adplace;
                 if (askOtherDsp(condition, selectResult.otherDspSolutions, dspResult)) { //其他DSP有应答
                     selectResult = dspResult;
                 } else if (!selectOk) { //其他DSP无应答而且没有打底投放

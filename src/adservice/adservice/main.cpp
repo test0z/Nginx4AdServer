@@ -22,6 +22,7 @@ extern "C" {
 
 #include "core/adselectv2/ad_select_client.h"
 #include "core/config_types.h"
+#include "core/core_ad_sizemap.h"
 #include "core/core_ip_manager.h"
 #include "core/core_typetable.h"
 #include "core/logic/bid_query_task.h"
@@ -469,6 +470,8 @@ static void global_init(LocationConf * conf)
     MT::common::traffic::TrafficControllProxy::instance_->start(std::cerr);
 
     adservice::utility::HttpClientProxy::instance_ = std::make_shared<adservice::utility::HttpClientProxy>();
+
+    adservice::utility::AdSizeMap::getInstance();
 
     char cwd[256];
     getcwd(cwd, sizeof(cwd));

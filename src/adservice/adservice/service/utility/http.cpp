@@ -159,7 +159,7 @@ namespace utility {
         {
             CurlSocketInfo * socketInfo = (CurlSocketInfo *)socketData;
             if (status == CURL_POLL_REMOVE) { // socket 移除
-                LOG_TRACE << "socket removed";
+                // LOG_TRACE << "socket removed";
                 if (socketInfo) {
                     if (socketInfo->eventRegistered) {
                         ev_io_stop(HttpClientProxy::instance_->loop(), &socketInfo->eventHandle);
@@ -168,7 +168,7 @@ namespace utility {
                 }
             } else {
                 if (socketInfo == nullptr) { //新建socket
-                    LOG_TRACE << "socket status : new socket";
+                    // LOG_TRACE << "socket status : new socket";
                     socketInfo = new CurlSocketInfo;
                     socketInfo->easy = easyHandle;
                     socketInfo->sockfd = sockfd;
@@ -183,7 +183,7 @@ namespace utility {
                     ev_io_start(HttpClientProxy::instance_->loop(), &socketInfo->eventHandle);
                     curl_multi_assign(HttpClientProxy::instance_->getCurlM(), sockfd, socketInfo);
                 } else { // socket 可读或可写状态
-                    LOG_TRACE << "socket readable or writable";
+                    // LOG_TRACE << "socket readable or writable";
                     int32_t newEvent = (status & CURL_POLL_IN ? EV_READ : 0) | (status & CURL_POLL_OUT ? EV_WRITE : 0);
                     if (newEvent != socketInfo->event) {
                         socketInfo->event = newEvent;
@@ -206,7 +206,7 @@ namespace utility {
             // -1 删除timer,curl_multi_socket_action可调用也可不调用
             // 0 过期,需要调用curl_multi_socket_action
             // 大于0 设置timer
-            LOG_TRACE << "multi_timer_cb timeout ms:" << timeoutMs << ",threadId:" << std::this_thread::get_id();
+            // LOG_TRACE << "multi_timer_cb timeout ms:" << timeoutMs << ",threadId:" << std::this_thread::get_id();
             ev_timer_stop(HttpClientProxy::instance_->loop(), HttpClientProxy::instance_->wakeupTimer());
             if (timeoutMs > 0) {
                 ev_timer_init(HttpClientProxy::instance_->wakeupTimer(), curlm_wakeup_timer_callback,
@@ -317,7 +317,7 @@ namespace utility {
             // todo 超时回调放到executor worker中执行
             auto callbackInfo = connInfo->callbackInfo;
             if (callbackInfo->deadline > 0 && currentTime > callbackInfo->deadline) {
-                LOG_DEBUG << std::this_thread::get_id() << " timeout checker,time is up";
+                // LOG_DEBUG << std::this_thread::get_id() << " timeout checker,time is up";
                 bool called = callbackInfo->callbackCalled.exchange(true);
                 if (!called) {
                     HttpClientProxy::instance_->getExecutor()->run([callbackInfo]() {
@@ -357,7 +357,7 @@ namespace utility {
         std::thread([this]() {
             ev_loop(this->loop_, 0);
             ev_loop_destroy(this->loop_);
-            LOG_DEBUG << "loop ends";
+            // LOG_DEBUG << "loop ends";
         }).detach();
     }
 
@@ -401,6 +401,7 @@ namespace utility {
         CURL * curl = newCurl(&connInfo, verbose_);
         curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, timeoutMs);
         curl_easy_setopt(curl, CURLOPT_POST, 1);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, postData.length());
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, (char *)connInfo.postData.c_str());
         curl_slist * headerList = nullptr;
         curl_slist_append(headerList, (std::string("Content-Type: ") + contentType).c_str());
@@ -463,6 +464,7 @@ namespace utility {
         curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, timeout_checker);
         curl_easy_setopt(curl, CURLOPT_PROGRESSDATA, connectionInfo);
         curl_easy_setopt(curl, CURLOPT_POST, 1);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, postData.length());
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, (char *)connectionInfo->postData.c_str());
         curl_slist * headerList = nullptr;
         curl_slist_append(headerList, (std::string("Content-Type: ") + contentType).c_str());

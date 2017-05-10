@@ -7,6 +7,7 @@
 #include "core/core_ip_manager.h"
 #include "core/core_typetable.h"
 #include "logging.h"
+#include "mtty/utils.h"
 #include "mtty_bidding_handler.h"
 #include "utility/utility.h"
 
@@ -41,12 +42,12 @@ namespace bidding {
         std::vector<AdSelectCondition> queryConditions(bidRequest_.imp_size());
         std::vector<PreSetAdplaceInfo> adplaceInfos(bidRequest_.imp_size());
         for (int i = 0; i < bidRequest_.imp_size(); i++) {
-            auto & imp = bidRequest_.imp(0);
+            auto & imp = bidRequest_.imp(i);
             AdSelectCondition & queryCondition = queryConditions[i];
             PreSetAdplaceInfo & presetAdplace = adplaceInfos[i];
             queryCondition.pAdplaceInfo = &presetAdplace;
-            queryCondition.mttyPid = std::stoi(imp.tagid());
-            queryCondition.adxid = 0;
+            queryCondition.mttyPid = 16259; // std::stoi(imp.tagid());
+            queryCondition.adxid = ADX_SSP_MOBILE;
             queryCondition.ip = bidRequest_.ip();
             queryCondition.basePrice = imp.bidfloor();
             if (imp.has_banner()) { // banner
@@ -131,15 +132,18 @@ namespace bidding {
     {
         if (!bidResponse_.has_bidid()) {
             bidResponse_.Clear();
+            bidResponse_.set_id(bidRequest_.bid());
             bidResponse_.set_bidid(bidRequest_.bid());
             bidResponse_.clear_seatbid();
         }
-        const MT::common::Solution & finalSolution = result.solution;
+        // const MT::common::Solution & finalSolution = result.solution;
         const MT::common::Banner & banner = result.banner;
         fillAdInfo(queryCondition, result, bidRequest_.has_user() ? bidRequest_.user().muid() : "");
-        // auto & imp = bidRequest_.imp(seq);
+        auto & imp = bidRequest_.imp(seq);
         auto seatBid = bidResponse_.add_seatbid();
         auto bid = seatBid->add_bid();
+        bid->set_id(adservice::utility::cypher::randomId(3));
+        bid->set_impid(imp.impid());
         bid->set_price(result.bidPrice);
         bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE || queryCondition.mobileDevice
                      || SOLUTION_DEVICE_IPAD;
@@ -161,6 +165,8 @@ namespace bidding {
                     auto realSize = adsizeMap.rget({ banner.width, banner.height });
                     imgAsset->set_imgw(realSize.first);
                     imgAsset->set_imgh(realSize.second);
+                    bid->set_adm(imgUrl);
+                    bid->set_admtype(0);
                 }
             }
             auto titleAsset = native->add_assets();
@@ -176,14 +182,15 @@ namespace bidding {
             landingUrl = mtlsArray[0].get("p1", "");
         }
         if (!queryCondition.dealId.empty() && queryCondition.dealId != "0") {
-            bid->set_dealid(finalSolution.dDealId);
+            std::vector<int64_t> dealIds;
+            MT::common::string2vecint(queryCondition.dealId, dealIds);
+            bid->set_dealid(std::to_string(dealIds[0]));
         }
         url::URLHelper showUrl(getShowBaseUrl(isIOS), false);
         getShowPara(showUrl, bidRequest_.bid());
         showUrl.add(URL_IMP_OF, "3");
         showUrl.addMacro(URL_EXCHANGE_PRICE, "%%WINNING_PRICE%%");
-        auto newPvm = bid->add_pvm();
-        *newPvm = showUrl.cipherUrl();
+        bid->set_nurl(showUrl.cipherUrl());
         url::URLHelper clickUrl(getClickBaseUrl(isIOS), false);
         getClickPara(clickUrl, bidRequest_.bid(), "", landingUrl);
         bid->set_clickm(clickUrl.cipherUrl());

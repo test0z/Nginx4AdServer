@@ -80,7 +80,12 @@ namespace dsp {
         this->dspResult_.resultOk = false;
         BidRequest request = std::move(conditionToBidRequest(selectCondition, adplace));
         std::string reqBody;
-        utility::serialize::writeProtoBufObject(request, &reqBody);
+        if (!utility::serialize::writeProtoBufObject(request, &reqBody)) {
+            LOG_ERROR << "failed to writeProtoBufObject in DSPHandlerInterface::sendBid";
+            DSPPromisePtr p = std::make_shared<DSPPromise>();
+            p->done();
+            return p;
+        }
         //异步回调
         //发送异步请求,确保在timeout之内一定调用callback,无论成功或失败
         auto httpClientProxy = adservice::utility::HttpClientProxy::getInstance();
@@ -95,6 +100,8 @@ namespace dsp {
                                                       this->dspResult_ = std::move(
                                                           this->bidResponseToDspResult(bidResponse, adplace));
                                                   }
+                                              } else {
+                                                  LOG_DEBUG << "dsp " << this->dspId_ << " request timeout";
                                               }
                                           });
     }
@@ -133,7 +140,7 @@ namespace dsp {
         auto imp = bidRequest.add_imp();
         imp->set_impid("");
         imp->set_tagid(std::to_string(selectCondition.mttyPid));
-        imp->set_bidfloor((float)selectCondition.basePrice);
+        imp->set_bidfloor(adplace.basePrice);
         if (adplace.supportBanner.find(STR_BANNERTYPE_PRIMITIVE) != std::string::npos) { //原生
             auto & adSizeManager = adservice::utility::AdSizeMap::getInstance();
             auto newNative = imp->mutable_native();
@@ -195,6 +202,8 @@ namespace dsp {
                          << ",baseprice:" << adplace.basePrice;
                 result.resultOk = false;
                 return result;
+            } else {
+                result.bidPrice = bid.price();
             }
             MT::common::Banner & banner = result.banner;
             cppcms::json::value bannerJson;

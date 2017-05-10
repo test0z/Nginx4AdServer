@@ -48,14 +48,26 @@ void decodeUrl(const std::string& uri){
     }
 }
 
+void urlEncodeTest(const std::string& uri){
+    std::cout<<url::urlEncode_f(uri)<<std::endl;
+}
+
+void urlDecodeTest(const std::string& uri){
+    std::cout<<url::urlDecode_f(uri)<<std::endl;
+}
+
 int main(int argc, char ** argv)
 {
      if(argc==3){
          std::string op = argv[1];
          if(op == "encode"){
                 encodeUrl(argv[2]);
-         }else{
+         }else if(op == "decode"){
                 decodeUrl(argv[2]);
+         }else if(opt == "urlencode"){
+             urlEncodeTest(argv[2]);
+         }else if(opt == "urldecode"){
+             urlDecodeTest(argv[2]);
          }
      }else{
         testCypherUrl();
