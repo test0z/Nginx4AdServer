@@ -31,7 +31,7 @@ namespace bidding {
     bool MttyBiddingHandler::fillSpecificLog(const AdSelectCondition & selectCondition,
                                              protocol::log::LogItem & logItem, bool isAccepted)
     {
-        return true;
+        return false;
     }
 
     bool MttyBiddingHandler::filter(const BiddingFilterCallback & filterCb)
@@ -46,7 +46,7 @@ namespace bidding {
             AdSelectCondition & queryCondition = queryConditions[i];
             PreSetAdplaceInfo & presetAdplace = adplaceInfos[i];
             queryCondition.pAdplaceInfo = &presetAdplace;
-            queryCondition.mttyPid = 16259; // std::stoi(imp.tagid());
+            queryCondition.mttyPid = std::stoi(imp.tagid());
             queryCondition.adxid = ADX_SSP_MOBILE;
             queryCondition.ip = bidRequest_.ip();
             queryCondition.basePrice = imp.bidfloor();
@@ -106,6 +106,11 @@ namespace bidding {
                 } else {
                     queryCondition.flowType = SOLUTION_FLOWTYPE_PC;
                 }
+                if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
+                    queryCondition.adxid = ADX_SSP_MOBILE;
+                } else {
+                    queryCondition.adxid = ADX_SSP_PC;
+                }
                 //                if (bidRequest_.has_site()) { // wap或pc页面
                 //                    auto & site = bidRequest_.site();
 
@@ -119,6 +124,7 @@ namespace bidding {
                 queryCondition.idfa = first.idfa;
                 queryCondition.imei = first.imei;
                 queryCondition.flowType = first.flowType;
+                queryCondition.adxid = first.adxid;
             }
         }
         if (!filterCb(this, queryConditions)) {
