@@ -323,8 +323,8 @@ namespace bidding {
         adFlowExtraInfo.contentType.push_back(selectCondition.mttyContentType);
         adFlowExtraInfo.mediaType = selectCondition.mediaType;
         adFlowExtraInfo.flowType = selectCondition.flowType;
+        adFlowExtraInfo.dealIds.clear();
         if (!selectCondition.dealId.empty()) {
-            adFlowExtraInfo.dealIds.clear();
             adFlowExtraInfo.dealIds.push_back(selectCondition.dealId);
         }
     }
