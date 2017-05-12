@@ -85,6 +85,8 @@ namespace adselectv2 {
         int mttyContentType{ 0 };
         //需要匹配的banner 类型
         int bannerType{ 0 };
+        //要求的创意等级
+        int requiredCreativeLevel{ 0 };
         //提供的mt 用户id，可以用于查找频次信息
         std::string mtUserId;
         //关键词信息
