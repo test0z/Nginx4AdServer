@@ -256,7 +256,8 @@ namespace dsp {
                     bannerJson["formatid"] = getFormatIdByMaterialUrl(bid.adm());
                 } else { //动态创意
                     bannerJson["formatid"] = "6";
-                    bannerJson["p0"] = bid.adm();
+                    mtlsInst["p0"] = bid.adm();
+                    mtlsInst["p1"] = bid.clickm();
                     banner.bannerType = BANNER_TYPE_HTML;
                 }
             }

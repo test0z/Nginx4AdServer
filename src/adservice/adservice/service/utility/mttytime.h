@@ -112,6 +112,8 @@ namespace utility {
         {
             return getTodayStartTime() + DAY_SECOND;
         }
+
+        int64_t getCurrentHourTime();
     }
 
     class PerformanceWatcher {

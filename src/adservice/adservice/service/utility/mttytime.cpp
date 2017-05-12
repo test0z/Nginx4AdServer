@@ -54,6 +54,18 @@ namespace utility {
             return (int64_t)mktime(&todayTime);
         }
 
+        int64_t getCurrentHourTime()
+        {
+            time_t currentTime;
+            ::time(&currentTime);
+            struct tm todayTime;
+            memset(&todayTime, sizeof(tm), 0);
+            localtime_r(&currentTime, &todayTime);
+            todayTime.tm_min = 0;
+            todayTime.tm_sec = 0;
+            return (int64_t)mktime(&todayTime);
+        }
+
         double getCurrentHourPercent()
         {
             time_t currentTime;

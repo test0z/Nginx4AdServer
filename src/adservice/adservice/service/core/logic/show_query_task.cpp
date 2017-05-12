@@ -402,6 +402,72 @@ namespace corelogic {
             condition.referer = log.referer;
         }
 
+        struct DSPBidCounter {
+            int64_t lastCommitTime{ -1 };
+            std::unordered_map<int64_t, int64_t> rcounters;
+            std::unordered_map<int64_t, int64_t> bcounters;
+
+            void incCounter(int64_t dspId, bool isBidSuccess)
+            {
+                {
+                    auto iter = rcounters.find(dspId);
+                    if (iter == rcounters.end()) {
+                        rcounters.insert({ dspId, 1 });
+                    } else {
+                        iter->second++;
+                    }
+                }
+                if (isBidSuccess) {
+                    auto iter = bcounters.find(dspId);
+                    if (iter == bcounters.end()) {
+                        bcounters.insert({ dspId, 1 });
+                    } else {
+                        iter->second++;
+                    }
+                }
+            }
+            void clear()
+            {
+                rcounters.clear();
+                bcounters.clear();
+            }
+
+            bool empty()
+            {
+                return rcounters.empty() && bcounters.empty();
+            }
+        };
+
+        thread_local DSPBidCounter dspBidCounter;
+
+        void logDSPBid()
+        {
+            int64_t currentTime = utility::time::getCurrentTimeStampMs();
+            if (currentTime < dspBidCounter.lastCommitTime + 30000 || dspBidCounter.empty()) {
+                return;
+            }
+            try {
+                std::string key = utility::time::timeStringFromTimeStamp(utility::time::getCurrentHourTime());
+                MT::common::ASKey dailyKey(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_ORDER), "dsp_bid",
+                                           key);
+                MT::common::ASOperation op(dspBidCounter.rcounters.size() + dspBidCounter.bcounters.size(),
+                                           DAY_SECOND * 3);
+                for (auto iter : dspBidCounter.rcounters) {
+                    op.addIncr(std::to_string(iter.first) + "_r", (int64_t)iter.second);
+                }
+                for (auto iter : dspBidCounter.bcounters) {
+                    op.addIncr(std::to_string(iter.first) + "_b", (int64_t)iter.second);
+                }
+                aerospikeClient.operateAsync(dailyKey, op);
+                dspBidCounter.clear();
+            } catch (MT::common::AerospikeExcption & e) {
+                LOG_ERROR << "记录dsp bid计数失败,e:" << e.what() << "，code:" << e.error().code << e.error().message
+                          << "，调用堆栈：" << std::endl
+                          << e.trace();
+            }
+            dspBidCounter.lastCommitTime = currentTime;
+        }
+
         /**
          * 向其他DSP发送竞价请求
          * @brief askOtherDsp
@@ -440,22 +506,26 @@ namespace corelogic {
                     const protocol::dsp::DSPBidResult & dspResult = handler->parseResponse(httpResponse, adplace);
                     if (dspResult.resultOk) {
                         dspResults.push_back(dspResult);
+                        dspBidCounter.incCounter(solution.advId, true);
+                    } else {
+                        dspBidCounter.incCounter(solution.advId, false);
                     }
                     LOG_DEBUG << "DSPID:" << solution.advId << ",是否出价:" << (dspResult.resultOk ? "是" : "否");
                 }
                 if (dspResults.empty()) {
                     LOG_DEBUG << "所有DSP均无应答或超时";
+                    logDSPBid();
                     return false;
                 }
-                //排序取第二高价
+                //排序取第一高价
                 //排序
                 std::sort(dspResults.begin(), dspResults.end(),
                           [](const protocol::dsp::DSPBidResult & a, const protocol::dsp::DSPBidResult & b) {
                               return a.bidPrice > b.bidPrice;
                           });
-                //从第二名中随机选取，若不存在第二名从第一名中随机选取
+                //从第一名中随机选取
                 int finalIdx = adservice::utility::rankingtool::randomIndex(
-                    dspResults.size(), [&dspResults](int idx) { return dspResults[idx].bidPrice; }, { 0, 100, 0 },
+                    dspResults.size(), [&dspResults](int idx) { return dspResults[idx].bidPrice; }, { 100, 0, 0 },
                     true);
                 protocol::dsp::DSPBidResult & dspResult = dspResults[finalIdx];
                 result.banner = dspResult.banner;
@@ -494,6 +564,7 @@ namespace corelogic {
                     }
                 });
                 //记录日志
+                logDSPBid();
                 return true;
             } catch (protocol::dsp::DSPHandlerException & dspException) {
                 LOG_ERROR << "askOtherDSP has dsp handler exception:" << dspException.what()

@@ -151,8 +151,8 @@ namespace bidding {
         bid->set_id(adservice::utility::cypher::randomId(3));
         bid->set_impid(imp.impid());
         bid->set_price(result.bidPrice);
-        bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE || queryCondition.mobileDevice
-                     || SOLUTION_DEVICE_IPAD;
+        bool isIOS = queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE
+                     || queryCondition.mobileDevice == SOLUTION_DEVICE_IPAD;
         std::string strBannerJson = banner.json;
         cppcms::json::value bannerJson = bannerJson2HttpsIOS(isIOS, strBannerJson, banner.bannerType);
         const cppcms::json::array & mtlsArray = bannerJson["mtls"].array();

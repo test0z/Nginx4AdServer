@@ -93,8 +93,12 @@ namespace utility {
                             bool called = callbackInfo->callbackCalled.exchange(true);
                             if (!called) {
                                 if (callbackInfo->transferFinishedCallback) { //调用连接完成回调
-                                    callbackInfo->transferFinishedCallback(err, responseCode,
-                                                                           connectionInfo->dataBuffer.str());
+                                    try {
+                                        callbackInfo->transferFinishedCallback(err, responseCode,
+                                                                               connectionInfo->dataBuffer.str());
+                                    } catch (std::exception & e) {
+                                        LOG_ERROR << "exception occured in http callback,e:" << e.what();
+                                    }
                                 }
                                 callbackInfo->promisePtr->done();
                             }
@@ -299,7 +303,11 @@ namespace utility {
                 if (!called) {
                     HttpClientProxy::instance_->getExecutor()->run([callbackInfo]() {
                         if (callbackInfo->transferFinishedCallback) {
-                            callbackInfo->transferFinishedCallback(CURLE_OPERATION_TIMEDOUT, 0, "");
+                            try {
+                                callbackInfo->transferFinishedCallback(CURLE_OPERATION_TIMEDOUT, 0, "");
+                            } catch (std::exception & e) {
+                                LOG_ERROR << "error occured in http callback,e:" << e.what();
+                            }
                         }
                         callbackInfo->promisePtr->done();
                     });
@@ -323,7 +331,11 @@ namespace utility {
                     HttpClientProxy::instance_->getExecutor()->run([callbackInfo]() {
                         //调用连接完成回调
                         if (callbackInfo->transferFinishedCallback) {
-                            callbackInfo->transferFinishedCallback(CURLE_OPERATION_TIMEDOUT, 0, "");
+                            try {
+                                callbackInfo->transferFinishedCallback(CURLE_OPERATION_TIMEDOUT, 0, "");
+                            } catch (std::exception & e) {
+                                LOG_ERROR << "error occured in http callback,e:" << e.what();
+                            }
                         }
                         callbackInfo->promisePtr->done();
                     });

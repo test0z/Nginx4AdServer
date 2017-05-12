@@ -79,11 +79,11 @@ namespace bidding {
             cppcms::json::array & originMtlsArray = banner["mtls"].array();
             cppcms::json::array & httpsMtlsArray = httpsBanner["mtls"].array();
             if (bannerType == BANNER_TYPE_PRIMITIVE) {
-                std::string destUrl = originMtlsArray[0]["p9"].str();
+                std::string destUrl = originMtlsArray[0].get("p9", "");
                 adservice::utility::url::url_replace(destUrl, "{{click}}", "");
                 httpsMtlsArray[0]["p9"] = destUrl;
             } else {
-                std::string destUrl = originMtlsArray[0]["p1"].str();
+                std::string destUrl = originMtlsArray[0].get("p1", "");
                 adservice::utility::url::url_replace(destUrl, "{{click}}", "");
                 httpsMtlsArray[0]["p1"] = destUrl;
             }
@@ -91,11 +91,11 @@ namespace bidding {
         } else {
             cppcms::json::array & originMtlsArray = banner["mtls"].array();
             if (bannerType == BANNER_TYPE_PRIMITIVE) {
-                std::string destUrl = originMtlsArray[0]["p9"].str();
+                std::string destUrl = originMtlsArray[0].get("p9", "");
                 adservice::utility::url::url_replace(destUrl, "{{click}}", "");
                 originMtlsArray[0]["p9"] = destUrl;
             } else {
-                std::string destUrl = originMtlsArray[0]["p1"].str();
+                std::string destUrl = originMtlsArray[0].get("p1", "");
                 adservice::utility::url::url_replace(destUrl, "{{click}}", "");
                 originMtlsArray[0]["p1"] = destUrl;
             }
