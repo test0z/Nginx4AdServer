@@ -2187,10 +2187,26 @@ class BidResponse_SeatBid_Bid : public ::google::protobuf::Message /* @@protoc_i
   ::std::string* release_clickm();
   void set_allocated_clickm(::std::string* clickm);
 
-  // optional string dealId = 10;
+  // repeated string cm = 10;
+  int cm_size() const;
+  void clear_cm();
+  static const int kCmFieldNumber = 10;
+  const ::std::string& cm(int index) const;
+  ::std::string* mutable_cm(int index);
+  void set_cm(int index, const ::std::string& value);
+  void set_cm(int index, const char* value);
+  void set_cm(int index, const char* value, size_t size);
+  ::std::string* add_cm();
+  void add_cm(const ::std::string& value);
+  void add_cm(const char* value);
+  void add_cm(const char* value, size_t size);
+  const ::google::protobuf::RepeatedPtrField< ::std::string>& cm() const;
+  ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_cm();
+
+  // optional string dealId = 11;
   bool has_dealid() const;
   void clear_dealid();
-  static const int kDealIdFieldNumber = 10;
+  static const int kDealIdFieldNumber = 11;
   const ::std::string& dealid() const;
   void set_dealid(const ::std::string& value);
   void set_dealid(const char* value);
@@ -2235,6 +2251,7 @@ class BidResponse_SeatBid_Bid : public ::google::protobuf::Message /* @@protoc_i
   ::google::protobuf::internal::ArenaStringPtr adm_;
   ::google::protobuf::RepeatedPtrField< ::std::string> pvm_;
   ::google::protobuf::internal::ArenaStringPtr clickm_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> cm_;
   ::google::protobuf::internal::ArenaStringPtr dealid_;
   friend void  protobuf_AddDesc_mtty_5fbidding_2eproto();
   friend void protobuf_AssignDesc_mtty_5fbidding_2eproto();
@@ -4759,15 +4776,70 @@ inline void BidResponse_SeatBid_Bid::set_allocated_clickm(::std::string* clickm)
   // @@protoc_insertion_point(field_set_allocated:protocol.dsp.BidResponse.SeatBid.Bid.clickm)
 }
 
-// optional string dealId = 10;
+// repeated string cm = 10;
+inline int BidResponse_SeatBid_Bid::cm_size() const {
+  return cm_.size();
+}
+inline void BidResponse_SeatBid_Bid::clear_cm() {
+  cm_.Clear();
+}
+inline const ::std::string& BidResponse_SeatBid_Bid::cm(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+  return cm_.Get(index);
+}
+inline ::std::string* BidResponse_SeatBid_Bid::mutable_cm(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+  return cm_.Mutable(index);
+}
+inline void BidResponse_SeatBid_Bid::set_cm(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+  cm_.Mutable(index)->assign(value);
+}
+inline void BidResponse_SeatBid_Bid::set_cm(int index, const char* value) {
+  cm_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+}
+inline void BidResponse_SeatBid_Bid::set_cm(int index, const char* value, size_t size) {
+  cm_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+}
+inline ::std::string* BidResponse_SeatBid_Bid::add_cm() {
+  // @@protoc_insertion_point(field_add_mutable:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+  return cm_.Add();
+}
+inline void BidResponse_SeatBid_Bid::add_cm(const ::std::string& value) {
+  cm_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+}
+inline void BidResponse_SeatBid_Bid::add_cm(const char* value) {
+  cm_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+}
+inline void BidResponse_SeatBid_Bid::add_cm(const char* value, size_t size) {
+  cm_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+}
+inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+BidResponse_SeatBid_Bid::cm() const {
+  // @@protoc_insertion_point(field_list:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+  return cm_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+BidResponse_SeatBid_Bid::mutable_cm() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+  return &cm_;
+}
+
+// optional string dealId = 11;
 inline bool BidResponse_SeatBid_Bid::has_dealid() const {
-  return (_has_bits_[0] & 0x00000200u) != 0;
+  return (_has_bits_[0] & 0x00000400u) != 0;
 }
 inline void BidResponse_SeatBid_Bid::set_has_dealid() {
-  _has_bits_[0] |= 0x00000200u;
+  _has_bits_[0] |= 0x00000400u;
 }
 inline void BidResponse_SeatBid_Bid::clear_has_dealid() {
-  _has_bits_[0] &= ~0x00000200u;
+  _has_bits_[0] &= ~0x00000400u;
 }
 inline void BidResponse_SeatBid_Bid::clear_dealid() {
   dealid_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());

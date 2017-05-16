@@ -344,7 +344,7 @@ void protobuf_AssignDesc_mtty_5fbidding_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_SeatBid, _internal_metadata_),
       -1);
   BidResponse_SeatBid_Bid_descriptor_ = BidResponse_SeatBid_descriptor_->nested_type(0);
-  static const int BidResponse_SeatBid_Bid_offsets_[10] = {
+  static const int BidResponse_SeatBid_Bid_offsets_[11] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_SeatBid_Bid, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_SeatBid_Bid, impid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_SeatBid_Bid, native_),
@@ -354,6 +354,7 @@ void protobuf_AssignDesc_mtty_5fbidding_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_SeatBid_Bid, adm_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_SeatBid_Bid, pvm_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_SeatBid_Bid, clickm_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_SeatBid_Bid, cm_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_SeatBid_Bid, dealid_),
   };
   BidResponse_SeatBid_Bid_reflection_ =
@@ -539,20 +540,20 @@ void protobuf_AddDesc_mtty_5fbidding_2eproto() {
     "E_IPAD\020\003\022\027\n\023DEVICE_WINDOWSPHONE\020\004\022\025\n\021DEV"
     "ICE_ANDROIDPAD\020\005\022\r\n\tDEVICE_TV\020\006\022\022\n\016DEVIC"
     "E_UNKNOWN\020\007\032\"\n\004User\022\014\n\004muid\030\001 \002(\t\022\014\n\004tag"
-    "s\030\002 \003(\t\"\205\004\n\013BidResponse\022\n\n\002id\030\001 \002(\t\022\r\n\005b"
+    "s\030\002 \003(\t\"\221\004\n\013BidResponse\022\n\n\002id\030\001 \002(\t\022\r\n\005b"
     "idid\030\002 \001(\t\0222\n\007seatbid\030\003 \003(\0132!.protocol.d"
-    "sp.BidResponse.SeatBid\032\246\003\n\007SeatBid\0222\n\003bi"
+    "sp.BidResponse.SeatBid\032\262\003\n\007SeatBid\0222\n\003bi"
     "d\030\001 \003(\0132%.protocol.dsp.BidResponse.SeatB"
-    "id.Bid\032\346\002\n\003Bid\022\n\n\002id\030\001 \002(\t\022\r\n\005impid\030\002 \002("
+    "id.Bid\032\362\002\n\003Bid\022\n\n\002id\030\001 \002(\t\022\r\n\005impid\030\002 \002("
     "\t\022<\n\006native\030\003 \001(\0132,.protocol.dsp.BidResp"
     "onse.SeatBid.Bid.Native\022\r\n\005price\030\004 \002(\002\022\014"
     "\n\004nurl\030\005 \002(\t\022\017\n\007admtype\030\006 \002(\r\022\013\n\003adm\030\007 \002"
-    "(\t\022\013\n\003pvm\030\010 \003(\t\022\016\n\006clickm\030\t \002(\t\022\016\n\006dealI"
-    "d\030\n \001(\t\032\235\001\n\006Native\022B\n\006assets\030\001 \003(\01322.pro"
-    "tocol.dsp.BidResponse.SeatBid.Bid.Native"
-    ".Asset\032O\n\005Asset\022\014\n\004type\030\001 \001(\r\022\016\n\006imgurl\030"
-    "\002 \001(\t\022\014\n\004imgw\030\003 \001(\r\022\014\n\004imgh\030\004 \001(\r\022\014\n\004dat"
-    "a\030\005 \001(\t", 2047);
+    "(\t\022\013\n\003pvm\030\010 \003(\t\022\016\n\006clickm\030\t \002(\t\022\n\n\002cm\030\n "
+    "\003(\t\022\016\n\006dealId\030\013 \001(\t\032\235\001\n\006Native\022B\n\006assets"
+    "\030\001 \003(\01322.protocol.dsp.BidResponse.SeatBi"
+    "d.Bid.Native.Asset\032O\n\005Asset\022\014\n\004type\030\001 \001("
+    "\r\022\016\n\006imgurl\030\002 \001(\t\022\014\n\004imgw\030\003 \001(\r\022\014\n\004imgh\030"
+    "\004 \001(\r\022\014\n\004data\030\005 \001(\t", 2059);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "mtty_bidding.proto", &protobuf_RegisterTypes);
   BidRequest::default_instance_ = new BidRequest();
@@ -7676,6 +7677,7 @@ const int BidResponse_SeatBid_Bid::kAdmtypeFieldNumber;
 const int BidResponse_SeatBid_Bid::kAdmFieldNumber;
 const int BidResponse_SeatBid_Bid::kPvmFieldNumber;
 const int BidResponse_SeatBid_Bid::kClickmFieldNumber;
+const int BidResponse_SeatBid_Bid::kCmFieldNumber;
 const int BidResponse_SeatBid_Bid::kDealIdFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
@@ -7790,7 +7792,7 @@ void BidResponse_SeatBid_Bid::Clear() {
       adm_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
   }
-  if (_has_bits_[8 / 32] & 768u) {
+  if (_has_bits_[8 / 32] & 1280u) {
     if (has_clickm()) {
       clickm_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
@@ -7803,6 +7805,7 @@ void BidResponse_SeatBid_Bid::Clear() {
 #undef ZR_
 
   pvm_.Clear();
+  cm_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   if (_internal_metadata_.have_unknown_fields()) {
     mutable_unknown_fields()->Clear();
@@ -7961,13 +7964,32 @@ bool BidResponse_SeatBid_Bid::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(82)) goto parse_dealId;
+        if (input->ExpectTag(82)) goto parse_cm;
         break;
       }
 
-      // optional string dealId = 10;
+      // repeated string cm = 10;
       case 10: {
         if (tag == 82) {
+         parse_cm:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->add_cm()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+            this->cm(this->cm_size() - 1).data(),
+            this->cm(this->cm_size() - 1).length(),
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "protocol.dsp.BidResponse.SeatBid.Bid.cm");
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(82)) goto parse_cm;
+        if (input->ExpectTag(90)) goto parse_dealId;
+        break;
+      }
+
+      // optional string dealId = 11;
+      case 11: {
+        if (tag == 90) {
          parse_dealId:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_dealid()));
@@ -8083,14 +8105,24 @@ void BidResponse_SeatBid_Bid::SerializeWithCachedSizes(
       9, this->clickm(), output);
   }
 
-  // optional string dealId = 10;
+  // repeated string cm = 10;
+  for (int i = 0; i < this->cm_size(); i++) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->cm(i).data(), this->cm(i).length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.dsp.BidResponse.SeatBid.Bid.cm");
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      10, this->cm(i), output);
+  }
+
+  // optional string dealId = 11;
   if (has_dealid()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->dealid().data(), this->dealid().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE,
       "protocol.dsp.BidResponse.SeatBid.Bid.dealId");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      10, this->dealid(), output);
+      11, this->dealid(), output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -8185,7 +8217,17 @@ void BidResponse_SeatBid_Bid::SerializeWithCachedSizes(
         9, this->clickm(), target);
   }
 
-  // optional string dealId = 10;
+  // repeated string cm = 10;
+  for (int i = 0; i < this->cm_size(); i++) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->cm(i).data(), this->cm(i).length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "protocol.dsp.BidResponse.SeatBid.Bid.cm");
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteStringToArray(10, this->cm(i), target);
+  }
+
+  // optional string dealId = 11;
   if (has_dealid()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->dealid().data(), this->dealid().length(),
@@ -8193,7 +8235,7 @@ void BidResponse_SeatBid_Bid::SerializeWithCachedSizes(
       "protocol.dsp.BidResponse.SeatBid.Bid.dealId");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        10, this->dealid(), target);
+        11, this->dealid(), target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -8305,7 +8347,7 @@ int BidResponse_SeatBid_Bid::ByteSize() const {
         *this->native_);
   }
 
-  // optional string dealId = 10;
+  // optional string dealId = 11;
   if (has_dealid()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
@@ -8317,6 +8359,13 @@ int BidResponse_SeatBid_Bid::ByteSize() const {
   for (int i = 0; i < this->pvm_size(); i++) {
     total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
       this->pvm(i));
+  }
+
+  // repeated string cm = 10;
+  total_size += 1 * this->cm_size();
+  for (int i = 0; i < this->cm_size(); i++) {
+    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
+      this->cm(i));
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -8353,6 +8402,7 @@ void BidResponse_SeatBid_Bid::MergeFrom(const BidResponse_SeatBid_Bid& from) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
   pvm_.MergeFrom(from.pvm_);
+  cm_.MergeFrom(from.cm_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_id()) {
       set_has_id();
@@ -8429,6 +8479,7 @@ void BidResponse_SeatBid_Bid::InternalSwap(BidResponse_SeatBid_Bid* other) {
   adm_.Swap(&other->adm_);
   pvm_.UnsafeArenaSwap(&other->pvm_);
   clickm_.Swap(&other->clickm_);
+  cm_.UnsafeArenaSwap(&other->cm_);
   dealid_.Swap(&other->dealid_);
   std::swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
@@ -9688,15 +9739,70 @@ void BidResponse_SeatBid_Bid::clear_clickm() {
   // @@protoc_insertion_point(field_set_allocated:protocol.dsp.BidResponse.SeatBid.Bid.clickm)
 }
 
-// optional string dealId = 10;
+// repeated string cm = 10;
+int BidResponse_SeatBid_Bid::cm_size() const {
+  return cm_.size();
+}
+void BidResponse_SeatBid_Bid::clear_cm() {
+  cm_.Clear();
+}
+ const ::std::string& BidResponse_SeatBid_Bid::cm(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+  return cm_.Get(index);
+}
+ ::std::string* BidResponse_SeatBid_Bid::mutable_cm(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+  return cm_.Mutable(index);
+}
+ void BidResponse_SeatBid_Bid::set_cm(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+  cm_.Mutable(index)->assign(value);
+}
+ void BidResponse_SeatBid_Bid::set_cm(int index, const char* value) {
+  cm_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+}
+ void BidResponse_SeatBid_Bid::set_cm(int index, const char* value, size_t size) {
+  cm_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+}
+ ::std::string* BidResponse_SeatBid_Bid::add_cm() {
+  // @@protoc_insertion_point(field_add_mutable:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+  return cm_.Add();
+}
+ void BidResponse_SeatBid_Bid::add_cm(const ::std::string& value) {
+  cm_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+}
+ void BidResponse_SeatBid_Bid::add_cm(const char* value) {
+  cm_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+}
+ void BidResponse_SeatBid_Bid::add_cm(const char* value, size_t size) {
+  cm_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+}
+ const ::google::protobuf::RepeatedPtrField< ::std::string>&
+BidResponse_SeatBid_Bid::cm() const {
+  // @@protoc_insertion_point(field_list:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+  return cm_;
+}
+ ::google::protobuf::RepeatedPtrField< ::std::string>*
+BidResponse_SeatBid_Bid::mutable_cm() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.dsp.BidResponse.SeatBid.Bid.cm)
+  return &cm_;
+}
+
+// optional string dealId = 11;
 bool BidResponse_SeatBid_Bid::has_dealid() const {
-  return (_has_bits_[0] & 0x00000200u) != 0;
+  return (_has_bits_[0] & 0x00000400u) != 0;
 }
 void BidResponse_SeatBid_Bid::set_has_dealid() {
-  _has_bits_[0] |= 0x00000200u;
+  _has_bits_[0] |= 0x00000400u;
 }
 void BidResponse_SeatBid_Bid::clear_has_dealid() {
-  _has_bits_[0] &= ~0x00000200u;
+  _has_bits_[0] &= ~0x00000400u;
 }
 void BidResponse_SeatBid_Bid::clear_dealid() {
   dealid_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());

@@ -184,8 +184,10 @@ message BidResponse {
             repeated string pvm = 8;
             // 点击目标URL，静态创意时我方将通过此链接进行广告跳转
             required string clickm = 9;
+            // 点击监测url数组
+            repeated string cm = 10;
             // 	DSP参加的deal id
-            optional string dealId = 10;
+            optional string dealId = 11;
         }
         repeated Bid bid = 1;
     }

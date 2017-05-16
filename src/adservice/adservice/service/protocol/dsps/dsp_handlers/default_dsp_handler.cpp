@@ -143,17 +143,26 @@ namespace dsp {
         imp->set_bidfloor(adplace.basePrice);
         if (adplace.supportBanner.find(STR_BANNERTYPE_PRIMITIVE) != std::string::npos) { //原生
             auto & adSizeManager = adservice::utility::AdSizeMap::getInstance();
-            auto newNative = imp->mutable_native();
-            auto newAsset = newNative->add_assets();
-            newAsset->mutable_title()->set_len(25);
-            auto assetImg = newAsset->mutable_img();
-            auto unmapSizePair = adSizeManager.rget({ adplace.width, adplace.height });
-            assetImg->set_w(unmapSizePair.first);
-            assetImg->set_h(unmapSizePair.second);
+            int photos = adplace.width == 3 ? 3 : 1;
+            for (int i = 0; i < photos; i++) {
+                auto newNative = imp->mutable_native();
+                auto newAsset = newNative->add_assets();
+                newAsset->mutable_title()->set_len(25);
+                auto assetImg = newAsset->mutable_img();
+                auto unmapSizePair = adSizeManager.rget({ adplace.width, adplace.height });
+                assetImg->set_w(unmapSizePair.first);
+                assetImg->set_h(unmapSizePair.second);
+                (*assetImg->add_mimes()) = "image/jpeg";
+                (*assetImg->add_mimes()) = "image/png";
+                (*assetImg->add_mimes()) = "image/gif";
+            }
         } else { // banner
             auto newBanner = imp->mutable_banner();
             newBanner->set_width(adplace.width);
             newBanner->set_height(adplace.height);
+            (*newBanner->add_mimes()) = "image/jpeg";
+            (*newBanner->add_mimes()) = "image/png";
+            (*newBanner->add_mimes()) = "image/gif";
         }
         if (!selectCondition.dealId.empty()) {
             std::vector<int64_t> dealIds;
@@ -267,13 +276,21 @@ namespace dsp {
                 result.laterAccessUrls.push_back(bid.nurl());
             }
             cppcms::json::array tviews;
-            for (uint32_t i = 0; bid.pvm_size(); i++) {
+            for (uint32_t i = 0; i < bid.pvm_size(); i++) {
                 const std::string & url = bid.pvm(i);
                 if (!url.empty()) {
                     tviews.push_back(url);
                 }
             }
             bannerJson["tviews"] = tviews;
+            cppcms::json::array tclicks;
+            for (uint32_t i = 0; i < bid.cm_size(); i++) {
+                const std::string & url = bid.cm(i);
+                if (!url.empty()) {
+                    tclicks.push_back(url);
+                }
+            }
+            bannerJson["tclicks"] = tclicks;
             banner.json = adservice::utility::json::toJson(bannerJson);
         } else {
             result.resultOk = false;
