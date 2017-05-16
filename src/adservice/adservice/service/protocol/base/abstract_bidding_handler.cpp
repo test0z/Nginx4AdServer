@@ -128,6 +128,23 @@ namespace bidding {
         }
     }
 
+    std::string AbstractBiddingHandler::prepareVast(MT::common::Banner & banner, const std::string & videoUrl,
+                                                    const std::string & tvm, const std::string & cm)
+    {
+        std::string vastXml;
+        ParamMap pm;
+        pm.insert({ "title", "" });
+        pm.insert({ "impressionUrl", tvm });
+        pm.insert({ "duration", "00:00:15" });
+        pm.insert({ "clickThrough", cm });
+        pm.insert({ "bitrate", "300" });
+        pm.insert({ "videoWidth", std::to_string(banner.width) });
+        pm.insert({ "videoHeight", std::to_string(banner.height) });
+        pm.insert({ "videoUrl", videoUrl });
+        vastTemplateEngine.bindFast(pm, vastXml);
+        return vastXml;
+    }
+
     bool AbstractBiddingHandler::fillLogItem(const AdSelectCondition & queryCondition, protocol::log::LogItem & logItem,
                                              bool isAccepted)
     {

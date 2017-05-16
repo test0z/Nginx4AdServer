@@ -70,6 +70,7 @@ namespace bidding {
     public:
         AbstractBiddingHandler()
             : isBidAccepted(false)
+            , vastTemplateEngine("res/vast/vast.tpl")
         {
         }
 
@@ -203,12 +204,16 @@ namespace bidding {
          */
         void buildFlowExtraInfo(const AdSelectCondition & selectCondition);
 
+        std::string prepareVast(MT::common::Banner & banner, const std::string & videoUrl, const std::string & tvm,
+                                const std::string & cm);
+
     protected:
         //最近一次匹配的结果
         bool isBidAccepted;
         protocol::log::AdInfo adInfo;
         BidCookieMappingInfo cmInfo;
         BiddingFlowExtraInfo adFlowExtraInfo;
+        adservice::utility::templateengine::TemplateEngine vastTemplateEngine;
     };
 }
 }

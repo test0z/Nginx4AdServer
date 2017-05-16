@@ -120,6 +120,10 @@ namespace bidding {
             str.replace(start_pos, from.length(), to);
             return true;
         }
+
+        const int FLOW_BANNER = 0;
+        const int FLOW_NATIVE = 1;
+        const int FLOW_VIDEO = 2;
     }
     bool InmobiBiddingHandler::parseRequestData(const std::string & data)
     {
@@ -160,19 +164,21 @@ namespace bidding {
         double priceFloor = adzinfo.get<double>("bidfloor", 0.0);
         queryCondition.basePrice = (int)std::ceil(priceFloor * 100);
         PreSetAdplaceInfo adplaceInfo;
-        bool isNative = false;
+        int reqType = FLOW_BANNER;
         cppcms::json::value adTypeObj = adzinfo.find("banner");
         if (adTypeObj.is_undefined()) {
             adTypeObj = adzinfo.find("video");
             if (adTypeObj.is_undefined()) {
                 adTypeObj = adzinfo.find("native");
-                isNative = true;
+                reqType = FLOW_NATIVE;
+            } else {
+                reqType = FLOW_VIDEO;
             }
         }
-        if (!isNative) {
+        if (reqType == FLOW_BANNER) {
             queryCondition.width = adTypeObj.get("w", 0);
             queryCondition.height = adTypeObj.get("h", 0);
-        } else {
+        } else if (reqType == FLOW_NATIVE) {
             const adservice::utility::AdSizeMap & adSizeMap = adservice::utility::AdSizeMap::getInstance();
             queryCondition.bannerType = BANNER_TYPE_PRIMITIVE;
             const cppcms::json::array & assets = adTypeObj.find("requestobj.assets").array();
@@ -195,6 +201,10 @@ namespace bidding {
             } else {
                 return false;
             }
+        } else if (reqType == FLOW_VIDEO) {
+            queryCondition.width = adTypeObj.get("w", 0);
+            queryCondition.height = adTypeObj.get("h", 0);
+            queryCondition.bannerType = BANNER_TYPE_VIDEO;
         }
         const cppcms::json::value & device = bidRequest.find("device");
         if (!device.is_undefined()) {
@@ -313,12 +323,18 @@ namespace bidding {
         bidValue["nurl"] = getShowBaseUrl(isIOS) + "?" + showUrl.cipherParam();
         std::string crid = std::to_string(adInfo.bannerId);
         bidValue["crid"] = crid;
-        if (banner.bannerType != BANNER_TYPE_PRIMITIVE) { //非原生创意
+        if (banner.bannerType == BANNER_TYPE_VIDEO) { //视频创意
+            std::string landingUrl = mtlsArray[0]["p1"].str();
+            url::URLHelper clickUrlParam;
+            getClickPara(clickUrlParam, requestId, "", landingUrl);
+            std::string clickUrl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
+            bidValue["adm"] = prepareVast(banner, mtlsArray[0].get("p0", ""), "", clickUrl);
+        } else if (banner.bannerType != BANNER_TYPE_PRIMITIVE) { //普通图片创意或HTML创意
             int w = banner.width;
             int h = banner.height;
             std::string html = generateHtmlSnippet(requestId, w, h, "of=2&", "", isIOS);
             bidValue["adm"] = html;
-        } else { //设置admobject
+        } else { //原生创意设置admobject
             const cppcms::json::array & assets = adzInfo.find("native.requestobj.assets").array();
             cppcms::json::value admObject;
             cppcms::json::value nativeObject;

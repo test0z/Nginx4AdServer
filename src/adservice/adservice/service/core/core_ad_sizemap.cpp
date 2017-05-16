@@ -67,6 +67,9 @@ namespace utility {
         add(std::make_pair(720, 360), std::make_pair(2, 20));
         add(std::make_pair(720, 480), std::make_pair(2, 21));
         add(std::make_pair(660, 220), std::make_pair(2, 22));
+        add(std::make_pair(660, 1136), std::make_pair(2, 23));
+        add(std::make_pair(660, 960), std::make_pair(2, 24));
+        add(std::make_pair(320, 480), std::make_pair(2, 25));
         add(std::make_pair(270, 202), std::make_pair(3, 0));
         add(std::make_pair(160, 160), std::make_pair(3, 1));
         add(std::make_pair(984, 328), std::make_pair(4, 0), MATERIAL_TYPE_VIDEO);
