@@ -202,7 +202,7 @@ namespace corelogic {
                 LOG_ERROR << "记录点击失败，订单ID无效：" << paramMap[URL_ORDER_ID] << ",query:" << data;
             }
         } else {
-            resp.status(400, "Error,empty landing url");
+            resp.status(204);
         }
         std::string clickIpArea = adservice::server::IpManager::getInstance().getAreaCodeStrByIp(userIp.c_str());
         std::string paramArea = paramMap[URL_AREA_ID];

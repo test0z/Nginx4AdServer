@@ -99,6 +99,8 @@ namespace dsp {
                                                   if (utility::serialize::getProtoBufObject(bidResponse, res)) {
                                                       this->dspResult_ = std::move(
                                                           this->bidResponseToDspResult(bidResponse, adplace));
+                                                  } else {
+                                                      LOG_WARN << "parse bidresponse failed for dsp " << this->dspId_;
                                                   }
                                               } else {
                                                   LOG_DEBUG << "dsp " << this->dspId_ << " request timeout";
@@ -217,6 +219,10 @@ namespace dsp {
             MT::common::Banner & banner = result.banner;
             cppcms::json::value bannerJson;
             bannerJson["advid"] = std::to_string(dspId_);
+            bannerJson["width"] = std::to_string(adplace.width);
+            bannerJson["height"] = std::to_string(adplace.height);
+            banner.width = adplace.width;
+            banner.height = adplace.height;
             // bannerJson["cid"]
             bannerJson["mtls"] = cppcms::json::array();
             cppcms::json::value mtlsInst;

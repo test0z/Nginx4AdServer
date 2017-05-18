@@ -218,7 +218,7 @@ namespace bidding {
     void MttyBiddingHandler::reject(adservice::utility::HttpResponse & response)
     {
         bidResponse_.Clear();
-        bidResponse_.set_bidid(bidRequest_.bid());
+        bidResponse_.set_id(bidRequest_.bid());
         std::string result;
         if (!writeProtoBufObject(bidResponse_, &result)) {
             LOG_ERROR << "failed to write protobuf object in MttyBiddingHandler::reject";
