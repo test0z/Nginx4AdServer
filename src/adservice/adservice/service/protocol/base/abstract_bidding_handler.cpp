@@ -244,6 +244,7 @@ namespace bidding {
         showUrl.add("od", std::to_string(adInfo.orderId));
         showUrl.add("ep", std::to_string(adInfo.ppid));
         showUrl.add(URL_SITE_ID, std::to_string(adInfo.mid));
+        showUrl.add(URL_CHANNEL, std::to_string(adInfo.cid));
         showUrl.add(URL_FLOWTYPE, std::to_string(adFlowExtraInfo.flowType));
         showUrl.add(URL_DEVICE_IDFA, adFlowExtraInfo.deviceIds[URL_DEVICE_IDFA]);
         showUrl.add(URL_DEVICE_IMEI, adFlowExtraInfo.deviceIds[URL_DEVICE_IMEI]);
@@ -277,6 +278,7 @@ namespace bidding {
         clickUrl.add("od", std::to_string(adInfo.orderId));
         clickUrl.add("url", encodedLandingUrl);
         clickUrl.add(URL_SITE_ID, std::to_string(adInfo.mid));
+        clickUrl.add(URL_CHANNEL, std::to_string(adInfo.cid));
         clickUrl.add(URL_DEVICE_IDFA, adFlowExtraInfo.deviceIds[URL_DEVICE_IDFA]);
         clickUrl.add(URL_DEVICE_IMEI, adFlowExtraInfo.deviceIds[URL_DEVICE_IMEI]);
         clickUrl.add(URL_DEVICE_ANDOROIDID, adFlowExtraInfo.deviceIds[URL_DEVICE_ANDOROIDID]);

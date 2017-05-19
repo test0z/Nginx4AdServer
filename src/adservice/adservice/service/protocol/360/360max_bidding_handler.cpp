@@ -285,7 +285,7 @@ namespace bidding {
             std::string downloadUrl = isIOS ? iosDownloadUrl : androidDownloadUrl;
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.bid(), "", downloadUrl.empty() ? destUrl : downloadUrl);
-            std::string linkUrl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
+            std::string linkUrl = getClickBaseUrl(isNeedHttps) + "?" + clickUrlParam.cipherParam();
             auto linkObj = creative->mutable_link();
             linkObj->set_click_url(std::string(AD_MAX_CLICK_UNENC_MACRO) + url::urlEncode(linkUrl));
             linkObj->set_landing_type(0);
@@ -305,7 +305,7 @@ namespace bidding {
                 nativeAd->set_deal_id(std::stoi(finalSolution.dDealId));
                 showUrlParam.add(URL_DEAL_ID, finalSolution.dDealId);
             }
-            std::string impressionTrack = getShowBaseUrl(isIOS) + "?" + showUrlParam.cipherParam();
+            std::string impressionTrack = getShowBaseUrl(isNeedHttps) + "?" + showUrlParam.cipherParam();
             nativeAd->add_impression_tracks()->assign(impressionTrack);
             // adResult->set_nurl(impressionTrack);
         } else { //非原生广告
