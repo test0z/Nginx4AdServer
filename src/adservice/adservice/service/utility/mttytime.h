@@ -118,7 +118,7 @@ namespace utility {
 
     class PerformanceWatcher {
     public:
-        PerformanceWatcher(const std::string & n, int64_t warningTime = 20)
+        PerformanceWatcher(const std::string & n, int64_t warningTime = 200)
             : name(n)
             , threshhold(warningTime)
         {

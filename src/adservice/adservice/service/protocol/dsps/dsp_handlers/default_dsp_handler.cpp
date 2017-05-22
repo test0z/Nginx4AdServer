@@ -126,7 +126,7 @@ namespace dsp {
             this->dspResult_.resultOk = false;
             LOG_DEBUG << "error or timeout occured for dsp " << this->dspId_
                       << " request,respCode:" << response->responseCode() << ",errorMsg:" << response->errorMessage()
-                      << ",time:" << response->time().count();
+                      << ",time:" << response->time().count() / 1000 << "ms";
             return this->dspResult_;
         }
         try {

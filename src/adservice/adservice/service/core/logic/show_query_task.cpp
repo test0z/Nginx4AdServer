@@ -479,7 +479,7 @@ namespace corelogic {
         bool askOtherDsp(adselectv2::AdSelectCondition & condition, std::vector<MT::common::Solution> & dspSolutions,
                          MT::common::SelectResult & result)
         {
-            adservice::utility::PerformanceWatcher pw("ssp::askOtherDsp");
+            adservice::utility::PerformanceWatcher pw("ssp::askOtherDsp", 200);
             (void)pw;
             LOG_DEBUG << "向其他DSP转发SSP流量";
             try {
