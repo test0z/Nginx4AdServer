@@ -125,7 +125,7 @@ namespace adselectv2 {
 
         makeRequest(isSSP, selectCondition, request);
         uint8_t flag = (uint8_t)MT::common::MessageType::ADSELECT_REQUEST;
-        std::string requestBin = serialize(request);
+        std::string requestBin = MT::common::serialize(request);
 
         filterDebugSessionRequest(flag, requestBin);
 
@@ -167,7 +167,7 @@ namespace adselectv2 {
         std::string response((char *)reply.data() + 1, reply.size() - 1);
         filterDebugSessionResponse(response);
 
-        deserialize(response, result);
+        MT::common::deserialize(response, result);
         if ((!selectCondition.adxpid.empty() && result.adplace.adxId != 0 && !result.adplace.adxPId.empty())
             && (selectCondition.adxid != result.adplace.adxId || selectCondition.adxpid != result.adplace.adxPId)) {
             LOG_ERROR << "query adxid:" << selectCondition.adxid << ",result adxid:" << result.adplace.adxId

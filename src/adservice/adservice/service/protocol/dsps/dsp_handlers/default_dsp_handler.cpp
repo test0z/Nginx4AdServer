@@ -119,17 +119,22 @@ namespace dsp {
         return std::make_shared<MT::common::HttpPost>(dspUrl_, reqBody, timeoutMs_);
     }
 
-    virtual DSPBidResult & DSPHandlerInterface::parseResponse(std::shared_ptr<MT::common::HttpResponse> response,
-                                                              const MT::common::ADPlace & adplace)
+    DSPBidResult & DSPHandlerInterface::parseResponse(std::shared_ptr<MT::common::HttpResponse> response,
+                                                      const MT::common::ADPlace & adplace)
     {
         if (response->hasError() || response->timedout()) {
             this->dspResult_.resultOk = false;
+            LOG_DEBUG << "error or timeout occured for dsp " << this->dspId_
+                      << " request,respCode:" << response->responseCode() << ",errorMsg:" << response->errorMessage()
+                      << ",time:" << response->time().count();
             return this->dspResult_;
         }
         try {
             BidResponse bidResponse;
-            if (utility::serialize::getProtoBufObject(bidResponse, res)) {
+            if (utility::serialize::getProtoBufObject(bidResponse, response->body())) {
                 this->dspResult_ = std::move(this->bidResponseToDspResult(bidResponse, adplace));
+            } else {
+                LOG_WARN << "parse bidresponse failed for dsp " << this->dspId_;
             }
         } catch (std::exception & e) {
             LOG_ERROR << "exception occured in DSPHandlerInterface::parseResponse,e:" << e.what();
@@ -287,7 +292,7 @@ namespace dsp {
                 result.laterAccessUrls.push_back(bid.nurl());
             }
             cppcms::json::array tviews;
-            for (uint32_t i = 0; i < bid.pvm_size(); i++) {
+            for (int32_t i = 0; i < bid.pvm_size(); i++) {
                 const std::string & url = bid.pvm(i);
                 if (!url.empty()) {
                     tviews.push_back(url);
@@ -295,7 +300,7 @@ namespace dsp {
             }
             bannerJson["tviews"] = tviews;
             cppcms::json::array tclicks;
-            for (uint32_t i = 0; i < bid.cm_size(); i++) {
+            for (int32_t i = 0; i < bid.cm_size(); i++) {
                 const std::string & url = bid.cm(i);
                 if (!url.empty()) {
                     tclicks.push_back(url);

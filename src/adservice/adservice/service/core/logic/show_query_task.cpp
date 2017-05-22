@@ -496,7 +496,7 @@ namespace corelogic {
                 }
                 //等待所有请求
                 // allBidPromise.sync();
-                auto & httpResponses = globalHttpClient->execute(httpRequests);
+                const auto & httpResponses = globalHttpClient->execute(httpRequests);
                 std::vector<protocol::dsp::DSPBidResult> dspResults;
                 int counter = 0;
                 for (auto solution : dspSolutions) {
@@ -656,8 +656,6 @@ namespace corelogic {
 
             requestCounter.increaseShowForSSPSuccess();
         } else { // DSP of=0,of=2,of=3
-            utility::PerformanceWatcher dspShowPW("dsp show process", 3);
-            (void)dspShowPW;
             bool showCreative = true;
             dspSetParam(paramMap, showCreative, needLog);
             MT::common::Banner adBanner;
@@ -682,8 +680,6 @@ namespace corelogic {
         }
 
         if (needLog && log.adInfo.ppid != DEFAULT_PRODUCT_PACKAGE_ID) {
-            utility::PerformanceWatcher ppidRecordPW("dsp show product package order-counter process", 3);
-            (void)ppidRecordPW;
             int64_t orderId = 0;
             try {
                 orderId = log.adInfo.orderId;
@@ -705,8 +701,6 @@ namespace corelogic {
 
         // 用户曝光频次控制
         if (!log.userId.empty() && needLog) {
-            utility::PerformanceWatcher userFreqPW("dsp show user frequency record process", 3);
-            (void)userFreqPW;
             try {
                 MT::common::ASKey dailyKey(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_FREQ), "user-freq",
                                            log.userId + "d");
