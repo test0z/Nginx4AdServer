@@ -544,10 +544,11 @@ namespace corelogic {
                 exchangeClickUrl.add(URL_ADX_ID, std::to_string(condition.adxid));
                 exchangeClickUrl.add(URL_ADPLACE_ID, std::to_string(condition.mttyPid));
                 exchangeClickUrl.add(URL_ADOWNER_ID, std::to_string(dspResult.dspId));
-                std::string clickUrlEnc
-                    = adservice::utility::url::urlEncode_f(exchangeClickUrl.toUrl() + "&" URL_LANDING_URL "=");
+                std::string clickUrlUnEnc = exchangeClickUrl.toUrl() + "&" URL_LANDING_URL "=";
+                std::string clickUrlEnc = adservice::utility::url::urlEncode_f(clickUrlUnEnc);
                 //宏替换
                 adservice::utility::url::url_replace_all(dspResult.banner.json, "%%WINNING_PRICE%%", auctionPrice);
+                adservice::utility::url::url_replace_all(dspResult.banner.json, "%%CLICK_URL_UNESC%%", clickUrlUnEnc);
                 adservice::utility::url::url_replace_all(dspResult.banner.json, "%%CLICK_URL_ESC%%", clickUrlEnc);
 
                 for (auto & url : dspResult.laterAccessUrls) {

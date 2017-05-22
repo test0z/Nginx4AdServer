@@ -126,9 +126,14 @@ namespace dsp {
             this->dspResult_.resultOk = false;
             return this->dspResult_;
         }
-        BidResponse bidResponse;
-        if (utility::serialize::getProtoBufObject(bidResponse, res)) {
-            this->dspResult_ = std::move(this->bidResponseToDspResult(bidResponse, adplace));
+        try {
+            BidResponse bidResponse;
+            if (utility::serialize::getProtoBufObject(bidResponse, res)) {
+                this->dspResult_ = std::move(this->bidResponseToDspResult(bidResponse, adplace));
+            }
+        } catch (std::exception & e) {
+            LOG_ERROR << "exception occured in DSPHandlerInterface::parseResponse,e:" << e.what();
+            this->dspResult_.resultOk = false;
         }
         return this->dspResult_;
     }

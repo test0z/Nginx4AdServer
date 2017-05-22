@@ -253,6 +253,7 @@ namespace bidding {
         adResult->set_creative_id(std::to_string(adInfo.bannerId));
         adResult->set_advertiser_id(std::to_string(adxAdvId)); // adx_advid
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {      //原生广告
+            // auto & reqNative = adzInfo.native();
             std::string destUrl = mtlsArray[0].get("p9", "");
             adResult->add_destination_url(destUrl);
             const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
