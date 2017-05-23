@@ -297,7 +297,10 @@ namespace bidding {
                     linkObj->set_landing_type(adzInfo.native().landing_type(ind));
                 }
             }
-            if (!downloadUrl.empty() && linkObj->landing_type() == 1) {
+            if (!downloadUrl.empty()) { //下载类
+                auto appAttr = nativeAd->mutable_app_attr();
+                appAttr->set_app_name(title);
+                // todo 填写app 信息
             }
             url::URLHelper showUrlParam;
             getShowPara(showUrlParam, bidRequest.bid());
