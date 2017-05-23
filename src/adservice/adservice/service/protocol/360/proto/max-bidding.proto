@@ -1,6 +1,6 @@
 // version: 1.8
 
-package protocol.MAX;
+package MAX;
 
 message BidRequest {
 
@@ -177,7 +177,7 @@ message BidRequest {
       optional string os_version = 5;
 
       // 设备所处网络环境
-      // 0-未识别, 1-wifi, 2-2g, 3-3g, 4-4g
+      // 0-未识别, 1-wifi, 2-2g, 3-3g, 4-4g, 5-未知移动网络
       optional uint32 network = 6;
 
       // 设备的网络运营商
@@ -349,7 +349,7 @@ message NativeAd {
     // 广告主logo信息，JPG/PNG/静态GIF，尺寸：200X200，K数：50K以内
     optional Image logo = 6;
 
-    // 开屏联动创意的联动图片信息，JPG/PNG/静态GIF，K数：50K以内
+    // 创意的联动图片信息，JPG/PNG/静态GIF，K数：50K以内
     optional Image linked_image = 8;
 
     // 点击交互信息
@@ -377,6 +377,27 @@ message NativeAd {
     optional Link link = 7;
   }
   repeated Creative creatives = 2;
+
+  // 应用下载类广告中应用的详细信息
+  // 下载类广告必须填写该字段
+  message AppAttr {
+
+    // 应用（APP）的名称，例如：唯品会
+    optional string app_name = 1;
+
+    // 应用（APP）的包名，例如：com.achievo.vipshop
+    optional string app_pkg = 2;
+
+    // 应用（APP）的MD5签名，例如：d8bff3104d4ac1b246061c9b6355bea4
+    optional string app_md5 = 3;
+
+    // 应用（APP）的版本号(version code)，例如：632
+    optional int32 app_vc = 4;
+
+    // 应用（APP）的包大小，单位是字节，例如：41051697
+    optional int32 app_size = 5;
+  }
+  optional AppAttr app_attr = 9;
 
   // DSP自定义的展示跟踪地址
   // 如果创意被正常展示，会向该地址发送HTTP请求

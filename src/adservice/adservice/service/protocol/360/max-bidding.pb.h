@@ -30,7 +30,6 @@
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 
-namespace protocol {
 namespace MAX {
 
 // Internal implementation detail -- do not call these.
@@ -49,6 +48,7 @@ class BidRequest_UserCategory;
 class BidResponse;
 class BidResponse_Ads;
 class NativeAd;
+class NativeAd_AppAttr;
 class NativeAd_Creative;
 class NativeAd_Creative_Image;
 class NativeAd_Creative_Link;
@@ -114,7 +114,7 @@ inline bool BidRequest_Mobile_Device_ScreenOrientation_Parse(
 }
 // ===================================================================
 
-class BidRequest_UserCategory : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.MAX.BidRequest.UserCategory) */ {
+class BidRequest_UserCategory : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:MAX.BidRequest.UserCategory) */ {
  public:
   BidRequest_UserCategory();
   virtual ~BidRequest_UserCategory();
@@ -196,7 +196,7 @@ class BidRequest_UserCategory : public ::google::protobuf::Message /* @@protoc_i
   ::google::protobuf::int32 weight() const;
   void set_weight(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:protocol.MAX.BidRequest.UserCategory)
+  // @@protoc_insertion_point(class_scope:MAX.BidRequest.UserCategory)
  private:
   inline void set_has_id();
   inline void clear_has_id();
@@ -220,7 +220,7 @@ class BidRequest_UserCategory : public ::google::protobuf::Message /* @@protoc_i
 };
 // -------------------------------------------------------------------
 
-class BidRequest_ContentCategory : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.MAX.BidRequest.ContentCategory) */ {
+class BidRequest_ContentCategory : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:MAX.BidRequest.ContentCategory) */ {
  public:
   BidRequest_ContentCategory();
   virtual ~BidRequest_ContentCategory();
@@ -302,7 +302,7 @@ class BidRequest_ContentCategory : public ::google::protobuf::Message /* @@proto
   ::google::protobuf::int32 weight() const;
   void set_weight(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:protocol.MAX.BidRequest.ContentCategory)
+  // @@protoc_insertion_point(class_scope:MAX.BidRequest.ContentCategory)
  private:
   inline void set_has_id();
   inline void clear_has_id();
@@ -326,7 +326,7 @@ class BidRequest_ContentCategory : public ::google::protobuf::Message /* @@proto
 };
 // -------------------------------------------------------------------
 
-class BidRequest_AdSlot_Native : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.MAX.BidRequest.AdSlot.Native) */ {
+class BidRequest_AdSlot_Native : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:MAX.BidRequest.AdSlot.Native) */ {
  public:
   BidRequest_AdSlot_Native();
   virtual ~BidRequest_AdSlot_Native();
@@ -425,7 +425,7 @@ class BidRequest_AdSlot_Native : public ::google::protobuf::Message /* @@protoc_
   ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
       mutable_template_id();
 
-  // @@protoc_insertion_point(class_scope:protocol.MAX.BidRequest.AdSlot.Native)
+  // @@protoc_insertion_point(class_scope:MAX.BidRequest.AdSlot.Native)
  private:
   inline void set_has_ad_num();
   inline void clear_has_ad_num();
@@ -445,7 +445,7 @@ class BidRequest_AdSlot_Native : public ::google::protobuf::Message /* @@protoc_
 };
 // -------------------------------------------------------------------
 
-class BidRequest_AdSlot_Deal : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.MAX.BidRequest.AdSlot.Deal) */ {
+class BidRequest_AdSlot_Deal : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:MAX.BidRequest.AdSlot.Deal) */ {
  public:
   BidRequest_AdSlot_Deal();
   virtual ~BidRequest_AdSlot_Deal();
@@ -546,12 +546,12 @@ class BidRequest_AdSlot_Deal : public ::google::protobuf::Message /* @@protoc_in
   ::google::protobuf::int64 deal_id() const;
   void set_deal_id(::google::protobuf::int64 value);
 
-  // required .protocol.MAX.BidRequest.AdSlot.Deal.DealType deal_type = 2 [default = UNKNOWN_DEAL_TYPE];
+  // required .MAX.BidRequest.AdSlot.Deal.DealType deal_type = 2 [default = UNKNOWN_DEAL_TYPE];
   bool has_deal_type() const;
   void clear_deal_type();
   static const int kDealTypeFieldNumber = 2;
-  ::protocol::MAX::BidRequest_AdSlot_Deal_DealType deal_type() const;
-  void set_deal_type(::protocol::MAX::BidRequest_AdSlot_Deal_DealType value);
+  ::MAX::BidRequest_AdSlot_Deal_DealType deal_type() const;
+  void set_deal_type(::MAX::BidRequest_AdSlot_Deal_DealType value);
 
   // optional string date = 3;
   bool has_date() const;
@@ -565,7 +565,7 @@ class BidRequest_AdSlot_Deal : public ::google::protobuf::Message /* @@protoc_in
   ::std::string* release_date();
   void set_allocated_date(::std::string* date);
 
-  // @@protoc_insertion_point(class_scope:protocol.MAX.BidRequest.AdSlot.Deal)
+  // @@protoc_insertion_point(class_scope:MAX.BidRequest.AdSlot.Deal)
  private:
   inline void set_has_deal_id();
   inline void clear_has_deal_id();
@@ -592,7 +592,7 @@ class BidRequest_AdSlot_Deal : public ::google::protobuf::Message /* @@protoc_in
 };
 // -------------------------------------------------------------------
 
-class BidRequest_AdSlot : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.MAX.BidRequest.AdSlot) */ {
+class BidRequest_AdSlot : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:MAX.BidRequest.AdSlot) */ {
  public:
   BidRequest_AdSlot();
   virtual ~BidRequest_AdSlot();
@@ -743,35 +743,35 @@ class BidRequest_AdSlot : public ::google::protobuf::Message /* @@protoc_inserti
   ::google::protobuf::uint32 min_cpm_price() const;
   void set_min_cpm_price(::google::protobuf::uint32 value);
 
-  // optional .protocol.MAX.BidRequest.AdSlot.SlotVisibility slot_visibility = 7 [default = NO_DETECTION];
+  // optional .MAX.BidRequest.AdSlot.SlotVisibility slot_visibility = 7 [default = NO_DETECTION];
   bool has_slot_visibility() const;
   void clear_slot_visibility();
   static const int kSlotVisibilityFieldNumber = 7;
-  ::protocol::MAX::BidRequest_AdSlot_SlotVisibility slot_visibility() const;
-  void set_slot_visibility(::protocol::MAX::BidRequest_AdSlot_SlotVisibility value);
+  ::MAX::BidRequest_AdSlot_SlotVisibility slot_visibility() const;
+  void set_slot_visibility(::MAX::BidRequest_AdSlot_SlotVisibility value);
 
-  // optional .protocol.MAX.BidRequest.AdSlot.Native native = 8;
+  // optional .MAX.BidRequest.AdSlot.Native native = 8;
   bool has_native() const;
   void clear_native();
   static const int kNativeFieldNumber = 8;
-  const ::protocol::MAX::BidRequest_AdSlot_Native& native() const;
-  ::protocol::MAX::BidRequest_AdSlot_Native* mutable_native();
-  ::protocol::MAX::BidRequest_AdSlot_Native* release_native();
-  void set_allocated_native(::protocol::MAX::BidRequest_AdSlot_Native* native);
+  const ::MAX::BidRequest_AdSlot_Native& native() const;
+  ::MAX::BidRequest_AdSlot_Native* mutable_native();
+  ::MAX::BidRequest_AdSlot_Native* release_native();
+  void set_allocated_native(::MAX::BidRequest_AdSlot_Native* native);
 
-  // repeated .protocol.MAX.BidRequest.AdSlot.Deal deals = 9;
+  // repeated .MAX.BidRequest.AdSlot.Deal deals = 9;
   int deals_size() const;
   void clear_deals();
   static const int kDealsFieldNumber = 9;
-  const ::protocol::MAX::BidRequest_AdSlot_Deal& deals(int index) const;
-  ::protocol::MAX::BidRequest_AdSlot_Deal* mutable_deals(int index);
-  ::protocol::MAX::BidRequest_AdSlot_Deal* add_deals();
-  ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidRequest_AdSlot_Deal >*
+  const ::MAX::BidRequest_AdSlot_Deal& deals(int index) const;
+  ::MAX::BidRequest_AdSlot_Deal* mutable_deals(int index);
+  ::MAX::BidRequest_AdSlot_Deal* add_deals();
+  ::google::protobuf::RepeatedPtrField< ::MAX::BidRequest_AdSlot_Deal >*
       mutable_deals();
-  const ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidRequest_AdSlot_Deal >&
+  const ::google::protobuf::RepeatedPtrField< ::MAX::BidRequest_AdSlot_Deal >&
       deals() const;
 
-  // @@protoc_insertion_point(class_scope:protocol.MAX.BidRequest.AdSlot)
+  // @@protoc_insertion_point(class_scope:MAX.BidRequest.AdSlot)
  private:
   inline void set_has_id();
   inline void clear_has_id();
@@ -797,8 +797,8 @@ class BidRequest_AdSlot : public ::google::protobuf::Message /* @@protoc_inserti
   ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > view_type_;
   ::google::protobuf::int32 height_;
   ::google::protobuf::uint32 min_cpm_price_;
-  ::protocol::MAX::BidRequest_AdSlot_Native* native_;
-  ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidRequest_AdSlot_Deal > deals_;
+  ::MAX::BidRequest_AdSlot_Native* native_;
+  ::google::protobuf::RepeatedPtrField< ::MAX::BidRequest_AdSlot_Deal > deals_;
   int slot_visibility_;
   friend void  protobuf_AddDesc_max_2dbidding_2eproto();
   friend void protobuf_AssignDesc_max_2dbidding_2eproto();
@@ -809,7 +809,7 @@ class BidRequest_AdSlot : public ::google::protobuf::Message /* @@protoc_inserti
 };
 // -------------------------------------------------------------------
 
-class BidRequest_Mobile_Device : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.MAX.BidRequest.Mobile.Device) */ {
+class BidRequest_Mobile_Device : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:MAX.BidRequest.Mobile.Device) */ {
  public:
   BidRequest_Mobile_Device();
   virtual ~BidRequest_Mobile_Device();
@@ -1005,12 +1005,12 @@ class BidRequest_Mobile_Device : public ::google::protobuf::Message /* @@protoc_
   ::google::protobuf::int32 screen_height() const;
   void set_screen_height(::google::protobuf::int32 value);
 
-  // optional .protocol.MAX.BidRequest.Mobile.Device.ScreenOrientation screen_orientation = 12 [default = SCREEN_ORIENTATION_UNKNOWN];
+  // optional .MAX.BidRequest.Mobile.Device.ScreenOrientation screen_orientation = 12 [default = SCREEN_ORIENTATION_UNKNOWN];
   bool has_screen_orientation() const;
   void clear_screen_orientation();
   static const int kScreenOrientationFieldNumber = 12;
-  ::protocol::MAX::BidRequest_Mobile_Device_ScreenOrientation screen_orientation() const;
-  void set_screen_orientation(::protocol::MAX::BidRequest_Mobile_Device_ScreenOrientation value);
+  ::MAX::BidRequest_Mobile_Device_ScreenOrientation screen_orientation() const;
+  void set_screen_orientation(::MAX::BidRequest_Mobile_Device_ScreenOrientation value);
 
   // optional string idfa = 13;
   bool has_idfa() const;
@@ -1120,7 +1120,7 @@ class BidRequest_Mobile_Device : public ::google::protobuf::Message /* @@protoc_
   ::std::string* release_m2id();
   void set_allocated_m2id(::std::string* m2id);
 
-  // @@protoc_insertion_point(class_scope:protocol.MAX.BidRequest.Mobile.Device)
+  // @@protoc_insertion_point(class_scope:MAX.BidRequest.Mobile.Device)
  private:
   inline void set_has_platform();
   inline void clear_has_platform();
@@ -1195,7 +1195,7 @@ class BidRequest_Mobile_Device : public ::google::protobuf::Message /* @@protoc_
 };
 // -------------------------------------------------------------------
 
-class BidRequest_Mobile : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.MAX.BidRequest.Mobile) */ {
+class BidRequest_Mobile : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:MAX.BidRequest.Mobile) */ {
  public:
   BidRequest_Mobile();
   virtual ~BidRequest_Mobile();
@@ -1303,14 +1303,14 @@ class BidRequest_Mobile : public ::google::protobuf::Message /* @@protoc_inserti
   ::std::string* release_package_name();
   void set_allocated_package_name(::std::string* package_name);
 
-  // optional .protocol.MAX.BidRequest.Mobile.Device device = 4;
+  // optional .MAX.BidRequest.Mobile.Device device = 4;
   bool has_device() const;
   void clear_device();
   static const int kDeviceFieldNumber = 4;
-  const ::protocol::MAX::BidRequest_Mobile_Device& device() const;
-  ::protocol::MAX::BidRequest_Mobile_Device* mutable_device();
-  ::protocol::MAX::BidRequest_Mobile_Device* release_device();
-  void set_allocated_device(::protocol::MAX::BidRequest_Mobile_Device* device);
+  const ::MAX::BidRequest_Mobile_Device& device() const;
+  ::MAX::BidRequest_Mobile_Device* mutable_device();
+  ::MAX::BidRequest_Mobile_Device* release_device();
+  void set_allocated_device(::MAX::BidRequest_Mobile_Device* device);
 
   // repeated int32 app_category = 5;
   int app_category_size() const;
@@ -1324,7 +1324,7 @@ class BidRequest_Mobile : public ::google::protobuf::Message /* @@protoc_inserti
   ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
       mutable_app_category();
 
-  // @@protoc_insertion_point(class_scope:protocol.MAX.BidRequest.Mobile)
+  // @@protoc_insertion_point(class_scope:MAX.BidRequest.Mobile)
  private:
   inline void set_has_is_app();
   inline void clear_has_is_app();
@@ -1342,7 +1342,7 @@ class BidRequest_Mobile : public ::google::protobuf::Message /* @@protoc_inserti
   mutable int _cached_size_;
   ::google::protobuf::internal::ArenaStringPtr app_id_;
   ::google::protobuf::internal::ArenaStringPtr package_name_;
-  ::protocol::MAX::BidRequest_Mobile_Device* device_;
+  ::MAX::BidRequest_Mobile_Device* device_;
   ::google::protobuf::RepeatedField< ::google::protobuf::int32 > app_category_;
   bool is_app_;
   bool is_fullscreen_;
@@ -1355,7 +1355,7 @@ class BidRequest_Mobile : public ::google::protobuf::Message /* @@protoc_inserti
 };
 // -------------------------------------------------------------------
 
-class BidRequest : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.MAX.BidRequest) */ {
+class BidRequest : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:MAX.BidRequest) */ {
  public:
   BidRequest();
   virtual ~BidRequest();
@@ -1519,16 +1519,16 @@ class BidRequest : public ::google::protobuf::Message /* @@protoc_insertion_poin
   ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
       mutable_user_vertical();
 
-  // repeated .protocol.MAX.BidRequest.UserCategory user_category = 19;
+  // repeated .MAX.BidRequest.UserCategory user_category = 19;
   int user_category_size() const;
   void clear_user_category();
   static const int kUserCategoryFieldNumber = 19;
-  const ::protocol::MAX::BidRequest_UserCategory& user_category(int index) const;
-  ::protocol::MAX::BidRequest_UserCategory* mutable_user_category(int index);
-  ::protocol::MAX::BidRequest_UserCategory* add_user_category();
-  ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidRequest_UserCategory >*
+  const ::MAX::BidRequest_UserCategory& user_category(int index) const;
+  ::MAX::BidRequest_UserCategory* mutable_user_category(int index);
+  ::MAX::BidRequest_UserCategory* add_user_category();
+  ::google::protobuf::RepeatedPtrField< ::MAX::BidRequest_UserCategory >*
       mutable_user_category();
-  const ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidRequest_UserCategory >&
+  const ::google::protobuf::RepeatedPtrField< ::MAX::BidRequest_UserCategory >&
       user_category() const;
 
   // optional string url = 5;
@@ -1595,28 +1595,28 @@ class BidRequest : public ::google::protobuf::Message /* @@protoc_insertion_poin
   ::google::protobuf::int32 publisher_category_version() const;
   void set_publisher_category_version(::google::protobuf::int32 value);
 
-  // repeated .protocol.MAX.BidRequest.ContentCategory content_category = 18;
+  // repeated .MAX.BidRequest.ContentCategory content_category = 18;
   int content_category_size() const;
   void clear_content_category();
   static const int kContentCategoryFieldNumber = 18;
-  const ::protocol::MAX::BidRequest_ContentCategory& content_category(int index) const;
-  ::protocol::MAX::BidRequest_ContentCategory* mutable_content_category(int index);
-  ::protocol::MAX::BidRequest_ContentCategory* add_content_category();
-  ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidRequest_ContentCategory >*
+  const ::MAX::BidRequest_ContentCategory& content_category(int index) const;
+  ::MAX::BidRequest_ContentCategory* mutable_content_category(int index);
+  ::MAX::BidRequest_ContentCategory* add_content_category();
+  ::google::protobuf::RepeatedPtrField< ::MAX::BidRequest_ContentCategory >*
       mutable_content_category();
-  const ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidRequest_ContentCategory >&
+  const ::google::protobuf::RepeatedPtrField< ::MAX::BidRequest_ContentCategory >&
       content_category() const;
 
-  // repeated .protocol.MAX.BidRequest.AdSlot adslot = 7;
+  // repeated .MAX.BidRequest.AdSlot adslot = 7;
   int adslot_size() const;
   void clear_adslot();
   static const int kAdslotFieldNumber = 7;
-  const ::protocol::MAX::BidRequest_AdSlot& adslot(int index) const;
-  ::protocol::MAX::BidRequest_AdSlot* mutable_adslot(int index);
-  ::protocol::MAX::BidRequest_AdSlot* add_adslot();
-  ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidRequest_AdSlot >*
+  const ::MAX::BidRequest_AdSlot& adslot(int index) const;
+  ::MAX::BidRequest_AdSlot* mutable_adslot(int index);
+  ::MAX::BidRequest_AdSlot* add_adslot();
+  ::google::protobuf::RepeatedPtrField< ::MAX::BidRequest_AdSlot >*
       mutable_adslot();
-  const ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidRequest_AdSlot >&
+  const ::google::protobuf::RepeatedPtrField< ::MAX::BidRequest_AdSlot >&
       adslot() const;
 
   // repeated int32 excluded_attribute = 16;
@@ -1643,14 +1643,14 @@ class BidRequest : public ::google::protobuf::Message /* @@protoc_insertion_poin
   ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
       mutable_excluded_ad_category();
 
-  // optional .protocol.MAX.BidRequest.Mobile mobile = 8;
+  // optional .MAX.BidRequest.Mobile mobile = 8;
   bool has_mobile() const;
   void clear_mobile();
   static const int kMobileFieldNumber = 8;
-  const ::protocol::MAX::BidRequest_Mobile& mobile() const;
-  ::protocol::MAX::BidRequest_Mobile* mutable_mobile();
-  ::protocol::MAX::BidRequest_Mobile* release_mobile();
-  void set_allocated_mobile(::protocol::MAX::BidRequest_Mobile* mobile);
+  const ::MAX::BidRequest_Mobile& mobile() const;
+  ::MAX::BidRequest_Mobile* mutable_mobile();
+  ::MAX::BidRequest_Mobile* release_mobile();
+  void set_allocated_mobile(::MAX::BidRequest_Mobile* mobile);
 
   // optional string extend_data = 100;
   bool has_extend_data() const;
@@ -1664,7 +1664,7 @@ class BidRequest : public ::google::protobuf::Message /* @@protoc_insertion_poin
   ::std::string* release_extend_data();
   void set_allocated_extend_data(::std::string* extend_data);
 
-  // @@protoc_insertion_point(class_scope:protocol.MAX.BidRequest)
+  // @@protoc_insertion_point(class_scope:MAX.BidRequest)
  private:
   inline void set_has_bid();
   inline void clear_has_bid();
@@ -1709,17 +1709,17 @@ class BidRequest : public ::google::protobuf::Message /* @@protoc_insertion_poin
   bool is_https_;
   ::google::protobuf::internal::ArenaStringPtr user_agent_;
   ::google::protobuf::RepeatedField< ::google::protobuf::int32 > user_vertical_;
-  ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidRequest_UserCategory > user_category_;
+  ::google::protobuf::RepeatedPtrField< ::MAX::BidRequest_UserCategory > user_category_;
   ::google::protobuf::internal::ArenaStringPtr url_;
   ::google::protobuf::internal::ArenaStringPtr detected_language_;
   ::google::protobuf::uint32 adx_type_;
   ::google::protobuf::int32 publisher_id_;
   ::google::protobuf::RepeatedField< ::google::protobuf::int32 > publisher_category_;
-  ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidRequest_ContentCategory > content_category_;
-  ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidRequest_AdSlot > adslot_;
+  ::google::protobuf::RepeatedPtrField< ::MAX::BidRequest_ContentCategory > content_category_;
+  ::google::protobuf::RepeatedPtrField< ::MAX::BidRequest_AdSlot > adslot_;
   ::google::protobuf::RepeatedField< ::google::protobuf::int32 > excluded_attribute_;
   ::google::protobuf::RepeatedField< ::google::protobuf::int32 > excluded_ad_category_;
-  ::protocol::MAX::BidRequest_Mobile* mobile_;
+  ::MAX::BidRequest_Mobile* mobile_;
   ::google::protobuf::internal::ArenaStringPtr extend_data_;
   ::google::protobuf::int32 publisher_category_version_;
   friend void  protobuf_AddDesc_max_2dbidding_2eproto();
@@ -1731,7 +1731,7 @@ class BidRequest : public ::google::protobuf::Message /* @@protoc_insertion_poin
 };
 // -------------------------------------------------------------------
 
-class BidResponse_Ads : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.MAX.BidResponse.Ads) */ {
+class BidResponse_Ads : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:MAX.BidResponse.Ads) */ {
  public:
   BidResponse_Ads();
   virtual ~BidResponse_Ads();
@@ -1825,16 +1825,16 @@ class BidResponse_Ads : public ::google::protobuf::Message /* @@protoc_insertion
   ::std::string* release_html_snippet();
   void set_allocated_html_snippet(::std::string* html_snippet);
 
-  // repeated .protocol.MAX.NativeAd native_ad = 13;
+  // repeated .MAX.NativeAd native_ad = 13;
   int native_ad_size() const;
   void clear_native_ad();
   static const int kNativeAdFieldNumber = 13;
-  const ::protocol::MAX::NativeAd& native_ad(int index) const;
-  ::protocol::MAX::NativeAd* mutable_native_ad(int index);
-  ::protocol::MAX::NativeAd* add_native_ad();
-  ::google::protobuf::RepeatedPtrField< ::protocol::MAX::NativeAd >*
+  const ::MAX::NativeAd& native_ad(int index) const;
+  ::MAX::NativeAd* mutable_native_ad(int index);
+  ::MAX::NativeAd* add_native_ad();
+  ::google::protobuf::RepeatedPtrField< ::MAX::NativeAd >*
       mutable_native_ad();
-  const ::google::protobuf::RepeatedPtrField< ::protocol::MAX::NativeAd >&
+  const ::google::protobuf::RepeatedPtrField< ::MAX::NativeAd >&
       native_ad() const;
 
   // repeated int32 category = 4;
@@ -1951,7 +1951,7 @@ class BidResponse_Ads : public ::google::protobuf::Message /* @@protoc_insertion
   ::std::string* release_nurl();
   void set_allocated_nurl(::std::string* nurl);
 
-  // @@protoc_insertion_point(class_scope:protocol.MAX.BidResponse.Ads)
+  // @@protoc_insertion_point(class_scope:MAX.BidResponse.Ads)
  private:
   inline void set_has_adslot_id();
   inline void clear_has_adslot_id();
@@ -1981,7 +1981,7 @@ class BidResponse_Ads : public ::google::protobuf::Message /* @@protoc_insertion
   ::google::protobuf::uint32 adslot_id_;
   ::google::protobuf::uint32 max_cpm_price_;
   ::google::protobuf::internal::ArenaStringPtr html_snippet_;
-  ::google::protobuf::RepeatedPtrField< ::protocol::MAX::NativeAd > native_ad_;
+  ::google::protobuf::RepeatedPtrField< ::MAX::NativeAd > native_ad_;
   ::google::protobuf::RepeatedField< ::google::protobuf::int32 > category_;
   ::google::protobuf::RepeatedField< ::google::protobuf::int32 > creative_type_;
   ::google::protobuf::RepeatedField< ::google::protobuf::int32 > creative_attribute_;
@@ -2001,7 +2001,7 @@ class BidResponse_Ads : public ::google::protobuf::Message /* @@protoc_insertion
 };
 // -------------------------------------------------------------------
 
-class BidResponse : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.MAX.BidResponse) */ {
+class BidResponse : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:MAX.BidResponse) */ {
  public:
   BidResponse();
   virtual ~BidResponse();
@@ -2083,19 +2083,19 @@ class BidResponse : public ::google::protobuf::Message /* @@protoc_insertion_poi
   ::std::string* release_bid();
   void set_allocated_bid(::std::string* bid);
 
-  // repeated .protocol.MAX.BidResponse.Ads ads = 3;
+  // repeated .MAX.BidResponse.Ads ads = 3;
   int ads_size() const;
   void clear_ads();
   static const int kAdsFieldNumber = 3;
-  const ::protocol::MAX::BidResponse_Ads& ads(int index) const;
-  ::protocol::MAX::BidResponse_Ads* mutable_ads(int index);
-  ::protocol::MAX::BidResponse_Ads* add_ads();
-  ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidResponse_Ads >*
+  const ::MAX::BidResponse_Ads& ads(int index) const;
+  ::MAX::BidResponse_Ads* mutable_ads(int index);
+  ::MAX::BidResponse_Ads* add_ads();
+  ::google::protobuf::RepeatedPtrField< ::MAX::BidResponse_Ads >*
       mutable_ads();
-  const ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidResponse_Ads >&
+  const ::google::protobuf::RepeatedPtrField< ::MAX::BidResponse_Ads >&
       ads() const;
 
-  // @@protoc_insertion_point(class_scope:protocol.MAX.BidResponse)
+  // @@protoc_insertion_point(class_scope:MAX.BidResponse)
  private:
   inline void set_has_bid();
   inline void clear_has_bid();
@@ -2104,7 +2104,7 @@ class BidResponse : public ::google::protobuf::Message /* @@protoc_insertion_poi
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   ::google::protobuf::internal::ArenaStringPtr bid_;
-  ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidResponse_Ads > ads_;
+  ::google::protobuf::RepeatedPtrField< ::MAX::BidResponse_Ads > ads_;
   friend void  protobuf_AddDesc_max_2dbidding_2eproto();
   friend void protobuf_AssignDesc_max_2dbidding_2eproto();
   friend void protobuf_ShutdownFile_max_2dbidding_2eproto();
@@ -2114,7 +2114,7 @@ class BidResponse : public ::google::protobuf::Message /* @@protoc_insertion_poi
 };
 // -------------------------------------------------------------------
 
-class NativeAd_Creative_Image : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.MAX.NativeAd.Creative.Image) */ {
+class NativeAd_Creative_Image : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:MAX.NativeAd.Creative.Image) */ {
  public:
   NativeAd_Creative_Image();
   virtual ~NativeAd_Creative_Image();
@@ -2208,7 +2208,7 @@ class NativeAd_Creative_Image : public ::google::protobuf::Message /* @@protoc_i
   ::google::protobuf::int32 image_height() const;
   void set_image_height(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:protocol.MAX.NativeAd.Creative.Image)
+  // @@protoc_insertion_point(class_scope:MAX.NativeAd.Creative.Image)
  private:
   inline void set_has_image_url();
   inline void clear_has_image_url();
@@ -2232,7 +2232,7 @@ class NativeAd_Creative_Image : public ::google::protobuf::Message /* @@protoc_i
 };
 // -------------------------------------------------------------------
 
-class NativeAd_Creative_Link : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.MAX.NativeAd.Creative.Link) */ {
+class NativeAd_Creative_Link : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:MAX.NativeAd.Creative.Link) */ {
  public:
   NativeAd_Creative_Link();
   virtual ~NativeAd_Creative_Link();
@@ -2363,7 +2363,7 @@ class NativeAd_Creative_Link : public ::google::protobuf::Message /* @@protoc_in
   const ::google::protobuf::RepeatedPtrField< ::std::string>& click_tracks() const;
   ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_click_tracks();
 
-  // @@protoc_insertion_point(class_scope:protocol.MAX.NativeAd.Creative.Link)
+  // @@protoc_insertion_point(class_scope:MAX.NativeAd.Creative.Link)
  private:
   inline void set_has_click_url();
   inline void clear_has_click_url();
@@ -2389,7 +2389,7 @@ class NativeAd_Creative_Link : public ::google::protobuf::Message /* @@protoc_in
 };
 // -------------------------------------------------------------------
 
-class NativeAd_Creative : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.MAX.NativeAd.Creative) */ {
+class NativeAd_Creative : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:MAX.NativeAd.Creative) */ {
  public:
   NativeAd_Creative();
   virtual ~NativeAd_Creative();
@@ -2515,43 +2515,43 @@ class NativeAd_Creative : public ::google::protobuf::Message /* @@protoc_inserti
   ::std::string* release_button_name();
   void set_allocated_button_name(::std::string* button_name);
 
-  // optional .protocol.MAX.NativeAd.Creative.Image content_image = 5;
+  // optional .MAX.NativeAd.Creative.Image content_image = 5;
   bool has_content_image() const;
   void clear_content_image();
   static const int kContentImageFieldNumber = 5;
-  const ::protocol::MAX::NativeAd_Creative_Image& content_image() const;
-  ::protocol::MAX::NativeAd_Creative_Image* mutable_content_image();
-  ::protocol::MAX::NativeAd_Creative_Image* release_content_image();
-  void set_allocated_content_image(::protocol::MAX::NativeAd_Creative_Image* content_image);
+  const ::MAX::NativeAd_Creative_Image& content_image() const;
+  ::MAX::NativeAd_Creative_Image* mutable_content_image();
+  ::MAX::NativeAd_Creative_Image* release_content_image();
+  void set_allocated_content_image(::MAX::NativeAd_Creative_Image* content_image);
 
-  // optional .protocol.MAX.NativeAd.Creative.Image logo = 6;
+  // optional .MAX.NativeAd.Creative.Image logo = 6;
   bool has_logo() const;
   void clear_logo();
   static const int kLogoFieldNumber = 6;
-  const ::protocol::MAX::NativeAd_Creative_Image& logo() const;
-  ::protocol::MAX::NativeAd_Creative_Image* mutable_logo();
-  ::protocol::MAX::NativeAd_Creative_Image* release_logo();
-  void set_allocated_logo(::protocol::MAX::NativeAd_Creative_Image* logo);
+  const ::MAX::NativeAd_Creative_Image& logo() const;
+  ::MAX::NativeAd_Creative_Image* mutable_logo();
+  ::MAX::NativeAd_Creative_Image* release_logo();
+  void set_allocated_logo(::MAX::NativeAd_Creative_Image* logo);
 
-  // optional .protocol.MAX.NativeAd.Creative.Image linked_image = 8;
+  // optional .MAX.NativeAd.Creative.Image linked_image = 8;
   bool has_linked_image() const;
   void clear_linked_image();
   static const int kLinkedImageFieldNumber = 8;
-  const ::protocol::MAX::NativeAd_Creative_Image& linked_image() const;
-  ::protocol::MAX::NativeAd_Creative_Image* mutable_linked_image();
-  ::protocol::MAX::NativeAd_Creative_Image* release_linked_image();
-  void set_allocated_linked_image(::protocol::MAX::NativeAd_Creative_Image* linked_image);
+  const ::MAX::NativeAd_Creative_Image& linked_image() const;
+  ::MAX::NativeAd_Creative_Image* mutable_linked_image();
+  ::MAX::NativeAd_Creative_Image* release_linked_image();
+  void set_allocated_linked_image(::MAX::NativeAd_Creative_Image* linked_image);
 
-  // optional .protocol.MAX.NativeAd.Creative.Link link = 7;
+  // optional .MAX.NativeAd.Creative.Link link = 7;
   bool has_link() const;
   void clear_link();
   static const int kLinkFieldNumber = 7;
-  const ::protocol::MAX::NativeAd_Creative_Link& link() const;
-  ::protocol::MAX::NativeAd_Creative_Link* mutable_link();
-  ::protocol::MAX::NativeAd_Creative_Link* release_link();
-  void set_allocated_link(::protocol::MAX::NativeAd_Creative_Link* link);
+  const ::MAX::NativeAd_Creative_Link& link() const;
+  ::MAX::NativeAd_Creative_Link* mutable_link();
+  ::MAX::NativeAd_Creative_Link* release_link();
+  void set_allocated_link(::MAX::NativeAd_Creative_Link* link);
 
-  // @@protoc_insertion_point(class_scope:protocol.MAX.NativeAd.Creative)
+  // @@protoc_insertion_point(class_scope:MAX.NativeAd.Creative)
  private:
   inline void set_has_template_id();
   inline void clear_has_template_id();
@@ -2579,10 +2579,10 @@ class NativeAd_Creative : public ::google::protobuf::Message /* @@protoc_inserti
   ::google::protobuf::internal::ArenaStringPtr sub_title_;
   ::google::protobuf::internal::ArenaStringPtr description_;
   ::google::protobuf::internal::ArenaStringPtr button_name_;
-  ::protocol::MAX::NativeAd_Creative_Image* content_image_;
-  ::protocol::MAX::NativeAd_Creative_Image* logo_;
-  ::protocol::MAX::NativeAd_Creative_Image* linked_image_;
-  ::protocol::MAX::NativeAd_Creative_Link* link_;
+  ::MAX::NativeAd_Creative_Image* content_image_;
+  ::MAX::NativeAd_Creative_Image* logo_;
+  ::MAX::NativeAd_Creative_Image* linked_image_;
+  ::MAX::NativeAd_Creative_Link* link_;
   ::google::protobuf::int32 template_id_;
   friend void  protobuf_AddDesc_max_2dbidding_2eproto();
   friend void protobuf_AssignDesc_max_2dbidding_2eproto();
@@ -2593,7 +2593,155 @@ class NativeAd_Creative : public ::google::protobuf::Message /* @@protoc_inserti
 };
 // -------------------------------------------------------------------
 
-class NativeAd : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.MAX.NativeAd) */ {
+class NativeAd_AppAttr : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:MAX.NativeAd.AppAttr) */ {
+ public:
+  NativeAd_AppAttr();
+  virtual ~NativeAd_AppAttr();
+
+  NativeAd_AppAttr(const NativeAd_AppAttr& from);
+
+  inline NativeAd_AppAttr& operator=(const NativeAd_AppAttr& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const NativeAd_AppAttr& default_instance();
+
+  void Swap(NativeAd_AppAttr* other);
+
+  // implements Message ----------------------------------------------
+
+  inline NativeAd_AppAttr* New() const { return New(NULL); }
+
+  NativeAd_AppAttr* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const NativeAd_AppAttr& from);
+  void MergeFrom(const NativeAd_AppAttr& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(NativeAd_AppAttr* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional string app_name = 1;
+  bool has_app_name() const;
+  void clear_app_name();
+  static const int kAppNameFieldNumber = 1;
+  const ::std::string& app_name() const;
+  void set_app_name(const ::std::string& value);
+  void set_app_name(const char* value);
+  void set_app_name(const char* value, size_t size);
+  ::std::string* mutable_app_name();
+  ::std::string* release_app_name();
+  void set_allocated_app_name(::std::string* app_name);
+
+  // optional string app_pkg = 2;
+  bool has_app_pkg() const;
+  void clear_app_pkg();
+  static const int kAppPkgFieldNumber = 2;
+  const ::std::string& app_pkg() const;
+  void set_app_pkg(const ::std::string& value);
+  void set_app_pkg(const char* value);
+  void set_app_pkg(const char* value, size_t size);
+  ::std::string* mutable_app_pkg();
+  ::std::string* release_app_pkg();
+  void set_allocated_app_pkg(::std::string* app_pkg);
+
+  // optional string app_md5 = 3;
+  bool has_app_md5() const;
+  void clear_app_md5();
+  static const int kAppMd5FieldNumber = 3;
+  const ::std::string& app_md5() const;
+  void set_app_md5(const ::std::string& value);
+  void set_app_md5(const char* value);
+  void set_app_md5(const char* value, size_t size);
+  ::std::string* mutable_app_md5();
+  ::std::string* release_app_md5();
+  void set_allocated_app_md5(::std::string* app_md5);
+
+  // optional int32 app_vc = 4;
+  bool has_app_vc() const;
+  void clear_app_vc();
+  static const int kAppVcFieldNumber = 4;
+  ::google::protobuf::int32 app_vc() const;
+  void set_app_vc(::google::protobuf::int32 value);
+
+  // optional int32 app_size = 5;
+  bool has_app_size() const;
+  void clear_app_size();
+  static const int kAppSizeFieldNumber = 5;
+  ::google::protobuf::int32 app_size() const;
+  void set_app_size(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:MAX.NativeAd.AppAttr)
+ private:
+  inline void set_has_app_name();
+  inline void clear_has_app_name();
+  inline void set_has_app_pkg();
+  inline void clear_has_app_pkg();
+  inline void set_has_app_md5();
+  inline void clear_has_app_md5();
+  inline void set_has_app_vc();
+  inline void clear_has_app_vc();
+  inline void set_has_app_size();
+  inline void clear_has_app_size();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::internal::ArenaStringPtr app_name_;
+  ::google::protobuf::internal::ArenaStringPtr app_pkg_;
+  ::google::protobuf::internal::ArenaStringPtr app_md5_;
+  ::google::protobuf::int32 app_vc_;
+  ::google::protobuf::int32 app_size_;
+  friend void  protobuf_AddDesc_max_2dbidding_2eproto();
+  friend void protobuf_AssignDesc_max_2dbidding_2eproto();
+  friend void protobuf_ShutdownFile_max_2dbidding_2eproto();
+
+  void InitAsDefaultInstance();
+  static NativeAd_AppAttr* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class NativeAd : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:MAX.NativeAd) */ {
  public:
   NativeAd();
   virtual ~NativeAd();
@@ -2660,6 +2808,7 @@ class NativeAd : public ::google::protobuf::Message /* @@protoc_insertion_point(
   // nested types ----------------------------------------------------
 
   typedef NativeAd_Creative Creative;
+  typedef NativeAd_AppAttr AppAttr;
 
   // accessors -------------------------------------------------------
 
@@ -2670,17 +2819,26 @@ class NativeAd : public ::google::protobuf::Message /* @@protoc_insertion_point(
   ::google::protobuf::uint32 max_cpm_price() const;
   void set_max_cpm_price(::google::protobuf::uint32 value);
 
-  // repeated .protocol.MAX.NativeAd.Creative creatives = 2;
+  // repeated .MAX.NativeAd.Creative creatives = 2;
   int creatives_size() const;
   void clear_creatives();
   static const int kCreativesFieldNumber = 2;
-  const ::protocol::MAX::NativeAd_Creative& creatives(int index) const;
-  ::protocol::MAX::NativeAd_Creative* mutable_creatives(int index);
-  ::protocol::MAX::NativeAd_Creative* add_creatives();
-  ::google::protobuf::RepeatedPtrField< ::protocol::MAX::NativeAd_Creative >*
+  const ::MAX::NativeAd_Creative& creatives(int index) const;
+  ::MAX::NativeAd_Creative* mutable_creatives(int index);
+  ::MAX::NativeAd_Creative* add_creatives();
+  ::google::protobuf::RepeatedPtrField< ::MAX::NativeAd_Creative >*
       mutable_creatives();
-  const ::google::protobuf::RepeatedPtrField< ::protocol::MAX::NativeAd_Creative >&
+  const ::google::protobuf::RepeatedPtrField< ::MAX::NativeAd_Creative >&
       creatives() const;
+
+  // optional .MAX.NativeAd.AppAttr app_attr = 9;
+  bool has_app_attr() const;
+  void clear_app_attr();
+  static const int kAppAttrFieldNumber = 9;
+  const ::MAX::NativeAd_AppAttr& app_attr() const;
+  ::MAX::NativeAd_AppAttr* mutable_app_attr();
+  ::MAX::NativeAd_AppAttr* release_app_attr();
+  void set_allocated_app_attr(::MAX::NativeAd_AppAttr* app_attr);
 
   // repeated string impression_tracks = 3;
   int impression_tracks_size() const;
@@ -2757,10 +2915,12 @@ class NativeAd : public ::google::protobuf::Message /* @@protoc_insertion_point(
   ::google::protobuf::int64 deal_id() const;
   void set_deal_id(::google::protobuf::int64 value);
 
-  // @@protoc_insertion_point(class_scope:protocol.MAX.NativeAd)
+  // @@protoc_insertion_point(class_scope:MAX.NativeAd)
  private:
   inline void set_has_max_cpm_price();
   inline void clear_has_max_cpm_price();
+  inline void set_has_app_attr();
+  inline void clear_has_app_attr();
   inline void set_has_advertiser_id();
   inline void clear_has_advertiser_id();
   inline void set_has_creative_id();
@@ -2771,7 +2931,8 @@ class NativeAd : public ::google::protobuf::Message /* @@protoc_insertion_point(
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
-  ::google::protobuf::RepeatedPtrField< ::protocol::MAX::NativeAd_Creative > creatives_;
+  ::google::protobuf::RepeatedPtrField< ::MAX::NativeAd_Creative > creatives_;
+  ::MAX::NativeAd_AppAttr* app_attr_;
   ::google::protobuf::RepeatedPtrField< ::std::string> impression_tracks_;
   ::google::protobuf::RepeatedField< ::google::protobuf::int32 > category_;
   ::google::protobuf::RepeatedPtrField< ::std::string> destination_url_;
@@ -2809,13 +2970,13 @@ inline void BidRequest_UserCategory::clear_id() {
   clear_has_id();
 }
 inline ::google::protobuf::int32 BidRequest_UserCategory::id() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.UserCategory.id)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.UserCategory.id)
   return id_;
 }
 inline void BidRequest_UserCategory::set_id(::google::protobuf::int32 value) {
   set_has_id();
   id_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.UserCategory.id)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.UserCategory.id)
 }
 
 // required int32 weight = 2 [default = 1000];
@@ -2833,13 +2994,13 @@ inline void BidRequest_UserCategory::clear_weight() {
   clear_has_weight();
 }
 inline ::google::protobuf::int32 BidRequest_UserCategory::weight() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.UserCategory.weight)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.UserCategory.weight)
   return weight_;
 }
 inline void BidRequest_UserCategory::set_weight(::google::protobuf::int32 value) {
   set_has_weight();
   weight_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.UserCategory.weight)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.UserCategory.weight)
 }
 
 // -------------------------------------------------------------------
@@ -2861,13 +3022,13 @@ inline void BidRequest_ContentCategory::clear_id() {
   clear_has_id();
 }
 inline ::google::protobuf::int32 BidRequest_ContentCategory::id() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.ContentCategory.id)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.ContentCategory.id)
   return id_;
 }
 inline void BidRequest_ContentCategory::set_id(::google::protobuf::int32 value) {
   set_has_id();
   id_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.ContentCategory.id)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.ContentCategory.id)
 }
 
 // required int32 weight = 2 [default = 1000];
@@ -2885,13 +3046,13 @@ inline void BidRequest_ContentCategory::clear_weight() {
   clear_has_weight();
 }
 inline ::google::protobuf::int32 BidRequest_ContentCategory::weight() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.ContentCategory.weight)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.ContentCategory.weight)
   return weight_;
 }
 inline void BidRequest_ContentCategory::set_weight(::google::protobuf::int32 value) {
   set_has_weight();
   weight_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.ContentCategory.weight)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.ContentCategory.weight)
 }
 
 // -------------------------------------------------------------------
@@ -2913,13 +3074,13 @@ inline void BidRequest_AdSlot_Native::clear_ad_num() {
   clear_has_ad_num();
 }
 inline ::google::protobuf::uint32 BidRequest_AdSlot_Native::ad_num() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.AdSlot.Native.ad_num)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.AdSlot.Native.ad_num)
   return ad_num_;
 }
 inline void BidRequest_AdSlot_Native::set_ad_num(::google::protobuf::uint32 value) {
   set_has_ad_num();
   ad_num_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.AdSlot.Native.ad_num)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.AdSlot.Native.ad_num)
 }
 
 // repeated int32 landing_type = 2;
@@ -2930,25 +3091,25 @@ inline void BidRequest_AdSlot_Native::clear_landing_type() {
   landing_type_.Clear();
 }
 inline ::google::protobuf::int32 BidRequest_AdSlot_Native::landing_type(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.AdSlot.Native.landing_type)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.AdSlot.Native.landing_type)
   return landing_type_.Get(index);
 }
 inline void BidRequest_AdSlot_Native::set_landing_type(int index, ::google::protobuf::int32 value) {
   landing_type_.Set(index, value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.AdSlot.Native.landing_type)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.AdSlot.Native.landing_type)
 }
 inline void BidRequest_AdSlot_Native::add_landing_type(::google::protobuf::int32 value) {
   landing_type_.Add(value);
-  // @@protoc_insertion_point(field_add:protocol.MAX.BidRequest.AdSlot.Native.landing_type)
+  // @@protoc_insertion_point(field_add:MAX.BidRequest.AdSlot.Native.landing_type)
 }
 inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
 BidRequest_AdSlot_Native::landing_type() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.BidRequest.AdSlot.Native.landing_type)
+  // @@protoc_insertion_point(field_list:MAX.BidRequest.AdSlot.Native.landing_type)
   return landing_type_;
 }
 inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
 BidRequest_AdSlot_Native::mutable_landing_type() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.BidRequest.AdSlot.Native.landing_type)
+  // @@protoc_insertion_point(field_mutable_list:MAX.BidRequest.AdSlot.Native.landing_type)
   return &landing_type_;
 }
 
@@ -2960,25 +3121,25 @@ inline void BidRequest_AdSlot_Native::clear_template_id() {
   template_id_.Clear();
 }
 inline ::google::protobuf::int32 BidRequest_AdSlot_Native::template_id(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.AdSlot.Native.template_id)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.AdSlot.Native.template_id)
   return template_id_.Get(index);
 }
 inline void BidRequest_AdSlot_Native::set_template_id(int index, ::google::protobuf::int32 value) {
   template_id_.Set(index, value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.AdSlot.Native.template_id)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.AdSlot.Native.template_id)
 }
 inline void BidRequest_AdSlot_Native::add_template_id(::google::protobuf::int32 value) {
   template_id_.Add(value);
-  // @@protoc_insertion_point(field_add:protocol.MAX.BidRequest.AdSlot.Native.template_id)
+  // @@protoc_insertion_point(field_add:MAX.BidRequest.AdSlot.Native.template_id)
 }
 inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
 BidRequest_AdSlot_Native::template_id() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.BidRequest.AdSlot.Native.template_id)
+  // @@protoc_insertion_point(field_list:MAX.BidRequest.AdSlot.Native.template_id)
   return template_id_;
 }
 inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
 BidRequest_AdSlot_Native::mutable_template_id() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.BidRequest.AdSlot.Native.template_id)
+  // @@protoc_insertion_point(field_mutable_list:MAX.BidRequest.AdSlot.Native.template_id)
   return &template_id_;
 }
 
@@ -3001,16 +3162,16 @@ inline void BidRequest_AdSlot_Deal::clear_deal_id() {
   clear_has_deal_id();
 }
 inline ::google::protobuf::int64 BidRequest_AdSlot_Deal::deal_id() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.AdSlot.Deal.deal_id)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.AdSlot.Deal.deal_id)
   return deal_id_;
 }
 inline void BidRequest_AdSlot_Deal::set_deal_id(::google::protobuf::int64 value) {
   set_has_deal_id();
   deal_id_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.AdSlot.Deal.deal_id)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.AdSlot.Deal.deal_id)
 }
 
-// required .protocol.MAX.BidRequest.AdSlot.Deal.DealType deal_type = 2 [default = UNKNOWN_DEAL_TYPE];
+// required .MAX.BidRequest.AdSlot.Deal.DealType deal_type = 2 [default = UNKNOWN_DEAL_TYPE];
 inline bool BidRequest_AdSlot_Deal::has_deal_type() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
@@ -3024,15 +3185,15 @@ inline void BidRequest_AdSlot_Deal::clear_deal_type() {
   deal_type_ = 0;
   clear_has_deal_type();
 }
-inline ::protocol::MAX::BidRequest_AdSlot_Deal_DealType BidRequest_AdSlot_Deal::deal_type() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.AdSlot.Deal.deal_type)
-  return static_cast< ::protocol::MAX::BidRequest_AdSlot_Deal_DealType >(deal_type_);
+inline ::MAX::BidRequest_AdSlot_Deal_DealType BidRequest_AdSlot_Deal::deal_type() const {
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.AdSlot.Deal.deal_type)
+  return static_cast< ::MAX::BidRequest_AdSlot_Deal_DealType >(deal_type_);
 }
-inline void BidRequest_AdSlot_Deal::set_deal_type(::protocol::MAX::BidRequest_AdSlot_Deal_DealType value) {
-  assert(::protocol::MAX::BidRequest_AdSlot_Deal_DealType_IsValid(value));
+inline void BidRequest_AdSlot_Deal::set_deal_type(::MAX::BidRequest_AdSlot_Deal_DealType value) {
+  assert(::MAX::BidRequest_AdSlot_Deal_DealType_IsValid(value));
   set_has_deal_type();
   deal_type_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.AdSlot.Deal.deal_type)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.AdSlot.Deal.deal_type)
 }
 
 // optional string date = 3;
@@ -3050,32 +3211,32 @@ inline void BidRequest_AdSlot_Deal::clear_date() {
   clear_has_date();
 }
 inline const ::std::string& BidRequest_AdSlot_Deal::date() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.AdSlot.Deal.date)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.AdSlot.Deal.date)
   return date_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest_AdSlot_Deal::set_date(const ::std::string& value) {
   set_has_date();
   date_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.AdSlot.Deal.date)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.AdSlot.Deal.date)
 }
 inline void BidRequest_AdSlot_Deal::set_date(const char* value) {
   set_has_date();
   date_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.AdSlot.Deal.date)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.AdSlot.Deal.date)
 }
 inline void BidRequest_AdSlot_Deal::set_date(const char* value, size_t size) {
   set_has_date();
   date_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.AdSlot.Deal.date)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.AdSlot.Deal.date)
 }
 inline ::std::string* BidRequest_AdSlot_Deal::mutable_date() {
   set_has_date();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.AdSlot.Deal.date)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.AdSlot.Deal.date)
   return date_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest_AdSlot_Deal::release_date() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.AdSlot.Deal.date)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.AdSlot.Deal.date)
   clear_has_date();
   return date_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -3086,7 +3247,7 @@ inline void BidRequest_AdSlot_Deal::set_allocated_date(::std::string* date) {
     clear_has_date();
   }
   date_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), date);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.AdSlot.Deal.date)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.AdSlot.Deal.date)
 }
 
 // -------------------------------------------------------------------
@@ -3108,13 +3269,13 @@ inline void BidRequest_AdSlot::clear_id() {
   clear_has_id();
 }
 inline ::google::protobuf::uint32 BidRequest_AdSlot::id() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.AdSlot.id)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.AdSlot.id)
   return id_;
 }
 inline void BidRequest_AdSlot::set_id(::google::protobuf::uint32 value) {
   set_has_id();
   id_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.AdSlot.id)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.AdSlot.id)
 }
 
 // optional string pid = 2;
@@ -3132,32 +3293,32 @@ inline void BidRequest_AdSlot::clear_pid() {
   clear_has_pid();
 }
 inline const ::std::string& BidRequest_AdSlot::pid() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.AdSlot.pid)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.AdSlot.pid)
   return pid_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest_AdSlot::set_pid(const ::std::string& value) {
   set_has_pid();
   pid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.AdSlot.pid)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.AdSlot.pid)
 }
 inline void BidRequest_AdSlot::set_pid(const char* value) {
   set_has_pid();
   pid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.AdSlot.pid)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.AdSlot.pid)
 }
 inline void BidRequest_AdSlot::set_pid(const char* value, size_t size) {
   set_has_pid();
   pid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.AdSlot.pid)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.AdSlot.pid)
 }
 inline ::std::string* BidRequest_AdSlot::mutable_pid() {
   set_has_pid();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.AdSlot.pid)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.AdSlot.pid)
   return pid_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest_AdSlot::release_pid() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.AdSlot.pid)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.AdSlot.pid)
   clear_has_pid();
   return pid_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -3168,7 +3329,7 @@ inline void BidRequest_AdSlot::set_allocated_pid(::std::string* pid) {
     clear_has_pid();
   }
   pid_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), pid);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.AdSlot.pid)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.AdSlot.pid)
 }
 
 // optional int32 width = 3;
@@ -3186,13 +3347,13 @@ inline void BidRequest_AdSlot::clear_width() {
   clear_has_width();
 }
 inline ::google::protobuf::int32 BidRequest_AdSlot::width() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.AdSlot.width)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.AdSlot.width)
   return width_;
 }
 inline void BidRequest_AdSlot::set_width(::google::protobuf::int32 value) {
   set_has_width();
   width_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.AdSlot.width)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.AdSlot.width)
 }
 
 // optional int32 height = 4;
@@ -3210,13 +3371,13 @@ inline void BidRequest_AdSlot::clear_height() {
   clear_has_height();
 }
 inline ::google::protobuf::int32 BidRequest_AdSlot::height() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.AdSlot.height)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.AdSlot.height)
   return height_;
 }
 inline void BidRequest_AdSlot::set_height(::google::protobuf::int32 value) {
   set_has_height();
   height_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.AdSlot.height)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.AdSlot.height)
 }
 
 // repeated uint32 view_type = 5;
@@ -3227,25 +3388,25 @@ inline void BidRequest_AdSlot::clear_view_type() {
   view_type_.Clear();
 }
 inline ::google::protobuf::uint32 BidRequest_AdSlot::view_type(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.AdSlot.view_type)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.AdSlot.view_type)
   return view_type_.Get(index);
 }
 inline void BidRequest_AdSlot::set_view_type(int index, ::google::protobuf::uint32 value) {
   view_type_.Set(index, value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.AdSlot.view_type)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.AdSlot.view_type)
 }
 inline void BidRequest_AdSlot::add_view_type(::google::protobuf::uint32 value) {
   view_type_.Add(value);
-  // @@protoc_insertion_point(field_add:protocol.MAX.BidRequest.AdSlot.view_type)
+  // @@protoc_insertion_point(field_add:MAX.BidRequest.AdSlot.view_type)
 }
 inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
 BidRequest_AdSlot::view_type() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.BidRequest.AdSlot.view_type)
+  // @@protoc_insertion_point(field_list:MAX.BidRequest.AdSlot.view_type)
   return view_type_;
 }
 inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
 BidRequest_AdSlot::mutable_view_type() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.BidRequest.AdSlot.view_type)
+  // @@protoc_insertion_point(field_mutable_list:MAX.BidRequest.AdSlot.view_type)
   return &view_type_;
 }
 
@@ -3264,16 +3425,16 @@ inline void BidRequest_AdSlot::clear_min_cpm_price() {
   clear_has_min_cpm_price();
 }
 inline ::google::protobuf::uint32 BidRequest_AdSlot::min_cpm_price() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.AdSlot.min_cpm_price)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.AdSlot.min_cpm_price)
   return min_cpm_price_;
 }
 inline void BidRequest_AdSlot::set_min_cpm_price(::google::protobuf::uint32 value) {
   set_has_min_cpm_price();
   min_cpm_price_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.AdSlot.min_cpm_price)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.AdSlot.min_cpm_price)
 }
 
-// optional .protocol.MAX.BidRequest.AdSlot.SlotVisibility slot_visibility = 7 [default = NO_DETECTION];
+// optional .MAX.BidRequest.AdSlot.SlotVisibility slot_visibility = 7 [default = NO_DETECTION];
 inline bool BidRequest_AdSlot::has_slot_visibility() const {
   return (_has_bits_[0] & 0x00000040u) != 0;
 }
@@ -3287,18 +3448,18 @@ inline void BidRequest_AdSlot::clear_slot_visibility() {
   slot_visibility_ = 0;
   clear_has_slot_visibility();
 }
-inline ::protocol::MAX::BidRequest_AdSlot_SlotVisibility BidRequest_AdSlot::slot_visibility() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.AdSlot.slot_visibility)
-  return static_cast< ::protocol::MAX::BidRequest_AdSlot_SlotVisibility >(slot_visibility_);
+inline ::MAX::BidRequest_AdSlot_SlotVisibility BidRequest_AdSlot::slot_visibility() const {
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.AdSlot.slot_visibility)
+  return static_cast< ::MAX::BidRequest_AdSlot_SlotVisibility >(slot_visibility_);
 }
-inline void BidRequest_AdSlot::set_slot_visibility(::protocol::MAX::BidRequest_AdSlot_SlotVisibility value) {
-  assert(::protocol::MAX::BidRequest_AdSlot_SlotVisibility_IsValid(value));
+inline void BidRequest_AdSlot::set_slot_visibility(::MAX::BidRequest_AdSlot_SlotVisibility value) {
+  assert(::MAX::BidRequest_AdSlot_SlotVisibility_IsValid(value));
   set_has_slot_visibility();
   slot_visibility_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.AdSlot.slot_visibility)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.AdSlot.slot_visibility)
 }
 
-// optional .protocol.MAX.BidRequest.AdSlot.Native native = 8;
+// optional .MAX.BidRequest.AdSlot.Native native = 8;
 inline bool BidRequest_AdSlot::has_native() const {
   return (_has_bits_[0] & 0x00000080u) != 0;
 }
@@ -3309,29 +3470,29 @@ inline void BidRequest_AdSlot::clear_has_native() {
   _has_bits_[0] &= ~0x00000080u;
 }
 inline void BidRequest_AdSlot::clear_native() {
-  if (native_ != NULL) native_->::protocol::MAX::BidRequest_AdSlot_Native::Clear();
+  if (native_ != NULL) native_->::MAX::BidRequest_AdSlot_Native::Clear();
   clear_has_native();
 }
-inline const ::protocol::MAX::BidRequest_AdSlot_Native& BidRequest_AdSlot::native() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.AdSlot.native)
+inline const ::MAX::BidRequest_AdSlot_Native& BidRequest_AdSlot::native() const {
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.AdSlot.native)
   return native_ != NULL ? *native_ : *default_instance_->native_;
 }
-inline ::protocol::MAX::BidRequest_AdSlot_Native* BidRequest_AdSlot::mutable_native() {
+inline ::MAX::BidRequest_AdSlot_Native* BidRequest_AdSlot::mutable_native() {
   set_has_native();
   if (native_ == NULL) {
-    native_ = new ::protocol::MAX::BidRequest_AdSlot_Native;
+    native_ = new ::MAX::BidRequest_AdSlot_Native;
   }
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.AdSlot.native)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.AdSlot.native)
   return native_;
 }
-inline ::protocol::MAX::BidRequest_AdSlot_Native* BidRequest_AdSlot::release_native() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.AdSlot.native)
+inline ::MAX::BidRequest_AdSlot_Native* BidRequest_AdSlot::release_native() {
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.AdSlot.native)
   clear_has_native();
-  ::protocol::MAX::BidRequest_AdSlot_Native* temp = native_;
+  ::MAX::BidRequest_AdSlot_Native* temp = native_;
   native_ = NULL;
   return temp;
 }
-inline void BidRequest_AdSlot::set_allocated_native(::protocol::MAX::BidRequest_AdSlot_Native* native) {
+inline void BidRequest_AdSlot::set_allocated_native(::MAX::BidRequest_AdSlot_Native* native) {
   delete native_;
   native_ = native;
   if (native) {
@@ -3339,36 +3500,36 @@ inline void BidRequest_AdSlot::set_allocated_native(::protocol::MAX::BidRequest_
   } else {
     clear_has_native();
   }
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.AdSlot.native)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.AdSlot.native)
 }
 
-// repeated .protocol.MAX.BidRequest.AdSlot.Deal deals = 9;
+// repeated .MAX.BidRequest.AdSlot.Deal deals = 9;
 inline int BidRequest_AdSlot::deals_size() const {
   return deals_.size();
 }
 inline void BidRequest_AdSlot::clear_deals() {
   deals_.Clear();
 }
-inline const ::protocol::MAX::BidRequest_AdSlot_Deal& BidRequest_AdSlot::deals(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.AdSlot.deals)
+inline const ::MAX::BidRequest_AdSlot_Deal& BidRequest_AdSlot::deals(int index) const {
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.AdSlot.deals)
   return deals_.Get(index);
 }
-inline ::protocol::MAX::BidRequest_AdSlot_Deal* BidRequest_AdSlot::mutable_deals(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.AdSlot.deals)
+inline ::MAX::BidRequest_AdSlot_Deal* BidRequest_AdSlot::mutable_deals(int index) {
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.AdSlot.deals)
   return deals_.Mutable(index);
 }
-inline ::protocol::MAX::BidRequest_AdSlot_Deal* BidRequest_AdSlot::add_deals() {
-  // @@protoc_insertion_point(field_add:protocol.MAX.BidRequest.AdSlot.deals)
+inline ::MAX::BidRequest_AdSlot_Deal* BidRequest_AdSlot::add_deals() {
+  // @@protoc_insertion_point(field_add:MAX.BidRequest.AdSlot.deals)
   return deals_.Add();
 }
-inline ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidRequest_AdSlot_Deal >*
+inline ::google::protobuf::RepeatedPtrField< ::MAX::BidRequest_AdSlot_Deal >*
 BidRequest_AdSlot::mutable_deals() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.BidRequest.AdSlot.deals)
+  // @@protoc_insertion_point(field_mutable_list:MAX.BidRequest.AdSlot.deals)
   return &deals_;
 }
-inline const ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidRequest_AdSlot_Deal >&
+inline const ::google::protobuf::RepeatedPtrField< ::MAX::BidRequest_AdSlot_Deal >&
 BidRequest_AdSlot::deals() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.BidRequest.AdSlot.deals)
+  // @@protoc_insertion_point(field_list:MAX.BidRequest.AdSlot.deals)
   return deals_;
 }
 
@@ -3391,32 +3552,32 @@ inline void BidRequest_Mobile_Device::clear_platform() {
   clear_has_platform();
 }
 inline const ::std::string& BidRequest_Mobile_Device::platform() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.Device.platform)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.Device.platform)
   return platform_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest_Mobile_Device::set_platform(const ::std::string& value) {
   set_has_platform();
   platform_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.Device.platform)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.Device.platform)
 }
 inline void BidRequest_Mobile_Device::set_platform(const char* value) {
   set_has_platform();
   platform_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.Mobile.Device.platform)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.Mobile.Device.platform)
 }
 inline void BidRequest_Mobile_Device::set_platform(const char* value, size_t size) {
   set_has_platform();
   platform_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.Mobile.Device.platform)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.Mobile.Device.platform)
 }
 inline ::std::string* BidRequest_Mobile_Device::mutable_platform() {
   set_has_platform();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.Mobile.Device.platform)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.Mobile.Device.platform)
   return platform_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest_Mobile_Device::release_platform() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.Mobile.Device.platform)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.Mobile.Device.platform)
   clear_has_platform();
   return platform_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -3427,7 +3588,7 @@ inline void BidRequest_Mobile_Device::set_allocated_platform(::std::string* plat
     clear_has_platform();
   }
   platform_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), platform);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.Mobile.Device.platform)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.Mobile.Device.platform)
 }
 
 // optional string model = 3;
@@ -3445,32 +3606,32 @@ inline void BidRequest_Mobile_Device::clear_model() {
   clear_has_model();
 }
 inline const ::std::string& BidRequest_Mobile_Device::model() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.Device.model)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.Device.model)
   return model_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest_Mobile_Device::set_model(const ::std::string& value) {
   set_has_model();
   model_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.Device.model)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.Device.model)
 }
 inline void BidRequest_Mobile_Device::set_model(const char* value) {
   set_has_model();
   model_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.Mobile.Device.model)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.Mobile.Device.model)
 }
 inline void BidRequest_Mobile_Device::set_model(const char* value, size_t size) {
   set_has_model();
   model_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.Mobile.Device.model)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.Mobile.Device.model)
 }
 inline ::std::string* BidRequest_Mobile_Device::mutable_model() {
   set_has_model();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.Mobile.Device.model)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.Mobile.Device.model)
   return model_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest_Mobile_Device::release_model() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.Mobile.Device.model)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.Mobile.Device.model)
   clear_has_model();
   return model_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -3481,7 +3642,7 @@ inline void BidRequest_Mobile_Device::set_allocated_model(::std::string* model) 
     clear_has_model();
   }
   model_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), model);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.Mobile.Device.model)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.Mobile.Device.model)
 }
 
 // optional string os = 4;
@@ -3499,32 +3660,32 @@ inline void BidRequest_Mobile_Device::clear_os() {
   clear_has_os();
 }
 inline const ::std::string& BidRequest_Mobile_Device::os() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.Device.os)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.Device.os)
   return os_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest_Mobile_Device::set_os(const ::std::string& value) {
   set_has_os();
   os_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.Device.os)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.Device.os)
 }
 inline void BidRequest_Mobile_Device::set_os(const char* value) {
   set_has_os();
   os_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.Mobile.Device.os)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.Mobile.Device.os)
 }
 inline void BidRequest_Mobile_Device::set_os(const char* value, size_t size) {
   set_has_os();
   os_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.Mobile.Device.os)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.Mobile.Device.os)
 }
 inline ::std::string* BidRequest_Mobile_Device::mutable_os() {
   set_has_os();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.Mobile.Device.os)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.Mobile.Device.os)
   return os_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest_Mobile_Device::release_os() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.Mobile.Device.os)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.Mobile.Device.os)
   clear_has_os();
   return os_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -3535,7 +3696,7 @@ inline void BidRequest_Mobile_Device::set_allocated_os(::std::string* os) {
     clear_has_os();
   }
   os_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), os);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.Mobile.Device.os)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.Mobile.Device.os)
 }
 
 // optional string os_version = 5;
@@ -3553,32 +3714,32 @@ inline void BidRequest_Mobile_Device::clear_os_version() {
   clear_has_os_version();
 }
 inline const ::std::string& BidRequest_Mobile_Device::os_version() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.Device.os_version)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.Device.os_version)
   return os_version_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest_Mobile_Device::set_os_version(const ::std::string& value) {
   set_has_os_version();
   os_version_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.Device.os_version)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.Device.os_version)
 }
 inline void BidRequest_Mobile_Device::set_os_version(const char* value) {
   set_has_os_version();
   os_version_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.Mobile.Device.os_version)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.Mobile.Device.os_version)
 }
 inline void BidRequest_Mobile_Device::set_os_version(const char* value, size_t size) {
   set_has_os_version();
   os_version_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.Mobile.Device.os_version)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.Mobile.Device.os_version)
 }
 inline ::std::string* BidRequest_Mobile_Device::mutable_os_version() {
   set_has_os_version();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.Mobile.Device.os_version)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.Mobile.Device.os_version)
   return os_version_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest_Mobile_Device::release_os_version() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.Mobile.Device.os_version)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.Mobile.Device.os_version)
   clear_has_os_version();
   return os_version_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -3589,7 +3750,7 @@ inline void BidRequest_Mobile_Device::set_allocated_os_version(::std::string* os
     clear_has_os_version();
   }
   os_version_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), os_version);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.Mobile.Device.os_version)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.Mobile.Device.os_version)
 }
 
 // optional uint32 network = 6;
@@ -3607,13 +3768,13 @@ inline void BidRequest_Mobile_Device::clear_network() {
   clear_has_network();
 }
 inline ::google::protobuf::uint32 BidRequest_Mobile_Device::network() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.Device.network)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.Device.network)
   return network_;
 }
 inline void BidRequest_Mobile_Device::set_network(::google::protobuf::uint32 value) {
   set_has_network();
   network_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.Device.network)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.Device.network)
 }
 
 // optional int32 carrier_id = 7;
@@ -3631,13 +3792,13 @@ inline void BidRequest_Mobile_Device::clear_carrier_id() {
   clear_has_carrier_id();
 }
 inline ::google::protobuf::int32 BidRequest_Mobile_Device::carrier_id() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.Device.carrier_id)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.Device.carrier_id)
   return carrier_id_;
 }
 inline void BidRequest_Mobile_Device::set_carrier_id(::google::protobuf::int32 value) {
   set_has_carrier_id();
   carrier_id_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.Device.carrier_id)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.Device.carrier_id)
 }
 
 // optional string longitude = 8;
@@ -3655,32 +3816,32 @@ inline void BidRequest_Mobile_Device::clear_longitude() {
   clear_has_longitude();
 }
 inline const ::std::string& BidRequest_Mobile_Device::longitude() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.Device.longitude)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.Device.longitude)
   return longitude_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest_Mobile_Device::set_longitude(const ::std::string& value) {
   set_has_longitude();
   longitude_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.Device.longitude)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.Device.longitude)
 }
 inline void BidRequest_Mobile_Device::set_longitude(const char* value) {
   set_has_longitude();
   longitude_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.Mobile.Device.longitude)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.Mobile.Device.longitude)
 }
 inline void BidRequest_Mobile_Device::set_longitude(const char* value, size_t size) {
   set_has_longitude();
   longitude_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.Mobile.Device.longitude)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.Mobile.Device.longitude)
 }
 inline ::std::string* BidRequest_Mobile_Device::mutable_longitude() {
   set_has_longitude();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.Mobile.Device.longitude)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.Mobile.Device.longitude)
   return longitude_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest_Mobile_Device::release_longitude() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.Mobile.Device.longitude)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.Mobile.Device.longitude)
   clear_has_longitude();
   return longitude_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -3691,7 +3852,7 @@ inline void BidRequest_Mobile_Device::set_allocated_longitude(::std::string* lon
     clear_has_longitude();
   }
   longitude_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), longitude);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.Mobile.Device.longitude)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.Mobile.Device.longitude)
 }
 
 // optional string latitude = 9;
@@ -3709,32 +3870,32 @@ inline void BidRequest_Mobile_Device::clear_latitude() {
   clear_has_latitude();
 }
 inline const ::std::string& BidRequest_Mobile_Device::latitude() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.Device.latitude)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.Device.latitude)
   return latitude_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest_Mobile_Device::set_latitude(const ::std::string& value) {
   set_has_latitude();
   latitude_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.Device.latitude)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.Device.latitude)
 }
 inline void BidRequest_Mobile_Device::set_latitude(const char* value) {
   set_has_latitude();
   latitude_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.Mobile.Device.latitude)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.Mobile.Device.latitude)
 }
 inline void BidRequest_Mobile_Device::set_latitude(const char* value, size_t size) {
   set_has_latitude();
   latitude_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.Mobile.Device.latitude)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.Mobile.Device.latitude)
 }
 inline ::std::string* BidRequest_Mobile_Device::mutable_latitude() {
   set_has_latitude();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.Mobile.Device.latitude)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.Mobile.Device.latitude)
   return latitude_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest_Mobile_Device::release_latitude() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.Mobile.Device.latitude)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.Mobile.Device.latitude)
   clear_has_latitude();
   return latitude_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -3745,7 +3906,7 @@ inline void BidRequest_Mobile_Device::set_allocated_latitude(::std::string* lati
     clear_has_latitude();
   }
   latitude_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), latitude);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.Mobile.Device.latitude)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.Mobile.Device.latitude)
 }
 
 // optional int32 screen_width = 10;
@@ -3763,13 +3924,13 @@ inline void BidRequest_Mobile_Device::clear_screen_width() {
   clear_has_screen_width();
 }
 inline ::google::protobuf::int32 BidRequest_Mobile_Device::screen_width() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.Device.screen_width)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.Device.screen_width)
   return screen_width_;
 }
 inline void BidRequest_Mobile_Device::set_screen_width(::google::protobuf::int32 value) {
   set_has_screen_width();
   screen_width_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.Device.screen_width)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.Device.screen_width)
 }
 
 // optional int32 screen_height = 11;
@@ -3787,16 +3948,16 @@ inline void BidRequest_Mobile_Device::clear_screen_height() {
   clear_has_screen_height();
 }
 inline ::google::protobuf::int32 BidRequest_Mobile_Device::screen_height() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.Device.screen_height)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.Device.screen_height)
   return screen_height_;
 }
 inline void BidRequest_Mobile_Device::set_screen_height(::google::protobuf::int32 value) {
   set_has_screen_height();
   screen_height_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.Device.screen_height)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.Device.screen_height)
 }
 
-// optional .protocol.MAX.BidRequest.Mobile.Device.ScreenOrientation screen_orientation = 12 [default = SCREEN_ORIENTATION_UNKNOWN];
+// optional .MAX.BidRequest.Mobile.Device.ScreenOrientation screen_orientation = 12 [default = SCREEN_ORIENTATION_UNKNOWN];
 inline bool BidRequest_Mobile_Device::has_screen_orientation() const {
   return (_has_bits_[0] & 0x00000400u) != 0;
 }
@@ -3810,15 +3971,15 @@ inline void BidRequest_Mobile_Device::clear_screen_orientation() {
   screen_orientation_ = 0;
   clear_has_screen_orientation();
 }
-inline ::protocol::MAX::BidRequest_Mobile_Device_ScreenOrientation BidRequest_Mobile_Device::screen_orientation() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.Device.screen_orientation)
-  return static_cast< ::protocol::MAX::BidRequest_Mobile_Device_ScreenOrientation >(screen_orientation_);
+inline ::MAX::BidRequest_Mobile_Device_ScreenOrientation BidRequest_Mobile_Device::screen_orientation() const {
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.Device.screen_orientation)
+  return static_cast< ::MAX::BidRequest_Mobile_Device_ScreenOrientation >(screen_orientation_);
 }
-inline void BidRequest_Mobile_Device::set_screen_orientation(::protocol::MAX::BidRequest_Mobile_Device_ScreenOrientation value) {
-  assert(::protocol::MAX::BidRequest_Mobile_Device_ScreenOrientation_IsValid(value));
+inline void BidRequest_Mobile_Device::set_screen_orientation(::MAX::BidRequest_Mobile_Device_ScreenOrientation value) {
+  assert(::MAX::BidRequest_Mobile_Device_ScreenOrientation_IsValid(value));
   set_has_screen_orientation();
   screen_orientation_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.Device.screen_orientation)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.Device.screen_orientation)
 }
 
 // optional string idfa = 13;
@@ -3836,32 +3997,32 @@ inline void BidRequest_Mobile_Device::clear_idfa() {
   clear_has_idfa();
 }
 inline const ::std::string& BidRequest_Mobile_Device::idfa() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.Device.idfa)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.Device.idfa)
   return idfa_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest_Mobile_Device::set_idfa(const ::std::string& value) {
   set_has_idfa();
   idfa_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.Device.idfa)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.Device.idfa)
 }
 inline void BidRequest_Mobile_Device::set_idfa(const char* value) {
   set_has_idfa();
   idfa_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.Mobile.Device.idfa)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.Mobile.Device.idfa)
 }
 inline void BidRequest_Mobile_Device::set_idfa(const char* value, size_t size) {
   set_has_idfa();
   idfa_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.Mobile.Device.idfa)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.Mobile.Device.idfa)
 }
 inline ::std::string* BidRequest_Mobile_Device::mutable_idfa() {
   set_has_idfa();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.Mobile.Device.idfa)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.Mobile.Device.idfa)
   return idfa_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest_Mobile_Device::release_idfa() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.Mobile.Device.idfa)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.Mobile.Device.idfa)
   clear_has_idfa();
   return idfa_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -3872,7 +4033,7 @@ inline void BidRequest_Mobile_Device::set_allocated_idfa(::std::string* idfa) {
     clear_has_idfa();
   }
   idfa_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), idfa);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.Mobile.Device.idfa)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.Mobile.Device.idfa)
 }
 
 // optional string hashed_idfa = 14;
@@ -3890,32 +4051,32 @@ inline void BidRequest_Mobile_Device::clear_hashed_idfa() {
   clear_has_hashed_idfa();
 }
 inline const ::std::string& BidRequest_Mobile_Device::hashed_idfa() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.Device.hashed_idfa)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.Device.hashed_idfa)
   return hashed_idfa_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest_Mobile_Device::set_hashed_idfa(const ::std::string& value) {
   set_has_hashed_idfa();
   hashed_idfa_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.Device.hashed_idfa)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.Device.hashed_idfa)
 }
 inline void BidRequest_Mobile_Device::set_hashed_idfa(const char* value) {
   set_has_hashed_idfa();
   hashed_idfa_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.Mobile.Device.hashed_idfa)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.Mobile.Device.hashed_idfa)
 }
 inline void BidRequest_Mobile_Device::set_hashed_idfa(const char* value, size_t size) {
   set_has_hashed_idfa();
   hashed_idfa_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.Mobile.Device.hashed_idfa)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.Mobile.Device.hashed_idfa)
 }
 inline ::std::string* BidRequest_Mobile_Device::mutable_hashed_idfa() {
   set_has_hashed_idfa();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.Mobile.Device.hashed_idfa)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.Mobile.Device.hashed_idfa)
   return hashed_idfa_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest_Mobile_Device::release_hashed_idfa() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.Mobile.Device.hashed_idfa)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.Mobile.Device.hashed_idfa)
   clear_has_hashed_idfa();
   return hashed_idfa_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -3926,7 +4087,7 @@ inline void BidRequest_Mobile_Device::set_allocated_hashed_idfa(::std::string* h
     clear_has_hashed_idfa();
   }
   hashed_idfa_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), hashed_idfa);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.Mobile.Device.hashed_idfa)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.Mobile.Device.hashed_idfa)
 }
 
 // optional string imei = 16;
@@ -3944,32 +4105,32 @@ inline void BidRequest_Mobile_Device::clear_imei() {
   clear_has_imei();
 }
 inline const ::std::string& BidRequest_Mobile_Device::imei() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.Device.imei)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.Device.imei)
   return imei_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest_Mobile_Device::set_imei(const ::std::string& value) {
   set_has_imei();
   imei_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.Device.imei)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.Device.imei)
 }
 inline void BidRequest_Mobile_Device::set_imei(const char* value) {
   set_has_imei();
   imei_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.Mobile.Device.imei)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.Mobile.Device.imei)
 }
 inline void BidRequest_Mobile_Device::set_imei(const char* value, size_t size) {
   set_has_imei();
   imei_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.Mobile.Device.imei)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.Mobile.Device.imei)
 }
 inline ::std::string* BidRequest_Mobile_Device::mutable_imei() {
   set_has_imei();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.Mobile.Device.imei)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.Mobile.Device.imei)
   return imei_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest_Mobile_Device::release_imei() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.Mobile.Device.imei)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.Mobile.Device.imei)
   clear_has_imei();
   return imei_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -3980,7 +4141,7 @@ inline void BidRequest_Mobile_Device::set_allocated_imei(::std::string* imei) {
     clear_has_imei();
   }
   imei_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), imei);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.Mobile.Device.imei)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.Mobile.Device.imei)
 }
 
 // optional string hashed_imei = 15;
@@ -3998,32 +4159,32 @@ inline void BidRequest_Mobile_Device::clear_hashed_imei() {
   clear_has_hashed_imei();
 }
 inline const ::std::string& BidRequest_Mobile_Device::hashed_imei() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.Device.hashed_imei)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.Device.hashed_imei)
   return hashed_imei_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest_Mobile_Device::set_hashed_imei(const ::std::string& value) {
   set_has_hashed_imei();
   hashed_imei_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.Device.hashed_imei)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.Device.hashed_imei)
 }
 inline void BidRequest_Mobile_Device::set_hashed_imei(const char* value) {
   set_has_hashed_imei();
   hashed_imei_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.Mobile.Device.hashed_imei)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.Mobile.Device.hashed_imei)
 }
 inline void BidRequest_Mobile_Device::set_hashed_imei(const char* value, size_t size) {
   set_has_hashed_imei();
   hashed_imei_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.Mobile.Device.hashed_imei)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.Mobile.Device.hashed_imei)
 }
 inline ::std::string* BidRequest_Mobile_Device::mutable_hashed_imei() {
   set_has_hashed_imei();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.Mobile.Device.hashed_imei)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.Mobile.Device.hashed_imei)
   return hashed_imei_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest_Mobile_Device::release_hashed_imei() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.Mobile.Device.hashed_imei)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.Mobile.Device.hashed_imei)
   clear_has_hashed_imei();
   return hashed_imei_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -4034,7 +4195,7 @@ inline void BidRequest_Mobile_Device::set_allocated_hashed_imei(::std::string* h
     clear_has_hashed_imei();
   }
   hashed_imei_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), hashed_imei);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.Mobile.Device.hashed_imei)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.Mobile.Device.hashed_imei)
 }
 
 // optional string android_id = 17;
@@ -4052,32 +4213,32 @@ inline void BidRequest_Mobile_Device::clear_android_id() {
   clear_has_android_id();
 }
 inline const ::std::string& BidRequest_Mobile_Device::android_id() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.Device.android_id)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.Device.android_id)
   return android_id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest_Mobile_Device::set_android_id(const ::std::string& value) {
   set_has_android_id();
   android_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.Device.android_id)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.Device.android_id)
 }
 inline void BidRequest_Mobile_Device::set_android_id(const char* value) {
   set_has_android_id();
   android_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.Mobile.Device.android_id)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.Mobile.Device.android_id)
 }
 inline void BidRequest_Mobile_Device::set_android_id(const char* value, size_t size) {
   set_has_android_id();
   android_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.Mobile.Device.android_id)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.Mobile.Device.android_id)
 }
 inline ::std::string* BidRequest_Mobile_Device::mutable_android_id() {
   set_has_android_id();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.Mobile.Device.android_id)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.Mobile.Device.android_id)
   return android_id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest_Mobile_Device::release_android_id() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.Mobile.Device.android_id)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.Mobile.Device.android_id)
   clear_has_android_id();
   return android_id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -4088,7 +4249,7 @@ inline void BidRequest_Mobile_Device::set_allocated_android_id(::std::string* an
     clear_has_android_id();
   }
   android_id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), android_id);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.Mobile.Device.android_id)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.Mobile.Device.android_id)
 }
 
 // optional string hashed_android_id = 18;
@@ -4106,32 +4267,32 @@ inline void BidRequest_Mobile_Device::clear_hashed_android_id() {
   clear_has_hashed_android_id();
 }
 inline const ::std::string& BidRequest_Mobile_Device::hashed_android_id() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.Device.hashed_android_id)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.Device.hashed_android_id)
   return hashed_android_id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest_Mobile_Device::set_hashed_android_id(const ::std::string& value) {
   set_has_hashed_android_id();
   hashed_android_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.Device.hashed_android_id)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.Device.hashed_android_id)
 }
 inline void BidRequest_Mobile_Device::set_hashed_android_id(const char* value) {
   set_has_hashed_android_id();
   hashed_android_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.Mobile.Device.hashed_android_id)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.Mobile.Device.hashed_android_id)
 }
 inline void BidRequest_Mobile_Device::set_hashed_android_id(const char* value, size_t size) {
   set_has_hashed_android_id();
   hashed_android_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.Mobile.Device.hashed_android_id)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.Mobile.Device.hashed_android_id)
 }
 inline ::std::string* BidRequest_Mobile_Device::mutable_hashed_android_id() {
   set_has_hashed_android_id();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.Mobile.Device.hashed_android_id)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.Mobile.Device.hashed_android_id)
   return hashed_android_id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest_Mobile_Device::release_hashed_android_id() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.Mobile.Device.hashed_android_id)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.Mobile.Device.hashed_android_id)
   clear_has_hashed_android_id();
   return hashed_android_id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -4142,7 +4303,7 @@ inline void BidRequest_Mobile_Device::set_allocated_hashed_android_id(::std::str
     clear_has_hashed_android_id();
   }
   hashed_android_id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), hashed_android_id);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.Mobile.Device.hashed_android_id)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.Mobile.Device.hashed_android_id)
 }
 
 // optional string mac = 19;
@@ -4160,32 +4321,32 @@ inline void BidRequest_Mobile_Device::clear_mac() {
   clear_has_mac();
 }
 inline const ::std::string& BidRequest_Mobile_Device::mac() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.Device.mac)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.Device.mac)
   return mac_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest_Mobile_Device::set_mac(const ::std::string& value) {
   set_has_mac();
   mac_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.Device.mac)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.Device.mac)
 }
 inline void BidRequest_Mobile_Device::set_mac(const char* value) {
   set_has_mac();
   mac_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.Mobile.Device.mac)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.Mobile.Device.mac)
 }
 inline void BidRequest_Mobile_Device::set_mac(const char* value, size_t size) {
   set_has_mac();
   mac_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.Mobile.Device.mac)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.Mobile.Device.mac)
 }
 inline ::std::string* BidRequest_Mobile_Device::mutable_mac() {
   set_has_mac();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.Mobile.Device.mac)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.Mobile.Device.mac)
   return mac_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest_Mobile_Device::release_mac() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.Mobile.Device.mac)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.Mobile.Device.mac)
   clear_has_mac();
   return mac_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -4196,7 +4357,7 @@ inline void BidRequest_Mobile_Device::set_allocated_mac(::std::string* mac) {
     clear_has_mac();
   }
   mac_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), mac);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.Mobile.Device.mac)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.Mobile.Device.mac)
 }
 
 // optional string hashed_mac = 20;
@@ -4214,32 +4375,32 @@ inline void BidRequest_Mobile_Device::clear_hashed_mac() {
   clear_has_hashed_mac();
 }
 inline const ::std::string& BidRequest_Mobile_Device::hashed_mac() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.Device.hashed_mac)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.Device.hashed_mac)
   return hashed_mac_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest_Mobile_Device::set_hashed_mac(const ::std::string& value) {
   set_has_hashed_mac();
   hashed_mac_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.Device.hashed_mac)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.Device.hashed_mac)
 }
 inline void BidRequest_Mobile_Device::set_hashed_mac(const char* value) {
   set_has_hashed_mac();
   hashed_mac_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.Mobile.Device.hashed_mac)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.Mobile.Device.hashed_mac)
 }
 inline void BidRequest_Mobile_Device::set_hashed_mac(const char* value, size_t size) {
   set_has_hashed_mac();
   hashed_mac_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.Mobile.Device.hashed_mac)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.Mobile.Device.hashed_mac)
 }
 inline ::std::string* BidRequest_Mobile_Device::mutable_hashed_mac() {
   set_has_hashed_mac();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.Mobile.Device.hashed_mac)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.Mobile.Device.hashed_mac)
   return hashed_mac_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest_Mobile_Device::release_hashed_mac() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.Mobile.Device.hashed_mac)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.Mobile.Device.hashed_mac)
   clear_has_hashed_mac();
   return hashed_mac_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -4250,7 +4411,7 @@ inline void BidRequest_Mobile_Device::set_allocated_hashed_mac(::std::string* ha
     clear_has_hashed_mac();
   }
   hashed_mac_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), hashed_mac);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.Mobile.Device.hashed_mac)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.Mobile.Device.hashed_mac)
 }
 
 // optional string m2id = 21;
@@ -4268,32 +4429,32 @@ inline void BidRequest_Mobile_Device::clear_m2id() {
   clear_has_m2id();
 }
 inline const ::std::string& BidRequest_Mobile_Device::m2id() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.Device.m2id)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.Device.m2id)
   return m2id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest_Mobile_Device::set_m2id(const ::std::string& value) {
   set_has_m2id();
   m2id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.Device.m2id)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.Device.m2id)
 }
 inline void BidRequest_Mobile_Device::set_m2id(const char* value) {
   set_has_m2id();
   m2id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.Mobile.Device.m2id)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.Mobile.Device.m2id)
 }
 inline void BidRequest_Mobile_Device::set_m2id(const char* value, size_t size) {
   set_has_m2id();
   m2id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.Mobile.Device.m2id)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.Mobile.Device.m2id)
 }
 inline ::std::string* BidRequest_Mobile_Device::mutable_m2id() {
   set_has_m2id();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.Mobile.Device.m2id)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.Mobile.Device.m2id)
   return m2id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest_Mobile_Device::release_m2id() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.Mobile.Device.m2id)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.Mobile.Device.m2id)
   clear_has_m2id();
   return m2id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -4304,7 +4465,7 @@ inline void BidRequest_Mobile_Device::set_allocated_m2id(::std::string* m2id) {
     clear_has_m2id();
   }
   m2id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), m2id);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.Mobile.Device.m2id)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.Mobile.Device.m2id)
 }
 
 // -------------------------------------------------------------------
@@ -4326,13 +4487,13 @@ inline void BidRequest_Mobile::clear_is_app() {
   clear_has_is_app();
 }
 inline bool BidRequest_Mobile::is_app() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.is_app)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.is_app)
   return is_app_;
 }
 inline void BidRequest_Mobile::set_is_app(bool value) {
   set_has_is_app();
   is_app_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.is_app)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.is_app)
 }
 
 // optional bool is_fullscreen = 2;
@@ -4350,13 +4511,13 @@ inline void BidRequest_Mobile::clear_is_fullscreen() {
   clear_has_is_fullscreen();
 }
 inline bool BidRequest_Mobile::is_fullscreen() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.is_fullscreen)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.is_fullscreen)
   return is_fullscreen_;
 }
 inline void BidRequest_Mobile::set_is_fullscreen(bool value) {
   set_has_is_fullscreen();
   is_fullscreen_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.is_fullscreen)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.is_fullscreen)
 }
 
 // optional string app_id = 3;
@@ -4374,32 +4535,32 @@ inline void BidRequest_Mobile::clear_app_id() {
   clear_has_app_id();
 }
 inline const ::std::string& BidRequest_Mobile::app_id() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.app_id)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.app_id)
   return app_id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest_Mobile::set_app_id(const ::std::string& value) {
   set_has_app_id();
   app_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.app_id)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.app_id)
 }
 inline void BidRequest_Mobile::set_app_id(const char* value) {
   set_has_app_id();
   app_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.Mobile.app_id)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.Mobile.app_id)
 }
 inline void BidRequest_Mobile::set_app_id(const char* value, size_t size) {
   set_has_app_id();
   app_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.Mobile.app_id)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.Mobile.app_id)
 }
 inline ::std::string* BidRequest_Mobile::mutable_app_id() {
   set_has_app_id();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.Mobile.app_id)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.Mobile.app_id)
   return app_id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest_Mobile::release_app_id() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.Mobile.app_id)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.Mobile.app_id)
   clear_has_app_id();
   return app_id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -4410,7 +4571,7 @@ inline void BidRequest_Mobile::set_allocated_app_id(::std::string* app_id) {
     clear_has_app_id();
   }
   app_id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), app_id);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.Mobile.app_id)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.Mobile.app_id)
 }
 
 // optional string package_name = 6;
@@ -4428,32 +4589,32 @@ inline void BidRequest_Mobile::clear_package_name() {
   clear_has_package_name();
 }
 inline const ::std::string& BidRequest_Mobile::package_name() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.package_name)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.package_name)
   return package_name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest_Mobile::set_package_name(const ::std::string& value) {
   set_has_package_name();
   package_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.package_name)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.package_name)
 }
 inline void BidRequest_Mobile::set_package_name(const char* value) {
   set_has_package_name();
   package_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.Mobile.package_name)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.Mobile.package_name)
 }
 inline void BidRequest_Mobile::set_package_name(const char* value, size_t size) {
   set_has_package_name();
   package_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.Mobile.package_name)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.Mobile.package_name)
 }
 inline ::std::string* BidRequest_Mobile::mutable_package_name() {
   set_has_package_name();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.Mobile.package_name)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.Mobile.package_name)
   return package_name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest_Mobile::release_package_name() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.Mobile.package_name)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.Mobile.package_name)
   clear_has_package_name();
   return package_name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -4464,10 +4625,10 @@ inline void BidRequest_Mobile::set_allocated_package_name(::std::string* package
     clear_has_package_name();
   }
   package_name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), package_name);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.Mobile.package_name)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.Mobile.package_name)
 }
 
-// optional .protocol.MAX.BidRequest.Mobile.Device device = 4;
+// optional .MAX.BidRequest.Mobile.Device device = 4;
 inline bool BidRequest_Mobile::has_device() const {
   return (_has_bits_[0] & 0x00000010u) != 0;
 }
@@ -4478,29 +4639,29 @@ inline void BidRequest_Mobile::clear_has_device() {
   _has_bits_[0] &= ~0x00000010u;
 }
 inline void BidRequest_Mobile::clear_device() {
-  if (device_ != NULL) device_->::protocol::MAX::BidRequest_Mobile_Device::Clear();
+  if (device_ != NULL) device_->::MAX::BidRequest_Mobile_Device::Clear();
   clear_has_device();
 }
-inline const ::protocol::MAX::BidRequest_Mobile_Device& BidRequest_Mobile::device() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.device)
+inline const ::MAX::BidRequest_Mobile_Device& BidRequest_Mobile::device() const {
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.device)
   return device_ != NULL ? *device_ : *default_instance_->device_;
 }
-inline ::protocol::MAX::BidRequest_Mobile_Device* BidRequest_Mobile::mutable_device() {
+inline ::MAX::BidRequest_Mobile_Device* BidRequest_Mobile::mutable_device() {
   set_has_device();
   if (device_ == NULL) {
-    device_ = new ::protocol::MAX::BidRequest_Mobile_Device;
+    device_ = new ::MAX::BidRequest_Mobile_Device;
   }
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.Mobile.device)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.Mobile.device)
   return device_;
 }
-inline ::protocol::MAX::BidRequest_Mobile_Device* BidRequest_Mobile::release_device() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.Mobile.device)
+inline ::MAX::BidRequest_Mobile_Device* BidRequest_Mobile::release_device() {
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.Mobile.device)
   clear_has_device();
-  ::protocol::MAX::BidRequest_Mobile_Device* temp = device_;
+  ::MAX::BidRequest_Mobile_Device* temp = device_;
   device_ = NULL;
   return temp;
 }
-inline void BidRequest_Mobile::set_allocated_device(::protocol::MAX::BidRequest_Mobile_Device* device) {
+inline void BidRequest_Mobile::set_allocated_device(::MAX::BidRequest_Mobile_Device* device) {
   delete device_;
   device_ = device;
   if (device) {
@@ -4508,7 +4669,7 @@ inline void BidRequest_Mobile::set_allocated_device(::protocol::MAX::BidRequest_
   } else {
     clear_has_device();
   }
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.Mobile.device)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.Mobile.device)
 }
 
 // repeated int32 app_category = 5;
@@ -4519,25 +4680,25 @@ inline void BidRequest_Mobile::clear_app_category() {
   app_category_.Clear();
 }
 inline ::google::protobuf::int32 BidRequest_Mobile::app_category(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.Mobile.app_category)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.Mobile.app_category)
   return app_category_.Get(index);
 }
 inline void BidRequest_Mobile::set_app_category(int index, ::google::protobuf::int32 value) {
   app_category_.Set(index, value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.Mobile.app_category)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.Mobile.app_category)
 }
 inline void BidRequest_Mobile::add_app_category(::google::protobuf::int32 value) {
   app_category_.Add(value);
-  // @@protoc_insertion_point(field_add:protocol.MAX.BidRequest.Mobile.app_category)
+  // @@protoc_insertion_point(field_add:MAX.BidRequest.Mobile.app_category)
 }
 inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
 BidRequest_Mobile::app_category() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.BidRequest.Mobile.app_category)
+  // @@protoc_insertion_point(field_list:MAX.BidRequest.Mobile.app_category)
   return app_category_;
 }
 inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
 BidRequest_Mobile::mutable_app_category() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.BidRequest.Mobile.app_category)
+  // @@protoc_insertion_point(field_mutable_list:MAX.BidRequest.Mobile.app_category)
   return &app_category_;
 }
 
@@ -4560,32 +4721,32 @@ inline void BidRequest::clear_bid() {
   clear_has_bid();
 }
 inline const ::std::string& BidRequest::bid() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.bid)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.bid)
   return bid_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest::set_bid(const ::std::string& value) {
   set_has_bid();
   bid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.bid)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.bid)
 }
 inline void BidRequest::set_bid(const char* value) {
   set_has_bid();
   bid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.bid)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.bid)
 }
 inline void BidRequest::set_bid(const char* value, size_t size) {
   set_has_bid();
   bid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.bid)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.bid)
 }
 inline ::std::string* BidRequest::mutable_bid() {
   set_has_bid();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.bid)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.bid)
   return bid_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest::release_bid() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.bid)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.bid)
   clear_has_bid();
   return bid_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -4596,7 +4757,7 @@ inline void BidRequest::set_allocated_bid(::std::string* bid) {
     clear_has_bid();
   }
   bid_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), bid);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.bid)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.bid)
 }
 
 // optional uint32 is_test = 9 [default = 0];
@@ -4614,13 +4775,13 @@ inline void BidRequest::clear_is_test() {
   clear_has_is_test();
 }
 inline ::google::protobuf::uint32 BidRequest::is_test() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.is_test)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.is_test)
   return is_test_;
 }
 inline void BidRequest::set_is_test(::google::protobuf::uint32 value) {
   set_has_is_test();
   is_test_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.is_test)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.is_test)
 }
 
 // optional string mediav_user_id = 2 [deprecated = true];
@@ -4638,32 +4799,32 @@ inline void BidRequest::clear_mediav_user_id() {
   clear_has_mediav_user_id();
 }
 inline const ::std::string& BidRequest::mediav_user_id() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.mediav_user_id)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.mediav_user_id)
   return mediav_user_id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest::set_mediav_user_id(const ::std::string& value) {
   set_has_mediav_user_id();
   mediav_user_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.mediav_user_id)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.mediav_user_id)
 }
 inline void BidRequest::set_mediav_user_id(const char* value) {
   set_has_mediav_user_id();
   mediav_user_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.mediav_user_id)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.mediav_user_id)
 }
 inline void BidRequest::set_mediav_user_id(const char* value, size_t size) {
   set_has_mediav_user_id();
   mediav_user_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.mediav_user_id)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.mediav_user_id)
 }
 inline ::std::string* BidRequest::mutable_mediav_user_id() {
   set_has_mediav_user_id();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.mediav_user_id)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.mediav_user_id)
   return mediav_user_id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest::release_mediav_user_id() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.mediav_user_id)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.mediav_user_id)
   clear_has_mediav_user_id();
   return mediav_user_id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -4674,7 +4835,7 @@ inline void BidRequest::set_allocated_mediav_user_id(::std::string* mediav_user_
     clear_has_mediav_user_id();
   }
   mediav_user_id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), mediav_user_id);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.mediav_user_id)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.mediav_user_id)
 }
 
 // optional string mv_user_id = 17;
@@ -4692,32 +4853,32 @@ inline void BidRequest::clear_mv_user_id() {
   clear_has_mv_user_id();
 }
 inline const ::std::string& BidRequest::mv_user_id() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.mv_user_id)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.mv_user_id)
   return mv_user_id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest::set_mv_user_id(const ::std::string& value) {
   set_has_mv_user_id();
   mv_user_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.mv_user_id)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.mv_user_id)
 }
 inline void BidRequest::set_mv_user_id(const char* value) {
   set_has_mv_user_id();
   mv_user_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.mv_user_id)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.mv_user_id)
 }
 inline void BidRequest::set_mv_user_id(const char* value, size_t size) {
   set_has_mv_user_id();
   mv_user_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.mv_user_id)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.mv_user_id)
 }
 inline ::std::string* BidRequest::mutable_mv_user_id() {
   set_has_mv_user_id();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.mv_user_id)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.mv_user_id)
   return mv_user_id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest::release_mv_user_id() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.mv_user_id)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.mv_user_id)
   clear_has_mv_user_id();
   return mv_user_id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -4728,7 +4889,7 @@ inline void BidRequest::set_allocated_mv_user_id(::std::string* mv_user_id) {
     clear_has_mv_user_id();
   }
   mv_user_id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), mv_user_id);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.mv_user_id)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.mv_user_id)
 }
 
 // optional string mid = 20;
@@ -4746,32 +4907,32 @@ inline void BidRequest::clear_mid() {
   clear_has_mid();
 }
 inline const ::std::string& BidRequest::mid() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.mid)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.mid)
   return mid_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest::set_mid(const ::std::string& value) {
   set_has_mid();
   mid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.mid)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.mid)
 }
 inline void BidRequest::set_mid(const char* value) {
   set_has_mid();
   mid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.mid)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.mid)
 }
 inline void BidRequest::set_mid(const char* value, size_t size) {
   set_has_mid();
   mid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.mid)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.mid)
 }
 inline ::std::string* BidRequest::mutable_mid() {
   set_has_mid();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.mid)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.mid)
   return mid_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest::release_mid() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.mid)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.mid)
   clear_has_mid();
   return mid_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -4782,7 +4943,7 @@ inline void BidRequest::set_allocated_mid(::std::string* mid) {
     clear_has_mid();
   }
   mid_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), mid);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.mid)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.mid)
 }
 
 // optional string ip = 3;
@@ -4800,32 +4961,32 @@ inline void BidRequest::clear_ip() {
   clear_has_ip();
 }
 inline const ::std::string& BidRequest::ip() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.ip)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.ip)
   return ip_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest::set_ip(const ::std::string& value) {
   set_has_ip();
   ip_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.ip)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.ip)
 }
 inline void BidRequest::set_ip(const char* value) {
   set_has_ip();
   ip_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.ip)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.ip)
 }
 inline void BidRequest::set_ip(const char* value, size_t size) {
   set_has_ip();
   ip_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.ip)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.ip)
 }
 inline ::std::string* BidRequest::mutable_ip() {
   set_has_ip();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.ip)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.ip)
   return ip_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest::release_ip() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.ip)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.ip)
   clear_has_ip();
   return ip_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -4836,7 +4997,7 @@ inline void BidRequest::set_allocated_ip(::std::string* ip) {
     clear_has_ip();
   }
   ip_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ip);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.ip)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.ip)
 }
 
 // optional string user_agent = 4;
@@ -4854,32 +5015,32 @@ inline void BidRequest::clear_user_agent() {
   clear_has_user_agent();
 }
 inline const ::std::string& BidRequest::user_agent() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.user_agent)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.user_agent)
   return user_agent_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest::set_user_agent(const ::std::string& value) {
   set_has_user_agent();
   user_agent_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.user_agent)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.user_agent)
 }
 inline void BidRequest::set_user_agent(const char* value) {
   set_has_user_agent();
   user_agent_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.user_agent)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.user_agent)
 }
 inline void BidRequest::set_user_agent(const char* value, size_t size) {
   set_has_user_agent();
   user_agent_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.user_agent)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.user_agent)
 }
 inline ::std::string* BidRequest::mutable_user_agent() {
   set_has_user_agent();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.user_agent)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.user_agent)
   return user_agent_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest::release_user_agent() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.user_agent)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.user_agent)
   clear_has_user_agent();
   return user_agent_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -4890,7 +5051,7 @@ inline void BidRequest::set_allocated_user_agent(::std::string* user_agent) {
     clear_has_user_agent();
   }
   user_agent_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), user_agent);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.user_agent)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.user_agent)
 }
 
 // repeated int32 user_vertical = 10;
@@ -4901,55 +5062,55 @@ inline void BidRequest::clear_user_vertical() {
   user_vertical_.Clear();
 }
 inline ::google::protobuf::int32 BidRequest::user_vertical(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.user_vertical)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.user_vertical)
   return user_vertical_.Get(index);
 }
 inline void BidRequest::set_user_vertical(int index, ::google::protobuf::int32 value) {
   user_vertical_.Set(index, value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.user_vertical)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.user_vertical)
 }
 inline void BidRequest::add_user_vertical(::google::protobuf::int32 value) {
   user_vertical_.Add(value);
-  // @@protoc_insertion_point(field_add:protocol.MAX.BidRequest.user_vertical)
+  // @@protoc_insertion_point(field_add:MAX.BidRequest.user_vertical)
 }
 inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
 BidRequest::user_vertical() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.BidRequest.user_vertical)
+  // @@protoc_insertion_point(field_list:MAX.BidRequest.user_vertical)
   return user_vertical_;
 }
 inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
 BidRequest::mutable_user_vertical() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.BidRequest.user_vertical)
+  // @@protoc_insertion_point(field_mutable_list:MAX.BidRequest.user_vertical)
   return &user_vertical_;
 }
 
-// repeated .protocol.MAX.BidRequest.UserCategory user_category = 19;
+// repeated .MAX.BidRequest.UserCategory user_category = 19;
 inline int BidRequest::user_category_size() const {
   return user_category_.size();
 }
 inline void BidRequest::clear_user_category() {
   user_category_.Clear();
 }
-inline const ::protocol::MAX::BidRequest_UserCategory& BidRequest::user_category(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.user_category)
+inline const ::MAX::BidRequest_UserCategory& BidRequest::user_category(int index) const {
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.user_category)
   return user_category_.Get(index);
 }
-inline ::protocol::MAX::BidRequest_UserCategory* BidRequest::mutable_user_category(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.user_category)
+inline ::MAX::BidRequest_UserCategory* BidRequest::mutable_user_category(int index) {
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.user_category)
   return user_category_.Mutable(index);
 }
-inline ::protocol::MAX::BidRequest_UserCategory* BidRequest::add_user_category() {
-  // @@protoc_insertion_point(field_add:protocol.MAX.BidRequest.user_category)
+inline ::MAX::BidRequest_UserCategory* BidRequest::add_user_category() {
+  // @@protoc_insertion_point(field_add:MAX.BidRequest.user_category)
   return user_category_.Add();
 }
-inline ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidRequest_UserCategory >*
+inline ::google::protobuf::RepeatedPtrField< ::MAX::BidRequest_UserCategory >*
 BidRequest::mutable_user_category() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.BidRequest.user_category)
+  // @@protoc_insertion_point(field_mutable_list:MAX.BidRequest.user_category)
   return &user_category_;
 }
-inline const ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidRequest_UserCategory >&
+inline const ::google::protobuf::RepeatedPtrField< ::MAX::BidRequest_UserCategory >&
 BidRequest::user_category() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.BidRequest.user_category)
+  // @@protoc_insertion_point(field_list:MAX.BidRequest.user_category)
   return user_category_;
 }
 
@@ -4968,32 +5129,32 @@ inline void BidRequest::clear_url() {
   clear_has_url();
 }
 inline const ::std::string& BidRequest::url() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.url)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.url)
   return url_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest::set_url(const ::std::string& value) {
   set_has_url();
   url_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.url)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.url)
 }
 inline void BidRequest::set_url(const char* value) {
   set_has_url();
   url_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.url)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.url)
 }
 inline void BidRequest::set_url(const char* value, size_t size) {
   set_has_url();
   url_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.url)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.url)
 }
 inline ::std::string* BidRequest::mutable_url() {
   set_has_url();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.url)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.url)
   return url_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest::release_url() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.url)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.url)
   clear_has_url();
   return url_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -5004,7 +5165,7 @@ inline void BidRequest::set_allocated_url(::std::string* url) {
     clear_has_url();
   }
   url_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), url);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.url)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.url)
 }
 
 // optional bool is_https = 21;
@@ -5022,13 +5183,13 @@ inline void BidRequest::clear_is_https() {
   clear_has_is_https();
 }
 inline bool BidRequest::is_https() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.is_https)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.is_https)
   return is_https_;
 }
 inline void BidRequest::set_is_https(bool value) {
   set_has_is_https();
   is_https_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.is_https)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.is_https)
 }
 
 // optional uint32 adx_type = 6 [default = 0];
@@ -5046,13 +5207,13 @@ inline void BidRequest::clear_adx_type() {
   clear_has_adx_type();
 }
 inline ::google::protobuf::uint32 BidRequest::adx_type() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.adx_type)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.adx_type)
   return adx_type_;
 }
 inline void BidRequest::set_adx_type(::google::protobuf::uint32 value) {
   set_has_adx_type();
   adx_type_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.adx_type)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.adx_type)
 }
 
 // optional string detected_language = 11;
@@ -5070,32 +5231,32 @@ inline void BidRequest::clear_detected_language() {
   clear_has_detected_language();
 }
 inline const ::std::string& BidRequest::detected_language() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.detected_language)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.detected_language)
   return detected_language_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest::set_detected_language(const ::std::string& value) {
   set_has_detected_language();
   detected_language_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.detected_language)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.detected_language)
 }
 inline void BidRequest::set_detected_language(const char* value) {
   set_has_detected_language();
   detected_language_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.detected_language)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.detected_language)
 }
 inline void BidRequest::set_detected_language(const char* value, size_t size) {
   set_has_detected_language();
   detected_language_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.detected_language)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.detected_language)
 }
 inline ::std::string* BidRequest::mutable_detected_language() {
   set_has_detected_language();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.detected_language)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.detected_language)
   return detected_language_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest::release_detected_language() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.detected_language)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.detected_language)
   clear_has_detected_language();
   return detected_language_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -5106,7 +5267,7 @@ inline void BidRequest::set_allocated_detected_language(::std::string* detected_
     clear_has_detected_language();
   }
   detected_language_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), detected_language);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.detected_language)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.detected_language)
 }
 
 // optional int32 publisher_id = 13;
@@ -5124,13 +5285,13 @@ inline void BidRequest::clear_publisher_id() {
   clear_has_publisher_id();
 }
 inline ::google::protobuf::int32 BidRequest::publisher_id() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.publisher_id)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.publisher_id)
   return publisher_id_;
 }
 inline void BidRequest::set_publisher_id(::google::protobuf::int32 value) {
   set_has_publisher_id();
   publisher_id_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.publisher_id)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.publisher_id)
 }
 
 // repeated int32 publisher_category = 14;
@@ -5141,25 +5302,25 @@ inline void BidRequest::clear_publisher_category() {
   publisher_category_.Clear();
 }
 inline ::google::protobuf::int32 BidRequest::publisher_category(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.publisher_category)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.publisher_category)
   return publisher_category_.Get(index);
 }
 inline void BidRequest::set_publisher_category(int index, ::google::protobuf::int32 value) {
   publisher_category_.Set(index, value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.publisher_category)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.publisher_category)
 }
 inline void BidRequest::add_publisher_category(::google::protobuf::int32 value) {
   publisher_category_.Add(value);
-  // @@protoc_insertion_point(field_add:protocol.MAX.BidRequest.publisher_category)
+  // @@protoc_insertion_point(field_add:MAX.BidRequest.publisher_category)
 }
 inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
 BidRequest::publisher_category() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.BidRequest.publisher_category)
+  // @@protoc_insertion_point(field_list:MAX.BidRequest.publisher_category)
   return publisher_category_;
 }
 inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
 BidRequest::mutable_publisher_category() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.BidRequest.publisher_category)
+  // @@protoc_insertion_point(field_mutable_list:MAX.BidRequest.publisher_category)
   return &publisher_category_;
 }
 
@@ -5178,72 +5339,72 @@ inline void BidRequest::clear_publisher_category_version() {
   clear_has_publisher_category_version();
 }
 inline ::google::protobuf::int32 BidRequest::publisher_category_version() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.publisher_category_version)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.publisher_category_version)
   return publisher_category_version_;
 }
 inline void BidRequest::set_publisher_category_version(::google::protobuf::int32 value) {
   set_has_publisher_category_version();
   publisher_category_version_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.publisher_category_version)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.publisher_category_version)
 }
 
-// repeated .protocol.MAX.BidRequest.ContentCategory content_category = 18;
+// repeated .MAX.BidRequest.ContentCategory content_category = 18;
 inline int BidRequest::content_category_size() const {
   return content_category_.size();
 }
 inline void BidRequest::clear_content_category() {
   content_category_.Clear();
 }
-inline const ::protocol::MAX::BidRequest_ContentCategory& BidRequest::content_category(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.content_category)
+inline const ::MAX::BidRequest_ContentCategory& BidRequest::content_category(int index) const {
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.content_category)
   return content_category_.Get(index);
 }
-inline ::protocol::MAX::BidRequest_ContentCategory* BidRequest::mutable_content_category(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.content_category)
+inline ::MAX::BidRequest_ContentCategory* BidRequest::mutable_content_category(int index) {
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.content_category)
   return content_category_.Mutable(index);
 }
-inline ::protocol::MAX::BidRequest_ContentCategory* BidRequest::add_content_category() {
-  // @@protoc_insertion_point(field_add:protocol.MAX.BidRequest.content_category)
+inline ::MAX::BidRequest_ContentCategory* BidRequest::add_content_category() {
+  // @@protoc_insertion_point(field_add:MAX.BidRequest.content_category)
   return content_category_.Add();
 }
-inline ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidRequest_ContentCategory >*
+inline ::google::protobuf::RepeatedPtrField< ::MAX::BidRequest_ContentCategory >*
 BidRequest::mutable_content_category() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.BidRequest.content_category)
+  // @@protoc_insertion_point(field_mutable_list:MAX.BidRequest.content_category)
   return &content_category_;
 }
-inline const ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidRequest_ContentCategory >&
+inline const ::google::protobuf::RepeatedPtrField< ::MAX::BidRequest_ContentCategory >&
 BidRequest::content_category() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.BidRequest.content_category)
+  // @@protoc_insertion_point(field_list:MAX.BidRequest.content_category)
   return content_category_;
 }
 
-// repeated .protocol.MAX.BidRequest.AdSlot adslot = 7;
+// repeated .MAX.BidRequest.AdSlot adslot = 7;
 inline int BidRequest::adslot_size() const {
   return adslot_.size();
 }
 inline void BidRequest::clear_adslot() {
   adslot_.Clear();
 }
-inline const ::protocol::MAX::BidRequest_AdSlot& BidRequest::adslot(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.adslot)
+inline const ::MAX::BidRequest_AdSlot& BidRequest::adslot(int index) const {
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.adslot)
   return adslot_.Get(index);
 }
-inline ::protocol::MAX::BidRequest_AdSlot* BidRequest::mutable_adslot(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.adslot)
+inline ::MAX::BidRequest_AdSlot* BidRequest::mutable_adslot(int index) {
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.adslot)
   return adslot_.Mutable(index);
 }
-inline ::protocol::MAX::BidRequest_AdSlot* BidRequest::add_adslot() {
-  // @@protoc_insertion_point(field_add:protocol.MAX.BidRequest.adslot)
+inline ::MAX::BidRequest_AdSlot* BidRequest::add_adslot() {
+  // @@protoc_insertion_point(field_add:MAX.BidRequest.adslot)
   return adslot_.Add();
 }
-inline ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidRequest_AdSlot >*
+inline ::google::protobuf::RepeatedPtrField< ::MAX::BidRequest_AdSlot >*
 BidRequest::mutable_adslot() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.BidRequest.adslot)
+  // @@protoc_insertion_point(field_mutable_list:MAX.BidRequest.adslot)
   return &adslot_;
 }
-inline const ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidRequest_AdSlot >&
+inline const ::google::protobuf::RepeatedPtrField< ::MAX::BidRequest_AdSlot >&
 BidRequest::adslot() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.BidRequest.adslot)
+  // @@protoc_insertion_point(field_list:MAX.BidRequest.adslot)
   return adslot_;
 }
 
@@ -5255,25 +5416,25 @@ inline void BidRequest::clear_excluded_attribute() {
   excluded_attribute_.Clear();
 }
 inline ::google::protobuf::int32 BidRequest::excluded_attribute(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.excluded_attribute)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.excluded_attribute)
   return excluded_attribute_.Get(index);
 }
 inline void BidRequest::set_excluded_attribute(int index, ::google::protobuf::int32 value) {
   excluded_attribute_.Set(index, value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.excluded_attribute)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.excluded_attribute)
 }
 inline void BidRequest::add_excluded_attribute(::google::protobuf::int32 value) {
   excluded_attribute_.Add(value);
-  // @@protoc_insertion_point(field_add:protocol.MAX.BidRequest.excluded_attribute)
+  // @@protoc_insertion_point(field_add:MAX.BidRequest.excluded_attribute)
 }
 inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
 BidRequest::excluded_attribute() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.BidRequest.excluded_attribute)
+  // @@protoc_insertion_point(field_list:MAX.BidRequest.excluded_attribute)
   return excluded_attribute_;
 }
 inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
 BidRequest::mutable_excluded_attribute() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.BidRequest.excluded_attribute)
+  // @@protoc_insertion_point(field_mutable_list:MAX.BidRequest.excluded_attribute)
   return &excluded_attribute_;
 }
 
@@ -5285,29 +5446,29 @@ inline void BidRequest::clear_excluded_ad_category() {
   excluded_ad_category_.Clear();
 }
 inline ::google::protobuf::int32 BidRequest::excluded_ad_category(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.excluded_ad_category)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.excluded_ad_category)
   return excluded_ad_category_.Get(index);
 }
 inline void BidRequest::set_excluded_ad_category(int index, ::google::protobuf::int32 value) {
   excluded_ad_category_.Set(index, value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.excluded_ad_category)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.excluded_ad_category)
 }
 inline void BidRequest::add_excluded_ad_category(::google::protobuf::int32 value) {
   excluded_ad_category_.Add(value);
-  // @@protoc_insertion_point(field_add:protocol.MAX.BidRequest.excluded_ad_category)
+  // @@protoc_insertion_point(field_add:MAX.BidRequest.excluded_ad_category)
 }
 inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
 BidRequest::excluded_ad_category() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.BidRequest.excluded_ad_category)
+  // @@protoc_insertion_point(field_list:MAX.BidRequest.excluded_ad_category)
   return excluded_ad_category_;
 }
 inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
 BidRequest::mutable_excluded_ad_category() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.BidRequest.excluded_ad_category)
+  // @@protoc_insertion_point(field_mutable_list:MAX.BidRequest.excluded_ad_category)
   return &excluded_ad_category_;
 }
 
-// optional .protocol.MAX.BidRequest.Mobile mobile = 8;
+// optional .MAX.BidRequest.Mobile mobile = 8;
 inline bool BidRequest::has_mobile() const {
   return (_has_bits_[0] & 0x00100000u) != 0;
 }
@@ -5318,29 +5479,29 @@ inline void BidRequest::clear_has_mobile() {
   _has_bits_[0] &= ~0x00100000u;
 }
 inline void BidRequest::clear_mobile() {
-  if (mobile_ != NULL) mobile_->::protocol::MAX::BidRequest_Mobile::Clear();
+  if (mobile_ != NULL) mobile_->::MAX::BidRequest_Mobile::Clear();
   clear_has_mobile();
 }
-inline const ::protocol::MAX::BidRequest_Mobile& BidRequest::mobile() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.mobile)
+inline const ::MAX::BidRequest_Mobile& BidRequest::mobile() const {
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.mobile)
   return mobile_ != NULL ? *mobile_ : *default_instance_->mobile_;
 }
-inline ::protocol::MAX::BidRequest_Mobile* BidRequest::mutable_mobile() {
+inline ::MAX::BidRequest_Mobile* BidRequest::mutable_mobile() {
   set_has_mobile();
   if (mobile_ == NULL) {
-    mobile_ = new ::protocol::MAX::BidRequest_Mobile;
+    mobile_ = new ::MAX::BidRequest_Mobile;
   }
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.mobile)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.mobile)
   return mobile_;
 }
-inline ::protocol::MAX::BidRequest_Mobile* BidRequest::release_mobile() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.mobile)
+inline ::MAX::BidRequest_Mobile* BidRequest::release_mobile() {
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.mobile)
   clear_has_mobile();
-  ::protocol::MAX::BidRequest_Mobile* temp = mobile_;
+  ::MAX::BidRequest_Mobile* temp = mobile_;
   mobile_ = NULL;
   return temp;
 }
-inline void BidRequest::set_allocated_mobile(::protocol::MAX::BidRequest_Mobile* mobile) {
+inline void BidRequest::set_allocated_mobile(::MAX::BidRequest_Mobile* mobile) {
   delete mobile_;
   mobile_ = mobile;
   if (mobile) {
@@ -5348,7 +5509,7 @@ inline void BidRequest::set_allocated_mobile(::protocol::MAX::BidRequest_Mobile*
   } else {
     clear_has_mobile();
   }
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.mobile)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.mobile)
 }
 
 // optional string extend_data = 100;
@@ -5366,32 +5527,32 @@ inline void BidRequest::clear_extend_data() {
   clear_has_extend_data();
 }
 inline const ::std::string& BidRequest::extend_data() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.extend_data)
+  // @@protoc_insertion_point(field_get:MAX.BidRequest.extend_data)
   return extend_data_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidRequest::set_extend_data(const ::std::string& value) {
   set_has_extend_data();
   extend_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.extend_data)
+  // @@protoc_insertion_point(field_set:MAX.BidRequest.extend_data)
 }
 inline void BidRequest::set_extend_data(const char* value) {
   set_has_extend_data();
   extend_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidRequest.extend_data)
+  // @@protoc_insertion_point(field_set_char:MAX.BidRequest.extend_data)
 }
 inline void BidRequest::set_extend_data(const char* value, size_t size) {
   set_has_extend_data();
   extend_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidRequest.extend_data)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidRequest.extend_data)
 }
 inline ::std::string* BidRequest::mutable_extend_data() {
   set_has_extend_data();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidRequest.extend_data)
+  // @@protoc_insertion_point(field_mutable:MAX.BidRequest.extend_data)
   return extend_data_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidRequest::release_extend_data() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidRequest.extend_data)
+  // @@protoc_insertion_point(field_release:MAX.BidRequest.extend_data)
   clear_has_extend_data();
   return extend_data_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -5402,7 +5563,7 @@ inline void BidRequest::set_allocated_extend_data(::std::string* extend_data) {
     clear_has_extend_data();
   }
   extend_data_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), extend_data);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidRequest.extend_data)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidRequest.extend_data)
 }
 
 // -------------------------------------------------------------------
@@ -5424,13 +5585,13 @@ inline void BidResponse_Ads::clear_adslot_id() {
   clear_has_adslot_id();
 }
 inline ::google::protobuf::uint32 BidResponse_Ads::adslot_id() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidResponse.Ads.adslot_id)
+  // @@protoc_insertion_point(field_get:MAX.BidResponse.Ads.adslot_id)
   return adslot_id_;
 }
 inline void BidResponse_Ads::set_adslot_id(::google::protobuf::uint32 value) {
   set_has_adslot_id();
   adslot_id_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidResponse.Ads.adslot_id)
+  // @@protoc_insertion_point(field_set:MAX.BidResponse.Ads.adslot_id)
 }
 
 // required uint32 max_cpm_price = 2;
@@ -5448,13 +5609,13 @@ inline void BidResponse_Ads::clear_max_cpm_price() {
   clear_has_max_cpm_price();
 }
 inline ::google::protobuf::uint32 BidResponse_Ads::max_cpm_price() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidResponse.Ads.max_cpm_price)
+  // @@protoc_insertion_point(field_get:MAX.BidResponse.Ads.max_cpm_price)
   return max_cpm_price_;
 }
 inline void BidResponse_Ads::set_max_cpm_price(::google::protobuf::uint32 value) {
   set_has_max_cpm_price();
   max_cpm_price_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidResponse.Ads.max_cpm_price)
+  // @@protoc_insertion_point(field_set:MAX.BidResponse.Ads.max_cpm_price)
 }
 
 // optional string html_snippet = 3;
@@ -5472,32 +5633,32 @@ inline void BidResponse_Ads::clear_html_snippet() {
   clear_has_html_snippet();
 }
 inline const ::std::string& BidResponse_Ads::html_snippet() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidResponse.Ads.html_snippet)
+  // @@protoc_insertion_point(field_get:MAX.BidResponse.Ads.html_snippet)
   return html_snippet_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidResponse_Ads::set_html_snippet(const ::std::string& value) {
   set_has_html_snippet();
   html_snippet_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidResponse.Ads.html_snippet)
+  // @@protoc_insertion_point(field_set:MAX.BidResponse.Ads.html_snippet)
 }
 inline void BidResponse_Ads::set_html_snippet(const char* value) {
   set_has_html_snippet();
   html_snippet_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidResponse.Ads.html_snippet)
+  // @@protoc_insertion_point(field_set_char:MAX.BidResponse.Ads.html_snippet)
 }
 inline void BidResponse_Ads::set_html_snippet(const char* value, size_t size) {
   set_has_html_snippet();
   html_snippet_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidResponse.Ads.html_snippet)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidResponse.Ads.html_snippet)
 }
 inline ::std::string* BidResponse_Ads::mutable_html_snippet() {
   set_has_html_snippet();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidResponse.Ads.html_snippet)
+  // @@protoc_insertion_point(field_mutable:MAX.BidResponse.Ads.html_snippet)
   return html_snippet_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidResponse_Ads::release_html_snippet() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidResponse.Ads.html_snippet)
+  // @@protoc_insertion_point(field_release:MAX.BidResponse.Ads.html_snippet)
   clear_has_html_snippet();
   return html_snippet_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -5508,36 +5669,36 @@ inline void BidResponse_Ads::set_allocated_html_snippet(::std::string* html_snip
     clear_has_html_snippet();
   }
   html_snippet_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), html_snippet);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidResponse.Ads.html_snippet)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidResponse.Ads.html_snippet)
 }
 
-// repeated .protocol.MAX.NativeAd native_ad = 13;
+// repeated .MAX.NativeAd native_ad = 13;
 inline int BidResponse_Ads::native_ad_size() const {
   return native_ad_.size();
 }
 inline void BidResponse_Ads::clear_native_ad() {
   native_ad_.Clear();
 }
-inline const ::protocol::MAX::NativeAd& BidResponse_Ads::native_ad(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidResponse.Ads.native_ad)
+inline const ::MAX::NativeAd& BidResponse_Ads::native_ad(int index) const {
+  // @@protoc_insertion_point(field_get:MAX.BidResponse.Ads.native_ad)
   return native_ad_.Get(index);
 }
-inline ::protocol::MAX::NativeAd* BidResponse_Ads::mutable_native_ad(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidResponse.Ads.native_ad)
+inline ::MAX::NativeAd* BidResponse_Ads::mutable_native_ad(int index) {
+  // @@protoc_insertion_point(field_mutable:MAX.BidResponse.Ads.native_ad)
   return native_ad_.Mutable(index);
 }
-inline ::protocol::MAX::NativeAd* BidResponse_Ads::add_native_ad() {
-  // @@protoc_insertion_point(field_add:protocol.MAX.BidResponse.Ads.native_ad)
+inline ::MAX::NativeAd* BidResponse_Ads::add_native_ad() {
+  // @@protoc_insertion_point(field_add:MAX.BidResponse.Ads.native_ad)
   return native_ad_.Add();
 }
-inline ::google::protobuf::RepeatedPtrField< ::protocol::MAX::NativeAd >*
+inline ::google::protobuf::RepeatedPtrField< ::MAX::NativeAd >*
 BidResponse_Ads::mutable_native_ad() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.BidResponse.Ads.native_ad)
+  // @@protoc_insertion_point(field_mutable_list:MAX.BidResponse.Ads.native_ad)
   return &native_ad_;
 }
-inline const ::google::protobuf::RepeatedPtrField< ::protocol::MAX::NativeAd >&
+inline const ::google::protobuf::RepeatedPtrField< ::MAX::NativeAd >&
 BidResponse_Ads::native_ad() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.BidResponse.Ads.native_ad)
+  // @@protoc_insertion_point(field_list:MAX.BidResponse.Ads.native_ad)
   return native_ad_;
 }
 
@@ -5549,25 +5710,25 @@ inline void BidResponse_Ads::clear_category() {
   category_.Clear();
 }
 inline ::google::protobuf::int32 BidResponse_Ads::category(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidResponse.Ads.category)
+  // @@protoc_insertion_point(field_get:MAX.BidResponse.Ads.category)
   return category_.Get(index);
 }
 inline void BidResponse_Ads::set_category(int index, ::google::protobuf::int32 value) {
   category_.Set(index, value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidResponse.Ads.category)
+  // @@protoc_insertion_point(field_set:MAX.BidResponse.Ads.category)
 }
 inline void BidResponse_Ads::add_category(::google::protobuf::int32 value) {
   category_.Add(value);
-  // @@protoc_insertion_point(field_add:protocol.MAX.BidResponse.Ads.category)
+  // @@protoc_insertion_point(field_add:MAX.BidResponse.Ads.category)
 }
 inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
 BidResponse_Ads::category() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.BidResponse.Ads.category)
+  // @@protoc_insertion_point(field_list:MAX.BidResponse.Ads.category)
   return category_;
 }
 inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
 BidResponse_Ads::mutable_category() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.BidResponse.Ads.category)
+  // @@protoc_insertion_point(field_mutable_list:MAX.BidResponse.Ads.category)
   return &category_;
 }
 
@@ -5579,25 +5740,25 @@ inline void BidResponse_Ads::clear_creative_type() {
   creative_type_.Clear();
 }
 inline ::google::protobuf::int32 BidResponse_Ads::creative_type(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidResponse.Ads.creative_type)
+  // @@protoc_insertion_point(field_get:MAX.BidResponse.Ads.creative_type)
   return creative_type_.Get(index);
 }
 inline void BidResponse_Ads::set_creative_type(int index, ::google::protobuf::int32 value) {
   creative_type_.Set(index, value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidResponse.Ads.creative_type)
+  // @@protoc_insertion_point(field_set:MAX.BidResponse.Ads.creative_type)
 }
 inline void BidResponse_Ads::add_creative_type(::google::protobuf::int32 value) {
   creative_type_.Add(value);
-  // @@protoc_insertion_point(field_add:protocol.MAX.BidResponse.Ads.creative_type)
+  // @@protoc_insertion_point(field_add:MAX.BidResponse.Ads.creative_type)
 }
 inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
 BidResponse_Ads::creative_type() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.BidResponse.Ads.creative_type)
+  // @@protoc_insertion_point(field_list:MAX.BidResponse.Ads.creative_type)
   return creative_type_;
 }
 inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
 BidResponse_Ads::mutable_creative_type() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.BidResponse.Ads.creative_type)
+  // @@protoc_insertion_point(field_mutable_list:MAX.BidResponse.Ads.creative_type)
   return &creative_type_;
 }
 
@@ -5609,25 +5770,25 @@ inline void BidResponse_Ads::clear_creative_attribute() {
   creative_attribute_.Clear();
 }
 inline ::google::protobuf::int32 BidResponse_Ads::creative_attribute(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidResponse.Ads.creative_attribute)
+  // @@protoc_insertion_point(field_get:MAX.BidResponse.Ads.creative_attribute)
   return creative_attribute_.Get(index);
 }
 inline void BidResponse_Ads::set_creative_attribute(int index, ::google::protobuf::int32 value) {
   creative_attribute_.Set(index, value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidResponse.Ads.creative_attribute)
+  // @@protoc_insertion_point(field_set:MAX.BidResponse.Ads.creative_attribute)
 }
 inline void BidResponse_Ads::add_creative_attribute(::google::protobuf::int32 value) {
   creative_attribute_.Add(value);
-  // @@protoc_insertion_point(field_add:protocol.MAX.BidResponse.Ads.creative_attribute)
+  // @@protoc_insertion_point(field_add:MAX.BidResponse.Ads.creative_attribute)
 }
 inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
 BidResponse_Ads::creative_attribute() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.BidResponse.Ads.creative_attribute)
+  // @@protoc_insertion_point(field_list:MAX.BidResponse.Ads.creative_attribute)
   return creative_attribute_;
 }
 inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
 BidResponse_Ads::mutable_creative_attribute() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.BidResponse.Ads.creative_attribute)
+  // @@protoc_insertion_point(field_mutable_list:MAX.BidResponse.Ads.creative_attribute)
   return &creative_attribute_;
 }
 
@@ -5639,50 +5800,50 @@ inline void BidResponse_Ads::clear_destination_url() {
   destination_url_.Clear();
 }
 inline const ::std::string& BidResponse_Ads::destination_url(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidResponse.Ads.destination_url)
+  // @@protoc_insertion_point(field_get:MAX.BidResponse.Ads.destination_url)
   return destination_url_.Get(index);
 }
 inline ::std::string* BidResponse_Ads::mutable_destination_url(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidResponse.Ads.destination_url)
+  // @@protoc_insertion_point(field_mutable:MAX.BidResponse.Ads.destination_url)
   return destination_url_.Mutable(index);
 }
 inline void BidResponse_Ads::set_destination_url(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidResponse.Ads.destination_url)
+  // @@protoc_insertion_point(field_set:MAX.BidResponse.Ads.destination_url)
   destination_url_.Mutable(index)->assign(value);
 }
 inline void BidResponse_Ads::set_destination_url(int index, const char* value) {
   destination_url_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidResponse.Ads.destination_url)
+  // @@protoc_insertion_point(field_set_char:MAX.BidResponse.Ads.destination_url)
 }
 inline void BidResponse_Ads::set_destination_url(int index, const char* value, size_t size) {
   destination_url_.Mutable(index)->assign(
     reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidResponse.Ads.destination_url)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidResponse.Ads.destination_url)
 }
 inline ::std::string* BidResponse_Ads::add_destination_url() {
-  // @@protoc_insertion_point(field_add_mutable:protocol.MAX.BidResponse.Ads.destination_url)
+  // @@protoc_insertion_point(field_add_mutable:MAX.BidResponse.Ads.destination_url)
   return destination_url_.Add();
 }
 inline void BidResponse_Ads::add_destination_url(const ::std::string& value) {
   destination_url_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:protocol.MAX.BidResponse.Ads.destination_url)
+  // @@protoc_insertion_point(field_add:MAX.BidResponse.Ads.destination_url)
 }
 inline void BidResponse_Ads::add_destination_url(const char* value) {
   destination_url_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:protocol.MAX.BidResponse.Ads.destination_url)
+  // @@protoc_insertion_point(field_add_char:MAX.BidResponse.Ads.destination_url)
 }
 inline void BidResponse_Ads::add_destination_url(const char* value, size_t size) {
   destination_url_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:protocol.MAX.BidResponse.Ads.destination_url)
+  // @@protoc_insertion_point(field_add_pointer:MAX.BidResponse.Ads.destination_url)
 }
 inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
 BidResponse_Ads::destination_url() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.BidResponse.Ads.destination_url)
+  // @@protoc_insertion_point(field_list:MAX.BidResponse.Ads.destination_url)
   return destination_url_;
 }
 inline ::google::protobuf::RepeatedPtrField< ::std::string>*
 BidResponse_Ads::mutable_destination_url() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.BidResponse.Ads.destination_url)
+  // @@protoc_insertion_point(field_mutable_list:MAX.BidResponse.Ads.destination_url)
   return &destination_url_;
 }
 
@@ -5701,32 +5862,32 @@ inline void BidResponse_Ads::clear_advertiser_id() {
   clear_has_advertiser_id();
 }
 inline const ::std::string& BidResponse_Ads::advertiser_id() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidResponse.Ads.advertiser_id)
+  // @@protoc_insertion_point(field_get:MAX.BidResponse.Ads.advertiser_id)
   return advertiser_id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidResponse_Ads::set_advertiser_id(const ::std::string& value) {
   set_has_advertiser_id();
   advertiser_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidResponse.Ads.advertiser_id)
+  // @@protoc_insertion_point(field_set:MAX.BidResponse.Ads.advertiser_id)
 }
 inline void BidResponse_Ads::set_advertiser_id(const char* value) {
   set_has_advertiser_id();
   advertiser_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidResponse.Ads.advertiser_id)
+  // @@protoc_insertion_point(field_set_char:MAX.BidResponse.Ads.advertiser_id)
 }
 inline void BidResponse_Ads::set_advertiser_id(const char* value, size_t size) {
   set_has_advertiser_id();
   advertiser_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidResponse.Ads.advertiser_id)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidResponse.Ads.advertiser_id)
 }
 inline ::std::string* BidResponse_Ads::mutable_advertiser_id() {
   set_has_advertiser_id();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidResponse.Ads.advertiser_id)
+  // @@protoc_insertion_point(field_mutable:MAX.BidResponse.Ads.advertiser_id)
   return advertiser_id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidResponse_Ads::release_advertiser_id() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidResponse.Ads.advertiser_id)
+  // @@protoc_insertion_point(field_release:MAX.BidResponse.Ads.advertiser_id)
   clear_has_advertiser_id();
   return advertiser_id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -5737,7 +5898,7 @@ inline void BidResponse_Ads::set_allocated_advertiser_id(::std::string* advertis
     clear_has_advertiser_id();
   }
   advertiser_id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), advertiser_id);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidResponse.Ads.advertiser_id)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidResponse.Ads.advertiser_id)
 }
 
 // optional string creative_id = 8;
@@ -5755,32 +5916,32 @@ inline void BidResponse_Ads::clear_creative_id() {
   clear_has_creative_id();
 }
 inline const ::std::string& BidResponse_Ads::creative_id() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidResponse.Ads.creative_id)
+  // @@protoc_insertion_point(field_get:MAX.BidResponse.Ads.creative_id)
   return creative_id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidResponse_Ads::set_creative_id(const ::std::string& value) {
   set_has_creative_id();
   creative_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidResponse.Ads.creative_id)
+  // @@protoc_insertion_point(field_set:MAX.BidResponse.Ads.creative_id)
 }
 inline void BidResponse_Ads::set_creative_id(const char* value) {
   set_has_creative_id();
   creative_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidResponse.Ads.creative_id)
+  // @@protoc_insertion_point(field_set_char:MAX.BidResponse.Ads.creative_id)
 }
 inline void BidResponse_Ads::set_creative_id(const char* value, size_t size) {
   set_has_creative_id();
   creative_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidResponse.Ads.creative_id)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidResponse.Ads.creative_id)
 }
 inline ::std::string* BidResponse_Ads::mutable_creative_id() {
   set_has_creative_id();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidResponse.Ads.creative_id)
+  // @@protoc_insertion_point(field_mutable:MAX.BidResponse.Ads.creative_id)
   return creative_id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidResponse_Ads::release_creative_id() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidResponse.Ads.creative_id)
+  // @@protoc_insertion_point(field_release:MAX.BidResponse.Ads.creative_id)
   clear_has_creative_id();
   return creative_id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -5791,7 +5952,7 @@ inline void BidResponse_Ads::set_allocated_creative_id(::std::string* creative_i
     clear_has_creative_id();
   }
   creative_id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), creative_id);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidResponse.Ads.creative_id)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidResponse.Ads.creative_id)
 }
 
 // optional int32 width = 9;
@@ -5809,13 +5970,13 @@ inline void BidResponse_Ads::clear_width() {
   clear_has_width();
 }
 inline ::google::protobuf::int32 BidResponse_Ads::width() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidResponse.Ads.width)
+  // @@protoc_insertion_point(field_get:MAX.BidResponse.Ads.width)
   return width_;
 }
 inline void BidResponse_Ads::set_width(::google::protobuf::int32 value) {
   set_has_width();
   width_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidResponse.Ads.width)
+  // @@protoc_insertion_point(field_set:MAX.BidResponse.Ads.width)
 }
 
 // optional int32 height = 10;
@@ -5833,13 +5994,13 @@ inline void BidResponse_Ads::clear_height() {
   clear_has_height();
 }
 inline ::google::protobuf::int32 BidResponse_Ads::height() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidResponse.Ads.height)
+  // @@protoc_insertion_point(field_get:MAX.BidResponse.Ads.height)
   return height_;
 }
 inline void BidResponse_Ads::set_height(::google::protobuf::int32 value) {
   set_has_height();
   height_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidResponse.Ads.height)
+  // @@protoc_insertion_point(field_set:MAX.BidResponse.Ads.height)
 }
 
 // optional string extend_data = 11;
@@ -5857,32 +6018,32 @@ inline void BidResponse_Ads::clear_extend_data() {
   clear_has_extend_data();
 }
 inline const ::std::string& BidResponse_Ads::extend_data() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidResponse.Ads.extend_data)
+  // @@protoc_insertion_point(field_get:MAX.BidResponse.Ads.extend_data)
   return extend_data_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidResponse_Ads::set_extend_data(const ::std::string& value) {
   set_has_extend_data();
   extend_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidResponse.Ads.extend_data)
+  // @@protoc_insertion_point(field_set:MAX.BidResponse.Ads.extend_data)
 }
 inline void BidResponse_Ads::set_extend_data(const char* value) {
   set_has_extend_data();
   extend_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidResponse.Ads.extend_data)
+  // @@protoc_insertion_point(field_set_char:MAX.BidResponse.Ads.extend_data)
 }
 inline void BidResponse_Ads::set_extend_data(const char* value, size_t size) {
   set_has_extend_data();
   extend_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidResponse.Ads.extend_data)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidResponse.Ads.extend_data)
 }
 inline ::std::string* BidResponse_Ads::mutable_extend_data() {
   set_has_extend_data();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidResponse.Ads.extend_data)
+  // @@protoc_insertion_point(field_mutable:MAX.BidResponse.Ads.extend_data)
   return extend_data_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidResponse_Ads::release_extend_data() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidResponse.Ads.extend_data)
+  // @@protoc_insertion_point(field_release:MAX.BidResponse.Ads.extend_data)
   clear_has_extend_data();
   return extend_data_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -5893,7 +6054,7 @@ inline void BidResponse_Ads::set_allocated_extend_data(::std::string* extend_dat
     clear_has_extend_data();
   }
   extend_data_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), extend_data);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidResponse.Ads.extend_data)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidResponse.Ads.extend_data)
 }
 
 // optional string nurl = 12;
@@ -5911,32 +6072,32 @@ inline void BidResponse_Ads::clear_nurl() {
   clear_has_nurl();
 }
 inline const ::std::string& BidResponse_Ads::nurl() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidResponse.Ads.nurl)
+  // @@protoc_insertion_point(field_get:MAX.BidResponse.Ads.nurl)
   return nurl_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidResponse_Ads::set_nurl(const ::std::string& value) {
   set_has_nurl();
   nurl_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidResponse.Ads.nurl)
+  // @@protoc_insertion_point(field_set:MAX.BidResponse.Ads.nurl)
 }
 inline void BidResponse_Ads::set_nurl(const char* value) {
   set_has_nurl();
   nurl_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidResponse.Ads.nurl)
+  // @@protoc_insertion_point(field_set_char:MAX.BidResponse.Ads.nurl)
 }
 inline void BidResponse_Ads::set_nurl(const char* value, size_t size) {
   set_has_nurl();
   nurl_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidResponse.Ads.nurl)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidResponse.Ads.nurl)
 }
 inline ::std::string* BidResponse_Ads::mutable_nurl() {
   set_has_nurl();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidResponse.Ads.nurl)
+  // @@protoc_insertion_point(field_mutable:MAX.BidResponse.Ads.nurl)
   return nurl_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidResponse_Ads::release_nurl() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidResponse.Ads.nurl)
+  // @@protoc_insertion_point(field_release:MAX.BidResponse.Ads.nurl)
   clear_has_nurl();
   return nurl_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -5947,7 +6108,7 @@ inline void BidResponse_Ads::set_allocated_nurl(::std::string* nurl) {
     clear_has_nurl();
   }
   nurl_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), nurl);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidResponse.Ads.nurl)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidResponse.Ads.nurl)
 }
 
 // -------------------------------------------------------------------
@@ -5969,32 +6130,32 @@ inline void BidResponse::clear_bid() {
   clear_has_bid();
 }
 inline const ::std::string& BidResponse::bid() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidResponse.bid)
+  // @@protoc_insertion_point(field_get:MAX.BidResponse.bid)
   return bid_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BidResponse::set_bid(const ::std::string& value) {
   set_has_bid();
   bid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.BidResponse.bid)
+  // @@protoc_insertion_point(field_set:MAX.BidResponse.bid)
 }
 inline void BidResponse::set_bid(const char* value) {
   set_has_bid();
   bid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.BidResponse.bid)
+  // @@protoc_insertion_point(field_set_char:MAX.BidResponse.bid)
 }
 inline void BidResponse::set_bid(const char* value, size_t size) {
   set_has_bid();
   bid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.BidResponse.bid)
+  // @@protoc_insertion_point(field_set_pointer:MAX.BidResponse.bid)
 }
 inline ::std::string* BidResponse::mutable_bid() {
   set_has_bid();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidResponse.bid)
+  // @@protoc_insertion_point(field_mutable:MAX.BidResponse.bid)
   return bid_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BidResponse::release_bid() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.BidResponse.bid)
+  // @@protoc_insertion_point(field_release:MAX.BidResponse.bid)
   clear_has_bid();
   return bid_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -6005,36 +6166,36 @@ inline void BidResponse::set_allocated_bid(::std::string* bid) {
     clear_has_bid();
   }
   bid_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), bid);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.BidResponse.bid)
+  // @@protoc_insertion_point(field_set_allocated:MAX.BidResponse.bid)
 }
 
-// repeated .protocol.MAX.BidResponse.Ads ads = 3;
+// repeated .MAX.BidResponse.Ads ads = 3;
 inline int BidResponse::ads_size() const {
   return ads_.size();
 }
 inline void BidResponse::clear_ads() {
   ads_.Clear();
 }
-inline const ::protocol::MAX::BidResponse_Ads& BidResponse::ads(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.BidResponse.ads)
+inline const ::MAX::BidResponse_Ads& BidResponse::ads(int index) const {
+  // @@protoc_insertion_point(field_get:MAX.BidResponse.ads)
   return ads_.Get(index);
 }
-inline ::protocol::MAX::BidResponse_Ads* BidResponse::mutable_ads(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.BidResponse.ads)
+inline ::MAX::BidResponse_Ads* BidResponse::mutable_ads(int index) {
+  // @@protoc_insertion_point(field_mutable:MAX.BidResponse.ads)
   return ads_.Mutable(index);
 }
-inline ::protocol::MAX::BidResponse_Ads* BidResponse::add_ads() {
-  // @@protoc_insertion_point(field_add:protocol.MAX.BidResponse.ads)
+inline ::MAX::BidResponse_Ads* BidResponse::add_ads() {
+  // @@protoc_insertion_point(field_add:MAX.BidResponse.ads)
   return ads_.Add();
 }
-inline ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidResponse_Ads >*
+inline ::google::protobuf::RepeatedPtrField< ::MAX::BidResponse_Ads >*
 BidResponse::mutable_ads() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.BidResponse.ads)
+  // @@protoc_insertion_point(field_mutable_list:MAX.BidResponse.ads)
   return &ads_;
 }
-inline const ::google::protobuf::RepeatedPtrField< ::protocol::MAX::BidResponse_Ads >&
+inline const ::google::protobuf::RepeatedPtrField< ::MAX::BidResponse_Ads >&
 BidResponse::ads() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.BidResponse.ads)
+  // @@protoc_insertion_point(field_list:MAX.BidResponse.ads)
   return ads_;
 }
 
@@ -6057,32 +6218,32 @@ inline void NativeAd_Creative_Image::clear_image_url() {
   clear_has_image_url();
 }
 inline const ::std::string& NativeAd_Creative_Image::image_url() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.Image.image_url)
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.Creative.Image.image_url)
   return image_url_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void NativeAd_Creative_Image::set_image_url(const ::std::string& value) {
   set_has_image_url();
   image_url_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.Creative.Image.image_url)
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.Creative.Image.image_url)
 }
 inline void NativeAd_Creative_Image::set_image_url(const char* value) {
   set_has_image_url();
   image_url_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.NativeAd.Creative.Image.image_url)
+  // @@protoc_insertion_point(field_set_char:MAX.NativeAd.Creative.Image.image_url)
 }
 inline void NativeAd_Creative_Image::set_image_url(const char* value, size_t size) {
   set_has_image_url();
   image_url_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.NativeAd.Creative.Image.image_url)
+  // @@protoc_insertion_point(field_set_pointer:MAX.NativeAd.Creative.Image.image_url)
 }
 inline ::std::string* NativeAd_Creative_Image::mutable_image_url() {
   set_has_image_url();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.Creative.Image.image_url)
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.Creative.Image.image_url)
   return image_url_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* NativeAd_Creative_Image::release_image_url() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.NativeAd.Creative.Image.image_url)
+  // @@protoc_insertion_point(field_release:MAX.NativeAd.Creative.Image.image_url)
   clear_has_image_url();
   return image_url_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -6093,7 +6254,7 @@ inline void NativeAd_Creative_Image::set_allocated_image_url(::std::string* imag
     clear_has_image_url();
   }
   image_url_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), image_url);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.Creative.Image.image_url)
+  // @@protoc_insertion_point(field_set_allocated:MAX.NativeAd.Creative.Image.image_url)
 }
 
 // optional int32 image_width = 2;
@@ -6111,13 +6272,13 @@ inline void NativeAd_Creative_Image::clear_image_width() {
   clear_has_image_width();
 }
 inline ::google::protobuf::int32 NativeAd_Creative_Image::image_width() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.Image.image_width)
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.Creative.Image.image_width)
   return image_width_;
 }
 inline void NativeAd_Creative_Image::set_image_width(::google::protobuf::int32 value) {
   set_has_image_width();
   image_width_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.Creative.Image.image_width)
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.Creative.Image.image_width)
 }
 
 // optional int32 image_height = 3;
@@ -6135,13 +6296,13 @@ inline void NativeAd_Creative_Image::clear_image_height() {
   clear_has_image_height();
 }
 inline ::google::protobuf::int32 NativeAd_Creative_Image::image_height() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.Image.image_height)
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.Creative.Image.image_height)
   return image_height_;
 }
 inline void NativeAd_Creative_Image::set_image_height(::google::protobuf::int32 value) {
   set_has_image_height();
   image_height_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.Creative.Image.image_height)
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.Creative.Image.image_height)
 }
 
 // -------------------------------------------------------------------
@@ -6163,32 +6324,32 @@ inline void NativeAd_Creative_Link::clear_click_url() {
   clear_has_click_url();
 }
 inline const ::std::string& NativeAd_Creative_Link::click_url() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.Link.click_url)
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.Creative.Link.click_url)
   return click_url_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void NativeAd_Creative_Link::set_click_url(const ::std::string& value) {
   set_has_click_url();
   click_url_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.Creative.Link.click_url)
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.Creative.Link.click_url)
 }
 inline void NativeAd_Creative_Link::set_click_url(const char* value) {
   set_has_click_url();
   click_url_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.NativeAd.Creative.Link.click_url)
+  // @@protoc_insertion_point(field_set_char:MAX.NativeAd.Creative.Link.click_url)
 }
 inline void NativeAd_Creative_Link::set_click_url(const char* value, size_t size) {
   set_has_click_url();
   click_url_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.NativeAd.Creative.Link.click_url)
+  // @@protoc_insertion_point(field_set_pointer:MAX.NativeAd.Creative.Link.click_url)
 }
 inline ::std::string* NativeAd_Creative_Link::mutable_click_url() {
   set_has_click_url();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.Creative.Link.click_url)
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.Creative.Link.click_url)
   return click_url_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* NativeAd_Creative_Link::release_click_url() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.NativeAd.Creative.Link.click_url)
+  // @@protoc_insertion_point(field_release:MAX.NativeAd.Creative.Link.click_url)
   clear_has_click_url();
   return click_url_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -6199,7 +6360,7 @@ inline void NativeAd_Creative_Link::set_allocated_click_url(::std::string* click
     clear_has_click_url();
   }
   click_url_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), click_url);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.Creative.Link.click_url)
+  // @@protoc_insertion_point(field_set_allocated:MAX.NativeAd.Creative.Link.click_url)
 }
 
 // optional string deep_link = 4;
@@ -6217,32 +6378,32 @@ inline void NativeAd_Creative_Link::clear_deep_link() {
   clear_has_deep_link();
 }
 inline const ::std::string& NativeAd_Creative_Link::deep_link() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.Link.deep_link)
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.Creative.Link.deep_link)
   return deep_link_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void NativeAd_Creative_Link::set_deep_link(const ::std::string& value) {
   set_has_deep_link();
   deep_link_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.Creative.Link.deep_link)
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.Creative.Link.deep_link)
 }
 inline void NativeAd_Creative_Link::set_deep_link(const char* value) {
   set_has_deep_link();
   deep_link_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.NativeAd.Creative.Link.deep_link)
+  // @@protoc_insertion_point(field_set_char:MAX.NativeAd.Creative.Link.deep_link)
 }
 inline void NativeAd_Creative_Link::set_deep_link(const char* value, size_t size) {
   set_has_deep_link();
   deep_link_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.NativeAd.Creative.Link.deep_link)
+  // @@protoc_insertion_point(field_set_pointer:MAX.NativeAd.Creative.Link.deep_link)
 }
 inline ::std::string* NativeAd_Creative_Link::mutable_deep_link() {
   set_has_deep_link();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.Creative.Link.deep_link)
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.Creative.Link.deep_link)
   return deep_link_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* NativeAd_Creative_Link::release_deep_link() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.NativeAd.Creative.Link.deep_link)
+  // @@protoc_insertion_point(field_release:MAX.NativeAd.Creative.Link.deep_link)
   clear_has_deep_link();
   return deep_link_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -6253,7 +6414,7 @@ inline void NativeAd_Creative_Link::set_allocated_deep_link(::std::string* deep_
     clear_has_deep_link();
   }
   deep_link_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), deep_link);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.Creative.Link.deep_link)
+  // @@protoc_insertion_point(field_set_allocated:MAX.NativeAd.Creative.Link.deep_link)
 }
 
 // optional int32 landing_type = 2;
@@ -6271,13 +6432,13 @@ inline void NativeAd_Creative_Link::clear_landing_type() {
   clear_has_landing_type();
 }
 inline ::google::protobuf::int32 NativeAd_Creative_Link::landing_type() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.Link.landing_type)
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.Creative.Link.landing_type)
   return landing_type_;
 }
 inline void NativeAd_Creative_Link::set_landing_type(::google::protobuf::int32 value) {
   set_has_landing_type();
   landing_type_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.Creative.Link.landing_type)
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.Creative.Link.landing_type)
 }
 
 // repeated string content_click_tracks = 5;
@@ -6288,50 +6449,50 @@ inline void NativeAd_Creative_Link::clear_content_click_tracks() {
   content_click_tracks_.Clear();
 }
 inline const ::std::string& NativeAd_Creative_Link::content_click_tracks(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.Link.content_click_tracks)
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.Creative.Link.content_click_tracks)
   return content_click_tracks_.Get(index);
 }
 inline ::std::string* NativeAd_Creative_Link::mutable_content_click_tracks(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.Creative.Link.content_click_tracks)
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.Creative.Link.content_click_tracks)
   return content_click_tracks_.Mutable(index);
 }
 inline void NativeAd_Creative_Link::set_content_click_tracks(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.Creative.Link.content_click_tracks)
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.Creative.Link.content_click_tracks)
   content_click_tracks_.Mutable(index)->assign(value);
 }
 inline void NativeAd_Creative_Link::set_content_click_tracks(int index, const char* value) {
   content_click_tracks_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.NativeAd.Creative.Link.content_click_tracks)
+  // @@protoc_insertion_point(field_set_char:MAX.NativeAd.Creative.Link.content_click_tracks)
 }
 inline void NativeAd_Creative_Link::set_content_click_tracks(int index, const char* value, size_t size) {
   content_click_tracks_.Mutable(index)->assign(
     reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.NativeAd.Creative.Link.content_click_tracks)
+  // @@protoc_insertion_point(field_set_pointer:MAX.NativeAd.Creative.Link.content_click_tracks)
 }
 inline ::std::string* NativeAd_Creative_Link::add_content_click_tracks() {
-  // @@protoc_insertion_point(field_add_mutable:protocol.MAX.NativeAd.Creative.Link.content_click_tracks)
+  // @@protoc_insertion_point(field_add_mutable:MAX.NativeAd.Creative.Link.content_click_tracks)
   return content_click_tracks_.Add();
 }
 inline void NativeAd_Creative_Link::add_content_click_tracks(const ::std::string& value) {
   content_click_tracks_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:protocol.MAX.NativeAd.Creative.Link.content_click_tracks)
+  // @@protoc_insertion_point(field_add:MAX.NativeAd.Creative.Link.content_click_tracks)
 }
 inline void NativeAd_Creative_Link::add_content_click_tracks(const char* value) {
   content_click_tracks_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:protocol.MAX.NativeAd.Creative.Link.content_click_tracks)
+  // @@protoc_insertion_point(field_add_char:MAX.NativeAd.Creative.Link.content_click_tracks)
 }
 inline void NativeAd_Creative_Link::add_content_click_tracks(const char* value, size_t size) {
   content_click_tracks_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:protocol.MAX.NativeAd.Creative.Link.content_click_tracks)
+  // @@protoc_insertion_point(field_add_pointer:MAX.NativeAd.Creative.Link.content_click_tracks)
 }
 inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
 NativeAd_Creative_Link::content_click_tracks() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.NativeAd.Creative.Link.content_click_tracks)
+  // @@protoc_insertion_point(field_list:MAX.NativeAd.Creative.Link.content_click_tracks)
   return content_click_tracks_;
 }
 inline ::google::protobuf::RepeatedPtrField< ::std::string>*
 NativeAd_Creative_Link::mutable_content_click_tracks() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.NativeAd.Creative.Link.content_click_tracks)
+  // @@protoc_insertion_point(field_mutable_list:MAX.NativeAd.Creative.Link.content_click_tracks)
   return &content_click_tracks_;
 }
 
@@ -6343,50 +6504,50 @@ inline void NativeAd_Creative_Link::clear_click_tracks() {
   click_tracks_.Clear();
 }
 inline const ::std::string& NativeAd_Creative_Link::click_tracks(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.Link.click_tracks)
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.Creative.Link.click_tracks)
   return click_tracks_.Get(index);
 }
 inline ::std::string* NativeAd_Creative_Link::mutable_click_tracks(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.Creative.Link.click_tracks)
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.Creative.Link.click_tracks)
   return click_tracks_.Mutable(index);
 }
 inline void NativeAd_Creative_Link::set_click_tracks(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.Creative.Link.click_tracks)
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.Creative.Link.click_tracks)
   click_tracks_.Mutable(index)->assign(value);
 }
 inline void NativeAd_Creative_Link::set_click_tracks(int index, const char* value) {
   click_tracks_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.NativeAd.Creative.Link.click_tracks)
+  // @@protoc_insertion_point(field_set_char:MAX.NativeAd.Creative.Link.click_tracks)
 }
 inline void NativeAd_Creative_Link::set_click_tracks(int index, const char* value, size_t size) {
   click_tracks_.Mutable(index)->assign(
     reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.NativeAd.Creative.Link.click_tracks)
+  // @@protoc_insertion_point(field_set_pointer:MAX.NativeAd.Creative.Link.click_tracks)
 }
 inline ::std::string* NativeAd_Creative_Link::add_click_tracks() {
-  // @@protoc_insertion_point(field_add_mutable:protocol.MAX.NativeAd.Creative.Link.click_tracks)
+  // @@protoc_insertion_point(field_add_mutable:MAX.NativeAd.Creative.Link.click_tracks)
   return click_tracks_.Add();
 }
 inline void NativeAd_Creative_Link::add_click_tracks(const ::std::string& value) {
   click_tracks_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:protocol.MAX.NativeAd.Creative.Link.click_tracks)
+  // @@protoc_insertion_point(field_add:MAX.NativeAd.Creative.Link.click_tracks)
 }
 inline void NativeAd_Creative_Link::add_click_tracks(const char* value) {
   click_tracks_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:protocol.MAX.NativeAd.Creative.Link.click_tracks)
+  // @@protoc_insertion_point(field_add_char:MAX.NativeAd.Creative.Link.click_tracks)
 }
 inline void NativeAd_Creative_Link::add_click_tracks(const char* value, size_t size) {
   click_tracks_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:protocol.MAX.NativeAd.Creative.Link.click_tracks)
+  // @@protoc_insertion_point(field_add_pointer:MAX.NativeAd.Creative.Link.click_tracks)
 }
 inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
 NativeAd_Creative_Link::click_tracks() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.NativeAd.Creative.Link.click_tracks)
+  // @@protoc_insertion_point(field_list:MAX.NativeAd.Creative.Link.click_tracks)
   return click_tracks_;
 }
 inline ::google::protobuf::RepeatedPtrField< ::std::string>*
 NativeAd_Creative_Link::mutable_click_tracks() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.NativeAd.Creative.Link.click_tracks)
+  // @@protoc_insertion_point(field_mutable_list:MAX.NativeAd.Creative.Link.click_tracks)
   return &click_tracks_;
 }
 
@@ -6409,13 +6570,13 @@ inline void NativeAd_Creative::clear_template_id() {
   clear_has_template_id();
 }
 inline ::google::protobuf::int32 NativeAd_Creative::template_id() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.template_id)
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.Creative.template_id)
   return template_id_;
 }
 inline void NativeAd_Creative::set_template_id(::google::protobuf::int32 value) {
   set_has_template_id();
   template_id_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.Creative.template_id)
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.Creative.template_id)
 }
 
 // optional string title = 1;
@@ -6433,32 +6594,32 @@ inline void NativeAd_Creative::clear_title() {
   clear_has_title();
 }
 inline const ::std::string& NativeAd_Creative::title() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.title)
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.Creative.title)
   return title_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void NativeAd_Creative::set_title(const ::std::string& value) {
   set_has_title();
   title_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.Creative.title)
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.Creative.title)
 }
 inline void NativeAd_Creative::set_title(const char* value) {
   set_has_title();
   title_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.NativeAd.Creative.title)
+  // @@protoc_insertion_point(field_set_char:MAX.NativeAd.Creative.title)
 }
 inline void NativeAd_Creative::set_title(const char* value, size_t size) {
   set_has_title();
   title_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.NativeAd.Creative.title)
+  // @@protoc_insertion_point(field_set_pointer:MAX.NativeAd.Creative.title)
 }
 inline ::std::string* NativeAd_Creative::mutable_title() {
   set_has_title();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.Creative.title)
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.Creative.title)
   return title_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* NativeAd_Creative::release_title() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.NativeAd.Creative.title)
+  // @@protoc_insertion_point(field_release:MAX.NativeAd.Creative.title)
   clear_has_title();
   return title_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -6469,7 +6630,7 @@ inline void NativeAd_Creative::set_allocated_title(::std::string* title) {
     clear_has_title();
   }
   title_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), title);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.Creative.title)
+  // @@protoc_insertion_point(field_set_allocated:MAX.NativeAd.Creative.title)
 }
 
 // optional string sub_title = 2;
@@ -6487,32 +6648,32 @@ inline void NativeAd_Creative::clear_sub_title() {
   clear_has_sub_title();
 }
 inline const ::std::string& NativeAd_Creative::sub_title() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.sub_title)
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.Creative.sub_title)
   return sub_title_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void NativeAd_Creative::set_sub_title(const ::std::string& value) {
   set_has_sub_title();
   sub_title_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.Creative.sub_title)
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.Creative.sub_title)
 }
 inline void NativeAd_Creative::set_sub_title(const char* value) {
   set_has_sub_title();
   sub_title_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.NativeAd.Creative.sub_title)
+  // @@protoc_insertion_point(field_set_char:MAX.NativeAd.Creative.sub_title)
 }
 inline void NativeAd_Creative::set_sub_title(const char* value, size_t size) {
   set_has_sub_title();
   sub_title_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.NativeAd.Creative.sub_title)
+  // @@protoc_insertion_point(field_set_pointer:MAX.NativeAd.Creative.sub_title)
 }
 inline ::std::string* NativeAd_Creative::mutable_sub_title() {
   set_has_sub_title();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.Creative.sub_title)
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.Creative.sub_title)
   return sub_title_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* NativeAd_Creative::release_sub_title() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.NativeAd.Creative.sub_title)
+  // @@protoc_insertion_point(field_release:MAX.NativeAd.Creative.sub_title)
   clear_has_sub_title();
   return sub_title_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -6523,7 +6684,7 @@ inline void NativeAd_Creative::set_allocated_sub_title(::std::string* sub_title)
     clear_has_sub_title();
   }
   sub_title_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), sub_title);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.Creative.sub_title)
+  // @@protoc_insertion_point(field_set_allocated:MAX.NativeAd.Creative.sub_title)
 }
 
 // optional string description = 3;
@@ -6541,32 +6702,32 @@ inline void NativeAd_Creative::clear_description() {
   clear_has_description();
 }
 inline const ::std::string& NativeAd_Creative::description() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.description)
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.Creative.description)
   return description_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void NativeAd_Creative::set_description(const ::std::string& value) {
   set_has_description();
   description_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.Creative.description)
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.Creative.description)
 }
 inline void NativeAd_Creative::set_description(const char* value) {
   set_has_description();
   description_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.NativeAd.Creative.description)
+  // @@protoc_insertion_point(field_set_char:MAX.NativeAd.Creative.description)
 }
 inline void NativeAd_Creative::set_description(const char* value, size_t size) {
   set_has_description();
   description_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.NativeAd.Creative.description)
+  // @@protoc_insertion_point(field_set_pointer:MAX.NativeAd.Creative.description)
 }
 inline ::std::string* NativeAd_Creative::mutable_description() {
   set_has_description();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.Creative.description)
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.Creative.description)
   return description_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* NativeAd_Creative::release_description() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.NativeAd.Creative.description)
+  // @@protoc_insertion_point(field_release:MAX.NativeAd.Creative.description)
   clear_has_description();
   return description_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -6577,7 +6738,7 @@ inline void NativeAd_Creative::set_allocated_description(::std::string* descript
     clear_has_description();
   }
   description_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), description);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.Creative.description)
+  // @@protoc_insertion_point(field_set_allocated:MAX.NativeAd.Creative.description)
 }
 
 // optional string button_name = 4;
@@ -6595,32 +6756,32 @@ inline void NativeAd_Creative::clear_button_name() {
   clear_has_button_name();
 }
 inline const ::std::string& NativeAd_Creative::button_name() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.button_name)
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.Creative.button_name)
   return button_name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void NativeAd_Creative::set_button_name(const ::std::string& value) {
   set_has_button_name();
   button_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.Creative.button_name)
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.Creative.button_name)
 }
 inline void NativeAd_Creative::set_button_name(const char* value) {
   set_has_button_name();
   button_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.NativeAd.Creative.button_name)
+  // @@protoc_insertion_point(field_set_char:MAX.NativeAd.Creative.button_name)
 }
 inline void NativeAd_Creative::set_button_name(const char* value, size_t size) {
   set_has_button_name();
   button_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.NativeAd.Creative.button_name)
+  // @@protoc_insertion_point(field_set_pointer:MAX.NativeAd.Creative.button_name)
 }
 inline ::std::string* NativeAd_Creative::mutable_button_name() {
   set_has_button_name();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.Creative.button_name)
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.Creative.button_name)
   return button_name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* NativeAd_Creative::release_button_name() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.NativeAd.Creative.button_name)
+  // @@protoc_insertion_point(field_release:MAX.NativeAd.Creative.button_name)
   clear_has_button_name();
   return button_name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -6631,10 +6792,10 @@ inline void NativeAd_Creative::set_allocated_button_name(::std::string* button_n
     clear_has_button_name();
   }
   button_name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), button_name);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.Creative.button_name)
+  // @@protoc_insertion_point(field_set_allocated:MAX.NativeAd.Creative.button_name)
 }
 
-// optional .protocol.MAX.NativeAd.Creative.Image content_image = 5;
+// optional .MAX.NativeAd.Creative.Image content_image = 5;
 inline bool NativeAd_Creative::has_content_image() const {
   return (_has_bits_[0] & 0x00000020u) != 0;
 }
@@ -6645,29 +6806,29 @@ inline void NativeAd_Creative::clear_has_content_image() {
   _has_bits_[0] &= ~0x00000020u;
 }
 inline void NativeAd_Creative::clear_content_image() {
-  if (content_image_ != NULL) content_image_->::protocol::MAX::NativeAd_Creative_Image::Clear();
+  if (content_image_ != NULL) content_image_->::MAX::NativeAd_Creative_Image::Clear();
   clear_has_content_image();
 }
-inline const ::protocol::MAX::NativeAd_Creative_Image& NativeAd_Creative::content_image() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.content_image)
+inline const ::MAX::NativeAd_Creative_Image& NativeAd_Creative::content_image() const {
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.Creative.content_image)
   return content_image_ != NULL ? *content_image_ : *default_instance_->content_image_;
 }
-inline ::protocol::MAX::NativeAd_Creative_Image* NativeAd_Creative::mutable_content_image() {
+inline ::MAX::NativeAd_Creative_Image* NativeAd_Creative::mutable_content_image() {
   set_has_content_image();
   if (content_image_ == NULL) {
-    content_image_ = new ::protocol::MAX::NativeAd_Creative_Image;
+    content_image_ = new ::MAX::NativeAd_Creative_Image;
   }
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.Creative.content_image)
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.Creative.content_image)
   return content_image_;
 }
-inline ::protocol::MAX::NativeAd_Creative_Image* NativeAd_Creative::release_content_image() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.NativeAd.Creative.content_image)
+inline ::MAX::NativeAd_Creative_Image* NativeAd_Creative::release_content_image() {
+  // @@protoc_insertion_point(field_release:MAX.NativeAd.Creative.content_image)
   clear_has_content_image();
-  ::protocol::MAX::NativeAd_Creative_Image* temp = content_image_;
+  ::MAX::NativeAd_Creative_Image* temp = content_image_;
   content_image_ = NULL;
   return temp;
 }
-inline void NativeAd_Creative::set_allocated_content_image(::protocol::MAX::NativeAd_Creative_Image* content_image) {
+inline void NativeAd_Creative::set_allocated_content_image(::MAX::NativeAd_Creative_Image* content_image) {
   delete content_image_;
   content_image_ = content_image;
   if (content_image) {
@@ -6675,10 +6836,10 @@ inline void NativeAd_Creative::set_allocated_content_image(::protocol::MAX::Nati
   } else {
     clear_has_content_image();
   }
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.Creative.content_image)
+  // @@protoc_insertion_point(field_set_allocated:MAX.NativeAd.Creative.content_image)
 }
 
-// optional .protocol.MAX.NativeAd.Creative.Image logo = 6;
+// optional .MAX.NativeAd.Creative.Image logo = 6;
 inline bool NativeAd_Creative::has_logo() const {
   return (_has_bits_[0] & 0x00000040u) != 0;
 }
@@ -6689,29 +6850,29 @@ inline void NativeAd_Creative::clear_has_logo() {
   _has_bits_[0] &= ~0x00000040u;
 }
 inline void NativeAd_Creative::clear_logo() {
-  if (logo_ != NULL) logo_->::protocol::MAX::NativeAd_Creative_Image::Clear();
+  if (logo_ != NULL) logo_->::MAX::NativeAd_Creative_Image::Clear();
   clear_has_logo();
 }
-inline const ::protocol::MAX::NativeAd_Creative_Image& NativeAd_Creative::logo() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.logo)
+inline const ::MAX::NativeAd_Creative_Image& NativeAd_Creative::logo() const {
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.Creative.logo)
   return logo_ != NULL ? *logo_ : *default_instance_->logo_;
 }
-inline ::protocol::MAX::NativeAd_Creative_Image* NativeAd_Creative::mutable_logo() {
+inline ::MAX::NativeAd_Creative_Image* NativeAd_Creative::mutable_logo() {
   set_has_logo();
   if (logo_ == NULL) {
-    logo_ = new ::protocol::MAX::NativeAd_Creative_Image;
+    logo_ = new ::MAX::NativeAd_Creative_Image;
   }
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.Creative.logo)
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.Creative.logo)
   return logo_;
 }
-inline ::protocol::MAX::NativeAd_Creative_Image* NativeAd_Creative::release_logo() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.NativeAd.Creative.logo)
+inline ::MAX::NativeAd_Creative_Image* NativeAd_Creative::release_logo() {
+  // @@protoc_insertion_point(field_release:MAX.NativeAd.Creative.logo)
   clear_has_logo();
-  ::protocol::MAX::NativeAd_Creative_Image* temp = logo_;
+  ::MAX::NativeAd_Creative_Image* temp = logo_;
   logo_ = NULL;
   return temp;
 }
-inline void NativeAd_Creative::set_allocated_logo(::protocol::MAX::NativeAd_Creative_Image* logo) {
+inline void NativeAd_Creative::set_allocated_logo(::MAX::NativeAd_Creative_Image* logo) {
   delete logo_;
   logo_ = logo;
   if (logo) {
@@ -6719,10 +6880,10 @@ inline void NativeAd_Creative::set_allocated_logo(::protocol::MAX::NativeAd_Crea
   } else {
     clear_has_logo();
   }
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.Creative.logo)
+  // @@protoc_insertion_point(field_set_allocated:MAX.NativeAd.Creative.logo)
 }
 
-// optional .protocol.MAX.NativeAd.Creative.Image linked_image = 8;
+// optional .MAX.NativeAd.Creative.Image linked_image = 8;
 inline bool NativeAd_Creative::has_linked_image() const {
   return (_has_bits_[0] & 0x00000080u) != 0;
 }
@@ -6733,29 +6894,29 @@ inline void NativeAd_Creative::clear_has_linked_image() {
   _has_bits_[0] &= ~0x00000080u;
 }
 inline void NativeAd_Creative::clear_linked_image() {
-  if (linked_image_ != NULL) linked_image_->::protocol::MAX::NativeAd_Creative_Image::Clear();
+  if (linked_image_ != NULL) linked_image_->::MAX::NativeAd_Creative_Image::Clear();
   clear_has_linked_image();
 }
-inline const ::protocol::MAX::NativeAd_Creative_Image& NativeAd_Creative::linked_image() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.linked_image)
+inline const ::MAX::NativeAd_Creative_Image& NativeAd_Creative::linked_image() const {
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.Creative.linked_image)
   return linked_image_ != NULL ? *linked_image_ : *default_instance_->linked_image_;
 }
-inline ::protocol::MAX::NativeAd_Creative_Image* NativeAd_Creative::mutable_linked_image() {
+inline ::MAX::NativeAd_Creative_Image* NativeAd_Creative::mutable_linked_image() {
   set_has_linked_image();
   if (linked_image_ == NULL) {
-    linked_image_ = new ::protocol::MAX::NativeAd_Creative_Image;
+    linked_image_ = new ::MAX::NativeAd_Creative_Image;
   }
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.Creative.linked_image)
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.Creative.linked_image)
   return linked_image_;
 }
-inline ::protocol::MAX::NativeAd_Creative_Image* NativeAd_Creative::release_linked_image() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.NativeAd.Creative.linked_image)
+inline ::MAX::NativeAd_Creative_Image* NativeAd_Creative::release_linked_image() {
+  // @@protoc_insertion_point(field_release:MAX.NativeAd.Creative.linked_image)
   clear_has_linked_image();
-  ::protocol::MAX::NativeAd_Creative_Image* temp = linked_image_;
+  ::MAX::NativeAd_Creative_Image* temp = linked_image_;
   linked_image_ = NULL;
   return temp;
 }
-inline void NativeAd_Creative::set_allocated_linked_image(::protocol::MAX::NativeAd_Creative_Image* linked_image) {
+inline void NativeAd_Creative::set_allocated_linked_image(::MAX::NativeAd_Creative_Image* linked_image) {
   delete linked_image_;
   linked_image_ = linked_image;
   if (linked_image) {
@@ -6763,10 +6924,10 @@ inline void NativeAd_Creative::set_allocated_linked_image(::protocol::MAX::Nativ
   } else {
     clear_has_linked_image();
   }
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.Creative.linked_image)
+  // @@protoc_insertion_point(field_set_allocated:MAX.NativeAd.Creative.linked_image)
 }
 
-// optional .protocol.MAX.NativeAd.Creative.Link link = 7;
+// optional .MAX.NativeAd.Creative.Link link = 7;
 inline bool NativeAd_Creative::has_link() const {
   return (_has_bits_[0] & 0x00000100u) != 0;
 }
@@ -6777,29 +6938,29 @@ inline void NativeAd_Creative::clear_has_link() {
   _has_bits_[0] &= ~0x00000100u;
 }
 inline void NativeAd_Creative::clear_link() {
-  if (link_ != NULL) link_->::protocol::MAX::NativeAd_Creative_Link::Clear();
+  if (link_ != NULL) link_->::MAX::NativeAd_Creative_Link::Clear();
   clear_has_link();
 }
-inline const ::protocol::MAX::NativeAd_Creative_Link& NativeAd_Creative::link() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.link)
+inline const ::MAX::NativeAd_Creative_Link& NativeAd_Creative::link() const {
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.Creative.link)
   return link_ != NULL ? *link_ : *default_instance_->link_;
 }
-inline ::protocol::MAX::NativeAd_Creative_Link* NativeAd_Creative::mutable_link() {
+inline ::MAX::NativeAd_Creative_Link* NativeAd_Creative::mutable_link() {
   set_has_link();
   if (link_ == NULL) {
-    link_ = new ::protocol::MAX::NativeAd_Creative_Link;
+    link_ = new ::MAX::NativeAd_Creative_Link;
   }
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.Creative.link)
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.Creative.link)
   return link_;
 }
-inline ::protocol::MAX::NativeAd_Creative_Link* NativeAd_Creative::release_link() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.NativeAd.Creative.link)
+inline ::MAX::NativeAd_Creative_Link* NativeAd_Creative::release_link() {
+  // @@protoc_insertion_point(field_release:MAX.NativeAd.Creative.link)
   clear_has_link();
-  ::protocol::MAX::NativeAd_Creative_Link* temp = link_;
+  ::MAX::NativeAd_Creative_Link* temp = link_;
   link_ = NULL;
   return temp;
 }
-inline void NativeAd_Creative::set_allocated_link(::protocol::MAX::NativeAd_Creative_Link* link) {
+inline void NativeAd_Creative::set_allocated_link(::MAX::NativeAd_Creative_Link* link) {
   delete link_;
   link_ = link;
   if (link) {
@@ -6807,7 +6968,221 @@ inline void NativeAd_Creative::set_allocated_link(::protocol::MAX::NativeAd_Crea
   } else {
     clear_has_link();
   }
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.Creative.link)
+  // @@protoc_insertion_point(field_set_allocated:MAX.NativeAd.Creative.link)
+}
+
+// -------------------------------------------------------------------
+
+// NativeAd_AppAttr
+
+// optional string app_name = 1;
+inline bool NativeAd_AppAttr::has_app_name() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void NativeAd_AppAttr::set_has_app_name() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void NativeAd_AppAttr::clear_has_app_name() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void NativeAd_AppAttr::clear_app_name() {
+  app_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_app_name();
+}
+inline const ::std::string& NativeAd_AppAttr::app_name() const {
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.AppAttr.app_name)
+  return app_name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void NativeAd_AppAttr::set_app_name(const ::std::string& value) {
+  set_has_app_name();
+  app_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.AppAttr.app_name)
+}
+inline void NativeAd_AppAttr::set_app_name(const char* value) {
+  set_has_app_name();
+  app_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:MAX.NativeAd.AppAttr.app_name)
+}
+inline void NativeAd_AppAttr::set_app_name(const char* value, size_t size) {
+  set_has_app_name();
+  app_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:MAX.NativeAd.AppAttr.app_name)
+}
+inline ::std::string* NativeAd_AppAttr::mutable_app_name() {
+  set_has_app_name();
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.AppAttr.app_name)
+  return app_name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* NativeAd_AppAttr::release_app_name() {
+  // @@protoc_insertion_point(field_release:MAX.NativeAd.AppAttr.app_name)
+  clear_has_app_name();
+  return app_name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void NativeAd_AppAttr::set_allocated_app_name(::std::string* app_name) {
+  if (app_name != NULL) {
+    set_has_app_name();
+  } else {
+    clear_has_app_name();
+  }
+  app_name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), app_name);
+  // @@protoc_insertion_point(field_set_allocated:MAX.NativeAd.AppAttr.app_name)
+}
+
+// optional string app_pkg = 2;
+inline bool NativeAd_AppAttr::has_app_pkg() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void NativeAd_AppAttr::set_has_app_pkg() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void NativeAd_AppAttr::clear_has_app_pkg() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void NativeAd_AppAttr::clear_app_pkg() {
+  app_pkg_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_app_pkg();
+}
+inline const ::std::string& NativeAd_AppAttr::app_pkg() const {
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.AppAttr.app_pkg)
+  return app_pkg_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void NativeAd_AppAttr::set_app_pkg(const ::std::string& value) {
+  set_has_app_pkg();
+  app_pkg_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.AppAttr.app_pkg)
+}
+inline void NativeAd_AppAttr::set_app_pkg(const char* value) {
+  set_has_app_pkg();
+  app_pkg_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:MAX.NativeAd.AppAttr.app_pkg)
+}
+inline void NativeAd_AppAttr::set_app_pkg(const char* value, size_t size) {
+  set_has_app_pkg();
+  app_pkg_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:MAX.NativeAd.AppAttr.app_pkg)
+}
+inline ::std::string* NativeAd_AppAttr::mutable_app_pkg() {
+  set_has_app_pkg();
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.AppAttr.app_pkg)
+  return app_pkg_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* NativeAd_AppAttr::release_app_pkg() {
+  // @@protoc_insertion_point(field_release:MAX.NativeAd.AppAttr.app_pkg)
+  clear_has_app_pkg();
+  return app_pkg_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void NativeAd_AppAttr::set_allocated_app_pkg(::std::string* app_pkg) {
+  if (app_pkg != NULL) {
+    set_has_app_pkg();
+  } else {
+    clear_has_app_pkg();
+  }
+  app_pkg_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), app_pkg);
+  // @@protoc_insertion_point(field_set_allocated:MAX.NativeAd.AppAttr.app_pkg)
+}
+
+// optional string app_md5 = 3;
+inline bool NativeAd_AppAttr::has_app_md5() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void NativeAd_AppAttr::set_has_app_md5() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void NativeAd_AppAttr::clear_has_app_md5() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void NativeAd_AppAttr::clear_app_md5() {
+  app_md5_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_app_md5();
+}
+inline const ::std::string& NativeAd_AppAttr::app_md5() const {
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.AppAttr.app_md5)
+  return app_md5_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void NativeAd_AppAttr::set_app_md5(const ::std::string& value) {
+  set_has_app_md5();
+  app_md5_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.AppAttr.app_md5)
+}
+inline void NativeAd_AppAttr::set_app_md5(const char* value) {
+  set_has_app_md5();
+  app_md5_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:MAX.NativeAd.AppAttr.app_md5)
+}
+inline void NativeAd_AppAttr::set_app_md5(const char* value, size_t size) {
+  set_has_app_md5();
+  app_md5_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:MAX.NativeAd.AppAttr.app_md5)
+}
+inline ::std::string* NativeAd_AppAttr::mutable_app_md5() {
+  set_has_app_md5();
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.AppAttr.app_md5)
+  return app_md5_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* NativeAd_AppAttr::release_app_md5() {
+  // @@protoc_insertion_point(field_release:MAX.NativeAd.AppAttr.app_md5)
+  clear_has_app_md5();
+  return app_md5_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void NativeAd_AppAttr::set_allocated_app_md5(::std::string* app_md5) {
+  if (app_md5 != NULL) {
+    set_has_app_md5();
+  } else {
+    clear_has_app_md5();
+  }
+  app_md5_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), app_md5);
+  // @@protoc_insertion_point(field_set_allocated:MAX.NativeAd.AppAttr.app_md5)
+}
+
+// optional int32 app_vc = 4;
+inline bool NativeAd_AppAttr::has_app_vc() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void NativeAd_AppAttr::set_has_app_vc() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void NativeAd_AppAttr::clear_has_app_vc() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void NativeAd_AppAttr::clear_app_vc() {
+  app_vc_ = 0;
+  clear_has_app_vc();
+}
+inline ::google::protobuf::int32 NativeAd_AppAttr::app_vc() const {
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.AppAttr.app_vc)
+  return app_vc_;
+}
+inline void NativeAd_AppAttr::set_app_vc(::google::protobuf::int32 value) {
+  set_has_app_vc();
+  app_vc_ = value;
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.AppAttr.app_vc)
+}
+
+// optional int32 app_size = 5;
+inline bool NativeAd_AppAttr::has_app_size() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void NativeAd_AppAttr::set_has_app_size() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void NativeAd_AppAttr::clear_has_app_size() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void NativeAd_AppAttr::clear_app_size() {
+  app_size_ = 0;
+  clear_has_app_size();
+}
+inline ::google::protobuf::int32 NativeAd_AppAttr::app_size() const {
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.AppAttr.app_size)
+  return app_size_;
+}
+inline void NativeAd_AppAttr::set_app_size(::google::protobuf::int32 value) {
+  set_has_app_size();
+  app_size_ = value;
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.AppAttr.app_size)
 }
 
 // -------------------------------------------------------------------
@@ -6829,43 +7204,87 @@ inline void NativeAd::clear_max_cpm_price() {
   clear_has_max_cpm_price();
 }
 inline ::google::protobuf::uint32 NativeAd::max_cpm_price() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.max_cpm_price)
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.max_cpm_price)
   return max_cpm_price_;
 }
 inline void NativeAd::set_max_cpm_price(::google::protobuf::uint32 value) {
   set_has_max_cpm_price();
   max_cpm_price_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.max_cpm_price)
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.max_cpm_price)
 }
 
-// repeated .protocol.MAX.NativeAd.Creative creatives = 2;
+// repeated .MAX.NativeAd.Creative creatives = 2;
 inline int NativeAd::creatives_size() const {
   return creatives_.size();
 }
 inline void NativeAd::clear_creatives() {
   creatives_.Clear();
 }
-inline const ::protocol::MAX::NativeAd_Creative& NativeAd::creatives(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.creatives)
+inline const ::MAX::NativeAd_Creative& NativeAd::creatives(int index) const {
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.creatives)
   return creatives_.Get(index);
 }
-inline ::protocol::MAX::NativeAd_Creative* NativeAd::mutable_creatives(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.creatives)
+inline ::MAX::NativeAd_Creative* NativeAd::mutable_creatives(int index) {
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.creatives)
   return creatives_.Mutable(index);
 }
-inline ::protocol::MAX::NativeAd_Creative* NativeAd::add_creatives() {
-  // @@protoc_insertion_point(field_add:protocol.MAX.NativeAd.creatives)
+inline ::MAX::NativeAd_Creative* NativeAd::add_creatives() {
+  // @@protoc_insertion_point(field_add:MAX.NativeAd.creatives)
   return creatives_.Add();
 }
-inline ::google::protobuf::RepeatedPtrField< ::protocol::MAX::NativeAd_Creative >*
+inline ::google::protobuf::RepeatedPtrField< ::MAX::NativeAd_Creative >*
 NativeAd::mutable_creatives() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.NativeAd.creatives)
+  // @@protoc_insertion_point(field_mutable_list:MAX.NativeAd.creatives)
   return &creatives_;
 }
-inline const ::google::protobuf::RepeatedPtrField< ::protocol::MAX::NativeAd_Creative >&
+inline const ::google::protobuf::RepeatedPtrField< ::MAX::NativeAd_Creative >&
 NativeAd::creatives() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.NativeAd.creatives)
+  // @@protoc_insertion_point(field_list:MAX.NativeAd.creatives)
   return creatives_;
+}
+
+// optional .MAX.NativeAd.AppAttr app_attr = 9;
+inline bool NativeAd::has_app_attr() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void NativeAd::set_has_app_attr() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void NativeAd::clear_has_app_attr() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void NativeAd::clear_app_attr() {
+  if (app_attr_ != NULL) app_attr_->::MAX::NativeAd_AppAttr::Clear();
+  clear_has_app_attr();
+}
+inline const ::MAX::NativeAd_AppAttr& NativeAd::app_attr() const {
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.app_attr)
+  return app_attr_ != NULL ? *app_attr_ : *default_instance_->app_attr_;
+}
+inline ::MAX::NativeAd_AppAttr* NativeAd::mutable_app_attr() {
+  set_has_app_attr();
+  if (app_attr_ == NULL) {
+    app_attr_ = new ::MAX::NativeAd_AppAttr;
+  }
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.app_attr)
+  return app_attr_;
+}
+inline ::MAX::NativeAd_AppAttr* NativeAd::release_app_attr() {
+  // @@protoc_insertion_point(field_release:MAX.NativeAd.app_attr)
+  clear_has_app_attr();
+  ::MAX::NativeAd_AppAttr* temp = app_attr_;
+  app_attr_ = NULL;
+  return temp;
+}
+inline void NativeAd::set_allocated_app_attr(::MAX::NativeAd_AppAttr* app_attr) {
+  delete app_attr_;
+  app_attr_ = app_attr;
+  if (app_attr) {
+    set_has_app_attr();
+  } else {
+    clear_has_app_attr();
+  }
+  // @@protoc_insertion_point(field_set_allocated:MAX.NativeAd.app_attr)
 }
 
 // repeated string impression_tracks = 3;
@@ -6876,50 +7295,50 @@ inline void NativeAd::clear_impression_tracks() {
   impression_tracks_.Clear();
 }
 inline const ::std::string& NativeAd::impression_tracks(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.impression_tracks)
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.impression_tracks)
   return impression_tracks_.Get(index);
 }
 inline ::std::string* NativeAd::mutable_impression_tracks(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.impression_tracks)
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.impression_tracks)
   return impression_tracks_.Mutable(index);
 }
 inline void NativeAd::set_impression_tracks(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.impression_tracks)
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.impression_tracks)
   impression_tracks_.Mutable(index)->assign(value);
 }
 inline void NativeAd::set_impression_tracks(int index, const char* value) {
   impression_tracks_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.NativeAd.impression_tracks)
+  // @@protoc_insertion_point(field_set_char:MAX.NativeAd.impression_tracks)
 }
 inline void NativeAd::set_impression_tracks(int index, const char* value, size_t size) {
   impression_tracks_.Mutable(index)->assign(
     reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.NativeAd.impression_tracks)
+  // @@protoc_insertion_point(field_set_pointer:MAX.NativeAd.impression_tracks)
 }
 inline ::std::string* NativeAd::add_impression_tracks() {
-  // @@protoc_insertion_point(field_add_mutable:protocol.MAX.NativeAd.impression_tracks)
+  // @@protoc_insertion_point(field_add_mutable:MAX.NativeAd.impression_tracks)
   return impression_tracks_.Add();
 }
 inline void NativeAd::add_impression_tracks(const ::std::string& value) {
   impression_tracks_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:protocol.MAX.NativeAd.impression_tracks)
+  // @@protoc_insertion_point(field_add:MAX.NativeAd.impression_tracks)
 }
 inline void NativeAd::add_impression_tracks(const char* value) {
   impression_tracks_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:protocol.MAX.NativeAd.impression_tracks)
+  // @@protoc_insertion_point(field_add_char:MAX.NativeAd.impression_tracks)
 }
 inline void NativeAd::add_impression_tracks(const char* value, size_t size) {
   impression_tracks_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:protocol.MAX.NativeAd.impression_tracks)
+  // @@protoc_insertion_point(field_add_pointer:MAX.NativeAd.impression_tracks)
 }
 inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
 NativeAd::impression_tracks() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.NativeAd.impression_tracks)
+  // @@protoc_insertion_point(field_list:MAX.NativeAd.impression_tracks)
   return impression_tracks_;
 }
 inline ::google::protobuf::RepeatedPtrField< ::std::string>*
 NativeAd::mutable_impression_tracks() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.NativeAd.impression_tracks)
+  // @@protoc_insertion_point(field_mutable_list:MAX.NativeAd.impression_tracks)
   return &impression_tracks_;
 }
 
@@ -6931,25 +7350,25 @@ inline void NativeAd::clear_category() {
   category_.Clear();
 }
 inline ::google::protobuf::int32 NativeAd::category(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.category)
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.category)
   return category_.Get(index);
 }
 inline void NativeAd::set_category(int index, ::google::protobuf::int32 value) {
   category_.Set(index, value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.category)
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.category)
 }
 inline void NativeAd::add_category(::google::protobuf::int32 value) {
   category_.Add(value);
-  // @@protoc_insertion_point(field_add:protocol.MAX.NativeAd.category)
+  // @@protoc_insertion_point(field_add:MAX.NativeAd.category)
 }
 inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
 NativeAd::category() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.NativeAd.category)
+  // @@protoc_insertion_point(field_list:MAX.NativeAd.category)
   return category_;
 }
 inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
 NativeAd::mutable_category() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.NativeAd.category)
+  // @@protoc_insertion_point(field_mutable_list:MAX.NativeAd.category)
   return &category_;
 }
 
@@ -6961,94 +7380,94 @@ inline void NativeAd::clear_destination_url() {
   destination_url_.Clear();
 }
 inline const ::std::string& NativeAd::destination_url(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.destination_url)
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.destination_url)
   return destination_url_.Get(index);
 }
 inline ::std::string* NativeAd::mutable_destination_url(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.destination_url)
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.destination_url)
   return destination_url_.Mutable(index);
 }
 inline void NativeAd::set_destination_url(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.destination_url)
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.destination_url)
   destination_url_.Mutable(index)->assign(value);
 }
 inline void NativeAd::set_destination_url(int index, const char* value) {
   destination_url_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.NativeAd.destination_url)
+  // @@protoc_insertion_point(field_set_char:MAX.NativeAd.destination_url)
 }
 inline void NativeAd::set_destination_url(int index, const char* value, size_t size) {
   destination_url_.Mutable(index)->assign(
     reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.NativeAd.destination_url)
+  // @@protoc_insertion_point(field_set_pointer:MAX.NativeAd.destination_url)
 }
 inline ::std::string* NativeAd::add_destination_url() {
-  // @@protoc_insertion_point(field_add_mutable:protocol.MAX.NativeAd.destination_url)
+  // @@protoc_insertion_point(field_add_mutable:MAX.NativeAd.destination_url)
   return destination_url_.Add();
 }
 inline void NativeAd::add_destination_url(const ::std::string& value) {
   destination_url_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:protocol.MAX.NativeAd.destination_url)
+  // @@protoc_insertion_point(field_add:MAX.NativeAd.destination_url)
 }
 inline void NativeAd::add_destination_url(const char* value) {
   destination_url_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:protocol.MAX.NativeAd.destination_url)
+  // @@protoc_insertion_point(field_add_char:MAX.NativeAd.destination_url)
 }
 inline void NativeAd::add_destination_url(const char* value, size_t size) {
   destination_url_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:protocol.MAX.NativeAd.destination_url)
+  // @@protoc_insertion_point(field_add_pointer:MAX.NativeAd.destination_url)
 }
 inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
 NativeAd::destination_url() const {
-  // @@protoc_insertion_point(field_list:protocol.MAX.NativeAd.destination_url)
+  // @@protoc_insertion_point(field_list:MAX.NativeAd.destination_url)
   return destination_url_;
 }
 inline ::google::protobuf::RepeatedPtrField< ::std::string>*
 NativeAd::mutable_destination_url() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.NativeAd.destination_url)
+  // @@protoc_insertion_point(field_mutable_list:MAX.NativeAd.destination_url)
   return &destination_url_;
 }
 
 // optional string advertiser_id = 6;
 inline bool NativeAd::has_advertiser_id() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
+  return (_has_bits_[0] & 0x00000040u) != 0;
 }
 inline void NativeAd::set_has_advertiser_id() {
-  _has_bits_[0] |= 0x00000020u;
+  _has_bits_[0] |= 0x00000040u;
 }
 inline void NativeAd::clear_has_advertiser_id() {
-  _has_bits_[0] &= ~0x00000020u;
+  _has_bits_[0] &= ~0x00000040u;
 }
 inline void NativeAd::clear_advertiser_id() {
   advertiser_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   clear_has_advertiser_id();
 }
 inline const ::std::string& NativeAd::advertiser_id() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.advertiser_id)
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.advertiser_id)
   return advertiser_id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void NativeAd::set_advertiser_id(const ::std::string& value) {
   set_has_advertiser_id();
   advertiser_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.advertiser_id)
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.advertiser_id)
 }
 inline void NativeAd::set_advertiser_id(const char* value) {
   set_has_advertiser_id();
   advertiser_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.NativeAd.advertiser_id)
+  // @@protoc_insertion_point(field_set_char:MAX.NativeAd.advertiser_id)
 }
 inline void NativeAd::set_advertiser_id(const char* value, size_t size) {
   set_has_advertiser_id();
   advertiser_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.NativeAd.advertiser_id)
+  // @@protoc_insertion_point(field_set_pointer:MAX.NativeAd.advertiser_id)
 }
 inline ::std::string* NativeAd::mutable_advertiser_id() {
   set_has_advertiser_id();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.advertiser_id)
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.advertiser_id)
   return advertiser_id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* NativeAd::release_advertiser_id() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.NativeAd.advertiser_id)
+  // @@protoc_insertion_point(field_release:MAX.NativeAd.advertiser_id)
   clear_has_advertiser_id();
   return advertiser_id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -7059,50 +7478,50 @@ inline void NativeAd::set_allocated_advertiser_id(::std::string* advertiser_id) 
     clear_has_advertiser_id();
   }
   advertiser_id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), advertiser_id);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.advertiser_id)
+  // @@protoc_insertion_point(field_set_allocated:MAX.NativeAd.advertiser_id)
 }
 
 // optional string creative_id = 7;
 inline bool NativeAd::has_creative_id() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
+  return (_has_bits_[0] & 0x00000080u) != 0;
 }
 inline void NativeAd::set_has_creative_id() {
-  _has_bits_[0] |= 0x00000040u;
+  _has_bits_[0] |= 0x00000080u;
 }
 inline void NativeAd::clear_has_creative_id() {
-  _has_bits_[0] &= ~0x00000040u;
+  _has_bits_[0] &= ~0x00000080u;
 }
 inline void NativeAd::clear_creative_id() {
   creative_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   clear_has_creative_id();
 }
 inline const ::std::string& NativeAd::creative_id() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.creative_id)
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.creative_id)
   return creative_id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void NativeAd::set_creative_id(const ::std::string& value) {
   set_has_creative_id();
   creative_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.creative_id)
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.creative_id)
 }
 inline void NativeAd::set_creative_id(const char* value) {
   set_has_creative_id();
   creative_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.MAX.NativeAd.creative_id)
+  // @@protoc_insertion_point(field_set_char:MAX.NativeAd.creative_id)
 }
 inline void NativeAd::set_creative_id(const char* value, size_t size) {
   set_has_creative_id();
   creative_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.MAX.NativeAd.creative_id)
+  // @@protoc_insertion_point(field_set_pointer:MAX.NativeAd.creative_id)
 }
 inline ::std::string* NativeAd::mutable_creative_id() {
   set_has_creative_id();
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.creative_id)
+  // @@protoc_insertion_point(field_mutable:MAX.NativeAd.creative_id)
   return creative_id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* NativeAd::release_creative_id() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.NativeAd.creative_id)
+  // @@protoc_insertion_point(field_release:MAX.NativeAd.creative_id)
   clear_has_creative_id();
   return creative_id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -7113,34 +7532,36 @@ inline void NativeAd::set_allocated_creative_id(::std::string* creative_id) {
     clear_has_creative_id();
   }
   creative_id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), creative_id);
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.creative_id)
+  // @@protoc_insertion_point(field_set_allocated:MAX.NativeAd.creative_id)
 }
 
 // optional int64 deal_id = 8;
 inline bool NativeAd::has_deal_id() const {
-  return (_has_bits_[0] & 0x00000080u) != 0;
+  return (_has_bits_[0] & 0x00000100u) != 0;
 }
 inline void NativeAd::set_has_deal_id() {
-  _has_bits_[0] |= 0x00000080u;
+  _has_bits_[0] |= 0x00000100u;
 }
 inline void NativeAd::clear_has_deal_id() {
-  _has_bits_[0] &= ~0x00000080u;
+  _has_bits_[0] &= ~0x00000100u;
 }
 inline void NativeAd::clear_deal_id() {
   deal_id_ = GOOGLE_LONGLONG(0);
   clear_has_deal_id();
 }
 inline ::google::protobuf::int64 NativeAd::deal_id() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.deal_id)
+  // @@protoc_insertion_point(field_get:MAX.NativeAd.deal_id)
   return deal_id_;
 }
 inline void NativeAd::set_deal_id(::google::protobuf::int64 value) {
   set_has_deal_id();
   deal_id_ = value;
-  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.deal_id)
+  // @@protoc_insertion_point(field_set:MAX.NativeAd.deal_id)
 }
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
@@ -7171,26 +7592,25 @@ inline void NativeAd::set_deal_id(::google::protobuf::int64 value) {
 // @@protoc_insertion_point(namespace_scope)
 
 }  // namespace MAX
-}  // namespace protocol
 
 #ifndef SWIG
 namespace google {
 namespace protobuf {
 
-template <> struct is_proto_enum< ::protocol::MAX::BidRequest_AdSlot_Deal_DealType> : ::google::protobuf::internal::true_type {};
+template <> struct is_proto_enum< ::MAX::BidRequest_AdSlot_Deal_DealType> : ::google::protobuf::internal::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::protocol::MAX::BidRequest_AdSlot_Deal_DealType>() {
-  return ::protocol::MAX::BidRequest_AdSlot_Deal_DealType_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::MAX::BidRequest_AdSlot_Deal_DealType>() {
+  return ::MAX::BidRequest_AdSlot_Deal_DealType_descriptor();
 }
-template <> struct is_proto_enum< ::protocol::MAX::BidRequest_AdSlot_SlotVisibility> : ::google::protobuf::internal::true_type {};
+template <> struct is_proto_enum< ::MAX::BidRequest_AdSlot_SlotVisibility> : ::google::protobuf::internal::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::protocol::MAX::BidRequest_AdSlot_SlotVisibility>() {
-  return ::protocol::MAX::BidRequest_AdSlot_SlotVisibility_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::MAX::BidRequest_AdSlot_SlotVisibility>() {
+  return ::MAX::BidRequest_AdSlot_SlotVisibility_descriptor();
 }
-template <> struct is_proto_enum< ::protocol::MAX::BidRequest_Mobile_Device_ScreenOrientation> : ::google::protobuf::internal::true_type {};
+template <> struct is_proto_enum< ::MAX::BidRequest_Mobile_Device_ScreenOrientation> : ::google::protobuf::internal::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::protocol::MAX::BidRequest_Mobile_Device_ScreenOrientation>() {
-  return ::protocol::MAX::BidRequest_Mobile_Device_ScreenOrientation_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::MAX::BidRequest_Mobile_Device_ScreenOrientation>() {
+  return ::MAX::BidRequest_Mobile_Device_ScreenOrientation_descriptor();
 }
 
 }  // namespace protobuf
