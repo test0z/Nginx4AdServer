@@ -297,6 +297,8 @@ namespace bidding {
                     linkObj->set_landing_type(adzInfo.native().landing_type(ind));
                 }
             }
+            if (!downloadUrl.empty() && linkObj->landing_type() == 1) {
+            }
             url::URLHelper showUrlParam;
             getShowPara(showUrlParam, bidRequest.bid());
             showUrlParam.add(URL_IMP_OF, "3");

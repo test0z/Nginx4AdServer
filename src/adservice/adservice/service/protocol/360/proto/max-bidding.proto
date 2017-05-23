@@ -1,6 +1,6 @@
 // version: 1.8
 
-package MAX;
+package protocol.MAX;
 
 message BidRequest {
 
