@@ -163,7 +163,8 @@ namespace bidding {
         queryCondition.adxpid = pid;
         queryCondition.ip = bidRequest.ip();
         queryCondition.basePrice = adzInfo.has_min_cpm_price() ? adzInfo.min_cpm_price() : 0;
-        queryCondition.requiredCreativeLevel = adzInfo.allowed_creative_level();
+        queryCondition.requiredCreativeLevel
+            = adzInfo.has_allowed_creative_level() ? adzInfo.allowed_creative_level() : 99;
         extractSize(adzInfo.size(), queryCondition.width, queryCondition.height);
         pAdplaceInfo.sizeArray.push_back({ queryCondition.width, queryCondition.height });
         if (bidRequest.content_categories().size() > 0) {

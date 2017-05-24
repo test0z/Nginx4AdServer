@@ -128,7 +128,7 @@ namespace bidding {
         }
     }
 
-    std::string AbstractBiddingHandler::prepareVast(MT::common::Banner & banner, const std::string & videoUrl,
+    std::string AbstractBiddingHandler::prepareVast(const MT::common::Banner & banner, const std::string & videoUrl,
                                                     const std::string & tvm, const std::string & cm)
     {
         std::string vastXml;

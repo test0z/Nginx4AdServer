@@ -18,6 +18,7 @@
 #include <stddef.h>
 #include <strings.h>
 #include <tuple>
+#include <unordered_map>
 #include <vector>
 
 namespace adservice {
@@ -49,7 +50,7 @@ namespace utility {
             urlDecode_f(input.data(), input.length(), output, buffer);
         }
 
-        typedef std::map<std::string, std::string> ParamMap;
+        typedef std::unordered_map<std::string, std::string> ParamMap;
 
         /**
          * 从buffer中的url query中获取参数,其中url query应该是被url encode的,格式为xxx=xx&xx=xxx
