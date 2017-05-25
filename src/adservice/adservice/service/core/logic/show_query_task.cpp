@@ -320,7 +320,7 @@ namespace corelogic {
 
     std::pair<double, double> getSSPGeo(ParamMap & paramMap)
     {
-        using adservice::utility::stringtool;
+        using namespace adservice::utility::stringtool;
         auto iter = paramMap.find(URL_SSP_LONGITUDE);
         std::string longitude = iter == paramMap.end() ? "0" : iter->second;
         iter = paramMap.find(URL_SSP_LATITUDE);

@@ -301,7 +301,7 @@ namespace bidding {
                 queryCondition.adxpid = firstqueryCondition.adxpid;
                 queryCondition.mttyContentType = firstqueryCondition.mttyContentType;
                 queryCondition.mobileNetwork = firstqueryCondition.mobileNetwork;
-                queryCondition.geo = firstqueryConditon.geo;
+                queryCondition.geo = firstqueryCondition.geo;
             }
         }
         if (!filterCb(this, queryConditions)) {

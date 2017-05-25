@@ -319,8 +319,10 @@ void adservice_free(void* ptr);
 
             DECLARE_STR_CONVERTER(l)
 
+            DECLARE_STR_CONVERTER(d)
+
             template<typename Func>
-            inline auto safeconvert(Func f,const std::string& input) -> decltype(Func("")){
+            inline auto safeconvert(Func f,const std::string& input) -> decltype(f(std::string())){
                 try{
                     return f(input);
                 }catch(...){
