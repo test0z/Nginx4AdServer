@@ -312,6 +312,22 @@ void adservice_free(void* ptr);
                 return boost::to_upper_copy<std::string>(input);
             }
 
+#define DECLARE_STR_CONVERTER(a) inline auto sto##a(const std::string& s)->decltype(std::sto##a(std::string())){\
+    return std::sto##a(s);\
+       }
+            DECLARE_STR_CONVERTER(i)
+
+            DECLARE_STR_CONVERTER(l)
+
+            template<typename Func>
+            inline auto safeconvert(Func f,const std::string& input) -> decltype(Func("")){
+                try{
+                    return f(input);
+                }catch(...){
+                    return 0;
+                }
+            }
+
        }
 
    }

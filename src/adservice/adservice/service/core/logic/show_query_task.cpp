@@ -318,6 +318,16 @@ namespace corelogic {
         return SOLUTION_DEVICE_OTHER;
     }
 
+    std::pair<double, double> getSSPGeo(ParamMap & paramMap)
+    {
+        using adservice::utility::stringtool;
+        auto iter = paramMap.find(URL_SSP_LONGITUDE);
+        std::string longitude = iter == paramMap.end() ? "0" : iter->second;
+        iter = paramMap.find(URL_SSP_LATITUDE);
+        std::string latitude = iter == paramMap.end() ? "0" : iter->second;
+        return { safeconvert(stod, longitude), safeconvert(stod, latitude) };
+    }
+
     void HandleShowQueryTask::customLogic(ParamMap & paramMap, protocol::log::LogItem & log,
                                           adservice::utility::HttpResponse & response)
     {
@@ -359,6 +369,7 @@ namespace corelogic {
             if (condition.mobileDevice == SOLUTION_DEVICE_OTHER) {
                 condition.mobileDevice = utility::userclient::getMobileTypeFromUA(userAgent);
             }
+            condition.geo = getSSPGeo(paramMap);
             condition.pcOS = utility::userclient::getOSTypeFromUA(userAgent);
             condition.flowType
                 = condition.mobileDevice != SOLUTION_DEVICE_OTHER ? SOLUTION_FLOWTYPE_MOBILE : SOLUTION_FLOWTYPE_PC;

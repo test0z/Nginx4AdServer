@@ -167,7 +167,7 @@ namespace bidding {
             queryCondition.mobileModel = device.model();
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.adxid = ADX_360_MAX_MOBILE;
-            queryCondition.geo = { std::stold(device.longitude()), std::stold(device.latitude()) };
+            queryCondition.geo = { std::stod(device.longitude()), std::stod(device.latitude()) };
             pAdplaceInfo.flowType = queryCondition.flowType;
             if (device.has_network()) {
                 queryCondition.mobileNetwork = getNetWork(device.network());
