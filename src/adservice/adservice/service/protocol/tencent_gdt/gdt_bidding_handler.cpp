@@ -122,6 +122,10 @@ namespace bidding {
         if (adplaceInfo.sizeArray.size() == 0) {
             return bidFailedReturn();
         }
+        if (bidRequest.has_geo()) {
+            auto & geo = bidRequest.geo();
+            queryCondition.geo = { geo.longitude() / 1000000.0, geo.latitude() / 1000000.0 };
+        }
         if (bidRequest.has_device()) { // device
             const BidRequest_Device & device = bidRequest.device();
             queryCondition.mobileNetwork = getGdtNetWork(device.connection_type());

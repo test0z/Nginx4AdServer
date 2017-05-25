@@ -9,11 +9,11 @@
           <Linear>
             <Duration>${duration}</Duration>
             <VideoClicks>
-              <ClickThrough>${clickThrouth}</ClickThrough>
+              <ClickThrough>${clickThrough}</ClickThrough>
               <ClickTracking></ClickTracking>
             </VideoClicks>
             <MediaFiles>
-              <MediaFile type="video/mp4" bitrate="${bitrate}" width="${videoWidth}" height="${videoHeight}">
+              <MediaFile type="video/mp4" width="${videoWidth}" height="${videoHeight}">
                 ${videoUrl}
               </MediaFile>
             </MediaFiles>

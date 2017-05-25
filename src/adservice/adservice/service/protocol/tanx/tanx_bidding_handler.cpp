@@ -191,6 +191,7 @@ namespace bidding {
             if (device.has_network()) {
                 queryCondition.mobileNetwork = getNetWork(device.network());
             }
+            queryCondition.geo = { std::stold(device.longitude()), std::stold(device.latitude()) };
             if (mobile.has_is_app() && mobile.is_app()) { // app
                 if (adzInfo.view_type_size() > 0 && adzInfo.view_type(0) >= 104
                     && adzInfo.view_type(0) <= 111) { //原生native

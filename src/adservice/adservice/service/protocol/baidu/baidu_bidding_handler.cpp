@@ -225,6 +225,13 @@ namespace bidding {
             }
             //移动端处理
             if (i == 0) {
+                if (bidRequest.has_user_geo_info()) {
+                    auto & geoInfo = bidRequest.user_geo_info();
+                    if (geoInfo.user_coordinate_size() > 0) {
+                        queryCondition.geo
+                            = { geoInfo.user_coordinate(0).longitude(), geoInfo.user_coordinate(0).latitude() };
+                    }
+                }
                 if (bidRequest.has_mobile()) {
                     const BidRequest_Mobile & mobile = bidRequest.mobile();
                     queryCondition.mobileDevice = getDevicebyPlat(mobile.platform(), mobile.device_type());
@@ -294,6 +301,7 @@ namespace bidding {
                 queryCondition.adxpid = firstqueryCondition.adxpid;
                 queryCondition.mttyContentType = firstqueryCondition.mttyContentType;
                 queryCondition.mobileNetwork = firstqueryCondition.mobileNetwork;
+                queryCondition.geo = firstqueryConditon.geo;
             }
         }
         if (!filterCb(this, queryConditions)) {

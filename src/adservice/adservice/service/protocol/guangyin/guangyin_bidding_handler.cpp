@@ -142,6 +142,7 @@ namespace bidding {
         for (int i = 0; i < banner.keywords_size(); i++) {
             queryCondition.keywords.push_back(banner.keywords(i));
         }
+        queryCondition.geo = { device.geo.lon(), device.geo.lat() };
         if (device.devicetype() == DeviceType::MOBILE) {
             queryCondition.mobileDevice = getDeviceType(device);
             queryCondition.pcOS = adservice::utility::userclient::getOSTypeFromUA(device.ua());

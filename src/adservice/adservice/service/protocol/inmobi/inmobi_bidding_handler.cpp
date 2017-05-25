@@ -220,6 +220,7 @@ namespace bidding {
                                     queryCondition.mobileDevice,
                                     queryCondition.pcOS,
                                     queryCondition.pcBrowserStr);
+            queryCondition.geo = { device.get("lon", 0.0), device.get("lat", 0.0) };
             queryCondition.mobileModel = device.get("model", "");
             queryCondition.deviceMaker = device.get("make", "");
             queryCondition.mobileNetwork = getInmobiNetwork(device.get("connectiontype", 0));

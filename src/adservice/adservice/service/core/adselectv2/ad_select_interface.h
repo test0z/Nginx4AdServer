@@ -95,6 +95,8 @@ namespace adselectv2 {
         std::string deviceMaker;
         //移动设备型号
         std::string mobileModel;
+        //地理位置
+        std::pair<double, double> geo;
         //是否来自SSP
         bool isFromSSP{ false };
         // 预设的广告位信息,比如从ADX流量获取的信息填充到这里,可以省略在ES中对广告位的查询
