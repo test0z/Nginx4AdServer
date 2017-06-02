@@ -153,8 +153,7 @@ CORE_LIBS="-L/usr/lib -L/usr/lib64 -L/usr/local/lib -L/usr/local/lib64 $CORE_LIB
 /usr/local/lib/libprotobuf.a
 /usr/local/lib/libboost_iostreams.a
 /usr/local/lib/libmysqlcppconn-static.a
-/usr/local/lib/libcurl.a
--lpthread -lstdc++ -lcrypt -lpcre -lcrypto -lcryptopp -lz -lssl -licuuc -licui18n -ldl -lzmq -lmtty
+-lpthread -lstdc++ -lcrypt -lpcre -lcrypto -lcryptopp -lz -lssl -licuuc -licui18n -ldl -lzmq -lmtty -lcurl
 /usr/lib/libaerospike.a
 /usr/local/lib/libev.a
 -Wl,-rpath,/usr/local/lib "

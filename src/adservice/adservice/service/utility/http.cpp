@@ -362,7 +362,7 @@ namespace utility {
         curl_multi_setopt(multiCurl_, CURLMOPT_SOCKETFUNCTION, socket_status_change_callback);
         curl_multi_setopt(multiCurl_, CURLMOPT_TIMERFUNCTION, multi_timer_cb);
         curl_multi_setopt(multiCurl_, CURLMOPT_MAXCONNECTS, 10000L);
-        curl_multi_setopt(multiCurl_, CURLMOPT_MAX_HOST_CONNECTIONS, 100L);
+        // curl_multi_setopt(multiCurl_, CURLMOPT_MAX_HOST_CONNECTIONS, 100L);
         // todo:调整参数
         // curl_multi_setopt(multiCurl_, CURLMOPT_PIPELINING, CURLPIPE_HTTP1);
         // curl_multi_setopt(multiCurl_, CURLMOPT_MAX_PIPELINE_LENGTH, 100);
