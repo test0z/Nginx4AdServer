@@ -7,6 +7,7 @@
 #include "core/core_ip_manager.h"
 #include "logging.h"
 #include "utility/utility.h"
+#include <boost/format.hpp>
 #include <mtty/mtuser.h>
 
 extern GlobalConfig globalConfig;
@@ -33,24 +34,33 @@ namespace bidding {
 
     static std::unordered_set<std::string> excludeAndroidIds = { "9774d56d682e549c" };
 
-    static bool filterIDFA(const std::string & idfa)
-    {
-        return excludeIDFAs.find(idfa) != excludeIDFAs.end();
-    }
+    namespace {
 
-    static bool filterIMEI(const std::string & imei)
-    {
-        return excludeIMEIs.find(imei) != excludeIMEIs.end();
-    }
+        bool filterIDFA(const std::string & idfa)
+        {
+            return excludeIDFAs.find(idfa) != excludeIDFAs.end();
+        }
 
-    static bool filterMAC(const std::string & mac)
-    {
-        return excludeMACs.find(mac) != excludeMACs.end();
-    }
+        bool filterIMEI(const std::string & imei)
+        {
+            return excludeIMEIs.find(imei) != excludeIMEIs.end();
+        }
 
-    static bool filterAndroidID(const std::string & androidId)
-    {
-        return excludeAndroidIds.find(androidId) != excludeAndroidIds.end();
+        bool filterMAC(const std::string & mac)
+        {
+            return excludeMACs.find(mac) != excludeMACs.end();
+        }
+
+        bool filterAndroidID(const std::string & androidId)
+        {
+            return excludeAndroidIds.find(androidId) != excludeAndroidIds.end();
+        }
+
+        std::string durationStr(int64_t duration)
+        {
+            int h = duration / 3600, m = (duration % 3600) / 60, s = duration % 60;
+            return boost::str(boost::format("%02d:%02d:%02d") % h % m % s);
+        }
     }
 
     void extractSize(const std::string & size, int & width, int & height)
@@ -129,13 +139,13 @@ namespace bidding {
     }
 
     std::string AbstractBiddingHandler::prepareVast(const MT::common::Banner & banner, const std::string & videoUrl,
-                                                    const std::string & tvm, const std::string & cm)
+                                                    const std::string & tvm, const std::string & cm, int64_t duration)
     {
         std::string vastXml;
         ParamMap pm;
         pm.insert({ "title", "" });
         pm.insert({ "impressionUrl", tvm });
-        pm.insert({ "duration", "00:00:15" });
+        pm.insert({ "duration", durationStr(duration) });
         pm.insert({ "clickThrough", cm });
         pm.insert({ "bitrate", "300" });
         pm.insert({ "videoWidth", std::to_string(banner.width) });

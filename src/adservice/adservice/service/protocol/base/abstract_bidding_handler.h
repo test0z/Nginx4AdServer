@@ -205,7 +205,7 @@ namespace bidding {
         void buildFlowExtraInfo(const AdSelectCondition & selectCondition);
 
         std::string prepareVast(const MT::common::Banner & banner, const std::string & videoUrl,
-                                const std::string & tvm, const std::string & cm);
+                                const std::string & tvm, const std::string & cm, int64_t duration);
 
     protected:
         //最近一次匹配的结果
