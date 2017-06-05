@@ -137,6 +137,7 @@ namespace utility {
                 }
                 out++;
             }
+            output.resize(out - output.begin());
             return output;
         }
 
@@ -178,6 +179,7 @@ namespace utility {
                 }
             }
             *out = '\0';
+            output.resize(out - output.begin());
             return output;
         }
 

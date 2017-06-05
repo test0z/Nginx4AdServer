@@ -121,6 +121,7 @@ namespace utility {
                     pos++;
                 }
                 if (*p == '\0') {
+                    output.resize(out - output.begin());
                     break;
                 }
                 auto iter = paramMap.find(currentPos.param);
