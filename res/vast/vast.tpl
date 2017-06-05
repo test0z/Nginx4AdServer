@@ -13,7 +13,7 @@
               <ClickTracking></ClickTracking>
             </VideoClicks>
             <MediaFiles>
-              <MediaFile type="video/mp4" width="${videoWidth}" height="${videoHeight}">
+              <MediaFile type="video/mp4" width="${videoWidth}" height="${videoHeight}" delivery="progressive">
                 ${videoUrl}
               </MediaFile>
             </MediaFiles>
