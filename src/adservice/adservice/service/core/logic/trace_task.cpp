@@ -261,6 +261,8 @@ namespace corelogic {
             }
         }
 
+        log.traceId = adservice::utility::stringtool::safeconvert(adservice::utility::stringtool::stoi, requestTypeStr);
+
         core::model::SourceRecord sourceRecord;
         if (!sourceId.empty()) {
             // 判断是否是一次到达，如果是pv，即y=6，限时10秒，否则请求类型保持原样
