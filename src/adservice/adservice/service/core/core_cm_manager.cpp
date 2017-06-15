@@ -9,6 +9,7 @@
 
 extern GlobalConfig globalConfig;
 extern MT::common::Aerospike aerospikeClient;
+extern int64_t uniqueIdSeq;
 
 namespace adservice {
 namespace server {
@@ -142,15 +143,21 @@ namespace server {
             = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())
                   .count();
         adservice::core::model::UserIDEntity idEntity(time);
-        try {
-            MT::common::ASKey key(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_IDSEQ), "id-counter", time);
-            MT::common::ASOperation op(2, 15);
-            op.addRead("id");
-            op.addIncr("id", (int64_t)1ll);
-            aerospikeClient.operate(key, op, idEntity);
-        } catch (MT::common::AerospikeExcption & e) {
+        if (uniqueIdSeq == 0) {
             idEntity.setId(int16_t(adservice::utility::rng::randomInt() & 0X0000FFFF));
+        } else {
+            idEntity.setId(int16_t(uniqueIdSeq & 0X0000FFFF));
         }
+        //        try {
+        //            MT::common::ASKey key(globalConfig.aerospikeConfig.funcNamespace(AS_NAMESPACE_IDSEQ),
+        //            "id-counter", time);
+        //            MT::common::ASOperation op(2, 15);
+        //            op.addRead("id");
+        //            op.addIncr("id", (int64_t)1ll);
+        //            aerospikeClient.operate(key, op, idEntity);
+        //        } catch (MT::common::AerospikeExcption & e) {
+        //            idEntity.setId(int16_t(adservice::utility::rng::randomInt() & 0X0000FFFF));
+        //        }
         return idEntity;
     }
 

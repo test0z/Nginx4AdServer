@@ -181,9 +181,11 @@ namespace corelogic {
         } else {
             TaskThreadLocal * localData = threadData;
             HandleBidQueryTask * task = this;
+            adservice::utility::PerformanceWatcher pw("HandleBidRequest", 20);
+            (void)pw;
             bool bidResult = biddingHandler->filter(
-                [localData, &log, task](AbstractBiddingHandler * adapter,
-                                        std::vector<adselectv2::AdSelectCondition> & conditions) -> bool {
+                [localData, &log, task, &pw](AbstractBiddingHandler * adapter,
+                                             std::vector<adselectv2::AdSelectCondition> & conditions) -> bool {
                     int seqId = 0;
                     seqId = localData->seqId;
                     //地域定向接入
@@ -195,17 +197,27 @@ namespace corelogic {
                         condition.dHour = adSelectTimeCodeUtc();
                         MT::common::SelectResult resp;
                         bool bAccepted = false;
-                        if (!adSelectClient->search(seqId, false, condition, resp)) {
+                        bool searchOK = false;
+                        {
+                            adservice::utility::PerformanceWatcher searchPW("adselectClient->search", 20, &pw);
+                            (void)searchPW;
+                            searchOK = adSelectClient->search(seqId, false, condition, resp);
+                        }
+                        if (!searchOK) {
                             condition.mttyPid = resp.adplace.pId;
                             log.adInfo.mid = resp.adplace.mId;
                             bAccepted = false;
                         } else {
+                            adservice::utility::PerformanceWatcher buildResultPW("buildResult", 2, &pw);
+                            (void)buildResultPW;
                             adapter->buildBidResult(condition, resp, conditionIdx);
                             log.adInfo.mid = resp.adplace.mId;
                             bAccepted = true;
                             result = true;
                         }
                         if (adapter->fillLogItem(condition, log, bAccepted)) {
+                            adservice::utility::PerformanceWatcher doLogPW("doLog", 2, &pw);
+                            (void)doLogPW;
                             task->doLog(log);
                         }
                         conditionIdx++;

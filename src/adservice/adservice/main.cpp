@@ -336,6 +336,7 @@ bool inDebugSession = false;
 void * debugSession = nullptr;
 MT::common::Aerospike aerospikeClient;
 MT::common::RequestCounter requestCounter;
+int64_t uniqueIdSeq = 0;
 
 #define NGX_STR_2_STD_STR(str) std::string((const char *)str.data, (const char *)str.data + str.len)
 #define NGX_BOOL(b) (b == TRUE)
@@ -467,6 +468,10 @@ static void global_init(LocationConf * conf)
     MT::common::traffic::TrafficControllProxy::instance_
         = std::make_shared<MT::common::traffic::TrafficControllProxy>(aerospikeClient);
     MT::common::traffic::TrafficControllProxy::instance_->start(std::cerr);
+
+    uniqueIdSeq
+        = (adservice::utility::ip::ipStringToInt(adservice::utility::ip::getInterfaceIP("eth0")) & 0xFF) * currentPid;
+    LOG_INFO << "using uniqueIdSeq:" << uniqueIdSeq;
 
     char cwd[256];
     getcwd(cwd, sizeof(cwd));

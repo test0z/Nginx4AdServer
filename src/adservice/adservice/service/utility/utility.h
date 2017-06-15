@@ -273,6 +273,9 @@ void adservice_free(void* ptr);
        }
 
        namespace ip{
+
+           std::string getInterfaceIP(const std::string& iface);
+
            inline int ipStringToInt(const std::string& ipString){
                union{
                    uchar_t c[4];

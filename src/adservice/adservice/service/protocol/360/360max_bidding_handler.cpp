@@ -167,7 +167,8 @@ namespace bidding {
             queryCondition.mobileModel = device.model();
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.adxid = ADX_360_MAX_MOBILE;
-            queryCondition.geo = { std::stod(device.longitude()), std::stod(device.latitude()) };
+            queryCondition.geo = { stringtool::safeconvert(stringtool::stod, device.longitude()),
+                                   stringtool::safeconvert(stringtool::stod, device.latitude()) };
             pAdplaceInfo.flowType = queryCondition.flowType;
             if (device.has_network()) {
                 queryCondition.mobileNetwork = getNetWork(device.network());
@@ -254,6 +255,13 @@ namespace bidding {
         adResult->set_creative_id(std::to_string(adInfo.bannerId));
         adResult->set_advertiser_id(std::to_string(adxAdvId)); // adx_advid
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {      //原生广告
+            int32_t templateId = 1;
+            for (int32_t i = 0; i < adzInfo.native().template_id_size(); i++) {
+                templateId = adzInfo.native().template_id(i);
+                if (templateId == 1) {
+                    break;
+                }
+            }
             std::string destUrl = mtlsArray[0].get("p9", "");
             adResult->add_destination_url(destUrl);
             const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
@@ -274,7 +282,14 @@ namespace bidding {
             creative->set_title(title);
             creative->set_sub_title(subTitle);
             creative->set_description(description);
-            creative->set_button_name("麦田科技");
+            if (templateId == 1) {
+                creative->set_button_name("点击进入");
+            } else {
+                std::string advName = mtlsArray[0].get("p18", "");
+                if (advName.empty()) {
+                    creative->set_button_name("麦田科技");
+                }
+            }
             auto contentImage = creative->mutable_content_image();
             contentImage->set_image_url(imageUrl);
             contentImage->set_image_width(sizePair.first);
@@ -291,9 +306,11 @@ namespace bidding {
             linkObj->set_click_url(std::string(AD_MAX_CLICK_UNENC_MACRO) + url::urlEncode(linkUrl));
             linkObj->set_landing_type(0);
             for (int32_t ind = 0; ind < adzInfo.native().landing_type_size(); ind++) {
-                if (!downloadUrl.empty() && adzInfo.native().landing_type(ind) == 1) { //支持下载类
-                    linkObj->set_landing_type(1);
-                    break;
+                if (adzInfo.native().landing_type(ind) == 1) { //支持下载类
+                    if (!downloadUrl.empty()) {
+                        linkObj->set_landing_type(1);
+                        break;
+                    }
                 } else {
                     linkObj->set_landing_type(adzInfo.native().landing_type(ind));
                 }
@@ -320,7 +337,7 @@ namespace bidding {
             adResult->set_width(banner.width);
             adResult->set_height(banner.height);
             if (queryCondition.flowType == SOLUTION_FLOWTYPE_PC) { // pc
-                adResult->set_html_snippet(juxiaoHtmlSnippet(cookieMappingUrl, isIOS));
+                adResult->set_html_snippet(juxiaoHtmlSnippet(cookieMappingUrl, isNeedHttps));
                 adResult->set_nurl(feedbackUrl);
             } else { //移动wap
                 bannerJson["advid"] = finalSolution.advId;
@@ -339,7 +356,7 @@ namespace bidding {
                 bannerJson["rs"] = true;
                 url::URLHelper clickUrlParam;
                 getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
-                bannerJson["clickurl"] = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
+                bannerJson["clickurl"] = getClickBaseUrl(isNeedHttps) + "?" + clickUrlParam.cipherParam();
                 std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
                 char admBuffer[4096];
                 snprintf(admBuffer, sizeof(admBuffer), adservice::corelogic::HandleShowQueryTask::showAdxTemplate,
@@ -349,7 +366,7 @@ namespace bidding {
                 getShowPara(showUrlParam, bidRequest.bid());
                 showUrlParam.add(URL_IMP_OF, "3");
                 showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_MAX_PRICE_MACRO);
-                adResult->set_nurl(getShowBaseUrl(isIOS) + "?" + showUrlParam.cipherParam());
+                adResult->set_nurl(getShowBaseUrl(isNeedHttps) + "?" + showUrlParam.cipherParam());
             }
         }
     }

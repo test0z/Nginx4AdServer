@@ -126,7 +126,14 @@ namespace utility {
     PerformanceWatcher::~PerformanceWatcher()
     {
         int64_t endTime = time::getCurrentTimeStampMs();
-        LOG_DEBUG << name << " time collapses:" << (endTime - beginTimeMs) << "ms";
+        if (endTime - beginTimeMs > warningTimeMs) {
+            if (pwParent != nullptr) {
+                messages << name << "time collapses:" << (endTime - beginTimeMs) << "ms";
+                pwParent->appendMessage(messages.str());
+            } else {
+                LOG_WARNING << name << " time collapses:" << (endTime - beginTimeMs) << "ms," << messages.str();
+            }
+        }
     }
 }
 }

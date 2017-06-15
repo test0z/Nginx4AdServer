@@ -11,6 +11,7 @@
 #include <mtty/mtuser.h>
 
 extern GlobalConfig globalConfig;
+extern int64_t uniqueIdSeq;
 
 namespace protocol {
 namespace bidding {
@@ -386,8 +387,10 @@ namespace bidding {
         adInfo.bidEcpmPrice = result.bidPrice;
         adInfo.bidBasePrice = selectCondition.basePrice;
         adInfo.areaId = adservice::server::IpManager::getInstance().getAreaCodeStrByIp(selectCondition.ip.data());
-        auto idSeq = CookieMappingManager::IdSeq();
-        adInfo.imp_id = std::to_string(idSeq.time()) + std::to_string(idSeq.id());
+        //        auto idSeq = CookieMappingManager::IdSeq();
+        adInfo.imp_id = std::to_string(adservice::utility::time::getCurrentTimeStampMs())
+                        + (uniqueIdSeq == 0 ? adservice::utility::cypher::randomId(1)
+                                            : std::to_string(int64_t(uniqueIdSeq & 0x7FFF)));
         buildFlowExtraInfo(selectCondition);
         std::string deviceId;
         char buffer[1024];
@@ -469,8 +472,11 @@ namespace bidding {
     std::string AbstractBiddingHandler::redoCookieMapping(int64_t adxId, const std::string & adxCookieMappingUrl)
     {
         if (cmInfo.needReMapping) {
-            auto idSeq = CookieMappingManager::IdSeq();
-            MT::User::UserID userId(idSeq.id(), idSeq.time());
+            // auto idSeq = CookieMappingManager::IdSeq();
+            // MT::User::UserID userId(idSeq.id(), idSeq.time());
+            MT::User::UserID userId(
+                int16_t((uniqueIdSeq == 0 ? adservice::utility::rng::randomInt() : uniqueIdSeq) & 0X00007FFF),
+                adservice::utility::time::getCurrentTimeStampMs());
             cmInfo.userMapping.userId = userId.text();
             cmInfo.userMapping.cypherUserId = userId.cipher();
             if (cmInfo.queryKV.isAdxCookieKey()) {  // PC cookie
