@@ -70,7 +70,7 @@ namespace adselectv2 {
         source.insert({ "banner_type", (int64_t)selectCondition.bannerType });
         source.insert({ "mtuser", selectCondition.mtUserId });
         source.insert({ "max_creative_level", (int64_t)selectCondition.requiredCreativeLevel });
-        // todo add 经纬度信息
+        source.insert({ "gpsgeo" }, MT::common::TupleType{ selectCondition.geo.first, selectCondition.geo.second });
         request.fromSSP = isSSP || selectCondition.isFromSSP;
         request.mttyPid = selectCondition.mttyPid;
         request.adxId = selectCondition.adxid;
