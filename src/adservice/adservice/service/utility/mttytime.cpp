@@ -131,7 +131,7 @@ namespace utility {
                 messages << name << "time collapses:" << (endTime - beginTimeMs) << "ms";
                 pwParent->appendMessage(messages.str());
             } else {
-                LOG_WARNING << name << " time collapses:" << (endTime - beginTimeMs) << "ms," << messages.str();
+                LOG_WARN << name << " time collapses:" << (endTime - beginTimeMs) << "ms," << messages.str();
             }
         }
     }
