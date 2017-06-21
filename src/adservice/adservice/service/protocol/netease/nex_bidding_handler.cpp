@@ -138,7 +138,7 @@ namespace bidding {
             }
             queryCondition.pAdplaceInfo = &adplaceInfo;
             if (i == 0) {
-                cppcms::json::value & device = bidRequest["device"];
+                cppcms::json::value & device = bidRequest.find("device");
                 if (!device.is_undefined()) {
                     std::string ip = device.get("ip", "");
                     queryCondition.ip = ip;
@@ -167,6 +167,11 @@ namespace bidding {
                                            queryCondition.adxid,
                                            bidRequest.get("user.id", ""));
                     queryCookieMapping(cmInfo.queryKV, queryCondition);
+                }
+                cppcms::json::value & user = bidRequest.find("user");
+                if (!user.is_undefined()) {
+                    std::string keywords = user.get("keywords", "");
+                    queryCondition.keywords.push_back(keywords);
                 }
             } else {
                 AdSelectCondition & firstQueryCondition = queryConditions[0];
@@ -278,29 +283,20 @@ namespace bidding {
         bidValue["crid"] = crid;
         std::string landingUrl;
         std::string mainTitle;
+        std::vector<std::string> materialUrls;
+        int style = 0;
+        auto & sizeStyleMap = adplaceStyleMap.getSizeStyleMap();
+        for (auto iter = sizeStyleMap.find(std::make_pair(banner.width, banner.height));
+             iter != sizeStyleMap.end() && (style = iter->second) && false;)
+            ;
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
             landingUrl = mtlsArray[0].get("p9", "");
-            extValue["linkUrl"] = landingUrl;
-            int style = 0;
-            auto & sizeStyleMap = adplaceStyleMap.getSizeStyleMap();
-            for (auto iter = sizeStyleMap.find(std::make_pair(banner.width, banner.height));
-                 iter != sizeStyleMap.end() && (style = iter->second) && false;)
-                ;
 
-            std::vector<std::string> materialUrls;
             materialUrls.push_back(mtlsArray[0].get("p6", ""));
             if (style == 11) {
                 materialUrls.push_back(mtlsArray[0].get("p7", ""));
                 materialUrls.push_back(mtlsArray[0].get("p8", ""));
             }
-            cppcms::json::array admArray;
-            for (auto & murl : materialUrls) {
-                cppcms::json::value adm;
-                adm["url"] = murl;
-                adm["type"] = 0;
-                admArray.push_back(adm);
-            }
-            extValue["adm"] = admArray;
             if (style == 3) {
                 mainTitle = mtlsArray[0].get("p1", "");
                 std::string bakMainTitle = mtlsArray[0].get("p0", "");
@@ -310,9 +306,41 @@ namespace bidding {
             } else {
                 mainTitle = mtlsArray[0].get("p0", "");
             }
-            extValue["title"] = mainTitle;
-            extValue["style"] = style;
+            std::string iosDownloadUrl = mtlsArray[0].get("p10", "");
+            if (!iosDownloadUrl.empty()) {
+                extValue["iosUrl"] = iosDownloadUrl;
+            }
+            std::string androidDownloadUrl = mtlsArray[0].get("p11", "");
+            if (!androidDownloadUrl.empty()) {
+                extValue["androidUrl"] = androidDownloadUrl;
+            }
+        } else {
+            landingUrl = mtlsArray[0].get("p1", "");
+            materialUrls.push_back(mtlsArray[0].get("p0", ""));
         }
+        //填充ext
+        extValue["linkUrl"] = landingUrl;
+        cppcms::json::array admArray;
+        for (auto & murl : materialUrls) {
+            cppcms::json::value adm;
+            adm["url"] = murl;
+            adm["type"] = 0;
+            admArray.push_back(adm);
+        }
+        extValue["adm"] = admArray;
+        extValue["title"] = mainTitle;
+        extValue["style"] = style;
+        std::string adxIndustryTypeStr = banner.adxIndustryType;
+        std::string adxIndustryType = extractRealValue(adxIndustryTypeStr.data(), ADX_NEX_PC);
+        std::vector<int> industryTypeVec;
+        MT::common::string2vecint(adxIndustryType, industryTypeVec, "-");
+        cppcms::json::value advObj;
+        advObj["id"] = finalSolution.advId;
+
+        advObj["industry"] = std::to_string(industryTypeVec.size() > 0 ? industryTypeVec[0] : 0);
+        advObj["subIndustry"] = std::to_string(industryTypeVec.size() > 1 ? industryTypeVec[1] : 0);
+        extValue["advertiser"] = advObj;
+
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, requestId, "", landingUrl);
         std::string cm = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();

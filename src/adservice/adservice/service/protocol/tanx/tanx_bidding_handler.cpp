@@ -269,9 +269,9 @@ namespace bidding {
         const MT::common::Solution & finalSolution = result.solution;
         const MT::common::Banner & banner = result.banner;
         std::string adxAdvIdStr = banner.adxAdvId;
-        int adxAdvId = extractRealValue(adxAdvIdStr.data(), ADX_TANX);
+        int adxAdvId = MT::common::stoi_safe(extractRealValue(adxAdvIdStr.data(), ADX_TANX));
         std::string adxIndustryTypeStr = banner.adxIndustryType;
-        int adxIndustryType = extractRealValue(adxIndustryTypeStr.data(), ADX_TANX);
+        int adxIndustryType = MT::common::stoi_safe(extractRealValue(adxIndustryTypeStr.data(), ADX_TANX));
         const BidRequest_AdzInfo & adzInfo = bidRequest.adzinfo(seq);
         int maxCpmPrice = (int)result.bidPrice;
 

@@ -228,12 +228,12 @@ namespace bidding {
         const MT::common::Solution & finalSolution = result.solution;
         const MT::common::Banner & banner = result.banner;
         std::string adxAdvIdStr = banner.adxAdvId;
-        int adxAdvId = extractRealValue(adxAdvIdStr.data(), ADX_360_MAX_PC);
+        int adxAdvId = MT::common::stoi_safe(extractRealValue(adxAdvIdStr.data(), ADX_360_MAX_PC));
         if (adxAdvId == 0) {
             adxAdvId = finalSolution.advId;
         }
         std::string adxIndustryTypeStr = banner.adxIndustryType;
-        int adxIndustryType = extractRealValue(adxIndustryTypeStr.data(), ADX_360_MAX_PC);
+        int adxIndustryType = MT::common::stoi_safe(extractRealValue(adxIndustryTypeStr.data(), ADX_360_MAX_PC));
         const BidRequest_AdSlot & adzInfo = bidRequest.adslot(seq);
         int maxCpmPrice = (int)result.bidPrice * 10000;
 
@@ -288,6 +288,8 @@ namespace bidding {
                 std::string advName = mtlsArray[0].get("p18", "");
                 if (advName.empty()) {
                     creative->set_button_name("麦田科技");
+                } else {
+                    creative->set_button_name(advName);
                 }
             }
             auto contentImage = creative->mutable_content_image();

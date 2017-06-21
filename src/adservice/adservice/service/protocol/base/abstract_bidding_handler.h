@@ -192,7 +192,7 @@ namespace bidding {
         void getClickPara(adservice::utility::url::URLHelper & url, const std::string & bid, const std::string & ref,
                           const std::string & landingUrl);
 
-        int extractRealValue(const std::string & input, int adx);
+        std::string extractRealValue(const std::string & input, int adx);
 
         /**
          * search结束后，准备广告返回前调用，用于收集关键信息到adInfo

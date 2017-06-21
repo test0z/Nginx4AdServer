@@ -326,7 +326,7 @@ namespace bidding {
         const BidRequest_AdSlot & adSlot = bidRequest.adslot(seq);
         //获取创意行业类型
         std::string adxIndustryTypeStr = banner.adxIndustryType;
-        int adxIndustryType = extractRealValue(adxIndustryTypeStr.data(), ADX_BAIDU);
+        int adxIndustryType = MT::common::stoi_safe(extractRealValue(adxIndustryTypeStr.data(), ADX_BAIDU));
         int maxCpmPrice = max(result.bidPrice, adSlot.minimum_cpm());
         adResult->set_max_cpm(maxCpmPrice);
         adResult->set_advertiser_id(advId);

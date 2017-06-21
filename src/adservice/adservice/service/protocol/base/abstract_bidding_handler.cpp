@@ -214,7 +214,7 @@ namespace bidding {
         return fillSpecificLog(queryCondition, logItem, isAccepted);
     }
 
-    int AbstractBiddingHandler::extractRealValue(const std::string & input, int targetAdx)
+    std::string AbstractBiddingHandler::extractRealValue(const std::string & input, int targetAdx)
     {
         const char * pdata = input.data();
         const char *p1 = pdata, *p2 = p1;
@@ -223,10 +223,11 @@ namespace bidding {
                 int adx = atoi(p1);
                 p2++;
                 p1 = p2;
-                while (*p2 != '\0' && *p2 != '|')
+                while (*p2 != '\0' && *p2 != '|') {
                     p2++;
+                }
                 if (adx == targetAdx) {
-                    return atoi(p1);
+                    return std::string(p1, p2);
                 }
                 if (*p2 == '|') {
                     p2++;
@@ -235,7 +236,7 @@ namespace bidding {
             } else
                 p2++;
         }
-        return 0;
+        return "0";
     }
 
     void AbstractBiddingHandler::getShowPara(URLHelper & showUrl, const std::string & bid)

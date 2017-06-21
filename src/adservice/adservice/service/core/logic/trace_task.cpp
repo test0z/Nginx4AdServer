@@ -17,6 +17,7 @@ namespace corelogic {
 
     namespace {
 
+        using namespace adservice::utility;
         using namespace adservice::utility::stringtool;
 
         const int TRACE_ID_ARRIVE = 5;
@@ -99,6 +100,8 @@ namespace corelogic {
                 log.adInfo.orderId = safeconvert(stoi, sourceRecord.oId());
                 log.adInfo.priceType = safeconvert(stoi, sourceRecord.priceType());
                 log.adInfo.mid = safeconvert(stoi, sourceRecord.mId());
+                log.adInfo.imp_id = sourceRecord.impId();
+                url::extractAreaInfo(log.adInfo.areaId, log.geoInfo.country, log.geoInfo.province, log.geoInfo.city);
             } catch (std::exception & e) {
             }
         }
