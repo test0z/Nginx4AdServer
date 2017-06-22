@@ -205,6 +205,7 @@ namespace bidding {
             logItem.mediaType = adFlowExtraInfo.mediaType;
             logItem.adInfo.bidEcpmPrice = adInfo.bidEcpmPrice;
             logItem.adInfo.imp_id = adInfo.imp_id;
+            logItem.adInfo.feeRate = adInfo.feeRate;
         } else {
             logItem.adInfo.pid = std::to_string(queryCondition.mttyPid);
             logItem.adInfo.adxpid = queryCondition.adxpid;
@@ -415,6 +416,7 @@ namespace bidding {
             feeRate = 1.0;
         }
         adFlowExtraInfo.feeRate = feeRate;
+        adInfo.feeRate = feeRate;
     }
 
     const CookieMappingQueryKeyValue &

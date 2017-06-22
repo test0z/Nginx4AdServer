@@ -419,6 +419,7 @@ namespace corelogic {
                          << ",database spend:" << costDetail.spend << ",advId:" << finalSolution.advId
                          << ",mediaOwnerId:" << adplace.mediaOwnerId;
             }
+            log.adInfo.feeRate = feeRate;
             selectResult.feePrice = adplace.costPrice * feeRate;
             if (finalSolution.priceType == PRICETYPE_RRTB_CPC || finalSolution.priceType == PRICETYPE_RCPC) {
                 log.adInfo.bidPrice = 0;
