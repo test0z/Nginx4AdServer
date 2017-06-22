@@ -262,6 +262,7 @@ namespace bidding {
         showUrl.add(URL_DEVICE_IMEI, adFlowExtraInfo.deviceIds[URL_DEVICE_IMEI]);
         showUrl.add(URL_DEVICE_ANDOROIDID, adFlowExtraInfo.deviceIds[URL_DEVICE_ANDOROIDID]);
         showUrl.add(URL_DEVICE_MAC, adFlowExtraInfo.deviceIds[URL_DEVICE_MAC]);
+        showUrl.add(URL_FEE_RATE, std::to_string(adFlowExtraInfo.feeRate));
     }
 
     void AbstractBiddingHandler::getClickPara(URLHelper & clickUrl, const std::string & bid, const std::string & ref,
@@ -295,6 +296,7 @@ namespace bidding {
         clickUrl.add(URL_DEVICE_IMEI, adFlowExtraInfo.deviceIds[URL_DEVICE_IMEI]);
         clickUrl.add(URL_DEVICE_ANDOROIDID, adFlowExtraInfo.deviceIds[URL_DEVICE_ANDOROIDID]);
         clickUrl.add(URL_DEVICE_MAC, adFlowExtraInfo.deviceIds[URL_DEVICE_MAC]);
+        clickUrl.add(URL_FEE_RATE, std::to_string(adFlowExtraInfo.feeRate));
     }
 
     std::string AbstractBiddingHandler::generateHtmlSnippet(const std::string & bid, int width, int height,
@@ -358,6 +360,7 @@ namespace bidding {
         if (!selectCondition.dealId.empty()) {
             adFlowExtraInfo.dealIds.push_back(selectCondition.dealId);
         }
+        adFlowExtraInfo.feeRate = 1.0;
     }
 
     void AbstractBiddingHandler::fillAdInfo(const AdSelectCondition & selectCondition,
@@ -401,6 +404,17 @@ namespace bidding {
             adFlowExtraInfo.dealIds.clear();
             adFlowExtraInfo.dealIds.push_back(finalSolution.dDealId);
         }
+        const auto & costDetail = result.costRateDetails;
+        double feeRate = 1.0 + costDetail.getFinalFeeRate();
+        if (feeRate < costDetail.spend - 1e-6 || feeRate > costDetail + 1e-6) {
+            LOG_WARN << "calculated feeRate not equal to database cost rate,feeRate:" << feeRate
+                     << ",database spend:" << costDetail.spend << ",advid:" << costDetail.advid
+                     << ",mediaOwnerId:" << costDetail.mediaOwnerId;
+        }
+        if (feeRate <= 1.0) { //取得的costDetail不正常，fallback到默认的资费结算率
+            feeRate = 1.0;
+        }
+        adFlowExtraInfo.feeRate = feeRate;
     }
 
     const CookieMappingQueryKeyValue &

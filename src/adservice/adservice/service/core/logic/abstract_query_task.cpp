@@ -96,15 +96,15 @@ namespace corelogic {
             }
         }
 
-        void calcPrice(int adx, bool isDeal, int decodePrice, int offerPrice, int & cost, int & bidPrice,
-                       protocol::log::LogPhaseType logPhase, int priceType = PRICETYPE_RRTB_CPM)
+        void calcPrice(int adx, bool isDeal, int decodePrice, int offerPrice, double feeRate, int & cost,
+                       int & bidPrice, protocol::log::LogPhaseType logPhase, int priceType = PRICETYPE_RRTB_CPM)
         {
             if (isDeal || adx == ADX_NETEASE_MOBILE || adx == ADX_YIDIAN) {
                 cost = decodePrice;
                 bidPrice = offerPrice == 0 ? cost : offerPrice;
             } else {
                 cost = decodePrice;
-                bidPrice = std::ceil(decodePrice * AD_OWNER_COST_FACTOR);
+                bidPrice = std::ceil(decodePrice * feeRate);
             }
             if (priceType == PRICETYPE_RRTB_CPC || priceType == PRICETYPE_RCPC) {
                 if (logPhase != protocol::log::LogPhaseType::CLICK) {
@@ -234,17 +234,22 @@ namespace corelogic {
                     std::string & orderId = iter->second;
                     log.adInfo.orderId = URLParamMap::stringToInt(orderId);
                 }
+                double feeRate = 1.0;
+                if ((iter = paramMap.find(URL_FEE_RATE)) != paramMap.end()) {
+                    feeRate = stringtool::safeconvert(stringtool::stod, iter->second);
+                    feeRate = feeRate <= 1.0 ? 1.0 : feeRate;
+                }
                 int offerPrice
                     = paramMap.find(URL_BID_PRICE) != paramMap.end() ? decodeOfferPrice(paramMap[URL_BID_PRICE]) : 0;
                 if ((iter = paramMap.find(URL_EXCHANGE_PRICE)) != paramMap.end()) { //成交价格
                     std::string & price = iter->second;                             // paramMap[URL_EXCHANGE_PRICE];
                     int decodePrice = decodeAdxExchangePrice(log.adInfo.adxid, price);
                     bool isDeal = paramMap.find(URL_DEAL_ID) != paramMap.end() && !paramMap[URL_DEAL_ID].empty();
-                    calcPrice(log.adInfo.adxid, isDeal, decodePrice, offerPrice, log.adInfo.cost, log.adInfo.bidPrice,
-                              log.logType, log.adInfo.priceType);
+                    calcPrice(log.adInfo.adxid, isDeal, decodePrice, offerPrice, feeRate, log.adInfo.cost,
+                              log.adInfo.bidPrice, log.logType, log.adInfo.priceType);
                 } else {
-                    calcPrice(log.adInfo.adxid, false, offerPrice, offerPrice, log.adInfo.cost, log.adInfo.bidPrice,
-                              log.logType, log.adInfo.priceType);
+                    calcPrice(log.adInfo.adxid, false, offerPrice, offerPrice, feeRate, log.adInfo.cost,
+                              log.adInfo.bidPrice, log.logType, log.adInfo.priceType);
                 }
                 if ((iter = paramMap.find(URL_PRODUCTPACKAGE_ID)) != paramMap.end()) { //产品包id
                     std::string & ppid = iter->second;

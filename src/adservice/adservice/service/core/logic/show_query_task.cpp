@@ -411,10 +411,19 @@ namespace corelogic {
             log.adInfo.orderId = selectResult.orderId;
             log.adInfo.bidEcpmPrice = selectResult.bidPrice;
             log.adInfo.bidBasePrice = adplace.basePrice;
+            //财务模块逻辑接入,根据资费表重新计算SSP资源下对广告主的结算资费
+            const MT::common::UserCostRateDetails & costDetail = selectResult.costRateDetails;
+            double feeRate = 1.0 + costDetail.getFinalFeeRate();
+            if (feeRate < costDetail.spend - 1e-5 || feeRate > costDetail.spend + 1e-5) {
+                LOG_WARN << "fee rate not equial database fee rate,feeRate:" << feeRate
+                         << ",database spend:" << costDetail.spend << ",advId:" << finalSolution.advId
+                         << ",mediaOwnerId:" << adplace.mediaOwnerId;
+            }
+            selectResult.feePrice = adplace.costPrice * feeRate;
             if (finalSolution.priceType == PRICETYPE_RRTB_CPC || finalSolution.priceType == PRICETYPE_RCPC) {
                 log.adInfo.bidPrice = 0;
             } else {
-                log.adInfo.bidPrice = selectResult.feePrice; // offerprice
+                log.adInfo.bidPrice = selectResult.feePrice;
             }
             log.adInfo.cost = adplace.costPrice;
             ipManager.getAreaCodeByIp(condition.ip.data(), log.geoInfo.country, log.geoInfo.province, log.geoInfo.city);
