@@ -87,22 +87,25 @@ namespace corelogic {
             log.traceInfo.tag8 = paramMap[URL_PRODUCT_URL];
             log.traceInfo.tag9 = paramMap[URL_TAG9];
             log.traceInfo.tag10 = paramMap[URL_TAG10];
-            try {
-                log.adInfo.advId = safeconvert(stoi, sourceRecord.advId());
-                log.adInfo.adxpid = sourceRecord.adxPid();
-                log.adInfo.pid = sourceRecord.pid();
-                log.adInfo.areaId = sourceRecord.geoId();
-                log.adInfo.bannerId = safeconvert(stoi, sourceRecord.createId());
-                log.adInfo.sid = safeconvert(stoi, sourceRecord.sid());
-                log.adInfo.bidPrice = safeconvert(stoi, sourceRecord.bidPrice());
-                log.adInfo.adxid = safeconvert(stoi, sourceRecord.adxId());
-                log.adInfo.ppid = safeconvert(stoi, sourceRecord.ppId());
-                log.adInfo.orderId = safeconvert(stoi, sourceRecord.oId());
-                log.adInfo.priceType = safeconvert(stoi, sourceRecord.priceType());
-                log.adInfo.mid = safeconvert(stoi, sourceRecord.mId());
-                log.adInfo.imp_id = sourceRecord.impId();
-                url::extractAreaInfo(log.adInfo.areaId, log.geoInfo.country, log.geoInfo.province, log.geoInfo.city);
-            } catch (std::exception & e) {
+            if (sourceRecord.time() != 0) {
+                try {
+                    log.adInfo.advId = safeconvert(stoi, sourceRecord.advId());
+                    log.adInfo.adxpid = sourceRecord.adxPid();
+                    log.adInfo.pid = sourceRecord.pid();
+                    log.adInfo.areaId = sourceRecord.geoId();
+                    log.adInfo.bannerId = safeconvert(stoi, sourceRecord.createId());
+                    log.adInfo.sid = safeconvert(stoi, sourceRecord.sid());
+                    log.adInfo.bidPrice = safeconvert(stoi, sourceRecord.bidPrice());
+                    log.adInfo.adxid = safeconvert(stoi, sourceRecord.adxId());
+                    log.adInfo.ppid = safeconvert(stoi, sourceRecord.ppId());
+                    log.adInfo.orderId = safeconvert(stoi, sourceRecord.oId());
+                    log.adInfo.priceType = safeconvert(stoi, sourceRecord.priceType());
+                    log.adInfo.mid = safeconvert(stoi, sourceRecord.mId());
+                    log.adInfo.imp_id = sourceRecord.impId();
+                    url::extractAreaInfo(
+                        log.adInfo.areaId.c_str(), log.geoInfo.country, log.geoInfo.province, log.geoInfo.city);
+                } catch (std::exception & e) {
+                }
             }
         }
 

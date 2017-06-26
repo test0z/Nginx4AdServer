@@ -138,7 +138,7 @@ namespace bidding {
             }
             queryCondition.pAdplaceInfo = &adplaceInfo;
             if (i == 0) {
-                cppcms::json::value & device = bidRequest.find("device");
+                const cppcms::json::value & device = bidRequest.find("device");
                 if (!device.is_undefined()) {
                     std::string ip = device.get("ip", "");
                     queryCondition.ip = ip;
@@ -168,7 +168,7 @@ namespace bidding {
                                            bidRequest.get("user.id", ""));
                     queryCookieMapping(cmInfo.queryKV, queryCondition);
                 }
-                cppcms::json::value & user = bidRequest.find("user");
+                const cppcms::json::value & user = bidRequest.find("user");
                 if (!user.is_undefined()) {
                     std::string keywords = user.get("keywords", "");
                     queryCondition.keywords.push_back(keywords);
@@ -332,7 +332,7 @@ namespace bidding {
         extValue["style"] = style;
         std::string adxIndustryTypeStr = banner.adxIndustryType;
         std::string adxIndustryType = extractRealValue(adxIndustryTypeStr.data(), ADX_NEX_PC);
-        std::vector<int> industryTypeVec;
+        std::vector<int64_t> industryTypeVec;
         MT::common::string2vecint(adxIndustryType, industryTypeVec, "-");
         cppcms::json::value advObj;
         advObj["id"] = finalSolution.advId;
