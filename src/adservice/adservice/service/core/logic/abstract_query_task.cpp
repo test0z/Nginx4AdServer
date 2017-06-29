@@ -242,7 +242,6 @@ namespace corelogic {
                 if ((iter = paramMap.find(URL_FEE_RATE)) != paramMap.end()) {
                     feeRate = stringtool::safeconvert(stringtool::stod, iter->second);
                     feeRate = feeRate <= 1.0 ? 1.0 : feeRate;
-                    log.adInfo.feeRateDetail += "=" + std::to_string(feeRate);
                 }
                 int offerPrice
                     = paramMap.find(URL_BID_PRICE) != paramMap.end() ? decodeOfferPrice(paramMap[URL_BID_PRICE]) : 0;
