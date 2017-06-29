@@ -52,6 +52,7 @@ namespace bidding {
         std::vector<int32_t> contentType;
         protocol::log::DeviceInfo devInfo;
         double feeRate{ 1.0 };
+        std::string feerRateDetails;
     };
 
     class BidCookieMappingInfo {

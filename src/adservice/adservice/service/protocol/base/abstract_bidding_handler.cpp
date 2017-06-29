@@ -205,7 +205,7 @@ namespace bidding {
             logItem.mediaType = adFlowExtraInfo.mediaType;
             logItem.adInfo.bidEcpmPrice = adInfo.bidEcpmPrice;
             logItem.adInfo.imp_id = adInfo.imp_id;
-            logItem.adInfo.feeRate = adInfo.feeRate;
+            logItem.adInfo.feeRateDetail = adInfo.feeRateDetail;
         } else {
             logItem.adInfo.pid = std::to_string(queryCondition.mttyPid);
             logItem.adInfo.adxpid = queryCondition.adxpid;
@@ -264,6 +264,7 @@ namespace bidding {
         showUrl.add(URL_DEVICE_ANDOROIDID, adFlowExtraInfo.deviceIds[URL_DEVICE_ANDOROIDID]);
         showUrl.add(URL_DEVICE_MAC, adFlowExtraInfo.deviceIds[URL_DEVICE_MAC]);
         showUrl.add(URL_FEE_RATE, std::to_string(adFlowExtraInfo.feeRate));
+        showUrl.add(URL_FEE_RATE_STRS, adFlowExtraInfo.feerRateDetails);
     }
 
     void AbstractBiddingHandler::getClickPara(URLHelper & clickUrl, const std::string & bid, const std::string & ref,
@@ -298,6 +299,7 @@ namespace bidding {
         clickUrl.add(URL_DEVICE_ANDOROIDID, adFlowExtraInfo.deviceIds[URL_DEVICE_ANDOROIDID]);
         clickUrl.add(URL_DEVICE_MAC, adFlowExtraInfo.deviceIds[URL_DEVICE_MAC]);
         clickUrl.add(URL_FEE_RATE, std::to_string(adFlowExtraInfo.feeRate));
+        clickUrl.add(URL_FEE_RATE_STRS, adFlowExtraInfo.feerRateDetails);
     }
 
     std::string AbstractBiddingHandler::generateHtmlSnippet(const std::string & bid, int width, int height,
@@ -416,7 +418,8 @@ namespace bidding {
             feeRate = 1.0;
         }
         adFlowExtraInfo.feeRate = feeRate;
-        adInfo.feeRate = feeRate;
+        adFlowExtraInfo.feerRateDetails = costDetail.getDetailStr();
+        adInfo.feeRateDetail = costDetail.getDetailStr();
     }
 
     const CookieMappingQueryKeyValue &

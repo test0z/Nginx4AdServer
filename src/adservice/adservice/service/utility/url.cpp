@@ -330,7 +330,8 @@ namespace utility {
                 { URL_ADX_BIDID, PARAM_STRING },
                 { URL_ADX_IMPID, PARAM_STRING },
                 { URL_CHANNEL, PARAM_INT },
-                { URL_FEE_RATE, PARAM_STRING } };
+                { URL_FEE_RATE, PARAM_STRING },
+                { URL_FEE_RATE_STRS, PARAM_STRING } };
 
         void URLHelper::numberEncode(int64_t number, uchar_t *& buf, int & bufRemainSize)
         {
