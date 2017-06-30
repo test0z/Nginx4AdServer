@@ -326,7 +326,7 @@ namespace bidding {
             getShowPara(showUrlParam, bidRequest.bid());
             showUrlParam.add(URL_IMP_OF, "3");
             showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_MAX_PRICE_MACRO);
-            if (queryCondition.dealId != "0") {
+            if (!queryCondition.dealId.empty() && finalSolution.dDealId != "0") {
                 nativeAd->set_deal_id(std::stoi(finalSolution.dDealId));
                 showUrlParam.add(URL_DEAL_ID, finalSolution.dDealId);
             }
