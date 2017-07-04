@@ -419,14 +419,13 @@ namespace corelogic {
                          << ",database spend:" << costDetail.spend << ",advId:" << finalSolution.advId
                          << ",mediaOwnerId:" << adplace.mediaOwnerId;
             }
-            log.adInfo.feeRateDetail = costDetail.getDetailStr();
-            selectResult.feePrice = costDetail.cost * feeRate;
             if (finalSolution.priceType == PRICETYPE_RRTB_CPC || finalSolution.priceType == PRICETYPE_RCPC) {
                 log.adInfo.bidPrice = 0;
             } else {
                 log.adInfo.bidPrice = selectResult.feePrice;
             }
-            log.adInfo.cost = adplace.costPrice;
+            log.adInfo.cost = adplace.basePrice;
+            log.adInfo.feeRateDetail = costDetail.getDetailStr(log.adInfo.cost);
             ipManager.getAreaCodeByIp(condition.ip.data(), log.geoInfo.country, log.geoInfo.province, log.geoInfo.city);
             std::string bannerJson = banner.json;
             cppcms::json::value mtAdInfo = bannerJson2HttpsIOS(true, bannerJson, banner.bannerType);

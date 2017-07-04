@@ -409,17 +409,17 @@ namespace bidding {
         }
         const auto & costDetail = result.costRateDetails;
         double feeRate = 1.0 + costDetail.getFinalFeeRate();
-        if (feeRate < costDetail.spend - 1e-6 || feeRate > costDetail + 1e-6) {
+        if (feeRate < costDetail.spend - 1e-6 || feeRate > costDetail.spend + 1e-6) {
             LOG_WARN << "calculated feeRate not equal to database cost rate,feeRate:" << feeRate
-                     << ",database spend:" << costDetail.spend << ",advid:" << costDetail.advid
-                     << ",mediaOwnerId:" << costDetail.mediaOwnerId;
+                     << ",database spend:" << costDetail.spend << ",advid:" << adInfo.advId
+                     << ",mediaOwnerId:" << adplace.mediaOwnerId;
         }
         if (feeRate <= 1.0) { //取得的costDetail不正常，fallback到默认的资费结算率
             feeRate = 1.0;
         }
         adFlowExtraInfo.feeRate = feeRate;
-        adFlowExtraInfo.feerRateDetails = costDetail.getDetailStr();
-        adInfo.feeRateDetail = costDetail.getDetailStr();
+        adFlowExtraInfo.feerRateDetails = costDetail.getDetailStr(1.0);
+        adInfo.feeRateDetail = adFlowExtraInfo.feerRateDetails;
     }
 
     const CookieMappingQueryKeyValue &

@@ -234,10 +234,6 @@ namespace corelogic {
                     std::string & orderId = iter->second;
                     log.adInfo.orderId = URLParamMap::stringToInt(orderId);
                 }
-                if ((iter = paramMap.find(URL_FEE_RATE_STRS)) != paramMap.end()) {
-                    std::string feeRateDetail = iter->second;
-                    log.adInfo.feeRateDetail = feeRateDetail;
-                }
                 double feeRate = 1.0;
                 if ((iter = paramMap.find(URL_FEE_RATE)) != paramMap.end()) {
                     feeRate = stringtool::safeconvert(stringtool::stod, iter->second);
@@ -254,6 +250,10 @@ namespace corelogic {
                 } else {
                     calcPrice(log.adInfo.adxid, false, offerPrice, offerPrice, feeRate, log.adInfo.cost,
                               log.adInfo.bidPrice, log.logType, log.adInfo.priceType);
+                }
+                if ((iter = paramMap.find(URL_FEE_RATE_STRS)) != paramMap.end()) {
+                    std::string feeRateDetail = iter->second;
+                    log.adInfo.feeRateDetail = MT::common::costdetail(feeRateDetail, log.adInfo.cost);
                 }
                 if ((iter = paramMap.find(URL_PRODUCTPACKAGE_ID)) != paramMap.end()) { //产品包id
                     std::string & ppid = iter->second;
