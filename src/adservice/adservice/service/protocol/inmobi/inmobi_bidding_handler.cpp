@@ -220,6 +220,7 @@ namespace bidding {
                                     queryCondition.mobileDevice,
                                     queryCondition.pcOS,
                                     queryCondition.pcBrowserStr);
+            queryCondition.deviceBrand = adservice::utility::userclient::getDeviceBrandFromUA(ua);
             queryCondition.geo = { device.get("lon", 0.0), device.get("lat", 0.0) };
             queryCondition.mobileModel = device.get("model", "");
             queryCondition.deviceMaker = device.get("make", "");

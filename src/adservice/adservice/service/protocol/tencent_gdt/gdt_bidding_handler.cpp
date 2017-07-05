@@ -148,6 +148,7 @@ namespace bidding {
                 } else {
                     queryCondition.imei = stringtool::toupper(device.id());
                 }
+                queryCondition.deviceBrand = adservice::utility::userclient::getDeviceBrandFromUA(device.user_agent());
             } else if (devType == BidRequest_DeviceType::BidRequest_DeviceType_kDeviceTypePad) {
                 adplaceInfo.flowType = SOLUTION_FLOWTYPE_MOBILE;
                 queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;

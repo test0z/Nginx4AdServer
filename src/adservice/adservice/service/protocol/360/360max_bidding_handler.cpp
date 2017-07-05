@@ -169,6 +169,7 @@ namespace bidding {
             queryCondition.adxid = ADX_360_MAX_MOBILE;
             queryCondition.geo = { stringtool::safeconvert(stringtool::stod, device.longitude()),
                                    stringtool::safeconvert(stringtool::stod, device.latitude()) };
+            queryCondition.deviceBrand = adservice::utility::userclient::getDeviceBrandFromUA(bidRequest.user_agent());
             pAdplaceInfo.flowType = queryCondition.flowType;
             if (device.has_network()) {
                 queryCondition.mobileNetwork = getNetWork(device.network());

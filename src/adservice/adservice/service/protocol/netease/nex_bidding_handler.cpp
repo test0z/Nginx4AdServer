@@ -150,6 +150,7 @@ namespace bidding {
                                          queryCondition.mobileDevice,
                                          queryCondition.pcOS,
                                          queryCondition.pcBrowserStr);
+                    queryCondition.deviceBrand = adservice::utility::userclient::getDeviceBrandFromUA(ua);
                     if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
                         queryCondition.adxid = ADX_NEX_MOBILE;
                         adInfo.adxid = ADX_NEX_MOBILE;
@@ -186,6 +187,7 @@ namespace bidding {
                 queryCondition.idfa = firstQueryCondition.idfa;
                 queryCondition.mac = firstQueryCondition.mac;
                 queryCondition.imei = firstQueryCondition.imei;
+                queryCondition.deviceBrand = firstQueryCondition.deviceBrand;
             }
             isDeal = false;
             const cppcms::json::value & pmp = adzinfo.find("pmp");

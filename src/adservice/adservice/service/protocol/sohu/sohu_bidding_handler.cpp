@@ -98,6 +98,7 @@ namespace bidding {
             queryCondition.ip = device.has_ip() ? device.ip() : "";
             queryCondition.mobileDevice = getMobileTypeFromUA(device.ua());
             queryCondition.pcOS = getOSTypeFromUA(device.ua());
+            queryCondition.deviceBrand = adservice::utility::userclient::getDeviceBrandFromUA(device.ua());
             if (strcasecmp(device.type().data(), "Mobile") == 0) { // mobile
                 queryCondition.mobileDevice = getSohuDeviceType(device.mobiletype());
                 queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
