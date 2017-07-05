@@ -262,7 +262,7 @@ namespace corelogic {
         clickUrl.add(URL_SITE_ID, std::to_string(adplace.mId));
         clickUrl.add(URL_ORDER_ID, std::to_string(selectResult.orderId));
         if (adplace.priceType == PRICETYPE_RRTB_CPC) { // cpc采买的广告位成本放在点击阶段
-            clickUrl.add(URL_EXCHANGE_PRICE, std::to_string(adplace.basePrice));
+            clickUrl.add(URL_EXCHANGE_PRICE, std::to_string(adplace.basePrice * 100));
             clickUrl.add(URL_FEE_RATE_STRS, selectResult.costRateDetails.getDetailStr(1.0));
         } // 否则点击不计算成本
         //需求http://redmine.mtty.com/redmine/issues/144
@@ -430,7 +430,7 @@ namespace corelogic {
                 log.adInfo.bidPrice = selectResult.feePrice;
             }
             if (adplace.priceType == PRICETYPE_RRTB_CPM) { //广告位采买类型为CPM，成本放在曝光阶段
-                log.adInfo.cost = adplace.basePrice;
+                log.adInfo.cost = adplace.basePrice * 100;
                 log.adInfo.feeRateDetail = MT::common::costdetailVec(costDetail.getDetailStr(1.0), log.adInfo.cost);
             } else if (adplace.priceType == PRICETYPE_RRTB_CPC) { //广告位采买类型为CPC，成本放在点击阶段
                 log.adInfo.cost = 0;
