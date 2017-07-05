@@ -205,7 +205,7 @@ namespace bidding {
             logItem.mediaType = adFlowExtraInfo.mediaType;
             logItem.adInfo.bidEcpmPrice = adInfo.bidEcpmPrice;
             logItem.adInfo.imp_id = adInfo.imp_id;
-            logItem.adInfo.feeRateDetail = adInfo.feeRateDetail;
+            //            logItem.adInfo.feeRateDetail = adInfo.feeRateDetail;
         } else {
             logItem.adInfo.pid = std::to_string(queryCondition.mttyPid);
             logItem.adInfo.adxpid = queryCondition.adxpid;
@@ -419,7 +419,6 @@ namespace bidding {
         }
         adFlowExtraInfo.feeRate = feeRate;
         adFlowExtraInfo.feerRateDetails = costDetail.getDetailStr(1.0);
-        adInfo.feeRateDetail = adFlowExtraInfo.feerRateDetails;
     }
 
     const CookieMappingQueryKeyValue &

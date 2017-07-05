@@ -91,6 +91,9 @@ namespace corelogic {
             case ADX_360_MAX_PC:
             case ADX_360_MAX_MOBILE:
                 return max360_price_decode(input) / 10000;
+            case ADX_SSP_PC:
+            case ADX_SSP_MOBILE:
+                return stringtool::safeconvert(stringtool::stoi, input);
             default:
                 return 0;
             }
@@ -99,20 +102,29 @@ namespace corelogic {
         void calcPrice(int adx, bool isDeal, int decodePrice, int offerPrice, double feeRate, int & cost,
                        int & bidPrice, protocol::log::LogPhaseType logPhase, int priceType = PRICETYPE_RRTB_CPM)
         {
-            if (isDeal || adx == ADX_NETEASE_MOBILE || adx == ADX_YIDIAN) {
-                cost = decodePrice;
-                bidPrice = offerPrice == 0 ? cost : offerPrice;
-            } else {
-                cost = decodePrice;
-                bidPrice = std::ceil(decodePrice * feeRate);
+            cost = decodePrice;
+            bool fixPrice = false;
+            if (isDeal || adx == ADX_NETEASE_MOBILE || adx == ADX_YIDIAN) { // deal单子不考虑CPC的情况,固定价格
+                fixPrice = true;
+                offerPrice = offerPrice == 0 ? cost : offerPrice;
             }
-            if (priceType == PRICETYPE_RRTB_CPC || priceType == PRICETYPE_RCPC) {
-                if (logPhase != protocol::log::LogPhaseType::CLICK) {
-                    bidPrice = 0;
-                } else {
-                    cost = 0;
+            if (priceType == PRICETYPE_RRTB_CPC || priceType == PRICETYPE_RCPC) { // CPC结算
+                if (logPhase == protocol::log::LogPhaseType::CLICK) {             //点击阶段计算花费
+                    cost *= 1000;
                     bidPrice = offerPrice
                                * 1000; // 华哥那边对cpc计费按照cpm公式来算，但cpc是按个数结算的，为了兼容要乘以1000
+                } else { //非点击阶段不计算花费
+                    bidPrice = 0;
+                }
+            } else {                                                 // CPM结算
+                if (logPhase == protocol::log::LogPhaseType::SHOW) { //曝光阶段计算花费
+                    if (!fixPrice) {                                 //非deal单正常情况
+                        bidPrice = std::ceil(decodePrice * feeRate);
+                    } else { // deal单按固定价格曝光计价
+                        bidPrice = offerPrice;
+                    }
+                } else { //非曝光阶段不计算花费
+                    bidPrice = 0;
                 }
             }
         }
@@ -248,12 +260,12 @@ namespace corelogic {
                     calcPrice(log.adInfo.adxid, isDeal, decodePrice, offerPrice, feeRate, log.adInfo.cost,
                               log.adInfo.bidPrice, log.logType, log.adInfo.priceType);
                 } else {
-                    calcPrice(log.adInfo.adxid, false, offerPrice, offerPrice, feeRate, log.adInfo.cost,
-                              log.adInfo.bidPrice, log.logType, log.adInfo.priceType);
+                    calcPrice(log.adInfo.adxid, false, 0, offerPrice, feeRate, log.adInfo.cost, log.adInfo.bidPrice,
+                              log.logType, log.adInfo.priceType);
                 }
                 if ((iter = paramMap.find(URL_FEE_RATE_STRS)) != paramMap.end()) {
                     std::string feeRateDetail = iter->second;
-                    log.adInfo.feeRateDetail = MT::common::costdetail(feeRateDetail, log.adInfo.cost);
+                    log.adInfo.feeRateDetail = MT::common::costdetailVec(feeRateDetail, log.adInfo.cost);
                 }
                 if ((iter = paramMap.find(URL_PRODUCTPACKAGE_ID)) != paramMap.end()) { //产品包id
                     std::string & ppid = iter->second;

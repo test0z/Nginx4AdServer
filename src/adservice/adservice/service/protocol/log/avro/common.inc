@@ -67,7 +67,7 @@ record AdInfo{
     // 真实的出价价格,不乘利润率,通过高级出价器和CTR计算得来的,bid有效
     int bidEcpmPrice;
     // 资费结算率各项明细
-    string feeRateDetail;
+    array<double> feeRateDetail;
 }
 
 @namespace("com.mtty.protocol")
