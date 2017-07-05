@@ -149,6 +149,7 @@ namespace bidding {
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.adxid = ADX_GUANGYIN_MOBILE;
             queryCondition.mobileNetwork = getNetWork(device.connectiontype());
+            queryCondition.deviceBrand = adservice::utility::userclient::getDeviceBrandFromUA(device.ua());
             queryCondition.idfa = device.has_idfa() ? adservice::utility::stringtool::toupper(device.idfa()) : "";
             queryCondition.imei = device.has_imei() ? adservice::utility::stringtool::toupper(device.imei()) : "";
             queryCondition.androidId

@@ -193,6 +193,7 @@ namespace bidding {
             }
             queryCondition.geo = { stringtool::safeconvert(stringtool::stod, device.longitude()),
                                    stringtool::safeconvert(stringtool::stod, device.latitude()) };
+            queryCondition.deviceBrand = adservice::utility::userclient::getDeviceBrandFromUA(bidRequest.user_agent());
             if (mobile.has_is_app() && mobile.is_app()) { // app
                 if (adzInfo.view_type_size() > 0 && adzInfo.view_type(0) >= 104
                     && adzInfo.view_type(0) <= 111) { //原生native

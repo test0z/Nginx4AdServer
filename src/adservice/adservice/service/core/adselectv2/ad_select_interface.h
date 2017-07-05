@@ -89,6 +89,8 @@ namespace adselectv2 {
         int requiredCreativeLevel{ 99 };
         //提供的mt 用户id，可以用于查找频次信息
         std::string mtUserId;
+        // 设备品牌定向
+        int deviceBrand;
         //关键词信息
         std::vector<std::string> keywords;
         //设备厂商

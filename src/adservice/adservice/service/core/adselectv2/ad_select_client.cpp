@@ -71,6 +71,7 @@ namespace adselectv2 {
         source.insert({ "mtuser", selectCondition.mtUserId });
         source.insert({ "max_creative_level", (int64_t)selectCondition.requiredCreativeLevel });
         source.insert({ "gpsgeo", MT::common::TupleType{ selectCondition.geo.first, selectCondition.geo.second } });
+        source.insert({ "d_brand", (int64_t)selectCondition.deviceBrand });
         request.fromSSP = isSSP || selectCondition.isFromSSP;
         request.mttyPid = selectCondition.mttyPid;
         request.adxId = selectCondition.adxid;

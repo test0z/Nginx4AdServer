@@ -195,6 +195,7 @@ namespace bidding {
                                            queryCondition.mobileDevice,
                                            queryCondition.pcOS,
                                            queryCondition.pcBrowserStr);
+                    queryCondition.deviceBrand = adservice::utility::userclient::getDeviceBrandFromUA(ua);
                     if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
                         queryCondition.adxid = ADX_YOUKU_MOBILE;
                         adInfo.adxid = ADX_YOUKU_MOBILE;
@@ -237,6 +238,7 @@ namespace bidding {
                 queryCondition.idfa = firstQueryCondition.idfa;
                 queryCondition.mac = firstQueryCondition.mac;
                 queryCondition.imei = firstQueryCondition.imei;
+                queryCondition.deviceBrand = firstQueryCondition.deviceBrand;
             }
 
             const cppcms::json::value & siteContent = bidRequest.find("site.content");

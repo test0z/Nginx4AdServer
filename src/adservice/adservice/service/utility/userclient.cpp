@@ -5,7 +5,9 @@
 #include "userclient.h"
 #include "libutil/AdUaParser.h"
 #include <assert.h>
+#include <boost/algorithm/string.hpp>
 #include <mtty/constants.h>
+#include <unordered_map>
 
 namespace adservice {
 namespace utility {
@@ -92,6 +94,43 @@ namespace utility {
             } else
                 return std::string(buffer + 1);
         }
+    }
+
+    int getDeviceBrandFromUA(const std::string & userAgent)
+    {
+        std::vector<std::string> tmp;
+        static std::unordered_map<std::string, int> brandFlag = { { "ipad", SOLUTION_BRAND_IPHONE },
+                                                                  { "ios", SOLUTION_BRAND_IPHONE },
+                                                                  { "iphone", SOLUTION_BRAND_IPHONE },
+                                                                  { "huawei", SOLUTION_BRAND_HUAWEI },
+                                                                  { "hw", SOLUTION_BRAND_HUAWEI },
+                                                                  { "xiaomi", SOLUTION_BRAND_XIAOMI },
+                                                                  { "mi", SOLUTION_BRAND_XIAOMI },
+                                                                  { "miui", SOLUTION_BRAND_XIAOMI },
+                                                                  { "oppo", SOLUTION_BRAND_OPPO },
+                                                                  { "vivo", SOLUTION_BRAND_VIVO },
+                                                                  { "meizu", SOLUTION_BRAND_MEIZU },
+                                                                  { "mz", SOLUTION_BRAND_MEIZU },
+                                                                  { "le", SOLUTION_BRAND_LESHI },
+                                                                  { "letv", SOLUTION_BRAND_LESHI },
+                                                                  { "samesung", SOLUTION_BRAND_SAMSUNG },
+                                                                  { "sm", SOLUTION_BRAND_SAMSUNG },
+                                                                  { "coolpad", SOLUTION_BRAND_COOLPAD },
+                                                                  { "zte", SOLUTION_BRAND_COOLPAD },
+                                                                  { "gn", SOLUTION_BRAND_GN },
+                                                                  { "haier", SOLUTION_BRAND_HAIER },
+                                                                  { "lenovo", SOLUTION_BRAND_LENOVO },
+                                                                  { "yq", SOLUTION_BRAND_CHUIZI } };
+        boost::split(tmp, userAgent, boost::is_any_of(" /;-()"));
+        for (auto & s : tmp) {
+            if (s.length() > 0) {
+                auto iter = brandFlag.find(boost::to_lower<std::string>(input));
+                if (iter != brandFlag.end()) {
+                    return iter->second;
+                }
+            }
+        }
+        return SOLUTION_BRAND_ALL;
     }
 }
 }
