@@ -94,43 +94,62 @@ namespace utility {
             } else
                 return std::string(buffer + 1);
         }
-    }
 
-    int getDeviceBrandFromUA(const std::string & userAgent)
-    {
-        std::vector<std::string> tmp;
-        static std::unordered_map<std::string, int> brandFlag = { { "ipad", SOLUTION_BRAND_IPHONE },
-                                                                  { "ios", SOLUTION_BRAND_IPHONE },
-                                                                  { "iphone", SOLUTION_BRAND_IPHONE },
-                                                                  { "huawei", SOLUTION_BRAND_HUAWEI },
-                                                                  { "hw", SOLUTION_BRAND_HUAWEI },
-                                                                  { "xiaomi", SOLUTION_BRAND_XIAOMI },
-                                                                  { "mi", SOLUTION_BRAND_XIAOMI },
-                                                                  { "miui", SOLUTION_BRAND_XIAOMI },
-                                                                  { "oppo", SOLUTION_BRAND_OPPO },
-                                                                  { "vivo", SOLUTION_BRAND_VIVO },
-                                                                  { "meizu", SOLUTION_BRAND_MEIZU },
-                                                                  { "mz", SOLUTION_BRAND_MEIZU },
-                                                                  { "le", SOLUTION_BRAND_LESHI },
-                                                                  { "letv", SOLUTION_BRAND_LESHI },
-                                                                  { "samesung", SOLUTION_BRAND_SAMSUNG },
-                                                                  { "sm", SOLUTION_BRAND_SAMSUNG },
-                                                                  { "coolpad", SOLUTION_BRAND_COOLPAD },
-                                                                  { "zte", SOLUTION_BRAND_COOLPAD },
-                                                                  { "gn", SOLUTION_BRAND_GN },
-                                                                  { "haier", SOLUTION_BRAND_HAIER },
-                                                                  { "lenovo", SOLUTION_BRAND_LENOVO },
-                                                                  { "yq", SOLUTION_BRAND_CHUIZI } };
-        boost::split(tmp, userAgent, boost::is_any_of(" /;-()"));
-        for (auto & s : tmp) {
-            if (s.length() > 0) {
-                auto iter = brandFlag.find(boost::to_lower<std::string>(input));
-                if (iter != brandFlag.end()) {
-                    return iter->second;
+        int getDeviceBrandFromUA(const std::string & userAgent)
+        {
+            std::vector<std::string> tmp;
+            static std::unordered_map<std::string, int> brandFlag = { { "ipad", SOLUTION_BRAND_IPHONE },
+                                                                      { "ios", SOLUTION_BRAND_IPHONE },
+                                                                      { "iphone", SOLUTION_BRAND_IPHONE },
+                                                                      { "huawei", SOLUTION_BRAND_HUAWEI },
+                                                                      { "hw", SOLUTION_BRAND_HUAWEI },
+                                                                      { "huaweipe", SOLUTION_BRAND_HUAWEI },
+                                                                      { "huaweiknt", SOLUTION_BRAND_HUAWEI },
+                                                                      { "huaweiedition", SOLUTION_BRAND_HUAWEI },
+                                                                      { "huaweifrd", SOLUTION_BRAND_HUAWEI },
+                                                                      { "honorplk", SOLUTION_BRAND_HUAWEI },
+                                                                      { "honorbln", SOLUTION_BRAND_HUAWEI },
+                                                                      { "honorche", SOLUTION_BRAND_HUAWEI },
+                                                                      { "honornem", SOLUTION_BRAND_HUAWEI },
+                                                                      { "honorchm", SOLUTION_BRAND_HUAWEI },
+                                                                      { "honor", SOLUTION_BRAND_HUAWEI },
+                                                                      { "honorh30", SOLUTION_BRAND_HUAWEI },
+                                                                      { "xiaomi", SOLUTION_BRAND_XIAOMI },
+                                                                      { "mi", SOLUTION_BRAND_XIAOMI },
+                                                                      { "redmi", SOLUTION_BRAND_XIAOMI },
+                                                                      { "miui", SOLUTION_BRAND_XIAOMI },
+                                                                      { "oppo", SOLUTION_BRAND_OPPO },
+                                                                      { "vivo", SOLUTION_BRAND_VIVO },
+                                                                      { "meizu", SOLUTION_BRAND_MEIZU },
+                                                                      { "mz", SOLUTION_BRAND_MEIZU },
+                                                                      { "m1", SOLUTION_BRAND_MEIZU },
+                                                                      { "m2", SOLUTION_BRAND_MEIZU },
+                                                                      { "mx4", SOLUTION_BRAND_MEIZU },
+                                                                      { "mx5", SOLUTION_BRAND_MEIZU },
+                                                                      { "le", SOLUTION_BRAND_LESHI },
+                                                                      { "letv", SOLUTION_BRAND_LESHI },
+                                                                      { "samesung", SOLUTION_BRAND_SAMSUNG },
+                                                                      { "sm", SOLUTION_BRAND_SAMSUNG },
+                                                                      { "coolpad", SOLUTION_BRAND_COOLPAD },
+                                                                      { "zte", SOLUTION_BRAND_COOLPAD },
+                                                                      { "gn", SOLUTION_BRAND_GN },
+                                                                      { "haier", SOLUTION_BRAND_HAIER },
+                                                                      { "lenovo", SOLUTION_BRAND_LENOVO },
+                                                                      { "sm701", SOLUTION_BRAND_CHUIZI },
+                                                                      { "sm801", SOLUTION_BRAND_CHUIZI },
+                                                                      { "sm919", SOLUTION_BRAND_CHUIZI },
+                                                                      { "yq601", SOLUTION_BRAND_CHUIZI } };
+            boost::split(tmp, userAgent, boost::is_any_of(" /;-()"));
+            for (auto & s : tmp) {
+                if (s.length() > 0) {
+                    auto iter = brandFlag.find(boost::to_lower_copy<std::string>(s));
+                    if (iter != brandFlag.end()) {
+                        return iter->second;
+                    }
                 }
             }
+            return SOLUTION_BRAND_OTHER;
         }
-        return SOLUTION_BRAND_ALL;
     }
 }
 }
