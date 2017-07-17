@@ -23,6 +23,7 @@ extern "C" {
 #include "core/adselectv2/ad_select_client.h"
 #include "core/config_types.h"
 #include "core/core_ip_manager.h"
+#include "core/core_scenario_manager.h"
 #include "core/core_typetable.h"
 #include "core/logic/bid_query_task.h"
 #include "core/logic/click_query_task.h"
@@ -464,6 +465,7 @@ static void global_init(LocationConf * conf)
     adservice::corelogic::HandleShowQueryTask::loadTemplates();
     protocol::bidding::GuangyinBiddingHandler::loadStaticAdmTemplate();
     adservice::server::TypeTableManager::getInstance();
+    adservice::server::ScenarioManager::getInstance();
 
     MT::common::traffic::TrafficControllProxy::instance_
         = std::make_shared<MT::common::traffic::TrafficControllProxy>(aerospikeClient);

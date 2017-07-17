@@ -49,7 +49,9 @@ ADD_EXECUTABLE(price_test ./price_test.cpp
     ../service/utility/random.cpp)
 
 ADD_EXECUTABLE(ip_test ./ip_test.cpp
-    ../service/core/core_ip_manager.cpp)
+    ../service/core/core_ip_manager.cpp
+    ../service/core/core_scenario_manager.cpp
+    ../service/utility/ip.cpp)
 
 ADD_EXECUTABLE(json_test ./json_test.cpp
     ../service/utility/json.cpp)

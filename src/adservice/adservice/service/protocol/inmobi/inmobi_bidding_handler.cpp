@@ -330,8 +330,7 @@ namespace bidding {
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, requestId, "", landingUrl);
             std::string clickUrl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
-            bidValue["adm"] = prepareVast(banner, mtlsArray[0].get("p0", ""), "", clickUrl,
-                                          stringtool::safeconvert(stringtool::stol, mtlsArray[0].get("p7", "15")));
+            bidValue["adm"] = prepareVast(banner.width, banner.height, mtlsArray[0], "", clickUrl);
         } else if (banner.bannerType != BANNER_TYPE_PRIMITIVE) { //普通图片创意或HTML创意
             int w = banner.width;
             int h = banner.height;
