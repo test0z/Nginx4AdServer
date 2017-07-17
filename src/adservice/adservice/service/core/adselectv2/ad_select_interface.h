@@ -91,6 +91,8 @@ namespace adselectv2 {
         std::string mtUserId;
         // 设备品牌定向
         int deviceBrand;
+        //场景
+        int scenario;
         //关键词信息
         std::vector<std::string> keywords;
         //设备厂商

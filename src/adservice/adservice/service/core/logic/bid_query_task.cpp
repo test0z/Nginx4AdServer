@@ -19,10 +19,10 @@
 #include "protocol/yidian/yidian_bidding_handler.h"
 #include "protocol/youku/youku_bidding_handlerv2.h"
 
-#include "utility/utility.h"
-
 #include "core/adselectv2/ad_select_client.h"
+#include "core/core_scenario_manager.h"
 #include "logging.h"
+#include "utility/utility.h"
 
 extern adservice::adselectv2::AdSelectClientPtr adSelectClient;
 
@@ -190,11 +190,13 @@ namespace corelogic {
                     seqId = localData->seqId;
                     //地域定向接入
                     IpManager & ipManager = IpManager::getInstance();
+                    ScenarioManagerPtr scenarioManager = ScenarioManager::getInstance();
                     bool result = false;
                     int conditionIdx = 0;
                     for (auto & condition : conditions) {
                         condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
                         condition.dHour = adSelectTimeCodeUtc();
+                        condition.scenario = scenarioManager->getScenario(condition.ip.data());
                         MT::common::SelectResult resp;
                         bool bAccepted = false;
                         bool searchOK = false;

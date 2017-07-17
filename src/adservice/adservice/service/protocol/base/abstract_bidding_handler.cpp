@@ -139,19 +139,22 @@ namespace bidding {
         }
     }
 
-    std::string AbstractBiddingHandler::prepareVast(const MT::common::Banner & banner, const std::string & videoUrl,
-                                                    const std::string & tvm, const std::string & cm, int64_t duration)
+    std::string AbstractBiddingHandler::prepareVast(int width, int height, const cppcms::json::value & mtls,
+                                                    const std::string & tvm, const std::string & cm)
     {
         std::string vastXml;
         ParamMap pm;
-        pm.insert({ "title", "" });
+        int duration
+            = adservice::utility::stringtool::safeconvert(adservice::utility::stringtool::stoi, mtls.get("p17", "15"));
+        pm.insert({ "title", mtls.get("p0", "") });
         pm.insert({ "impressionUrl", tvm });
         pm.insert({ "duration", durationStr(duration) });
         pm.insert({ "clickThrough", cm });
         pm.insert({ "bitrate", "300" });
-        pm.insert({ "videoWidth", std::to_string(banner.width) });
-        pm.insert({ "videoHeight", std::to_string(banner.height) });
-        pm.insert({ "videoUrl", videoUrl });
+        pm.insert({ "videoWidth", std::to_string(width) });
+        pm.insert({ "videoHeight", std::to_string(height) });
+        pm.insert({ "videoUrl", mtls.get("p16", "") });
+        pm.insert({ "endcard", mtls.get("p6", "") });
         vastTemplateEngine.bindFast(pm, vastXml);
         return vastXml;
     }
