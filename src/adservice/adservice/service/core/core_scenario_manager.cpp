@@ -12,7 +12,7 @@
 namespace adservice {
 namespace server {
 
-    std::atomic_bool ScenarioManager::started = false;
+    std::atomic<bool> ScenarioManager::started{ false };
     ScenarioManagerPtr ScenarioManager::manager = nullptr;
 
     ScenarioDict ScenarioManager::loadScenarioData(const char * file)

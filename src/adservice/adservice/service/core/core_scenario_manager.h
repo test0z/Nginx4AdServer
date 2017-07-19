@@ -36,7 +36,7 @@ namespace server {
             }
             return manager;
         }
-        static std::atomic_bool started;
+        static std::atomic<bool> started;
         static ScenarioManagerPtr manager;
 
     private:
