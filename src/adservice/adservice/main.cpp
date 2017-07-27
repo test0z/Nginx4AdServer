@@ -472,15 +472,12 @@ static void global_init(LocationConf * conf)
         = std::make_shared<MT::common::traffic::TrafficControllProxy>(aerospikeClient);
     MT::common::traffic::TrafficControllProxy::instance_->start(std::cerr);
 
-<<<<<<< HEAD
     adservice::utility::HttpClientProxy::instance_ = std::make_shared<adservice::utility::HttpClientProxy>();
 
     adservice::utility::AdSizeMap::getInstance();
-=======
     uniqueIdSeq
         = (adservice::utility::ip::ipStringToInt(adservice::utility::ip::getInterfaceIP("eth0")) & 0xFF) * currentPid;
     LOG_INFO << "using uniqueIdSeq:" << uniqueIdSeq;
->>>>>>> master
 
     char cwd[256];
     getcwd(cwd, sizeof(cwd));
