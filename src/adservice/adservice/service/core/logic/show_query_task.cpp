@@ -435,7 +435,8 @@ namespace corelogic {
             } else { // CPM投放单花费放在曝光阶段
                 log.adInfo.bidPrice = selectResult.feePrice;
             }
-            if (adplace.priceType == PRICETYPE_RRTB_CPM) { //广告位采买类型为CPM，成本放在曝光阶段
+            if (adplace.priceType == PRICETYPE_RRTB_CPM
+                || adplace.priceType == 0) { //广告位采买类型为CPM，成本放在曝光阶段
                 log.adInfo.cost = adplace.basePrice * 100;
             } else if (adplace.priceType == PRICETYPE_RRTB_CPC) { //广告位采买类型为CPC，成本放在点击阶段
                 log.adInfo.cost = 0;
