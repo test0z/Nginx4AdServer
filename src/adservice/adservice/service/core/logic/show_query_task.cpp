@@ -191,6 +191,8 @@ namespace corelogic {
         clickUrl.add(URL_DEVICE_IMEI, paramMap[URL_DEVICE_IMEI]);
         clickUrl.add(URL_DEVICE_ANDOROIDID, paramMap[URL_DEVICE_ANDOROIDID]);
         clickUrl.add(URL_DEVICE_MAC, paramMap[URL_DEVICE_MAC]);
+        clickUrl.add(URL_EXCHANGE_PRICE, paramMap[URL_EXCHANGE_PRICE]);
+        clickUrl.add(URL_FEE_RATE, paramMap[URL_FEE_RATE]);
         cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
         cppcms::json::array & mtls = mtlsArray.array();
         char landingPageBuffer[1024];
@@ -262,9 +264,13 @@ namespace corelogic {
         clickUrl.add(URL_SITE_ID, std::to_string(adplace.mId));
         clickUrl.add(URL_ORDER_ID, std::to_string(selectResult.orderId));
         if (adplace.priceType == PRICETYPE_RRTB_CPC) { // cpc采买的广告位成本放在点击阶段
+            clickUrl.add(URL_ADPLACE_BUY_TYPE, std::to_string(PRICETYPE_RRTB_CPC));
             clickUrl.add(URL_EXCHANGE_PRICE, std::to_string(adplace.basePrice * 100));
-            clickUrl.add(URL_FEE_RATE_STRS, selectResult.costRateDetails.getDetailStr(1.0));
         } // 否则点击不计算成本
+        if (solution.priceType == PRICETYPE_RCPC || solution.priceType == PRICETYPE_RRTB_CPC) { // cpc结算，费率放到点击
+            clickUrl.add(URL_FEE_RATE_STRS, selectResult.costRateDetails.getDetailStr(1.0));
+            clickUrl.add(URL_FEE_RATE, std::to_string(selectResult.costRateDetails.spend));
+        } // else cpm结算费率放到曝光
         //需求http://redmine.mtty.com/redmine/issues/144
         cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
         cppcms::json::array & mtls = mtlsArray.array();
@@ -431,10 +437,14 @@ namespace corelogic {
             }
             if (adplace.priceType == PRICETYPE_RRTB_CPM) { //广告位采买类型为CPM，成本放在曝光阶段
                 log.adInfo.cost = adplace.basePrice * 100;
-                log.adInfo.feeRateDetail = MT::common::costdetailVec(costDetail.getDetailStr(1.0), log.adInfo.cost);
             } else if (adplace.priceType == PRICETYPE_RRTB_CPC) { //广告位采买类型为CPC，成本放在点击阶段
                 log.adInfo.cost = 0;
             }
+            if (finalSolution.priceType != PRICETYPE_RRTB_CPC
+                && finalSolution.priceType != PRICETYPE_RCPC) { // cpm结算的投放单，费率放到曝光
+                log.adInfo.feeRateDetail = MT::common::costdetailVec(
+                    costDetail.getDetailStr(1.0), log.adInfo.bdiPrice / (1.0 + costDetail.getFinalFeeRate()));
+            } // else cpc结算的投放单，费率放到点击
 
             ipManager.getAreaCodeByIp(condition.ip.data(), log.geoInfo.country, log.geoInfo.province, log.geoInfo.city);
             std::string bannerJson = banner.json;

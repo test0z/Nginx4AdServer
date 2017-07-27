@@ -56,11 +56,13 @@ class NativeAd_Creative_Link;
 
 enum BidRequest_AdSlot_Deal_DealType {
   BidRequest_AdSlot_Deal_DealType_UNKNOWN_DEAL_TYPE = 0,
-  BidRequest_AdSlot_Deal_DealType_PREFERRED_DEAL = 1
+  BidRequest_AdSlot_Deal_DealType_PREFERRED_DEAL = 1,
+  BidRequest_AdSlot_Deal_DealType_PRIVATE_AUCTION = 2,
+  BidRequest_AdSlot_Deal_DealType_PRIVATE_DIRECT_BUY = 3
 };
 bool BidRequest_AdSlot_Deal_DealType_IsValid(int value);
 const BidRequest_AdSlot_Deal_DealType BidRequest_AdSlot_Deal_DealType_DealType_MIN = BidRequest_AdSlot_Deal_DealType_UNKNOWN_DEAL_TYPE;
-const BidRequest_AdSlot_Deal_DealType BidRequest_AdSlot_Deal_DealType_DealType_MAX = BidRequest_AdSlot_Deal_DealType_PREFERRED_DEAL;
+const BidRequest_AdSlot_Deal_DealType BidRequest_AdSlot_Deal_DealType_DealType_MAX = BidRequest_AdSlot_Deal_DealType_PRIVATE_DIRECT_BUY;
 const int BidRequest_AdSlot_Deal_DealType_DealType_ARRAYSIZE = BidRequest_AdSlot_Deal_DealType_DealType_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* BidRequest_AdSlot_Deal_DealType_descriptor();
@@ -517,6 +519,10 @@ class BidRequest_AdSlot_Deal : public ::google::protobuf::Message /* @@protoc_in
     BidRequest_AdSlot_Deal_DealType_UNKNOWN_DEAL_TYPE;
   static const DealType PREFERRED_DEAL =
     BidRequest_AdSlot_Deal_DealType_PREFERRED_DEAL;
+  static const DealType PRIVATE_AUCTION =
+    BidRequest_AdSlot_Deal_DealType_PRIVATE_AUCTION;
+  static const DealType PRIVATE_DIRECT_BUY =
+    BidRequest_AdSlot_Deal_DealType_PRIVATE_DIRECT_BUY;
   static inline bool DealType_IsValid(int value) {
     return BidRequest_AdSlot_Deal_DealType_IsValid(value);
   }
@@ -554,6 +560,13 @@ class BidRequest_AdSlot_Deal : public ::google::protobuf::Message /* @@protoc_in
   ::protocol::MAX::BidRequest_AdSlot_Deal_DealType deal_type() const;
   void set_deal_type(::protocol::MAX::BidRequest_AdSlot_Deal_DealType value);
 
+  // optional uint32 price = 4;
+  bool has_price() const;
+  void clear_price();
+  static const int kPriceFieldNumber = 4;
+  ::google::protobuf::uint32 price() const;
+  void set_price(::google::protobuf::uint32 value);
+
   // optional string date = 3;
   bool has_date() const;
   void clear_date();
@@ -572,6 +585,8 @@ class BidRequest_AdSlot_Deal : public ::google::protobuf::Message /* @@protoc_in
   inline void clear_has_deal_id();
   inline void set_has_deal_type();
   inline void clear_has_deal_type();
+  inline void set_has_price();
+  inline void clear_has_price();
   inline void set_has_date();
   inline void clear_has_date();
 
@@ -582,8 +597,9 @@ class BidRequest_AdSlot_Deal : public ::google::protobuf::Message /* @@protoc_in
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   ::google::protobuf::int64 deal_id_;
-  ::google::protobuf::internal::ArenaStringPtr date_;
   int deal_type_;
+  ::google::protobuf::uint32 price_;
+  ::google::protobuf::internal::ArenaStringPtr date_;
   friend void  protobuf_AddDesc_max_2dbidding_2eproto();
   friend void protobuf_AssignDesc_max_2dbidding_2eproto();
   friend void protobuf_ShutdownFile_max_2dbidding_2eproto();
@@ -2525,14 +2541,17 @@ class NativeAd_Creative : public ::google::protobuf::Message /* @@protoc_inserti
   ::protocol::MAX::NativeAd_Creative_Image* release_content_image();
   void set_allocated_content_image(::protocol::MAX::NativeAd_Creative_Image* content_image);
 
-  // optional .protocol.MAX.NativeAd.Creative.Image logo = 6;
-  bool has_logo() const;
-  void clear_logo();
-  static const int kLogoFieldNumber = 6;
-  const ::protocol::MAX::NativeAd_Creative_Image& logo() const;
-  ::protocol::MAX::NativeAd_Creative_Image* mutable_logo();
-  ::protocol::MAX::NativeAd_Creative_Image* release_logo();
-  void set_allocated_logo(::protocol::MAX::NativeAd_Creative_Image* logo);
+  // repeated .protocol.MAX.NativeAd.Creative.Image multi_images = 12;
+  int multi_images_size() const;
+  void clear_multi_images();
+  static const int kMultiImagesFieldNumber = 12;
+  const ::protocol::MAX::NativeAd_Creative_Image& multi_images(int index) const;
+  ::protocol::MAX::NativeAd_Creative_Image* mutable_multi_images(int index);
+  ::protocol::MAX::NativeAd_Creative_Image* add_multi_images();
+  ::google::protobuf::RepeatedPtrField< ::protocol::MAX::NativeAd_Creative_Image >*
+      mutable_multi_images();
+  const ::google::protobuf::RepeatedPtrField< ::protocol::MAX::NativeAd_Creative_Image >&
+      multi_images() const;
 
   // optional .protocol.MAX.NativeAd.Creative.Image linked_image = 8;
   bool has_linked_image() const;
@@ -2542,6 +2561,15 @@ class NativeAd_Creative : public ::google::protobuf::Message /* @@protoc_inserti
   ::protocol::MAX::NativeAd_Creative_Image* mutable_linked_image();
   ::protocol::MAX::NativeAd_Creative_Image* release_linked_image();
   void set_allocated_linked_image(::protocol::MAX::NativeAd_Creative_Image* linked_image);
+
+  // optional .protocol.MAX.NativeAd.Creative.Image logo = 6;
+  bool has_logo() const;
+  void clear_logo();
+  static const int kLogoFieldNumber = 6;
+  const ::protocol::MAX::NativeAd_Creative_Image& logo() const;
+  ::protocol::MAX::NativeAd_Creative_Image* mutable_logo();
+  ::protocol::MAX::NativeAd_Creative_Image* release_logo();
+  void set_allocated_logo(::protocol::MAX::NativeAd_Creative_Image* logo);
 
   // optional .protocol.MAX.NativeAd.Creative.Link link = 7;
   bool has_link() const;
@@ -2566,10 +2594,10 @@ class NativeAd_Creative : public ::google::protobuf::Message /* @@protoc_inserti
   inline void clear_has_button_name();
   inline void set_has_content_image();
   inline void clear_has_content_image();
-  inline void set_has_logo();
-  inline void clear_has_logo();
   inline void set_has_linked_image();
   inline void clear_has_linked_image();
+  inline void set_has_logo();
+  inline void clear_has_logo();
   inline void set_has_link();
   inline void clear_has_link();
 
@@ -2581,8 +2609,9 @@ class NativeAd_Creative : public ::google::protobuf::Message /* @@protoc_inserti
   ::google::protobuf::internal::ArenaStringPtr description_;
   ::google::protobuf::internal::ArenaStringPtr button_name_;
   ::protocol::MAX::NativeAd_Creative_Image* content_image_;
-  ::protocol::MAX::NativeAd_Creative_Image* logo_;
+  ::google::protobuf::RepeatedPtrField< ::protocol::MAX::NativeAd_Creative_Image > multi_images_;
   ::protocol::MAX::NativeAd_Creative_Image* linked_image_;
+  ::protocol::MAX::NativeAd_Creative_Image* logo_;
   ::protocol::MAX::NativeAd_Creative_Link* link_;
   ::google::protobuf::int32 template_id_;
   friend void  protobuf_AddDesc_max_2dbidding_2eproto();
@@ -2832,6 +2861,13 @@ class NativeAd : public ::google::protobuf::Message /* @@protoc_insertion_point(
   const ::google::protobuf::RepeatedPtrField< ::protocol::MAX::NativeAd_Creative >&
       creatives() const;
 
+  // optional int32 template_id = 10;
+  bool has_template_id() const;
+  void clear_template_id();
+  static const int kTemplateIdFieldNumber = 10;
+  ::google::protobuf::int32 template_id() const;
+  void set_template_id(::google::protobuf::int32 value);
+
   // optional .protocol.MAX.NativeAd.AppAttr app_attr = 9;
   bool has_app_attr() const;
   void clear_app_attr();
@@ -2920,6 +2956,8 @@ class NativeAd : public ::google::protobuf::Message /* @@protoc_insertion_point(
  private:
   inline void set_has_max_cpm_price();
   inline void clear_has_max_cpm_price();
+  inline void set_has_template_id();
+  inline void clear_has_template_id();
   inline void set_has_app_attr();
   inline void clear_has_app_attr();
   inline void set_has_advertiser_id();
@@ -2933,6 +2971,8 @@ class NativeAd : public ::google::protobuf::Message /* @@protoc_insertion_point(
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   ::google::protobuf::RepeatedPtrField< ::protocol::MAX::NativeAd_Creative > creatives_;
+  ::google::protobuf::uint32 max_cpm_price_;
+  ::google::protobuf::int32 template_id_;
   ::protocol::MAX::NativeAd_AppAttr* app_attr_;
   ::google::protobuf::RepeatedPtrField< ::std::string> impression_tracks_;
   ::google::protobuf::RepeatedField< ::google::protobuf::int32 > category_;
@@ -2940,7 +2980,6 @@ class NativeAd : public ::google::protobuf::Message /* @@protoc_insertion_point(
   ::google::protobuf::internal::ArenaStringPtr advertiser_id_;
   ::google::protobuf::internal::ArenaStringPtr creative_id_;
   ::google::protobuf::int64 deal_id_;
-  ::google::protobuf::uint32 max_cpm_price_;
   friend void  protobuf_AddDesc_max_2dbidding_2eproto();
   friend void protobuf_AssignDesc_max_2dbidding_2eproto();
   friend void protobuf_ShutdownFile_max_2dbidding_2eproto();
@@ -3197,15 +3236,39 @@ inline void BidRequest_AdSlot_Deal::set_deal_type(::protocol::MAX::BidRequest_Ad
   // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.AdSlot.Deal.deal_type)
 }
 
-// optional string date = 3;
-inline bool BidRequest_AdSlot_Deal::has_date() const {
+// optional uint32 price = 4;
+inline bool BidRequest_AdSlot_Deal::has_price() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void BidRequest_AdSlot_Deal::set_has_date() {
+inline void BidRequest_AdSlot_Deal::set_has_price() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void BidRequest_AdSlot_Deal::clear_has_date() {
+inline void BidRequest_AdSlot_Deal::clear_has_price() {
   _has_bits_[0] &= ~0x00000004u;
+}
+inline void BidRequest_AdSlot_Deal::clear_price() {
+  price_ = 0u;
+  clear_has_price();
+}
+inline ::google::protobuf::uint32 BidRequest_AdSlot_Deal::price() const {
+  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.AdSlot.Deal.price)
+  return price_;
+}
+inline void BidRequest_AdSlot_Deal::set_price(::google::protobuf::uint32 value) {
+  set_has_price();
+  price_ = value;
+  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.AdSlot.Deal.price)
+}
+
+// optional string date = 3;
+inline bool BidRequest_AdSlot_Deal::has_date() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void BidRequest_AdSlot_Deal::set_has_date() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void BidRequest_AdSlot_Deal::clear_has_date() {
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void BidRequest_AdSlot_Deal::clear_date() {
   date_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
@@ -6840,48 +6903,34 @@ inline void NativeAd_Creative::set_allocated_content_image(::protocol::MAX::Nati
   // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.Creative.content_image)
 }
 
-// optional .protocol.MAX.NativeAd.Creative.Image logo = 6;
-inline bool NativeAd_Creative::has_logo() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
+// repeated .protocol.MAX.NativeAd.Creative.Image multi_images = 12;
+inline int NativeAd_Creative::multi_images_size() const {
+  return multi_images_.size();
 }
-inline void NativeAd_Creative::set_has_logo() {
-  _has_bits_[0] |= 0x00000040u;
+inline void NativeAd_Creative::clear_multi_images() {
+  multi_images_.Clear();
 }
-inline void NativeAd_Creative::clear_has_logo() {
-  _has_bits_[0] &= ~0x00000040u;
+inline const ::protocol::MAX::NativeAd_Creative_Image& NativeAd_Creative::multi_images(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.multi_images)
+  return multi_images_.Get(index);
 }
-inline void NativeAd_Creative::clear_logo() {
-  if (logo_ != NULL) logo_->::protocol::MAX::NativeAd_Creative_Image::Clear();
-  clear_has_logo();
+inline ::protocol::MAX::NativeAd_Creative_Image* NativeAd_Creative::mutable_multi_images(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.Creative.multi_images)
+  return multi_images_.Mutable(index);
 }
-inline const ::protocol::MAX::NativeAd_Creative_Image& NativeAd_Creative::logo() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.logo)
-  return logo_ != NULL ? *logo_ : *default_instance_->logo_;
+inline ::protocol::MAX::NativeAd_Creative_Image* NativeAd_Creative::add_multi_images() {
+  // @@protoc_insertion_point(field_add:protocol.MAX.NativeAd.Creative.multi_images)
+  return multi_images_.Add();
 }
-inline ::protocol::MAX::NativeAd_Creative_Image* NativeAd_Creative::mutable_logo() {
-  set_has_logo();
-  if (logo_ == NULL) {
-    logo_ = new ::protocol::MAX::NativeAd_Creative_Image;
-  }
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.Creative.logo)
-  return logo_;
+inline ::google::protobuf::RepeatedPtrField< ::protocol::MAX::NativeAd_Creative_Image >*
+NativeAd_Creative::mutable_multi_images() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.NativeAd.Creative.multi_images)
+  return &multi_images_;
 }
-inline ::protocol::MAX::NativeAd_Creative_Image* NativeAd_Creative::release_logo() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.NativeAd.Creative.logo)
-  clear_has_logo();
-  ::protocol::MAX::NativeAd_Creative_Image* temp = logo_;
-  logo_ = NULL;
-  return temp;
-}
-inline void NativeAd_Creative::set_allocated_logo(::protocol::MAX::NativeAd_Creative_Image* logo) {
-  delete logo_;
-  logo_ = logo;
-  if (logo) {
-    set_has_logo();
-  } else {
-    clear_has_logo();
-  }
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.Creative.logo)
+inline const ::google::protobuf::RepeatedPtrField< ::protocol::MAX::NativeAd_Creative_Image >&
+NativeAd_Creative::multi_images() const {
+  // @@protoc_insertion_point(field_list:protocol.MAX.NativeAd.Creative.multi_images)
+  return multi_images_;
 }
 
 // optional .protocol.MAX.NativeAd.Creative.Image linked_image = 8;
@@ -6928,15 +6977,59 @@ inline void NativeAd_Creative::set_allocated_linked_image(::protocol::MAX::Nativ
   // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.Creative.linked_image)
 }
 
-// optional .protocol.MAX.NativeAd.Creative.Link link = 7;
-inline bool NativeAd_Creative::has_link() const {
+// optional .protocol.MAX.NativeAd.Creative.Image logo = 6;
+inline bool NativeAd_Creative::has_logo() const {
   return (_has_bits_[0] & 0x00000100u) != 0;
 }
-inline void NativeAd_Creative::set_has_link() {
+inline void NativeAd_Creative::set_has_logo() {
   _has_bits_[0] |= 0x00000100u;
 }
-inline void NativeAd_Creative::clear_has_link() {
+inline void NativeAd_Creative::clear_has_logo() {
   _has_bits_[0] &= ~0x00000100u;
+}
+inline void NativeAd_Creative::clear_logo() {
+  if (logo_ != NULL) logo_->::protocol::MAX::NativeAd_Creative_Image::Clear();
+  clear_has_logo();
+}
+inline const ::protocol::MAX::NativeAd_Creative_Image& NativeAd_Creative::logo() const {
+  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.logo)
+  return logo_ != NULL ? *logo_ : *default_instance_->logo_;
+}
+inline ::protocol::MAX::NativeAd_Creative_Image* NativeAd_Creative::mutable_logo() {
+  set_has_logo();
+  if (logo_ == NULL) {
+    logo_ = new ::protocol::MAX::NativeAd_Creative_Image;
+  }
+  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.Creative.logo)
+  return logo_;
+}
+inline ::protocol::MAX::NativeAd_Creative_Image* NativeAd_Creative::release_logo() {
+  // @@protoc_insertion_point(field_release:protocol.MAX.NativeAd.Creative.logo)
+  clear_has_logo();
+  ::protocol::MAX::NativeAd_Creative_Image* temp = logo_;
+  logo_ = NULL;
+  return temp;
+}
+inline void NativeAd_Creative::set_allocated_logo(::protocol::MAX::NativeAd_Creative_Image* logo) {
+  delete logo_;
+  logo_ = logo;
+  if (logo) {
+    set_has_logo();
+  } else {
+    clear_has_logo();
+  }
+  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.Creative.logo)
+}
+
+// optional .protocol.MAX.NativeAd.Creative.Link link = 7;
+inline bool NativeAd_Creative::has_link() const {
+  return (_has_bits_[0] & 0x00000200u) != 0;
+}
+inline void NativeAd_Creative::set_has_link() {
+  _has_bits_[0] |= 0x00000200u;
+}
+inline void NativeAd_Creative::clear_has_link() {
+  _has_bits_[0] &= ~0x00000200u;
 }
 inline void NativeAd_Creative::clear_link() {
   if (link_ != NULL) link_->::protocol::MAX::NativeAd_Creative_Link::Clear();
@@ -7244,15 +7337,39 @@ NativeAd::creatives() const {
   return creatives_;
 }
 
-// optional .protocol.MAX.NativeAd.AppAttr app_attr = 9;
-inline bool NativeAd::has_app_attr() const {
+// optional int32 template_id = 10;
+inline bool NativeAd::has_template_id() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void NativeAd::set_has_app_attr() {
+inline void NativeAd::set_has_template_id() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void NativeAd::clear_has_app_attr() {
+inline void NativeAd::clear_has_template_id() {
   _has_bits_[0] &= ~0x00000004u;
+}
+inline void NativeAd::clear_template_id() {
+  template_id_ = 0;
+  clear_has_template_id();
+}
+inline ::google::protobuf::int32 NativeAd::template_id() const {
+  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.template_id)
+  return template_id_;
+}
+inline void NativeAd::set_template_id(::google::protobuf::int32 value) {
+  set_has_template_id();
+  template_id_ = value;
+  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.template_id)
+}
+
+// optional .protocol.MAX.NativeAd.AppAttr app_attr = 9;
+inline bool NativeAd::has_app_attr() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void NativeAd::set_has_app_attr() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void NativeAd::clear_has_app_attr() {
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void NativeAd::clear_app_attr() {
   if (app_attr_ != NULL) app_attr_->::protocol::MAX::NativeAd_AppAttr::Clear();
@@ -7430,13 +7547,13 @@ NativeAd::mutable_destination_url() {
 
 // optional string advertiser_id = 6;
 inline bool NativeAd::has_advertiser_id() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
+  return (_has_bits_[0] & 0x00000080u) != 0;
 }
 inline void NativeAd::set_has_advertiser_id() {
-  _has_bits_[0] |= 0x00000040u;
+  _has_bits_[0] |= 0x00000080u;
 }
 inline void NativeAd::clear_has_advertiser_id() {
-  _has_bits_[0] &= ~0x00000040u;
+  _has_bits_[0] &= ~0x00000080u;
 }
 inline void NativeAd::clear_advertiser_id() {
   advertiser_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
@@ -7484,13 +7601,13 @@ inline void NativeAd::set_allocated_advertiser_id(::std::string* advertiser_id) 
 
 // optional string creative_id = 7;
 inline bool NativeAd::has_creative_id() const {
-  return (_has_bits_[0] & 0x00000080u) != 0;
+  return (_has_bits_[0] & 0x00000100u) != 0;
 }
 inline void NativeAd::set_has_creative_id() {
-  _has_bits_[0] |= 0x00000080u;
+  _has_bits_[0] |= 0x00000100u;
 }
 inline void NativeAd::clear_has_creative_id() {
-  _has_bits_[0] &= ~0x00000080u;
+  _has_bits_[0] &= ~0x00000100u;
 }
 inline void NativeAd::clear_creative_id() {
   creative_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
@@ -7538,13 +7655,13 @@ inline void NativeAd::set_allocated_creative_id(::std::string* creative_id) {
 
 // optional int64 deal_id = 8;
 inline bool NativeAd::has_deal_id() const {
-  return (_has_bits_[0] & 0x00000100u) != 0;
+  return (_has_bits_[0] & 0x00000200u) != 0;
 }
 inline void NativeAd::set_has_deal_id() {
-  _has_bits_[0] |= 0x00000100u;
+  _has_bits_[0] |= 0x00000200u;
 }
 inline void NativeAd::clear_has_deal_id() {
-  _has_bits_[0] &= ~0x00000100u;
+  _has_bits_[0] &= ~0x00000200u;
 }
 inline void NativeAd::clear_deal_id() {
   deal_id_ = GOOGLE_LONGLONG(0);

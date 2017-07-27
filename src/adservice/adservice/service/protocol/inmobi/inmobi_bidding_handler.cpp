@@ -112,6 +112,18 @@ namespace bidding {
             }
         }
 
+        int getNetworkCarrier(const std::string & carrier)
+        {
+            if (strcasecmp(carrier.c_str(), "China Mobile") == 0)
+                return SOLUTION_NETWORK_PROVIDER_CHINAMOBILE;
+            else if (strcasecmp(carrier.c_str(), "China Telecom") == 0)
+                return SOLUTION_NETWORK_PROVIDER_CHINATELECOM;
+            else if (strcasecmp(carrier.c_str(), "UNICOM") == 0)
+                return SOLUTION_NETWORK_PROVIDER_CHINAUNICOM;
+            else
+                return SOLUTION_NETWORK_PROVIDER_ALL;
+        }
+
         bool replace(std::string & str, const std::string & from, const std::string & to)
         {
             size_t start_pos = str.find(from);
@@ -228,6 +240,7 @@ namespace bidding {
             queryCondition.idfa = stringtool::toupper(device.get("ext.idfa", ""));
             queryCondition.imei = stringtool::toupper(device.get("didmd5", ""));
             queryCondition.androidId = stringtool::toupper(device.get("dpidmd5", ""));
+            queryCondition.mobileNetWorkProvider = getNetworkCarrier(device.get("carrier", ""));
             cookieMappingKeyMobile(md5_encode(queryCondition.idfa),
                                    queryCondition.imei,
                                    queryCondition.androidId,
@@ -329,6 +342,7 @@ namespace bidding {
             std::string landingUrl = mtlsArray[0]["p1"].str();
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, requestId, "", landingUrl);
+            clickUrlParam.addMacro(URL_EXCHANGE_PRICE, INMOBI_PRICE_MACRO);
             std::string clickUrl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
             bidValue["adm"] = prepareVast(banner.width, banner.height, mtlsArray[0], "", clickUrl);
         } else if (banner.bannerType != BANNER_TYPE_PRIMITIVE) { //普通图片创意或HTML创意
@@ -376,6 +390,7 @@ namespace bidding {
             nativeObject["link"] = cppcms::json::value();
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, requestId, "", landingUrl);
+            clickUrlParam.addMacro(URL_EXCHANGE_PRICE, INMOBI_PRICE_MACRO);
             std::string clickUrl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
             nativeObject["link"]["url"] = clickUrl;
             admObject["native"] = nativeObject;

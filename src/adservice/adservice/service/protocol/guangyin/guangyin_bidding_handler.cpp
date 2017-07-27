@@ -87,6 +87,18 @@ namespace bidding {
             }
         }
 
+        int getNetworkCarrier(const std::string & carrier)
+        {
+            if (strcasecmp(carrier.c_str(), "China Mobile") == 0)
+                return SOLUTION_NETWORK_PROVIDER_CHINAMOBILE;
+            else if (strcasecmp(carrier.c_str(), "China Telecom") == 0)
+                return SOLUTION_NETWORK_PROVIDER_CHINATELECOM;
+            else if (strcasecmp(carrier.c_str(), "UNICOM") == 0)
+                return SOLUTION_NETWORK_PROVIDER_CHINAUNICOM;
+            else
+                return SOLUTION_NETWORK_PROVIDER_ALL;
+        }
+
     } // namespace anonyous
 
     char GuangyinBiddingHandler::adm_template[1024];
@@ -154,6 +166,7 @@ namespace bidding {
             queryCondition.imei = device.has_imei() ? adservice::utility::stringtool::toupper(device.imei()) : "";
             queryCondition.androidId
                 = device.has_androidid() ? adservice::utility::stringtool::toupper(device.androidid()) : "";
+            queryCondition.mobileNetworkProvider = getNetworkCarrier(device.carrier());
             if (bidRequest_.has_app()) {
                 const App & app = bidRequest_.app();
                 if (app.has_id()) {
@@ -276,6 +289,7 @@ namespace bidding {
             bannerJson["rs"] = queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE;
             URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest_.id(), "", landingUrl);
+            clickUrlParam.addMacro(URL_EXCHANGE_PRICE, "%%AUCTION_PRICE%%");
             bannerJson["clickurl"] = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
             std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
             char admBuffer[4096];

@@ -67,6 +67,20 @@ namespace bidding {
                 return SOLUTION_NETWORK_ALL;
             }
         }
+
+        int getNetworkCarrier(const BidRequest_Carrier & carrier)
+        {
+            switch (carrier) {
+            case BidRequest_Carrier::BidRequest_Carrier_kCarrierChinaMobile:
+                return SOLUTION_NETWORK_PROVIDER_CHINAMOBILE;
+            case BidRequest_Carrier::BidRequest_Carrier_kCarrierChinaTelecom:
+                return SOLUTION_NETWORK_PROVIDER_CHINATELECOM;
+            case BidRequest_Carrier::BidRequest_Carrier_kCarrierChinaUnicom:
+                return SOLUTION_NETWORK_PROVIDER_CHINAUNICOM;
+            default:
+                return SOLUTION_NETWORK_PROVIDER_ALL;
+            }
+        }
     }
 
     bool GdtBiddingHandler::parseRequestData(const std::string & data)
@@ -143,6 +157,7 @@ namespace bidding {
                 queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
                 queryCondition.adxid = ADX_GDT_MOBILE;
                 queryCondition.mobileDevice = getGdtMobileDeviceType(device.os());
+                queryCondition.mobileNetWorkProvider = getNetworkCarrier(device.carrier());
                 if (queryCondition.mobileDevice == SOLUTION_DEVICE_IPHONE) {
                     queryCondition.idfa = stringtool::toupper(device.id());
                 } else {
@@ -228,10 +243,12 @@ namespace bidding {
         getShowPara(showUrlParam, bidRequest.id());
         showUrlParam.add(URL_IMP_OF, "3");
         showUrlParam.add(URL_IP, queryCondition.ip);
+        showUrlParam.add(URL_EXCHANGE_PRICE, "%%WIN_PRICE%%");
         adResult->set_impression_param(showUrlParam.cipherParam());
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, bidRequest.id(), "", landingUrl);
         clickUrlParam.add(URL_IP, queryCondition.ip);
+        clickUrlParam.addMacro(URL_EXCHANGE_PRICE, "%%WIN_PRICE%%");
         adResult->set_click_param(clickUrlParam.cipherParam());
         redoCookieMapping(queryCondition.adxid, "");
     }

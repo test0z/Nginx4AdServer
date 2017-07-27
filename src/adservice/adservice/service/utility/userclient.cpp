@@ -95,6 +95,40 @@ namespace utility {
                 return std::string(buffer + 1);
         }
 
+        std::vector<int64_t> getBrowserTypeFromUAAll(const std::string & userAgent)
+        {
+            std::string browserStr = getBrowserTypeFromUA(userAgent);
+            std::vector<std::string> browserStrs;
+            std::vector<int64_t> browserIds;
+            try {
+                boost::split(browserStrs, browserStr, boost::is_any_of(" ,"));
+                for (auto & s : browserStrs) {
+                    if (s.length() > 0) {
+                        browserIds.push_back(std::stoi(s));
+                    }
+                }
+            } catch (...) {
+                browserIds.push_back(SOLUTION_BROWSER_OTHER);
+            }
+            return std::move(browserIds);
+        }
+
+        int64_t getBrowserTypeFromUAOne(const std::string & userAgent)
+        {
+            std::string browserStr = getBrowserTypeFromUA(userAgent);
+            std::vector<std::string> browserStrs;
+            try {
+                boost::split(browserStrs, browserStr, boost::is_any_of(" ,"));
+                for (auto & s : browserStrs) {
+                    if (s.length() > 0) {
+                        return std::stoi(s);
+                    }
+                }
+            } catch (...) {
+            }
+            return SOLUTION_BROWSER_OTHER;
+        }
+
         int getDeviceBrandFromUA(const std::string & userAgent)
         {
             std::vector<std::string> tmp;

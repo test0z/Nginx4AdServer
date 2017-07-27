@@ -33,53 +33,71 @@ namespace bidding {
         return a > b ? a : b;
     }
 
-    static int getDeviceType(const std::string & deviceInfo)
-    {
-        if (!strcasecmp(deviceInfo.c_str(), "iphone")) {
-            return SOLUTION_DEVICE_IPHONE;
-        } else if (!strcasecmp(deviceInfo.c_str(), "android")) {
-            return SOLUTION_DEVICE_ANDROID;
-        } else if (!strcasecmp(deviceInfo.c_str(), "ipad")) {
-            return SOLUTION_DEVICE_IPAD;
-        } else
-            return SOLUTION_DEVICE_OTHER;
-    }
+    namespace {
 
-    static int getDeviceTypeFromOs(const std::string & os)
-    {
-        if (!strcasecmp(os.c_str(), "ios")) {
-            return SOLUTION_DEVICE_IPHONE;
-        } else if (!strcasecmp(os.c_str(), "android")) {
-            return SOLUTION_DEVICE_ANDROID;
-        } else
-            return SOLUTION_DEVICE_OTHER;
-    }
+        int getDeviceType(const std::string & deviceInfo)
+        {
+            if (!strcasecmp(deviceInfo.c_str(), "iphone")) {
+                return SOLUTION_DEVICE_IPHONE;
+            } else if (!strcasecmp(deviceInfo.c_str(), "android")) {
+                return SOLUTION_DEVICE_ANDROID;
+            } else if (!strcasecmp(deviceInfo.c_str(), "ipad")) {
+                return SOLUTION_DEVICE_IPAD;
+            } else
+                return SOLUTION_DEVICE_OTHER;
+        }
 
-    static int getOSTypeFromOs(const std::string & os)
-    {
-        if (!strcasecmp(os.c_str(), "ios")) {
-            return SOLUTION_OS_IOS;
-        } else if (!strcasecmp(os.c_str(), "android")) {
-            return SOLUTION_OS_ANDROID;
-        } else
-            return SOLUTION_OS_OTHER;
-    }
+        int getDeviceTypeFromOs(const std::string & os)
+        {
+            if (!strcasecmp(os.c_str(), "ios")) {
+                return SOLUTION_DEVICE_IPHONE;
+            } else if (!strcasecmp(os.c_str(), "android")) {
+                return SOLUTION_DEVICE_ANDROID;
+            } else
+                return SOLUTION_DEVICE_OTHER;
+        }
 
-    static int getNetWork(int network)
-    {
-        switch (network) {
-        case 0:
-            return SOLUTION_NETWORK_ALL;
-        case 1:
-            return SOLUTION_NETWORK_WIFI;
-        case 2:
-            return SOLUTION_NETWORK_2G;
-        case 3:
-            return SOLUTION_NETWORK_3G;
-        case 4:
-            return SOLUTION_NETWORK_4G;
-        default:
-            return SOLUTION_NETWORK_ALL;
+        int getOSTypeFromOs(const std::string & os)
+        {
+            if (!strcasecmp(os.c_str(), "ios")) {
+                return SOLUTION_OS_IOS;
+            } else if (!strcasecmp(os.c_str(), "android")) {
+                return SOLUTION_OS_ANDROID;
+            } else
+                return SOLUTION_OS_OTHER;
+        }
+
+        int getNetWork(int network)
+        {
+            switch (network) {
+            case 0:
+                return SOLUTION_NETWORK_ALL;
+            case 1:
+                return SOLUTION_NETWORK_WIFI;
+            case 2:
+                return SOLUTION_NETWORK_2G;
+            case 3:
+                return SOLUTION_NETWORK_3G;
+            case 4:
+                return SOLUTION_NETWORK_4G;
+            default:
+                return SOLUTION_NETWORK_ALL;
+            }
+        }
+
+        int getNetworkProvider(int isp)
+        {
+            switch (isp) {
+            case 0:
+                return SOLUTION_NETWORK_PROVIDER_ALL;
+            case 1:
+                return SOLUTION_NETWORK_PROVIDER_CHINAMOBILE;
+            case 2:
+                return SOLUTION_NETWORK_PROVIDER_CHINAUNICOM;
+            case 3:
+                return SOLUTION_NETWORK_PROVIDER_CHINATELECOM;
+            }
+            return SOLUTION_NETWORK_PROVIDER_ALL;
         }
     }
 
@@ -188,6 +206,7 @@ namespace bidding {
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.adxid = ADX_TANX_MOBILE;
             queryCondition.mobileModel = device.has_model() ? device.model() : "";
+            queryCondition.mobileNetWorkProvider = getNetworkProvider(device.operator_());
             if (device.has_network()) {
                 queryCondition.mobileNetwork = getNetWork(device.network());
             }
@@ -299,6 +318,7 @@ namespace bidding {
             adResult->add_destination_url(destUrl);
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
+            clickUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_TX_PRICE_MACRO);
             std::string clickUrl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
             adResult->add_click_through_url(clickUrl);
             std::string iosDownloadUrl = mtlsArray[0].get("p10", "");
@@ -384,6 +404,7 @@ namespace bidding {
                 bannerJson["rs"] = queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE;
                 url::URLHelper clickUrlParam;
                 getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
+                clickUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_TX_PRICE_MACRO);
                 std::string clickUrl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
                 bannerJson["clickurl"] = clickUrl;
                 std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);

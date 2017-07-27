@@ -34,71 +34,87 @@ namespace bidding {
 #define YOUKU_OS_MAC "Mac"
 #define YOUKU_COOKIEMAPPING_URL "http://c.yes.youku.com?dspid=11214"
 
-    static void fromYoukuDevTypeOsType(int devType,
-                                       const std::string & osType,
-                                       const std::string & ua,
-                                       int & flowType,
-                                       int & mobileDev,
-                                       int & pcOs,
-                                       std::string & pcBrowser)
-    {
-        if (devType == YOUKU_DEVICE_HANDPHONE) {
-            flowType = SOLUTION_FLOWTYPE_MOBILE;
-            if (!strcasecmp(osType.data(), YOUKU_OS_ANDROID)) {
-                mobileDev = SOLUTION_DEVICE_ANDROID;
-                pcOs = SOLUTION_OS_ANDROID;
-            } else if (!strcasecmp(osType.data(), YOUKU_OS_iPhone)) {
-                mobileDev = SOLUTION_DEVICE_IPHONE;
-                pcOs = SOLUTION_OS_IOS;
-            } else
-                mobileDev = SOLUTION_DEVICE_OTHER;
-        } else if (devType == YOUKU_DEVICE_PAD) {
-            flowType = SOLUTION_FLOWTYPE_MOBILE;
-            if (!strcasecmp(osType.data(), YOUKU_OS_ANDROID)) {
-                mobileDev = SOLUTION_DEVICE_ANDROIDPAD;
-                pcOs = SOLUTION_OS_ANDROID;
-            } else if (!strcasecmp(osType.data(), YOUKU_OS_iPhone)) {
-                mobileDev = SOLUTION_DEVICE_IPAD;
-                pcOs = SOLUTION_OS_IOS;
-            } else
-                mobileDev = SOLUTION_DEVICE_OTHER;
-        } else if (devType == YOUKU_DEVICE_PC) {
-            flowType = SOLUTION_FLOWTYPE_PC;
-            if (osType.empty()) {
-                pcOs = getOSTypeFromUA(ua);
-            } else {
-                if (!strcasecmp(osType.data(), YOUKU_OS_WINDOWS)) {
-                    pcOs = SOLUTION_OS_WINDOWS;
-                } else if (!strcasecmp(osType.data(), YOUKU_OS_MAC)) {
-                    pcOs = SOLUTION_OS_MAC;
-                } else
-                    pcOs = SOLUTION_OS_OTHER;
-            }
-            pcBrowser = getBrowserTypeFromUA(ua);
-        } else {
-            mobileDev = getMobileTypeFromUA(ua);
-            pcOs = getOSTypeFromUA(ua);
-            if (mobileDev != SOLUTION_DEVICE_OTHER) {
+    namespace {
+
+        void fromYoukuDevTypeOsType(int devType,
+                                    const std::string & osType,
+                                    const std::string & ua,
+                                    int & flowType,
+                                    int & mobileDev,
+                                    int & pcOs,
+                                    std::string & pcBrowser)
+        {
+            if (devType == YOUKU_DEVICE_HANDPHONE) {
                 flowType = SOLUTION_FLOWTYPE_MOBILE;
+                if (!strcasecmp(osType.data(), YOUKU_OS_ANDROID)) {
+                    mobileDev = SOLUTION_DEVICE_ANDROID;
+                    pcOs = SOLUTION_OS_ANDROID;
+                } else if (!strcasecmp(osType.data(), YOUKU_OS_iPhone)) {
+                    mobileDev = SOLUTION_DEVICE_IPHONE;
+                    pcOs = SOLUTION_OS_IOS;
+                } else
+                    mobileDev = SOLUTION_DEVICE_OTHER;
+            } else if (devType == YOUKU_DEVICE_PAD) {
+                flowType = SOLUTION_FLOWTYPE_MOBILE;
+                if (!strcasecmp(osType.data(), YOUKU_OS_ANDROID)) {
+                    mobileDev = SOLUTION_DEVICE_ANDROIDPAD;
+                    pcOs = SOLUTION_OS_ANDROID;
+                } else if (!strcasecmp(osType.data(), YOUKU_OS_iPhone)) {
+                    mobileDev = SOLUTION_DEVICE_IPAD;
+                    pcOs = SOLUTION_OS_IOS;
+                } else
+                    mobileDev = SOLUTION_DEVICE_OTHER;
+            } else if (devType == YOUKU_DEVICE_PC) {
+                flowType = SOLUTION_FLOWTYPE_PC;
+                if (osType.empty()) {
+                    pcOs = getOSTypeFromUA(ua);
+                } else {
+                    if (!strcasecmp(osType.data(), YOUKU_OS_WINDOWS)) {
+                        pcOs = SOLUTION_OS_WINDOWS;
+                    } else if (!strcasecmp(osType.data(), YOUKU_OS_MAC)) {
+                        pcOs = SOLUTION_OS_MAC;
+                    } else
+                        pcOs = SOLUTION_OS_OTHER;
+                }
+                pcBrowser = getBrowserTypeFromUA(ua);
+            } else {
+                mobileDev = getMobileTypeFromUA(ua);
+                pcOs = getOSTypeFromUA(ua);
+                if (mobileDev != SOLUTION_DEVICE_OTHER) {
+                    flowType = SOLUTION_FLOWTYPE_MOBILE;
+                }
             }
         }
-    }
 
-    static int getNetwork(int network)
-    {
-        switch (network) {
-        case 0:
-        case 1:
-        case 3:
-            return SOLUTION_NETWORK_ALL;
-        case 2:
-            return SOLUTION_NETWORK_WIFI;
-        case 4:
-            return SOLUTION_NETWORK_2G;
-        case 5:
-            return SOLUTION_NETWORK_3G;
-        default:
-            return SOLUTION_NETWORK_ALL;
+        int getNetwork(int network)
+        {
+            switch (network) {
+            case 0:
+            case 1:
+            case 3:
+                return SOLUTION_NETWORK_ALL;
+            case 2:
+                return SOLUTION_NETWORK_WIFI;
+            case 4:
+                return SOLUTION_NETWORK_2G;
+            case 5:
+                return SOLUTION_NETWORK_3G;
+            default:
+                return SOLUTION_NETWORK_ALL;
+            }
+        }
+
+        int getNetworkProvider(int isp)
+        {
+            switch (isp) {
+            case 1:
+                return SOLUTION_NETWORK_PROVIDER_CHINAMOBILE;
+            case 2:
+                return SOLUTION_NETWORK_PROVIDER_CHINAUNICOM;
+            case 3:
+                return SOLUTION_NETWORK_PROVIDER_CHINATELECOM;
+            }
+            return SOLUTION_NETWORK_PROVIDER_ALL;
         }
     }
 
@@ -188,6 +204,7 @@ namespace bidding {
                     std::string ua = device.get("ua", "");
                     queryCondition.deviceMaker = device.get("make", "");
                     queryCondition.mobileModel = device.get("model", "");
+                    queryCondition.mobileNetWorkProvider = getNetworkProvider(device.get("carrier", 0));
                     fromYoukuDevTypeOsType(devType,
                                            osType,
                                            ua,
@@ -373,6 +390,7 @@ namespace bidding {
         }
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, requestId, "", landingUrl);
+        clickUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_YOUKU_PRICE);
         extValue["ldp"] = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
         extValue["pm"] = cppcms::json::array();
         if (!tview.empty()) {

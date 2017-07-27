@@ -231,6 +231,7 @@ namespace bidding {
 
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, bidRequest_.id(), "", landingUrl);
+        clickUrlParam.addMacro(URL_EXCHANGE_PRICE, "%%AUCTION_PRICE%%");
         adResult->AddExtension(com::wk::adx::rtb::clktrackers,
                                std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?"
                                    + clickUrlParam.cipherParam());

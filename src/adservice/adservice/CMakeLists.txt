@@ -71,6 +71,7 @@ SET(SRC_LIST
     ./service/protocol/youku/youku_price.cpp
     ./service/protocol/inmobi/inmobi_bidding_handler.cpp
     ./service/protocol/liebao/liebao_bidding_handler.cpp
+    ./service/protocol/2345/adx2345_bidding_handler.cpp
     ./service/protocol/360/360max_bidding_handler.cpp
     ./service/protocol/360/max-bidding.pb.cpp
     ./service/protocol/360/360max_price.cpp

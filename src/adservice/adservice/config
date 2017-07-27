@@ -61,6 +61,7 @@ $ngx_addon_dir/service/protocol/360/360max_price.cpp
 $ngx_addon_dir/service/protocol/360/max-bidding.pb.cpp
 $ngx_addon_dir/service/protocol/debug/debug.pb.cpp
 $ngx_addon_dir/service/protocol/yidian/yidian_bidding_handler.cpp
+$ngx_addon_dir/service/protocol/2345/adx2345_bidding_handler.cpp
 $ngx_addon_dir/service/utility/cypher.cpp
 $ngx_addon_dir/service/utility/escape.cpp
 $ngx_addon_dir/service/utility/file.cpp

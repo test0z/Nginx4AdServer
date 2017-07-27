@@ -239,6 +239,7 @@ namespace bidding {
                         queryCondition.mobileDevice
                             = adservice::utility::userclient::getMobileTypeFromUA(bidRequest.user_agent());
                     }
+                    queryCondition.mobileNetWorkProvider = mobile.carrier_id();
                     queryCondition.adxid = ADX_BAIDU_MOBILE;
                     queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
                     if (mobile.has_wireless_network_type())
@@ -354,6 +355,7 @@ namespace bidding {
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.id(), "", landing_url);
             clickUrlParam.add(URL_IMP_OF, "2");
+            clickUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_BD_PRICE_MACRO);
             std::string click_url = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
             adResult->add_target_url(click_url);
             int img_total = 0;
@@ -411,6 +413,7 @@ namespace bidding {
             std::string landing_url = mtlsArray[0].get("p1", "");
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.id(), "", landing_url);
+            clickUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_BD_PRICE_MACRO);
             std::string click_url = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
             adResult->add_target_url(click_url);
             adResult->set_landing_page(landing_url);
@@ -440,6 +443,7 @@ namespace bidding {
                 url::URLHelper clickUrlParam;
                 getClickPara(clickUrlParam, bidRequest.id(), "", landing_url);
                 clickUrlParam.add(URL_IMP_OF, "2");
+                clickUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_BD_PRICE_MACRO);
                 std::string clickUrl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
                 bannerJson["clickurl"] = clickUrl;
                 std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);

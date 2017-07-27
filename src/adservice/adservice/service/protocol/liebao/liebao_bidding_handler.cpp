@@ -285,6 +285,7 @@ namespace bidding {
             admObj["link"]["clicktrackers"] = cppcms::json::array();
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, requestId, "", landingUrl);
+            clickUrlParam.addMacro(URL_EXCHANGE_PRICE, "");
             admObj["link"]["clicktrackers"].array().push_back(
                 std::string(isIOS ? SNIPPET_CLICK_URL_HTTPS : SNIPPET_CLICK_URL) + "?" + clickUrlParam.cipherParam());
             std::string admObjectStr = json::toJson(admObj);

@@ -48,6 +48,18 @@ namespace bidding {
             } else
                 return SOLUTION_NETWORK_OTHER;
         }
+
+        int getNetworkCarrier(const std::string & carrier)
+        {
+            if (strcasecmp(carrier.c_str(), "China Mobile") == 0)
+                return SOLUTION_NETWORK_PROVIDER_CHINAMOBILE;
+            else if (strcasecmp(carrier.c_str(), "China Telecom") == 0)
+                return SOLUTION_NETWORK_PROVIDER_CHINATELECOM;
+            else if (strcasecmp(carrier.c_str(), "UNICOM") == 0)
+                return SOLUTION_NETWORK_PROVIDER_CHINAUNICOM;
+            else
+                return SOLUTION_NETWORK_PROVIDER_ALL;
+        }
     }
 
     bool SohuBiddingHandler::parseRequestData(const std::string & data)
@@ -104,6 +116,7 @@ namespace bidding {
                 queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
                 queryCondition.adxid = ADX_SOHU_MOBILE;
                 queryCondition.mobileNetwork = getSohuNeworkType(device.nettype());
+                queryCondition.mobileNetWorkProvider = getNetworkCarrier(device.carrier());
                 queryCondition.idfa = device.has_idfa() ? stringtool::toupper(device.idfa()) : "";
                 queryCondition.imei = device.has_imei() ? stringtool::toupper(device.imei()) : "";
                 queryCondition.androidId = device.has_androidid() ? stringtool::toupper(device.androidid()) : "";
@@ -211,8 +224,10 @@ namespace bidding {
         url::URLHelper showUrlParam;
         getShowPara(showUrlParam, bidRequest.bidid());
         showUrlParam.add(URL_IMP_OF, "3");
+        showUrlParam.add(URL_EXCHANGE_PRICE, "%%WINPRICE%%");
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, bidRequest.bidid(), "", landingUrl);
+        clickUrlParam.addMacro(URL_EXCHANGE_PRICE, "%%WINPRICE%%");
         if (!queryCondition.dealId.empty()) {
             showUrlParam.add(URL_DEAL_ID, adzInfo.campaignid());
             clickUrlParam.add(URL_DEAL_ID, adzInfo.campaignid());

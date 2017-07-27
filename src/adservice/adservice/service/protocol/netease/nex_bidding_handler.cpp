@@ -33,48 +33,63 @@ namespace bidding {
 #define NEX_CONN_3G "3g"
 #define NEX_CONN_4G "4g"
 
-    static void fromNexDevTypeOsType(const std::string & osType,
-                                     const std::string & ua,
-                                     int & flowType,
-                                     int & mobileDev,
-                                     int & pcOs,
-                                     std::string & pcBrowser)
-    {
-        flowType = SOLUTION_FLOWTYPE_MOBILE;
-        if (!strcasecmp(osType.data(), NEX_OS_ANDROID)) {
-            mobileDev = SOLUTION_DEVICE_ANDROID;
-            pcOs = SOLUTION_OS_ANDROID;
-        } else if (!strcasecmp(osType.data(), NEX_OS_iPhone)) {
-            mobileDev = SOLUTION_DEVICE_IPHONE;
-            pcOs = SOLUTION_OS_IOS;
-        } else {
-            flowType = SOLUTION_FLOWTYPE_PC;
-            if (osType.empty()) {
-                pcOs = getOSTypeFromUA(ua);
-            } else {
-                if (!strcasecmp(osType.data(), NEX_OS_WINDOWS)) {
-                    pcOs = SOLUTION_OS_WINDOWS;
-                } else if (!strcasecmp(osType.data(), NEX_OS_MAC)) {
-                    pcOs = SOLUTION_OS_MAC;
-                } else
-                    pcOs = SOLUTION_OS_OTHER;
-            }
-            pcBrowser = getBrowserTypeFromUA(ua);
-        }
-    }
+    namespace {
 
-    static int getNetwork(const std::string & network)
-    {
-        if (!strcasecmp(network.c_str(), NEX_CONN_WIFI)) {
-            return SOLUTION_NETWORK_WIFI;
-        } else if (!strcasecmp(network.c_str(), NEX_CONN_2G)) {
-            return SOLUTION_NETWORK_2G;
-        } else if (!strcasecmp(network.c_str(), NEX_CONN_3G)) {
-            return SOLUTION_NETWORK_3G;
-        } else if (!strcasecmp(network.c_str(), NEX_CONN_4G)) {
-            return SOLUTION_NETWORK_4G;
-        } else {
-            return SOLUTION_NETWORK_ALL;
+        void fromNexDevTypeOsType(const std::string & osType,
+                                  const std::string & ua,
+                                  int & flowType,
+                                  int & mobileDev,
+                                  int & pcOs,
+                                  std::string & pcBrowser)
+        {
+            flowType = SOLUTION_FLOWTYPE_MOBILE;
+            if (!strcasecmp(osType.data(), NEX_OS_ANDROID)) {
+                mobileDev = SOLUTION_DEVICE_ANDROID;
+                pcOs = SOLUTION_OS_ANDROID;
+            } else if (!strcasecmp(osType.data(), NEX_OS_iPhone)) {
+                mobileDev = SOLUTION_DEVICE_IPHONE;
+                pcOs = SOLUTION_OS_IOS;
+            } else {
+                flowType = SOLUTION_FLOWTYPE_PC;
+                if (osType.empty()) {
+                    pcOs = getOSTypeFromUA(ua);
+                } else {
+                    if (!strcasecmp(osType.data(), NEX_OS_WINDOWS)) {
+                        pcOs = SOLUTION_OS_WINDOWS;
+                    } else if (!strcasecmp(osType.data(), NEX_OS_MAC)) {
+                        pcOs = SOLUTION_OS_MAC;
+                    } else
+                        pcOs = SOLUTION_OS_OTHER;
+                }
+                pcBrowser = getBrowserTypeFromUA(ua);
+            }
+        }
+
+        int getNetwork(const std::string & network)
+        {
+            if (!strcasecmp(network.c_str(), NEX_CONN_WIFI)) {
+                return SOLUTION_NETWORK_WIFI;
+            } else if (!strcasecmp(network.c_str(), NEX_CONN_2G)) {
+                return SOLUTION_NETWORK_2G;
+            } else if (!strcasecmp(network.c_str(), NEX_CONN_3G)) {
+                return SOLUTION_NETWORK_3G;
+            } else if (!strcasecmp(network.c_str(), NEX_CONN_4G)) {
+                return SOLUTION_NETWORK_4G;
+            } else {
+                return SOLUTION_NETWORK_ALL;
+            }
+        }
+
+        int getNetworkCarrier(const std::string & carrier)
+        {
+            if (strcasecmp(carrier.c_str(), "cm") == 0)
+                return SOLUTION_NETWORK_PROVIDER_CHINAMOBILE;
+            else if (strcasecmp(carrier.c_str(), "ct") == 0)
+                return SOLUTION_NETWORK_PROVIDER_CHINATELECOM;
+            else if (strcasecmp(carrier.c_str(), "cu") == 0)
+                return SOLUTION_NETWORK_PROVIDER_CHINAUNICOM;
+            else
+                return SOLUTION_NETWORK_PROVIDER_ALL;
         }
     }
 
@@ -155,6 +170,7 @@ namespace bidding {
                         queryCondition.adxid = ADX_NEX_MOBILE;
                         adInfo.adxid = ADX_NEX_MOBILE;
                     }
+                    queryCondition.mobileNetWorkProvider = getNetworkCarrier(device.get("carrier", ""));
                     queryCondition.mobileModel = device.get("model", "");
                     queryCondition.mobileNetwork = getNetwork(device.get("connectiontype", ""));
                     queryCondition.idfa = stringtool::toupper(device.get("idfa", ""));
@@ -188,6 +204,7 @@ namespace bidding {
                 queryCondition.mac = firstQueryCondition.mac;
                 queryCondition.imei = firstQueryCondition.imei;
                 queryCondition.deviceBrand = firstQueryCondition.deviceBrand;
+                queryCondition.mobileNetWorkProvider = firstQueryCondition.mobileNetWorkProvider;
             }
             isDeal = false;
             const cppcms::json::value & pmp = adzinfo.find("pmp");
@@ -345,6 +362,7 @@ namespace bidding {
 
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, requestId, "", landingUrl);
+        clickUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_NEX_PRICE);
         std::string cm = getClickBaseUrl(true) + "?" + clickUrlParam.cipherParam();
         cppcms::json::array clickm = cppcms::json::array();
         clickm.push_back(cm);

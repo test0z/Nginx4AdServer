@@ -5,6 +5,7 @@
 #include "bid_query_task.h"
 
 #include "common/atomic.h"
+#include "protocol/2345/adx2345_bidding_handler.h"
 #include "protocol/360/360max_bidding_handler.h"
 #include "protocol/baidu/baidu_bidding_handler.h"
 #include "protocol/guangyin/guangyin_bidding_handler.h"
@@ -83,6 +84,8 @@ namespace corelogic {
         ADD_MODULE_ENTRY(BID_QUERY_PATH_360MAX, ADX_360_MAX_PC);
         //一点资讯
         ADD_MODULE_ENTRY(BID_QUERY_PATH_YIDIAN, ADX_YIDIAN);
+        // 2345
+        ADD_MODULE_ENTRY(BID_QUERY_PATH_2345, ADX_2345);
 
         std::sort<int *>(moduleIdx, moduleIdx + moduleCnt, [](const int & a, const int & b) {
             return moduleAdx[a].moduleHash < moduleAdx[b].moduleHash;
@@ -138,6 +141,8 @@ namespace corelogic {
             return new JuxiaoMaxBiddingHandler();
         case ADX_YIDIAN:
             return new YidianBidingHandler();
+        case ADX_2345:
+            return new Adx2345BiddingHandler();
         default:
             return NULL;
         }

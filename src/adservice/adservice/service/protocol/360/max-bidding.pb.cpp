@@ -190,9 +190,10 @@ void protobuf_AssignDesc_max_2dbidding_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_AdSlot_Native, _internal_metadata_),
       -1);
   BidRequest_AdSlot_Deal_descriptor_ = BidRequest_AdSlot_descriptor_->nested_type(1);
-  static const int BidRequest_AdSlot_Deal_offsets_[3] = {
+  static const int BidRequest_AdSlot_Deal_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_AdSlot_Deal, deal_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_AdSlot_Deal, deal_type_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_AdSlot_Deal, price_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidRequest_AdSlot_Deal, date_),
   };
   BidRequest_AdSlot_Deal_reflection_ =
@@ -308,9 +309,10 @@ void protobuf_AssignDesc_max_2dbidding_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BidResponse_Ads, _internal_metadata_),
       -1);
   NativeAd_descriptor_ = file->message_type(2);
-  static const int NativeAd_offsets_[9] = {
+  static const int NativeAd_offsets_[10] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NativeAd, max_cpm_price_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NativeAd, creatives_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NativeAd, template_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NativeAd, app_attr_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NativeAd, impression_tracks_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NativeAd, category_),
@@ -331,15 +333,16 @@ void protobuf_AssignDesc_max_2dbidding_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NativeAd, _internal_metadata_),
       -1);
   NativeAd_Creative_descriptor_ = NativeAd_descriptor_->nested_type(0);
-  static const int NativeAd_Creative_offsets_[9] = {
+  static const int NativeAd_Creative_offsets_[10] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NativeAd_Creative, template_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NativeAd_Creative, title_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NativeAd_Creative, sub_title_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NativeAd_Creative, description_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NativeAd_Creative, button_name_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NativeAd_Creative, content_image_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NativeAd_Creative, logo_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NativeAd_Creative, multi_images_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NativeAd_Creative, linked_image_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NativeAd_Creative, logo_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NativeAd_Creative, link_),
   };
   NativeAd_Creative_reflection_ =
@@ -496,7 +499,7 @@ void protobuf_AddDesc_max_2dbidding_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\021max-bidding.proto\022\014protocol.MAX\"\315\020\n\nBi"
+    "\n\021max-bidding.proto\022\014protocol.MAX\"\211\021\n\nBi"
     "dRequest\022\013\n\003bid\030\001 \002(\t\022\022\n\007is_test\030\t \001(\r:\001"
     "0\022\032\n\016mediav_user_id\030\002 \001(\tB\002\030\001\022\022\n\nmv_user"
     "_id\030\021 \001(\t\022\013\n\003mid\030\024 \001(\t\022\n\n\002ip\030\003 \001(\t\022\022\n\nus"
@@ -515,7 +518,7 @@ void protobuf_AddDesc_max_2dbidding_2eproto() {
     "t.Mobile\022\023\n\013extend_data\030d \001(\t\0320\n\014UserCat"
     "egory\022\n\n\002id\030\001 \002(\005\022\024\n\006weight\030\002 \002(\005:\0041000\032"
     "3\n\017ContentCategory\022\n\n\002id\030\001 \002(\005\022\024\n\006weight"
-    "\030\002 \002(\005:\0041000\032\363\004\n\006AdSlot\022\n\n\002id\030\001 \002(\r\022\013\n\003p"
+    "\030\002 \002(\005:\0041000\032\257\005\n\006AdSlot\022\n\n\002id\030\001 \002(\r\022\013\n\003p"
     "id\030\002 \001(\t\022\r\n\005width\030\003 \001(\005\022\016\n\006height\030\004 \001(\005\022"
     "\021\n\tview_type\030\005 \003(\r\022\025\n\rmin_cpm_price\030\006 \001("
     "\r\022U\n\017slot_visibility\030\007 \001(\0162..protocol.MA"
@@ -524,65 +527,68 @@ void protobuf_AddDesc_max_2dbidding_2eproto() {
     "BidRequest.AdSlot.Native\0223\n\005deals\030\t \003(\0132"
     "$.protocol.MAX.BidRequest.AdSlot.Deal\032C\n"
     "\006Native\022\016\n\006ad_num\030\001 \001(\r\022\024\n\014landing_type\030"
-    "\002 \003(\005\022\023\n\013template_id\030\003 \003(\005\032\261\001\n\004Deal\022\017\n\007d"
+    "\002 \003(\005\022\023\n\013template_id\030\003 \003(\005\032\355\001\n\004Deal\022\017\n\007d"
     "eal_id\030\001 \002(\003\022S\n\tdeal_type\030\002 \002(\0162-.protoc"
     "ol.MAX.BidRequest.AdSlot.Deal.DealType:\021"
-    "UNKNOWN_DEAL_TYPE\022\014\n\004date\030\003 \001(\t\"5\n\010DealT"
-    "ype\022\025\n\021UNKNOWN_DEAL_TYPE\020\000\022\022\n\016PREFERRED_"
-    "DEAL\020\001\"J\n\016SlotVisibility\022\020\n\014NO_DETECTION"
-    "\020\000\022\022\n\016ABOVE_THE_FOLD\020\001\022\022\n\016BELOW_THE_FOLD"
-    "\020\002\032\364\005\n\006Mobile\022\016\n\006is_app\030\001 \001(\010\022\025\n\ris_full"
-    "screen\030\002 \001(\010\022\016\n\006app_id\030\003 \001(\t\022\024\n\014package_"
-    "name\030\006 \001(\t\0226\n\006device\030\004 \001(\0132&.protocol.MA"
-    "X.BidRequest.Mobile.Device\022\024\n\014app_catego"
-    "ry\030\005 \003(\005\032\316\004\n\006Device\022\020\n\010platform\030\001 \001(\t\022\r\n"
-    "\005model\030\003 \001(\t\022\n\n\002os\030\004 \001(\t\022\022\n\nos_version\030\005"
-    " \001(\t\022\017\n\007network\030\006 \001(\r\022\022\n\ncarrier_id\030\007 \001("
-    "\005\022\021\n\tlongitude\030\010 \001(\t\022\020\n\010latitude\030\t \001(\t\022\024"
-    "\n\014screen_width\030\n \001(\005\022\025\n\rscreen_height\030\013 "
-    "\001(\005\022p\n\022screen_orientation\030\014 \001(\01628.protoc"
-    "ol.MAX.BidRequest.Mobile.Device.ScreenOr"
-    "ientation:\032SCREEN_ORIENTATION_UNKNOWN\022\014\n"
-    "\004idfa\030\r \001(\t\022\023\n\013hashed_idfa\030\016 \001(\t\022\014\n\004imei"
-    "\030\020 \001(\t\022\023\n\013hashed_imei\030\017 \001(\t\022\022\n\nandroid_i"
-    "d\030\021 \001(\t\022\031\n\021hashed_android_id\030\022 \001(\t\022\013\n\003ma"
-    "c\030\023 \001(\t\022\022\n\nhashed_mac\030\024 \001(\t\022\014\n\004m2id\030\025 \001("
-    "\t\"v\n\021ScreenOrientation\022\036\n\032SCREEN_ORIENTA"
-    "TION_UNKNOWN\020\000\022\037\n\033SCREEN_ORIENTATION_POR"
-    "TRAIT\020\001\022 \n\034SCREEN_ORIENTATION_LANDSCAPE\020"
-    "\002\"\205\003\n\013BidResponse\022\013\n\003bid\030\001 \002(\t\022*\n\003ads\030\003 "
-    "\003(\0132\035.protocol.MAX.BidResponse.Ads\032\274\002\n\003A"
-    "ds\022\021\n\tadslot_id\030\001 \002(\r\022\025\n\rmax_cpm_price\030\002"
-    " \002(\r\022\024\n\014html_snippet\030\003 \001(\t\022)\n\tnative_ad\030"
-    "\r \003(\0132\026.protocol.MAX.NativeAd\022\020\n\010categor"
-    "y\030\004 \003(\005\022\025\n\rcreative_type\030\005 \003(\005\022\032\n\022creati"
-    "ve_attribute\030\016 \003(\005\022\027\n\017destination_url\030\006 "
-    "\003(\t\022\025\n\radvertiser_id\030\007 \001(\t\022\023\n\013creative_i"
-    "d\030\010 \001(\t\022\r\n\005width\030\t \001(\005\022\016\n\006height\030\n \001(\005\022\023"
-    "\n\013extend_data\030\013 \001(\t\022\014\n\004nurl\030\014 \001(\t\"\374\006\n\010Na"
-    "tiveAd\022\025\n\rmax_cpm_price\030\001 \002(\r\0222\n\tcreativ"
-    "es\030\002 \003(\0132\037.protocol.MAX.NativeAd.Creativ"
-    "e\0220\n\010app_attr\030\t \001(\0132\036.protocol.MAX.Nativ"
-    "eAd.AppAttr\022\031\n\021impression_tracks\030\003 \003(\t\022\020"
-    "\n\010category\030\004 \003(\005\022\027\n\017destination_url\030\005 \003("
-    "\t\022\025\n\radvertiser_id\030\006 \001(\t\022\023\n\013creative_id\030"
-    "\007 \001(\t\022\017\n\007deal_id\030\010 \001(\003\032\216\004\n\010Creative\022\023\n\013t"
-    "emplate_id\030\t \001(\005\022\r\n\005title\030\001 \001(\t\022\021\n\tsub_t"
-    "itle\030\002 \001(\t\022\023\n\013description\030\003 \001(\t\022\023\n\013butto"
-    "n_name\030\004 \001(\t\022<\n\rcontent_image\030\005 \001(\0132%.pr"
-    "otocol.MAX.NativeAd.Creative.Image\0223\n\004lo"
-    "go\030\006 \001(\0132%.protocol.MAX.NativeAd.Creativ"
-    "e.Image\022;\n\014linked_image\030\010 \001(\0132%.protocol"
-    ".MAX.NativeAd.Creative.Image\0222\n\004link\030\007 \001"
-    "(\0132$.protocol.MAX.NativeAd.Creative.Link"
-    "\032E\n\005Image\022\021\n\timage_url\030\001 \001(\t\022\023\n\013image_wi"
-    "dth\030\002 \001(\005\022\024\n\014image_height\030\003 \001(\005\032v\n\004Link\022"
-    "\021\n\tclick_url\030\001 \001(\t\022\021\n\tdeep_link\030\004 \001(\t\022\024\n"
-    "\014landing_type\030\002 \001(\005\022\034\n\024content_click_tra"
-    "cks\030\005 \003(\t\022\024\n\014click_tracks\030\003 \003(\t\032_\n\007AppAt"
-    "tr\022\020\n\010app_name\030\001 \001(\t\022\017\n\007app_pkg\030\002 \001(\t\022\017\n"
-    "\007app_md5\030\003 \001(\t\022\016\n\006app_vc\030\004 \001(\005\022\020\n\010app_si"
-    "ze\030\005 \001(\005", 3448);
+    "UNKNOWN_DEAL_TYPE\022\r\n\005price\030\004 \001(\r\022\014\n\004date"
+    "\030\003 \001(\t\"b\n\010DealType\022\025\n\021UNKNOWN_DEAL_TYPE\020"
+    "\000\022\022\n\016PREFERRED_DEAL\020\001\022\023\n\017PRIVATE_AUCTION"
+    "\020\002\022\026\n\022PRIVATE_DIRECT_BUY\020\003\"J\n\016SlotVisibi"
+    "lity\022\020\n\014NO_DETECTION\020\000\022\022\n\016ABOVE_THE_FOLD"
+    "\020\001\022\022\n\016BELOW_THE_FOLD\020\002\032\364\005\n\006Mobile\022\016\n\006is_"
+    "app\030\001 \001(\010\022\025\n\ris_fullscreen\030\002 \001(\010\022\016\n\006app_"
+    "id\030\003 \001(\t\022\024\n\014package_name\030\006 \001(\t\0226\n\006device"
+    "\030\004 \001(\0132&.protocol.MAX.BidRequest.Mobile."
+    "Device\022\024\n\014app_category\030\005 \003(\005\032\316\004\n\006Device\022"
+    "\020\n\010platform\030\001 \001(\t\022\r\n\005model\030\003 \001(\t\022\n\n\002os\030\004"
+    " \001(\t\022\022\n\nos_version\030\005 \001(\t\022\017\n\007network\030\006 \001("
+    "\r\022\022\n\ncarrier_id\030\007 \001(\005\022\021\n\tlongitude\030\010 \001(\t"
+    "\022\020\n\010latitude\030\t \001(\t\022\024\n\014screen_width\030\n \001(\005"
+    "\022\025\n\rscreen_height\030\013 \001(\005\022p\n\022screen_orient"
+    "ation\030\014 \001(\01628.protocol.MAX.BidRequest.Mo"
+    "bile.Device.ScreenOrientation:\032SCREEN_OR"
+    "IENTATION_UNKNOWN\022\014\n\004idfa\030\r \001(\t\022\023\n\013hashe"
+    "d_idfa\030\016 \001(\t\022\014\n\004imei\030\020 \001(\t\022\023\n\013hashed_ime"
+    "i\030\017 \001(\t\022\022\n\nandroid_id\030\021 \001(\t\022\031\n\021hashed_an"
+    "droid_id\030\022 \001(\t\022\013\n\003mac\030\023 \001(\t\022\022\n\nhashed_ma"
+    "c\030\024 \001(\t\022\014\n\004m2id\030\025 \001(\t\"v\n\021ScreenOrientati"
+    "on\022\036\n\032SCREEN_ORIENTATION_UNKNOWN\020\000\022\037\n\033SC"
+    "REEN_ORIENTATION_PORTRAIT\020\001\022 \n\034SCREEN_OR"
+    "IENTATION_LANDSCAPE\020\002\"\205\003\n\013BidResponse\022\013\n"
+    "\003bid\030\001 \002(\t\022*\n\003ads\030\003 \003(\0132\035.protocol.MAX.B"
+    "idResponse.Ads\032\274\002\n\003Ads\022\021\n\tadslot_id\030\001 \002("
+    "\r\022\025\n\rmax_cpm_price\030\002 \002(\r\022\024\n\014html_snippet"
+    "\030\003 \001(\t\022)\n\tnative_ad\030\r \003(\0132\026.protocol.MAX"
+    ".NativeAd\022\020\n\010category\030\004 \003(\005\022\025\n\rcreative_"
+    "type\030\005 \003(\005\022\032\n\022creative_attribute\030\016 \003(\005\022\027"
+    "\n\017destination_url\030\006 \003(\t\022\025\n\radvertiser_id"
+    "\030\007 \001(\t\022\023\n\013creative_id\030\010 \001(\t\022\r\n\005width\030\t \001"
+    "(\005\022\016\n\006height\030\n \001(\005\022\023\n\013extend_data\030\013 \001(\t\022"
+    "\014\n\004nurl\030\014 \001(\t\"\316\007\n\010NativeAd\022\025\n\rmax_cpm_pr"
+    "ice\030\001 \002(\r\0222\n\tcreatives\030\002 \003(\0132\037.protocol."
+    "MAX.NativeAd.Creative\022\023\n\013template_id\030\n \001"
+    "(\005\0220\n\010app_attr\030\t \001(\0132\036.protocol.MAX.Nati"
+    "veAd.AppAttr\022\031\n\021impression_tracks\030\003 \003(\t\022"
+    "\020\n\010category\030\004 \003(\005\022\027\n\017destination_url\030\005 \003"
+    "(\t\022\025\n\radvertiser_id\030\006 \001(\t\022\023\n\013creative_id"
+    "\030\007 \001(\t\022\017\n\007deal_id\030\010 \001(\003\032\313\004\n\010Creative\022\023\n\013"
+    "template_id\030\t \001(\005\022\r\n\005title\030\001 \001(\t\022\021\n\tsub_"
+    "title\030\002 \001(\t\022\023\n\013description\030\003 \001(\t\022\023\n\013butt"
+    "on_name\030\004 \001(\t\022<\n\rcontent_image\030\005 \001(\0132%.p"
+    "rotocol.MAX.NativeAd.Creative.Image\022;\n\014m"
+    "ulti_images\030\014 \003(\0132%.protocol.MAX.NativeA"
+    "d.Creative.Image\022;\n\014linked_image\030\010 \001(\0132%"
+    ".protocol.MAX.NativeAd.Creative.Image\0223\n"
+    "\004logo\030\006 \001(\0132%.protocol.MAX.NativeAd.Crea"
+    "tive.Image\0222\n\004link\030\007 \001(\0132$.protocol.MAX."
+    "NativeAd.Creative.Link\032E\n\005Image\022\021\n\timage"
+    "_url\030\001 \001(\t\022\023\n\013image_width\030\002 \001(\005\022\024\n\014image"
+    "_height\030\003 \001(\005\032v\n\004Link\022\021\n\tclick_url\030\001 \001(\t"
+    "\022\021\n\tdeep_link\030\004 \001(\t\022\024\n\014landing_type\030\002 \001("
+    "\005\022\034\n\024content_click_tracks\030\005 \003(\t\022\024\n\014click"
+    "_tracks\030\003 \003(\t\032_\n\007AppAttr\022\020\n\010app_name\030\001 \001"
+    "(\t\022\017\n\007app_pkg\030\002 \001(\t\022\017\n\007app_md5\030\003 \001(\t\022\016\n\006"
+    "app_vc\030\004 \001(\005\022\020\n\010app_size\030\005 \001(\005", 3590);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "max-bidding.proto", &protobuf_RegisterTypes);
   BidRequest::default_instance_ = new BidRequest();
@@ -1601,6 +1607,8 @@ bool BidRequest_AdSlot_Deal_DealType_IsValid(int value) {
   switch(value) {
     case 0:
     case 1:
+    case 2:
+    case 3:
       return true;
     default:
       return false;
@@ -1610,6 +1618,8 @@ bool BidRequest_AdSlot_Deal_DealType_IsValid(int value) {
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const BidRequest_AdSlot_Deal_DealType BidRequest_AdSlot_Deal::UNKNOWN_DEAL_TYPE;
 const BidRequest_AdSlot_Deal_DealType BidRequest_AdSlot_Deal::PREFERRED_DEAL;
+const BidRequest_AdSlot_Deal_DealType BidRequest_AdSlot_Deal::PRIVATE_AUCTION;
+const BidRequest_AdSlot_Deal_DealType BidRequest_AdSlot_Deal::PRIVATE_DIRECT_BUY;
 const BidRequest_AdSlot_Deal_DealType BidRequest_AdSlot_Deal::DealType_MIN;
 const BidRequest_AdSlot_Deal_DealType BidRequest_AdSlot_Deal::DealType_MAX;
 const int BidRequest_AdSlot_Deal::DealType_ARRAYSIZE;
@@ -1617,6 +1627,7 @@ const int BidRequest_AdSlot_Deal::DealType_ARRAYSIZE;
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int BidRequest_AdSlot_Deal::kDealIdFieldNumber;
 const int BidRequest_AdSlot_Deal::kDealTypeFieldNumber;
+const int BidRequest_AdSlot_Deal::kPriceFieldNumber;
 const int BidRequest_AdSlot_Deal::kDateFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
@@ -1642,6 +1653,7 @@ void BidRequest_AdSlot_Deal::SharedCtor() {
   _cached_size_ = 0;
   deal_id_ = GOOGLE_LONGLONG(0);
   deal_type_ = 0;
+  price_ = 0u;
   date_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
@@ -1684,13 +1696,32 @@ BidRequest_AdSlot_Deal* BidRequest_AdSlot_Deal::New(::google::protobuf::Arena* a
 
 void BidRequest_AdSlot_Deal::Clear() {
 // @@protoc_insertion_point(message_clear_start:protocol.MAX.BidRequest.AdSlot.Deal)
-  if (_has_bits_[0 / 32] & 7u) {
-    deal_id_ = GOOGLE_LONGLONG(0);
-    deal_type_ = 0;
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(BidRequest_AdSlot_Deal, f) \
+  _Pragma("clang diagnostic pop")
+#else
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<BidRequest_AdSlot_Deal*>(16)->f)
+#endif
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  if (_has_bits_[0 / 32] & 15u) {
+    ZR_(deal_id_, price_);
     if (has_date()) {
       date_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
   }
+
+#undef ZR_HELPER_
+#undef ZR_
+
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   if (_internal_metadata_.have_unknown_fields()) {
     mutable_unknown_fields()->Clear();
@@ -1754,6 +1785,21 @@ bool BidRequest_AdSlot_Deal::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(32)) goto parse_price;
+        break;
+      }
+
+      // optional uint32 price = 4;
+      case 4: {
+        if (tag == 32) {
+         parse_price:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &price_)));
+          set_has_price();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -1804,6 +1850,11 @@ void BidRequest_AdSlot_Deal::SerializeWithCachedSizes(
       3, this->date(), output);
   }
 
+  // optional uint32 price = 4;
+  if (has_price()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->price(), output);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1834,6 +1885,11 @@ void BidRequest_AdSlot_Deal::SerializeWithCachedSizes(
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         3, this->date(), target);
+  }
+
+  // optional uint32 price = 4;
+  if (has_price()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->price(), target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -1880,13 +1936,22 @@ int BidRequest_AdSlot_Deal::ByteSize() const {
   } else {
     total_size += RequiredFieldsByteSizeFallback();
   }
-  // optional string date = 3;
-  if (has_date()) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->date());
-  }
+  if (_has_bits_[2 / 32] & 12u) {
+    // optional uint32 price = 4;
+    if (has_price()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->price());
+    }
 
+    // optional string date = 3;
+    if (has_date()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->date());
+    }
+
+  }
   if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
@@ -1927,6 +1992,9 @@ void BidRequest_AdSlot_Deal::MergeFrom(const BidRequest_AdSlot_Deal& from) {
     if (from.has_deal_type()) {
       set_deal_type(from.deal_type());
     }
+    if (from.has_price()) {
+      set_price(from.price());
+    }
     if (from.has_date()) {
       set_has_date();
       date_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.date_);
@@ -1964,6 +2032,7 @@ void BidRequest_AdSlot_Deal::Swap(BidRequest_AdSlot_Deal* other) {
 void BidRequest_AdSlot_Deal::InternalSwap(BidRequest_AdSlot_Deal* other) {
   std::swap(deal_id_, other->deal_id_);
   std::swap(deal_type_, other->deal_type_);
+  std::swap(price_, other->price_);
   date_.Swap(&other->date_);
   std::swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
@@ -5933,15 +6002,39 @@ void BidRequest_AdSlot_Deal::clear_deal_type() {
   // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.AdSlot.Deal.deal_type)
 }
 
-// optional string date = 3;
-bool BidRequest_AdSlot_Deal::has_date() const {
+// optional uint32 price = 4;
+bool BidRequest_AdSlot_Deal::has_price() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-void BidRequest_AdSlot_Deal::set_has_date() {
+void BidRequest_AdSlot_Deal::set_has_price() {
   _has_bits_[0] |= 0x00000004u;
 }
-void BidRequest_AdSlot_Deal::clear_has_date() {
+void BidRequest_AdSlot_Deal::clear_has_price() {
   _has_bits_[0] &= ~0x00000004u;
+}
+void BidRequest_AdSlot_Deal::clear_price() {
+  price_ = 0u;
+  clear_has_price();
+}
+ ::google::protobuf::uint32 BidRequest_AdSlot_Deal::price() const {
+  // @@protoc_insertion_point(field_get:protocol.MAX.BidRequest.AdSlot.Deal.price)
+  return price_;
+}
+ void BidRequest_AdSlot_Deal::set_price(::google::protobuf::uint32 value) {
+  set_has_price();
+  price_ = value;
+  // @@protoc_insertion_point(field_set:protocol.MAX.BidRequest.AdSlot.Deal.price)
+}
+
+// optional string date = 3;
+bool BidRequest_AdSlot_Deal::has_date() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+void BidRequest_AdSlot_Deal::set_has_date() {
+  _has_bits_[0] |= 0x00000008u;
+}
+void BidRequest_AdSlot_Deal::clear_has_date() {
+  _has_bits_[0] &= ~0x00000008u;
 }
 void BidRequest_AdSlot_Deal::clear_date() {
   date_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
@@ -10989,8 +11082,9 @@ const int NativeAd_Creative::kSubTitleFieldNumber;
 const int NativeAd_Creative::kDescriptionFieldNumber;
 const int NativeAd_Creative::kButtonNameFieldNumber;
 const int NativeAd_Creative::kContentImageFieldNumber;
-const int NativeAd_Creative::kLogoFieldNumber;
+const int NativeAd_Creative::kMultiImagesFieldNumber;
 const int NativeAd_Creative::kLinkedImageFieldNumber;
+const int NativeAd_Creative::kLogoFieldNumber;
 const int NativeAd_Creative::kLinkFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
@@ -11002,8 +11096,8 @@ NativeAd_Creative::NativeAd_Creative()
 
 void NativeAd_Creative::InitAsDefaultInstance() {
   content_image_ = const_cast< ::protocol::MAX::NativeAd_Creative_Image*>(&::protocol::MAX::NativeAd_Creative_Image::default_instance());
-  logo_ = const_cast< ::protocol::MAX::NativeAd_Creative_Image*>(&::protocol::MAX::NativeAd_Creative_Image::default_instance());
   linked_image_ = const_cast< ::protocol::MAX::NativeAd_Creative_Image*>(&::protocol::MAX::NativeAd_Creative_Image::default_instance());
+  logo_ = const_cast< ::protocol::MAX::NativeAd_Creative_Image*>(&::protocol::MAX::NativeAd_Creative_Image::default_instance());
   link_ = const_cast< ::protocol::MAX::NativeAd_Creative_Link*>(&::protocol::MAX::NativeAd_Creative_Link::default_instance());
 }
 
@@ -11024,8 +11118,8 @@ void NativeAd_Creative::SharedCtor() {
   description_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   button_name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   content_image_ = NULL;
-  logo_ = NULL;
   linked_image_ = NULL;
+  logo_ = NULL;
   link_ = NULL;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
@@ -11042,8 +11136,8 @@ void NativeAd_Creative::SharedDtor() {
   button_name_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
     delete content_image_;
-    delete logo_;
     delete linked_image_;
+    delete logo_;
     delete link_;
   }
 }
@@ -11075,7 +11169,7 @@ NativeAd_Creative* NativeAd_Creative::New(::google::protobuf::Arena* arena) cons
 
 void NativeAd_Creative::Clear() {
 // @@protoc_insertion_point(message_clear_start:protocol.MAX.NativeAd.Creative)
-  if (_has_bits_[0 / 32] & 255u) {
+  if (_has_bits_[0 / 32] & 191u) {
     template_id_ = 0;
     if (has_title()) {
       title_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
@@ -11092,16 +11186,19 @@ void NativeAd_Creative::Clear() {
     if (has_content_image()) {
       if (content_image_ != NULL) content_image_->::protocol::MAX::NativeAd_Creative_Image::Clear();
     }
-    if (has_logo()) {
-      if (logo_ != NULL) logo_->::protocol::MAX::NativeAd_Creative_Image::Clear();
-    }
     if (has_linked_image()) {
       if (linked_image_ != NULL) linked_image_->::protocol::MAX::NativeAd_Creative_Image::Clear();
     }
   }
-  if (has_link()) {
-    if (link_ != NULL) link_->::protocol::MAX::NativeAd_Creative_Link::Clear();
+  if (_has_bits_[8 / 32] & 768u) {
+    if (has_logo()) {
+      if (logo_ != NULL) logo_->::protocol::MAX::NativeAd_Creative_Image::Clear();
+    }
+    if (has_link()) {
+      if (link_ != NULL) link_->::protocol::MAX::NativeAd_Creative_Link::Clear();
+    }
   }
+  multi_images_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   if (_internal_metadata_.have_unknown_fields()) {
     mutable_unknown_fields()->Clear();
@@ -11248,6 +11345,23 @@ bool NativeAd_Creative::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(98)) goto parse_multi_images;
+        break;
+      }
+
+      // repeated .protocol.MAX.NativeAd.Creative.Image multi_images = 12;
+      case 12: {
+        if (tag == 98) {
+         parse_multi_images:
+          DO_(input->IncrementRecursionDepth());
+         parse_loop_multi_images:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
+                input, add_multi_images()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(98)) goto parse_loop_multi_images;
+        input->UnsafeDecrementRecursionDepth();
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -11346,6 +11460,12 @@ void NativeAd_Creative::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(9, this->template_id(), output);
   }
 
+  // repeated .protocol.MAX.NativeAd.Creative.Image multi_images = 12;
+  for (unsigned int i = 0, n = this->multi_images_size(); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      12, this->multi_images(i), output);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -11433,6 +11553,13 @@ void NativeAd_Creative::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(9, this->template_id(), target);
   }
 
+  // repeated .protocol.MAX.NativeAd.Creative.Image multi_images = 12;
+  for (unsigned int i = 0, n = this->multi_images_size(); i < n; i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageNoVirtualToArray(
+        12, this->multi_images(i), false, target);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -11445,7 +11572,7 @@ int NativeAd_Creative::ByteSize() const {
 // @@protoc_insertion_point(message_byte_size_start:protocol.MAX.NativeAd.Creative)
   int total_size = 0;
 
-  if (_has_bits_[0 / 32] & 255u) {
+  if (_has_bits_[0 / 32] & 191u) {
     // optional int32 template_id = 9;
     if (has_template_id()) {
       total_size += 1 +
@@ -11488,13 +11615,6 @@ int NativeAd_Creative::ByteSize() const {
           *this->content_image_);
     }
 
-    // optional .protocol.MAX.NativeAd.Creative.Image logo = 6;
-    if (has_logo()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          *this->logo_);
-    }
-
     // optional .protocol.MAX.NativeAd.Creative.Image linked_image = 8;
     if (has_linked_image()) {
       total_size += 1 +
@@ -11503,11 +11623,28 @@ int NativeAd_Creative::ByteSize() const {
     }
 
   }
-  // optional .protocol.MAX.NativeAd.Creative.Link link = 7;
-  if (has_link()) {
-    total_size += 1 +
+  if (_has_bits_[8 / 32] & 768u) {
+    // optional .protocol.MAX.NativeAd.Creative.Image logo = 6;
+    if (has_logo()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *this->logo_);
+    }
+
+    // optional .protocol.MAX.NativeAd.Creative.Link link = 7;
+    if (has_link()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *this->link_);
+    }
+
+  }
+  // repeated .protocol.MAX.NativeAd.Creative.Image multi_images = 12;
+  total_size += 1 * this->multi_images_size();
+  for (int i = 0; i < this->multi_images_size(); i++) {
+    total_size +=
       ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-        *this->link_);
+        this->multi_images(i));
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -11543,6 +11680,7 @@ void NativeAd_Creative::MergeFrom(const NativeAd_Creative& from) {
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
+  multi_images_.MergeFrom(from.multi_images_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_template_id()) {
       set_template_id(from.template_id());
@@ -11566,14 +11704,14 @@ void NativeAd_Creative::MergeFrom(const NativeAd_Creative& from) {
     if (from.has_content_image()) {
       mutable_content_image()->::protocol::MAX::NativeAd_Creative_Image::MergeFrom(from.content_image());
     }
-    if (from.has_logo()) {
-      mutable_logo()->::protocol::MAX::NativeAd_Creative_Image::MergeFrom(from.logo());
-    }
     if (from.has_linked_image()) {
       mutable_linked_image()->::protocol::MAX::NativeAd_Creative_Image::MergeFrom(from.linked_image());
     }
   }
   if (from._has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    if (from.has_logo()) {
+      mutable_logo()->::protocol::MAX::NativeAd_Creative_Image::MergeFrom(from.logo());
+    }
     if (from.has_link()) {
       mutable_link()->::protocol::MAX::NativeAd_Creative_Link::MergeFrom(from.link());
     }
@@ -11613,8 +11751,9 @@ void NativeAd_Creative::InternalSwap(NativeAd_Creative* other) {
   description_.Swap(&other->description_);
   button_name_.Swap(&other->button_name_);
   std::swap(content_image_, other->content_image_);
-  std::swap(logo_, other->logo_);
+  multi_images_.UnsafeArenaSwap(&other->multi_images_);
   std::swap(linked_image_, other->linked_image_);
+  std::swap(logo_, other->logo_);
   std::swap(link_, other->link_);
   std::swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
@@ -12109,6 +12248,7 @@ void NativeAd_AppAttr::InternalSwap(NativeAd_AppAttr* other) {
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int NativeAd::kMaxCpmPriceFieldNumber;
 const int NativeAd::kCreativesFieldNumber;
+const int NativeAd::kTemplateIdFieldNumber;
 const int NativeAd::kAppAttrFieldNumber;
 const int NativeAd::kImpressionTracksFieldNumber;
 const int NativeAd::kCategoryFieldNumber;
@@ -12140,6 +12280,7 @@ void NativeAd::SharedCtor() {
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
   max_cpm_price_ = 0u;
+  template_id_ = 0;
   app_attr_ = NULL;
   advertiser_id_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   creative_id_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
@@ -12187,19 +12328,41 @@ NativeAd* NativeAd::New(::google::protobuf::Arena* arena) const {
 
 void NativeAd::Clear() {
 // @@protoc_insertion_point(message_clear_start:protocol.MAX.NativeAd)
-  if (_has_bits_[0 / 32] & 197u) {
-    max_cpm_price_ = 0u;
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(NativeAd, f) \
+  _Pragma("clang diagnostic pop")
+#else
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<NativeAd*>(16)->f)
+#endif
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  if (_has_bits_[0 / 32] & 141u) {
+    ZR_(max_cpm_price_, template_id_);
     if (has_app_attr()) {
       if (app_attr_ != NULL) app_attr_->::protocol::MAX::NativeAd_AppAttr::Clear();
     }
     if (has_advertiser_id()) {
       advertiser_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
+  }
+  if (_has_bits_[8 / 32] & 768u) {
     if (has_creative_id()) {
       creative_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
+    deal_id_ = GOOGLE_LONGLONG(0);
   }
-  deal_id_ = GOOGLE_LONGLONG(0);
+
+#undef ZR_HELPER_
+#undef ZR_
+
   creatives_.Clear();
   impression_tracks_.Clear();
   category_.Clear();
@@ -12366,6 +12529,21 @@ bool NativeAd::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(80)) goto parse_template_id;
+        break;
+      }
+
+      // optional int32 template_id = 10;
+      case 10: {
+        if (tag == 80) {
+         parse_template_id:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &template_id_)));
+          set_has_template_id();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -12463,6 +12641,11 @@ void NativeAd::SerializeWithCachedSizes(
       9, *this->app_attr_, output);
   }
 
+  // optional int32 template_id = 10;
+  if (has_template_id()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(10, this->template_id(), output);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -12545,6 +12728,11 @@ void NativeAd::SerializeWithCachedSizes(
         9, *this->app_attr_, false, target);
   }
 
+  // optional int32 template_id = 10;
+  if (has_template_id()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(10, this->template_id(), target);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -12563,7 +12751,14 @@ int NativeAd::ByteSize() const {
       ::google::protobuf::internal::WireFormatLite::UInt32Size(
         this->max_cpm_price());
   }
-  if (_has_bits_[2 / 32] & 196u) {
+  if (_has_bits_[2 / 32] & 140u) {
+    // optional int32 template_id = 10;
+    if (has_template_id()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->template_id());
+    }
+
     // optional .protocol.MAX.NativeAd.AppAttr app_attr = 9;
     if (has_app_attr()) {
       total_size += 1 +
@@ -12578,6 +12773,8 @@ int NativeAd::ByteSize() const {
           this->advertiser_id());
     }
 
+  }
+  if (_has_bits_[8 / 32] & 768u) {
     // optional string creative_id = 7;
     if (has_creative_id()) {
       total_size += 1 +
@@ -12585,14 +12782,14 @@ int NativeAd::ByteSize() const {
           this->creative_id());
     }
 
-  }
-  // optional int64 deal_id = 8;
-  if (has_deal_id()) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int64Size(
-        this->deal_id());
-  }
+    // optional int64 deal_id = 8;
+    if (has_deal_id()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int64Size(
+          this->deal_id());
+    }
 
+  }
   // repeated .protocol.MAX.NativeAd.Creative creatives = 2;
   total_size += 1 * this->creatives_size();
   for (int i = 0; i < this->creatives_size(); i++) {
@@ -12666,6 +12863,9 @@ void NativeAd::MergeFrom(const NativeAd& from) {
     if (from.has_max_cpm_price()) {
       set_max_cpm_price(from.max_cpm_price());
     }
+    if (from.has_template_id()) {
+      set_template_id(from.template_id());
+    }
     if (from.has_app_attr()) {
       mutable_app_attr()->::protocol::MAX::NativeAd_AppAttr::MergeFrom(from.app_attr());
     }
@@ -12673,12 +12873,12 @@ void NativeAd::MergeFrom(const NativeAd& from) {
       set_has_advertiser_id();
       advertiser_id_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.advertiser_id_);
     }
+  }
+  if (from._has_bits_[8 / 32] & (0xffu << (8 % 32))) {
     if (from.has_creative_id()) {
       set_has_creative_id();
       creative_id_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.creative_id_);
     }
-  }
-  if (from._has_bits_[8 / 32] & (0xffu << (8 % 32))) {
     if (from.has_deal_id()) {
       set_deal_id(from.deal_id());
     }
@@ -12715,6 +12915,7 @@ void NativeAd::Swap(NativeAd* other) {
 void NativeAd::InternalSwap(NativeAd* other) {
   std::swap(max_cpm_price_, other->max_cpm_price_);
   creatives_.UnsafeArenaSwap(&other->creatives_);
+  std::swap(template_id_, other->template_id_);
   std::swap(app_attr_, other->app_attr_);
   impression_tracks_.UnsafeArenaSwap(&other->impression_tracks_);
   category_.UnsafeArenaSwap(&other->category_);
@@ -13374,48 +13575,34 @@ void NativeAd_Creative::set_allocated_content_image(::protocol::MAX::NativeAd_Cr
   // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.Creative.content_image)
 }
 
-// optional .protocol.MAX.NativeAd.Creative.Image logo = 6;
-bool NativeAd_Creative::has_logo() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
+// repeated .protocol.MAX.NativeAd.Creative.Image multi_images = 12;
+int NativeAd_Creative::multi_images_size() const {
+  return multi_images_.size();
 }
-void NativeAd_Creative::set_has_logo() {
-  _has_bits_[0] |= 0x00000040u;
+void NativeAd_Creative::clear_multi_images() {
+  multi_images_.Clear();
 }
-void NativeAd_Creative::clear_has_logo() {
-  _has_bits_[0] &= ~0x00000040u;
+const ::protocol::MAX::NativeAd_Creative_Image& NativeAd_Creative::multi_images(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.multi_images)
+  return multi_images_.Get(index);
 }
-void NativeAd_Creative::clear_logo() {
-  if (logo_ != NULL) logo_->::protocol::MAX::NativeAd_Creative_Image::Clear();
-  clear_has_logo();
+::protocol::MAX::NativeAd_Creative_Image* NativeAd_Creative::mutable_multi_images(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.Creative.multi_images)
+  return multi_images_.Mutable(index);
 }
-const ::protocol::MAX::NativeAd_Creative_Image& NativeAd_Creative::logo() const {
-  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.logo)
-  return logo_ != NULL ? *logo_ : *default_instance_->logo_;
+::protocol::MAX::NativeAd_Creative_Image* NativeAd_Creative::add_multi_images() {
+  // @@protoc_insertion_point(field_add:protocol.MAX.NativeAd.Creative.multi_images)
+  return multi_images_.Add();
 }
-::protocol::MAX::NativeAd_Creative_Image* NativeAd_Creative::mutable_logo() {
-  set_has_logo();
-  if (logo_ == NULL) {
-    logo_ = new ::protocol::MAX::NativeAd_Creative_Image;
-  }
-  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.Creative.logo)
-  return logo_;
+::google::protobuf::RepeatedPtrField< ::protocol::MAX::NativeAd_Creative_Image >*
+NativeAd_Creative::mutable_multi_images() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.MAX.NativeAd.Creative.multi_images)
+  return &multi_images_;
 }
-::protocol::MAX::NativeAd_Creative_Image* NativeAd_Creative::release_logo() {
-  // @@protoc_insertion_point(field_release:protocol.MAX.NativeAd.Creative.logo)
-  clear_has_logo();
-  ::protocol::MAX::NativeAd_Creative_Image* temp = logo_;
-  logo_ = NULL;
-  return temp;
-}
-void NativeAd_Creative::set_allocated_logo(::protocol::MAX::NativeAd_Creative_Image* logo) {
-  delete logo_;
-  logo_ = logo;
-  if (logo) {
-    set_has_logo();
-  } else {
-    clear_has_logo();
-  }
-  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.Creative.logo)
+const ::google::protobuf::RepeatedPtrField< ::protocol::MAX::NativeAd_Creative_Image >&
+NativeAd_Creative::multi_images() const {
+  // @@protoc_insertion_point(field_list:protocol.MAX.NativeAd.Creative.multi_images)
+  return multi_images_;
 }
 
 // optional .protocol.MAX.NativeAd.Creative.Image linked_image = 8;
@@ -13462,15 +13649,59 @@ void NativeAd_Creative::set_allocated_linked_image(::protocol::MAX::NativeAd_Cre
   // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.Creative.linked_image)
 }
 
-// optional .protocol.MAX.NativeAd.Creative.Link link = 7;
-bool NativeAd_Creative::has_link() const {
+// optional .protocol.MAX.NativeAd.Creative.Image logo = 6;
+bool NativeAd_Creative::has_logo() const {
   return (_has_bits_[0] & 0x00000100u) != 0;
 }
-void NativeAd_Creative::set_has_link() {
+void NativeAd_Creative::set_has_logo() {
   _has_bits_[0] |= 0x00000100u;
 }
-void NativeAd_Creative::clear_has_link() {
+void NativeAd_Creative::clear_has_logo() {
   _has_bits_[0] &= ~0x00000100u;
+}
+void NativeAd_Creative::clear_logo() {
+  if (logo_ != NULL) logo_->::protocol::MAX::NativeAd_Creative_Image::Clear();
+  clear_has_logo();
+}
+const ::protocol::MAX::NativeAd_Creative_Image& NativeAd_Creative::logo() const {
+  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.Creative.logo)
+  return logo_ != NULL ? *logo_ : *default_instance_->logo_;
+}
+::protocol::MAX::NativeAd_Creative_Image* NativeAd_Creative::mutable_logo() {
+  set_has_logo();
+  if (logo_ == NULL) {
+    logo_ = new ::protocol::MAX::NativeAd_Creative_Image;
+  }
+  // @@protoc_insertion_point(field_mutable:protocol.MAX.NativeAd.Creative.logo)
+  return logo_;
+}
+::protocol::MAX::NativeAd_Creative_Image* NativeAd_Creative::release_logo() {
+  // @@protoc_insertion_point(field_release:protocol.MAX.NativeAd.Creative.logo)
+  clear_has_logo();
+  ::protocol::MAX::NativeAd_Creative_Image* temp = logo_;
+  logo_ = NULL;
+  return temp;
+}
+void NativeAd_Creative::set_allocated_logo(::protocol::MAX::NativeAd_Creative_Image* logo) {
+  delete logo_;
+  logo_ = logo;
+  if (logo) {
+    set_has_logo();
+  } else {
+    clear_has_logo();
+  }
+  // @@protoc_insertion_point(field_set_allocated:protocol.MAX.NativeAd.Creative.logo)
+}
+
+// optional .protocol.MAX.NativeAd.Creative.Link link = 7;
+bool NativeAd_Creative::has_link() const {
+  return (_has_bits_[0] & 0x00000200u) != 0;
+}
+void NativeAd_Creative::set_has_link() {
+  _has_bits_[0] |= 0x00000200u;
+}
+void NativeAd_Creative::clear_has_link() {
+  _has_bits_[0] &= ~0x00000200u;
 }
 void NativeAd_Creative::clear_link() {
   if (link_ != NULL) link_->::protocol::MAX::NativeAd_Creative_Link::Clear();
@@ -13778,15 +14009,39 @@ NativeAd::creatives() const {
   return creatives_;
 }
 
-// optional .protocol.MAX.NativeAd.AppAttr app_attr = 9;
-bool NativeAd::has_app_attr() const {
+// optional int32 template_id = 10;
+bool NativeAd::has_template_id() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-void NativeAd::set_has_app_attr() {
+void NativeAd::set_has_template_id() {
   _has_bits_[0] |= 0x00000004u;
 }
-void NativeAd::clear_has_app_attr() {
+void NativeAd::clear_has_template_id() {
   _has_bits_[0] &= ~0x00000004u;
+}
+void NativeAd::clear_template_id() {
+  template_id_ = 0;
+  clear_has_template_id();
+}
+ ::google::protobuf::int32 NativeAd::template_id() const {
+  // @@protoc_insertion_point(field_get:protocol.MAX.NativeAd.template_id)
+  return template_id_;
+}
+ void NativeAd::set_template_id(::google::protobuf::int32 value) {
+  set_has_template_id();
+  template_id_ = value;
+  // @@protoc_insertion_point(field_set:protocol.MAX.NativeAd.template_id)
+}
+
+// optional .protocol.MAX.NativeAd.AppAttr app_attr = 9;
+bool NativeAd::has_app_attr() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+void NativeAd::set_has_app_attr() {
+  _has_bits_[0] |= 0x00000008u;
+}
+void NativeAd::clear_has_app_attr() {
+  _has_bits_[0] &= ~0x00000008u;
 }
 void NativeAd::clear_app_attr() {
   if (app_attr_ != NULL) app_attr_->::protocol::MAX::NativeAd_AppAttr::Clear();
@@ -13964,13 +14219,13 @@ NativeAd::mutable_destination_url() {
 
 // optional string advertiser_id = 6;
 bool NativeAd::has_advertiser_id() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
+  return (_has_bits_[0] & 0x00000080u) != 0;
 }
 void NativeAd::set_has_advertiser_id() {
-  _has_bits_[0] |= 0x00000040u;
+  _has_bits_[0] |= 0x00000080u;
 }
 void NativeAd::clear_has_advertiser_id() {
-  _has_bits_[0] &= ~0x00000040u;
+  _has_bits_[0] &= ~0x00000080u;
 }
 void NativeAd::clear_advertiser_id() {
   advertiser_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
@@ -14018,13 +14273,13 @@ void NativeAd::clear_advertiser_id() {
 
 // optional string creative_id = 7;
 bool NativeAd::has_creative_id() const {
-  return (_has_bits_[0] & 0x00000080u) != 0;
+  return (_has_bits_[0] & 0x00000100u) != 0;
 }
 void NativeAd::set_has_creative_id() {
-  _has_bits_[0] |= 0x00000080u;
+  _has_bits_[0] |= 0x00000100u;
 }
 void NativeAd::clear_has_creative_id() {
-  _has_bits_[0] &= ~0x00000080u;
+  _has_bits_[0] &= ~0x00000100u;
 }
 void NativeAd::clear_creative_id() {
   creative_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
@@ -14072,13 +14327,13 @@ void NativeAd::clear_creative_id() {
 
 // optional int64 deal_id = 8;
 bool NativeAd::has_deal_id() const {
-  return (_has_bits_[0] & 0x00000100u) != 0;
+  return (_has_bits_[0] & 0x00000200u) != 0;
 }
 void NativeAd::set_has_deal_id() {
-  _has_bits_[0] |= 0x00000100u;
+  _has_bits_[0] |= 0x00000200u;
 }
 void NativeAd::clear_has_deal_id() {
-  _has_bits_[0] &= ~0x00000100u;
+  _has_bits_[0] &= ~0x00000200u;
 }
 void NativeAd::clear_deal_id() {
   deal_id_ = GOOGLE_LONGLONG(0);

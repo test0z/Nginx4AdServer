@@ -27,43 +27,61 @@ namespace bidding {
         return a > b ? a : b;
     }
 
-    static int getDeviceTypeByOS(const std::string & os)
-    {
-        if (os.find("ios") != std::string::npos) {
-            return SOLUTION_DEVICE_IPHONE;
-        } else if (os.find("android") != std::string::npos) {
-            return SOLUTION_DEVICE_ANDROID;
-        } else {
-            return SOLUTION_DEVICE_OTHER;
-        }
-    }
+    namespace {
 
-    static int getDeviceOs(const std::string & os)
-    {
-        if (os.find("ios") != std::string::npos) {
-            return SOLUTION_OS_IOS;
-        } else if (os.find("android") != std::string::npos) {
-            return SOLUTION_OS_ANDROID;
-        } else {
-            return SOLUTION_OS_OTHER;
+        int getDeviceTypeByOS(const std::string & os)
+        {
+            if (os.find("ios") != std::string::npos) {
+                return SOLUTION_DEVICE_IPHONE;
+            } else if (os.find("android") != std::string::npos) {
+                return SOLUTION_DEVICE_ANDROID;
+            } else {
+                return SOLUTION_DEVICE_OTHER;
+            }
         }
-    }
 
-    static int getNetWork(int network)
-    {
-        switch (network) {
-        case 0:
-            return SOLUTION_NETWORK_ALL;
-        case 1:
-            return SOLUTION_NETWORK_WIFI;
-        case 2:
-            return SOLUTION_NETWORK_2G;
-        case 3:
-            return SOLUTION_NETWORK_3G;
-        case 4:
-            return SOLUTION_NETWORK_4G;
-        default:
-            return SOLUTION_NETWORK_ALL;
+        int getDeviceOs(const std::string & os)
+        {
+            if (os.find("ios") != std::string::npos) {
+                return SOLUTION_OS_IOS;
+            } else if (os.find("android") != std::string::npos) {
+                return SOLUTION_OS_ANDROID;
+            } else {
+                return SOLUTION_OS_OTHER;
+            }
+        }
+
+        int getNetWork(int network)
+        {
+            switch (network) {
+            case 0:
+                return SOLUTION_NETWORK_ALL;
+            case 1:
+                return SOLUTION_NETWORK_WIFI;
+            case 2:
+                return SOLUTION_NETWORK_2G;
+            case 3:
+                return SOLUTION_NETWORK_3G;
+            case 4:
+                return SOLUTION_NETWORK_4G;
+            default:
+                return SOLUTION_NETWORK_ALL;
+            }
+        }
+
+        int getNetworkProvider(int isp)
+        {
+            switch (isp) {
+            case 0:
+                return SOLUTION_NETWORK_PROVIDER_ALL;
+            case 1:
+                return SOLUTION_NETWORK_PROVIDER_CHINAMOBILE;
+            case 2:
+                return SOLUTION_NETWORK_PROVIDER_CHINAUNICOM;
+            case 3:
+                return SOLUTION_NETWORK_PROVIDER_CHINATELECOM;
+            }
+            return SOLUTION_NETWORK_PROVIDER_ALL;
         }
     }
 
@@ -170,6 +188,7 @@ namespace bidding {
             queryCondition.geo = { stringtool::safeconvert(stringtool::stod, device.longitude()),
                                    stringtool::safeconvert(stringtool::stod, device.latitude()) };
             queryCondition.deviceBrand = adservice::utility::userclient::getDeviceBrandFromUA(bidRequest.user_agent());
+            queryCondition.mobileNetWorkProvider = getNetworkProvider(device.carrier_id());
             pAdplaceInfo.flowType = queryCondition.flowType;
             if (device.has_network()) {
                 queryCondition.mobileNetwork = getNetWork(device.network());
@@ -274,6 +293,7 @@ namespace bidding {
             nativeAd->set_creative_id(std::to_string(adInfo.bannerId));
             nativeAd->set_max_cpm_price(maxCpmPrice);
             nativeAd->add_category(adxIndustryType);
+            nativeAd->set_template_id(templateId);
             auto creative = nativeAd->add_creatives();
             std::string title = mtlsArray[0].get("p0", "");
             std::string subTitle = mtlsArray[0].get("p1", "");
@@ -304,6 +324,7 @@ namespace bidding {
             std::string downloadUrl = isIOS ? iosDownloadUrl : androidDownloadUrl;
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.bid(), "", downloadUrl.empty() ? destUrl : downloadUrl);
+            clickUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_MAX_PRICE_MACRO);
             std::string linkUrl = getClickBaseUrl(isNeedHttps) + "?" + clickUrlParam.cipherParam();
             auto linkObj = creative->mutable_link();
             linkObj->set_click_url(std::string(AD_MAX_CLICK_UNENC_MACRO) + url::urlEncode(linkUrl));
@@ -359,6 +380,7 @@ namespace bidding {
                 bannerJson["rs"] = true;
                 url::URLHelper clickUrlParam;
                 getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
+                clickUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_MAX_PRICE_MACRO);
                 bannerJson["clickurl"] = getClickBaseUrl(isNeedHttps) + "?" + clickUrlParam.cipherParam();
                 std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
                 char admBuffer[4096];
