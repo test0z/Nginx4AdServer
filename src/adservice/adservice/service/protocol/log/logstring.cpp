@@ -148,6 +148,8 @@ void printLogAdInfo(std::stringstream & ss, protocol::log::AdInfo & adInfo)
     ss << "\tpricetype:" << adInfo.priceType << endl;
     ss << "\tbidbasePrice:" << adInfo.bidBasePrice << endl;
     ss << "\tbidEcpmPrice:" << adInfo.bidEcpmPrice << endl;
+    ss << "\tfeerates:";
+    printVector(ss, adInfo.feeRateDetail);
 }
 
 void printLogGeoInfo(std::stringstream & ss, protocol::log::GeoInfo & geoInfo)

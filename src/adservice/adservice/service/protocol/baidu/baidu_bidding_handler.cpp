@@ -225,6 +225,13 @@ namespace bidding {
             }
             //移动端处理
             if (i == 0) {
+                if (bidRequest.has_user_geo_info()) {
+                    auto & geoInfo = bidRequest.user_geo_info();
+                    if (geoInfo.user_coordinate_size() > 0) {
+                        queryCondition.geo
+                            = { geoInfo.user_coordinate(0).longitude(), geoInfo.user_coordinate(0).latitude() };
+                    }
+                }
                 if (bidRequest.has_mobile()) {
                     const BidRequest_Mobile & mobile = bidRequest.mobile();
                     queryCondition.mobileDevice = getDevicebyPlat(mobile.platform(), mobile.device_type());
@@ -232,6 +239,7 @@ namespace bidding {
                         queryCondition.mobileDevice
                             = adservice::utility::userclient::getMobileTypeFromUA(bidRequest.user_agent());
                     }
+                    queryCondition.mobileNetWorkProvider = mobile.carrier_id();
                     queryCondition.adxid = ADX_BAIDU_MOBILE;
                     queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
                     if (mobile.has_wireless_network_type())
@@ -294,6 +302,7 @@ namespace bidding {
                 queryCondition.adxpid = firstqueryCondition.adxpid;
                 queryCondition.mttyContentType = firstqueryCondition.mttyContentType;
                 queryCondition.mobileNetwork = firstqueryCondition.mobileNetwork;
+                queryCondition.geo = firstqueryCondition.geo;
             }
         }
         if (!filterCb(this, queryConditions)) {
@@ -318,7 +327,7 @@ namespace bidding {
         const BidRequest_AdSlot & adSlot = bidRequest.adslot(seq);
         //获取创意行业类型
         std::string adxIndustryTypeStr = banner.adxIndustryType;
-        int adxIndustryType = extractRealValue(adxIndustryTypeStr.data(), ADX_BAIDU);
+        int adxIndustryType = MT::common::stoi_safe(extractRealValue(adxIndustryTypeStr.data(), ADX_BAIDU));
         int maxCpmPrice = max(result.bidPrice, adSlot.minimum_cpm());
         adResult->set_max_cpm(maxCpmPrice);
         adResult->set_advertiser_id(advId);
@@ -346,6 +355,7 @@ namespace bidding {
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.id(), "", landing_url);
             clickUrlParam.add(URL_IMP_OF, "2");
+            clickUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_BD_PRICE_MACRO);
             std::string click_url = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
             adResult->add_target_url(click_url);
             int img_total = 0;
@@ -403,6 +413,7 @@ namespace bidding {
             std::string landing_url = mtlsArray[0].get("p1", "");
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.id(), "", landing_url);
+            clickUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_BD_PRICE_MACRO);
             std::string click_url = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
             adResult->add_target_url(click_url);
             adResult->set_landing_page(landing_url);
@@ -432,6 +443,7 @@ namespace bidding {
                 url::URLHelper clickUrlParam;
                 getClickPara(clickUrlParam, bidRequest.id(), "", landing_url);
                 clickUrlParam.add(URL_IMP_OF, "2");
+                clickUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_BD_PRICE_MACRO);
                 std::string clickUrl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
                 bannerJson["clickurl"] = clickUrl;
                 std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);

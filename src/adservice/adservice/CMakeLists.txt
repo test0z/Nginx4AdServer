@@ -22,6 +22,7 @@ SET(SRC_LIST
     ./service/core/core_typetable.cpp
     ./service/core/core_ad_sizemap.cpp
     ./service/core/core_cm_manager.cpp
+    ./service/core/core_scenario_manager.cpp
     ./service/core/logic/abstract_query_task.cpp
     ./service/core/logic/bid_query_task.cpp
     ./service/core/logic/click_query_task.cpp
@@ -70,6 +71,7 @@ SET(SRC_LIST
     ./service/protocol/youku/youku_price.cpp
     ./service/protocol/inmobi/inmobi_bidding_handler.cpp
     ./service/protocol/liebao/liebao_bidding_handler.cpp
+    ./service/protocol/2345/adx2345_bidding_handler.cpp
     ./service/protocol/360/360max_bidding_handler.cpp
     ./service/protocol/360/max-bidding.pb.cpp
     ./service/protocol/360/360max_price.cpp
@@ -90,6 +92,7 @@ SET(SRC_LIST
     ./service/utility/compress.cpp
     ./service/utility/template_engine.cpp
     ./service/utility/promise.cpp
+    ./service/utility/ip.cpp
     ./service/common/atomic.cpp
     ./service/common/functions.cpp
     ./service/common/platform.cpp

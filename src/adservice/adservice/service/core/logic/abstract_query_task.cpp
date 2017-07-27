@@ -91,28 +91,85 @@ namespace corelogic {
             case ADX_360_MAX_PC:
             case ADX_360_MAX_MOBILE:
                 return max360_price_decode(input) / 10000;
+            case ADX_2345:
+            case ADX_SSP_PC:
+            case ADX_SSP_MOBILE:
+                return stringtool::safeconvert(stringtool::stoi, input);
             default:
                 return 0;
             }
         }
 
-        void calcPrice(int adx, bool isDeal, int decodePrice, int offerPrice, int & cost, int & bidPrice,
-                       protocol::log::LogPhaseType logPhase, int priceType = PRICETYPE_RRTB_CPM)
+        /**
+         * 论如何编写不可维护代码
+         * 日志统计处理逻辑非要放在投放系统实现的坑
+         * @param adx adx的编号
+         * @param isDeal 是否deal计算
+         * @param decodePrice 本次投放过程中解密出来的成本（一次投放过程可以看成是包含同一个曝光ID下的曝光及点击过程）
+         * @param offerPrice 结算价格
+         * @param feeRate 生成链接时的系统费率
+         * @param feeRateDetail 生成链接时的系统服务明细费率，需要分裂
+         * @param cost 本次日志需要记录的成本
+         * @param bidPrice 本次日志需要记录的花费
+         * @param logPhase 本次日志所处的投放过程
+         * @param logFeeRateDetail 本次日志需要记录的系统服务明细费用
+         * @param priceType 投放单的结算类型
+         * @param adplaceBuyType 广告位的采买类型
+         */
+        void calcPrice(int adx, bool isDeal, int decodePrice, int offerPrice, double feeRate, std::string feeRateDetail,
+                       int & cost, int & bidPrice, protocol::log::LogPhaseType logPhase,
+                       std::vector<double> & logFeeRateDetail, int priceType = PRICETYPE_RRTB_CPM,
+                       int adplaceBuyType = PRICETYPE_RRTB_CPM)
         {
-            if (isDeal || adx == ADX_NETEASE_MOBILE || adx == ADX_YIDIAN) {
-                cost = decodePrice;
-                bidPrice = offerPrice == 0 ? cost : offerPrice;
-            } else {
-                cost = decodePrice;
-                bidPrice = std::ceil(decodePrice * AD_OWNER_COST_FACTOR);
+            if (adplaceBuyType == 0) {
+                adplaceBuyType = PRICETYPE_RRTB_CPM;
             }
-            if (priceType == PRICETYPE_RRTB_CPC || priceType == PRICETYPE_RCPC) {
-                if (logPhase != protocol::log::LogPhaseType::CLICK) {
-                    bidPrice = 0;
-                } else {
+            bool fixPrice = false;
+            if (isDeal || adx == ADX_NETEASE_MOBILE || adx == ADX_YIDIAN) { // deal单子不考虑CPC的情况,固定价格
+                fixPrice = true;
+                offerPrice = offerPrice == 0 ? decodePrice : offerPrice;
+            }
+            if (logPhase == protocol::log::LogPhaseType::SHOW) { //只有非SSP的曝光才走这里
+                if (adplaceBuyType == PRICETYPE_RRTB_CPM) {      // cpm采买,曝光成本作为成本
+                    cost = decodePrice;
+                } else { // cpc采买,曝光阶段不计算成本
                     cost = 0;
+                }
+                if (priceType == PRICETYPE_RRTB_CPC || priceType == PRICETYPE_RCPC) { // CPC结算
+                    //曝光阶段不计算花费
+                    bidPrice = 0;
+                } else { // CPM结算
+                    //曝光阶段计算花费
+                    double feeRateBase = 1.0;
+                    if (!fixPrice) { //非deal单正常情况
+                        bidPrice = std::ceil(decodePrice * feeRate);
+                        feeRateBase = decodePrice;
+                    } else { // deal单按固定价格曝光计价
+                        bidPrice = offerPrice;
+                        feeRateBase = bidPrice;
+                    }
+                    //计算费率
+                    if (!feeRateDetail.empty()) {
+                        logFeeRateDetail = MT::common::costdetailVec(feeRateDetail, feeRateBase);
+                    }
+                }
+            } else if (logPhase == protocol::log::LogPhaseType::CLICK) {
+                if (adplaceBuyType == PRICETYPE_RRTB_CPM) { // cpm采买,点击阶段不计算成本
+                    cost = 0;
+                } else { // cpc采买,点击成本作为成本
+                    cost = decodePrice;
+                }
+                cost *= 1000;
+                if (priceType == PRICETYPE_RRTB_CPC || priceType == PRICETYPE_RCPC) { // CPC结算
+                    //点击阶段计算花费
                     bidPrice = offerPrice
                                * 1000; // 华哥那边对cpc计费按照cpm公式来算，但cpc是按个数结算的，为了兼容要乘以1000
+                    //计算费率
+                    if (!feeRateDetail.empty()) {
+                        logFeeRateDetail = MT::common::costdetailVec(feeRateDetail, bidPrice / feeRate);
+                    }
+                } else { // CPM结算
+                    //点击阶段不计算花费
                 }
             }
         }
@@ -234,17 +291,29 @@ namespace corelogic {
                     std::string & orderId = iter->second;
                     log.adInfo.orderId = URLParamMap::stringToInt(orderId);
                 }
+                double feeRate = 1.0;
+                if ((iter = paramMap.find(URL_FEE_RATE)) != paramMap.end()) {
+                    feeRate = stringtool::safeconvert(stringtool::stod, iter->second);
+                    feeRate = feeRate <= 1.0 ? 1.0 : feeRate;
+                }
                 int offerPrice
                     = paramMap.find(URL_BID_PRICE) != paramMap.end() ? decodeOfferPrice(paramMap[URL_BID_PRICE]) : 0;
+                int adplaceBuyType = paramMap.find(URL_ADPLACE_BUY_TYPE) != paramMap.end()
+                                         ? stringtool::safeconvert(stringtool::stoi, paramMap[URL_ADPLACE_BUY_TYPE])
+                                         : PRICETYPE_RRTB_CPM;
+                std::string feeRateDetail
+                    = paramMap.find(URL_FEE_RATE_STRS) != paramMap.end() ? paramMap[URL_FEE_RATE_STRS] : "";
                 if ((iter = paramMap.find(URL_EXCHANGE_PRICE)) != paramMap.end()) { //成交价格
                     std::string & price = iter->second;                             // paramMap[URL_EXCHANGE_PRICE];
                     int decodePrice = decodeAdxExchangePrice(log.adInfo.adxid, price);
                     bool isDeal = paramMap.find(URL_DEAL_ID) != paramMap.end() && !paramMap[URL_DEAL_ID].empty();
-                    calcPrice(log.adInfo.adxid, isDeal, decodePrice, offerPrice, log.adInfo.cost, log.adInfo.bidPrice,
-                              log.logType, log.adInfo.priceType);
+                    calcPrice(log.adInfo.adxid, isDeal, decodePrice, offerPrice, feeRate, feeRateDetail,
+                              log.adInfo.cost, log.adInfo.bidPrice, log.logType, log.adInfo.feeRateDetail,
+                              log.adInfo.priceType, adplaceBuyType);
                 } else {
-                    calcPrice(log.adInfo.adxid, false, offerPrice, offerPrice, log.adInfo.cost, log.adInfo.bidPrice,
-                              log.logType, log.adInfo.priceType);
+                    calcPrice(log.adInfo.adxid, false, 0, offerPrice, feeRate, feeRateDetail, log.adInfo.cost,
+                              log.adInfo.bidPrice, log.logType, log.adInfo.feeRateDetail, log.adInfo.priceType,
+                              adplaceBuyType);
                 }
                 if ((iter = paramMap.find(URL_PRODUCTPACKAGE_ID)) != paramMap.end()) { //产品包id
                     std::string & ppid = iter->second;

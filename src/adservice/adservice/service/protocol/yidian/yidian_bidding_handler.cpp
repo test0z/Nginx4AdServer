@@ -330,6 +330,7 @@ namespace bidding {
 
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, requestId, "", landingurl);
+            clickUrlParam.addMacro(URL_EXCHANGE_PRICE, os.str());
             clickurl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
             click_urls.push_back(clickurl);
 

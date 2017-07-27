@@ -118,18 +118,27 @@ namespace utility {
 
     class PerformanceWatcher {
     public:
-        PerformanceWatcher(const std::string & n, int64_t warningTime = 200)
+        PerformanceWatcher(const std::string & n, int64_t warningTime = 100, PerformanceWatcher * parent = nullptr)
             : name(n)
-            , threshhold(warningTime)
+            , warningTimeMs(warningTime)
+            , pwParent(parent)
         {
             beginTimeMs = time::getCurrentTimeStampMs();
         }
+
+        void appendMessage(const std::string & s)
+        {
+            messages << s;
+        }
+
         ~PerformanceWatcher();
 
     private:
         std::string name;
         int64_t beginTimeMs;
-        int64_t threshhold;
+        int64_t warningTimeMs;
+        PerformanceWatcher * pwParent;
+        std::stringstream messages;
     };
 }
 }

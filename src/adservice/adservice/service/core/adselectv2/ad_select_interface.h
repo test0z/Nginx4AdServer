@@ -85,8 +85,14 @@ namespace adselectv2 {
         int mttyContentType{ 0 };
         //需要匹配的banner 类型
         int bannerType{ 0 };
+        //要求的创意等级
+        int requiredCreativeLevel{ 99 };
         //提供的mt 用户id，可以用于查找频次信息
         std::string mtUserId;
+        // 设备品牌定向
+        int deviceBrand;
+        //场景
+        int scenario;
         //关键词信息
         std::vector<std::string> keywords;
         //设备厂商
@@ -97,6 +103,8 @@ namespace adselectv2 {
         std::string userAgent;
         // referer
         std::string referer;
+        //地理位置
+        std::pair<double, double> geo;
         //是否来自SSP
         bool isFromSSP{ false };
         // 预设的广告位信息,比如从ADX流量获取的信息填充到这里,可以省略在ES中对广告位的查询

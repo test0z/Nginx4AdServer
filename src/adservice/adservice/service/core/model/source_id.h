@@ -44,6 +44,7 @@ namespace core {
             const std::string & oId() const;
             const std::string & priceType() const;
             const std::string & mId() const;
+            const std::string & impId() const;
 
         private:
             int64_t time_{ 0 };      // 最后更新时间
@@ -62,6 +63,7 @@ namespace core {
             std::string oId_;        // 订单ID
             std::string priceType_;  // 出价类型
             std::string mId_;        // 网站ID
+            std::string impId_;      // 曝光ID
 
         protected:
             virtual void record(const as_record * record) override;

@@ -24,10 +24,10 @@ $ngx_addon_dir/service/core/core_ip_manager.cpp
 $ngx_addon_dir/service/core/core_typetable.cpp
 $ngx_addon_dir/service/core/core_ad_sizemap.cpp
 $ngx_addon_dir/service/core/core_cm_manager.cpp
+$ngx_addon_dir/service/core/core_scenario_manager.cpp
 $ngx_addon_dir/service/libutil/AdAcbm.cpp
 $ngx_addon_dir/service/libutil/AdIpc.cpp
 $ngx_addon_dir/service/libutil/AdMd5.cpp
-$ngx_addon_dir/service/protocol/yidian/yidian_bidding_handler.cpp
 $ngx_addon_dir/service/protocol/baidu/baidu_bidding_handler.cpp
 $ngx_addon_dir/service/protocol/baidu/baidu_price.cpp
 $ngx_addon_dir/service/protocol/baidu/baidu_bidding.pb.cpp
@@ -64,6 +64,8 @@ $ngx_addon_dir/service/protocol/dsps/mtty_bidding.pb.cpp
 $ngx_addon_dir/service/protocol/dsps/dsp_handler_manager.cpp
 $ngx_addon_dir/service/protocol/dsps/dsp_handlers/default_dsp_handler.cpp
 $ngx_addon_dir/service/protocol/mtty/mtty_bidding_handler.cpp
+$ngx_addon_dir/service/protocol/yidian/yidian_bidding_handler.cpp
+$ngx_addon_dir/service/protocol/2345/adx2345_bidding_handler.cpp
 $ngx_addon_dir/service/utility/cypher.cpp
 $ngx_addon_dir/service/utility/escape.cpp
 $ngx_addon_dir/service/utility/file.cpp
@@ -77,7 +79,8 @@ $ngx_addon_dir/service/utility/userclient.cpp
 $ngx_addon_dir/service/utility/http.cpp
 $ngx_addon_dir/service/utility/compress.cpp
 $ngx_addon_dir/service/utility/template_engine.cpp
-$ngx_addon_dir/service/utility/promise.cpp"
+$ngx_addon_dir/service/utility/promise.cpp
+$ngx_addon_dir/service/utility/ip.cpp"
 
 #CORE_DEPS="$CORE_DEPS $ngx_addon_dir/logging.h
 #$ngx_addon_dir/service/common/constants.h

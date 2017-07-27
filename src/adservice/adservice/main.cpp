@@ -24,6 +24,7 @@ extern "C" {
 #include "core/config_types.h"
 #include "core/core_ad_sizemap.h"
 #include "core/core_ip_manager.h"
+#include "core/core_scenario_manager.h"
 #include "core/core_typetable.h"
 #include "core/logic/bid_query_task.h"
 #include "core/logic/click_query_task.h"
@@ -337,6 +338,7 @@ bool inDebugSession = false;
 void * debugSession = nullptr;
 MT::common::Aerospike aerospikeClient;
 MT::common::RequestCounter requestCounter;
+int64_t uniqueIdSeq = 0;
 
 #define NGX_STR_2_STD_STR(str) std::string((const char *)str.data, (const char *)str.data + str.len)
 #define NGX_BOOL(b) (b == TRUE)
@@ -464,14 +466,21 @@ static void global_init(LocationConf * conf)
     adservice::corelogic::HandleShowQueryTask::loadTemplates();
     protocol::bidding::GuangyinBiddingHandler::loadStaticAdmTemplate();
     adservice::server::TypeTableManager::getInstance();
+    adservice::server::ScenarioManager::getInstance();
 
     MT::common::traffic::TrafficControllProxy::instance_
         = std::make_shared<MT::common::traffic::TrafficControllProxy>(aerospikeClient);
     MT::common::traffic::TrafficControllProxy::instance_->start(std::cerr);
 
+<<<<<<< HEAD
     adservice::utility::HttpClientProxy::instance_ = std::make_shared<adservice::utility::HttpClientProxy>();
 
     adservice::utility::AdSizeMap::getInstance();
+=======
+    uniqueIdSeq
+        = (adservice::utility::ip::ipStringToInt(adservice::utility::ip::getInterfaceIP("eth0")) & 0xFF) * currentPid;
+    LOG_INFO << "using uniqueIdSeq:" << uniqueIdSeq;
+>>>>>>> master
 
     char cwd[256];
     getcwd(cwd, sizeof(cwd));

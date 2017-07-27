@@ -51,6 +51,7 @@ namespace core {
             as_record_set_str(record_, "oid", paramMap[URL_ORDER_ID].c_str());
             as_record_set_str(record_, "pricetype", paramMap[URL_PRICE_TYPE].c_str());
             as_record_set_str(record_, "mid", paramMap[URL_SITE_ID].c_str());
+            as_record_set_str(record_, "impid", paramMap[URL_EXPOSE_ID].c_str());
         }
 
         void SourceRecord::record(const as_record * record)
@@ -71,6 +72,7 @@ namespace core {
             oId_ = getStr(record, "oid");
             priceType_ = getStr(record, "pricetype");
             mId_ = getStr(record, "mid");
+            impId_ = getStr(record, "impid");
         }
 
         int64_t SourceRecord::time() const
@@ -137,6 +139,11 @@ namespace core {
         const std::string & SourceRecord::mId() const
         {
             return mId_;
+        }
+
+        const std::string & SourceRecord::impId() const
+        {
+            return impId_;
         }
 
     } // namespace model

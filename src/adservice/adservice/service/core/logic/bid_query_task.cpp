@@ -5,6 +5,7 @@
 #include "bid_query_task.h"
 
 #include "common/atomic.h"
+#include "protocol/2345/adx2345_bidding_handler.h"
 #include "protocol/360/360max_bidding_handler.h"
 #include "protocol/baidu/baidu_bidding_handler.h"
 #include "protocol/guangyin/guangyin_bidding_handler.h"
@@ -20,10 +21,10 @@
 #include "protocol/yidian/yidian_bidding_handler.h"
 #include "protocol/youku/youku_bidding_handlerv2.h"
 
-#include "utility/utility.h"
-
 #include "core/adselectv2/ad_select_client.h"
+#include "core/core_scenario_manager.h"
 #include "logging.h"
+#include "utility/utility.h"
 
 extern adservice::adselectv2::AdSelectClientPtr adSelectClient;
 
@@ -84,8 +85,13 @@ namespace corelogic {
         ADD_MODULE_ENTRY(BID_QUERY_PATH_360MAX, ADX_360_MAX_PC);
         //一点资讯
         ADD_MODULE_ENTRY(BID_QUERY_PATH_YIDIAN, ADX_YIDIAN);
+<<<<<<< HEAD
         //麦田
         ADD_MODULE_ENTRY(BID_QUERY_PATH_MTTY, ADX_MTTY);
+=======
+        // 2345
+        ADD_MODULE_ENTRY(BID_QUERY_PATH_2345, ADX_2345);
+>>>>>>> master
 
         std::sort<int *>(moduleIdx, moduleIdx + moduleCnt, [](const int & a, const int & b) {
             return moduleAdx[a].moduleHash < moduleAdx[b].moduleHash;
@@ -141,8 +147,13 @@ namespace corelogic {
             return new JuxiaoMaxBiddingHandler();
         case ADX_YIDIAN:
             return new YidianBidingHandler();
+<<<<<<< HEAD
         case ADX_MTTY:
             return new MttyBiddingHandler();
+=======
+        case ADX_2345:
+            return new Adx2345BiddingHandler();
+>>>>>>> master
         default:
             return NULL;
         }
@@ -186,31 +197,45 @@ namespace corelogic {
         } else {
             TaskThreadLocal * localData = threadData;
             HandleBidQueryTask * task = this;
+            adservice::utility::PerformanceWatcher pw("HandleBidRequest", 20);
+            (void)pw;
             bool bidResult = biddingHandler->filter(
-                [localData, &log, task](AbstractBiddingHandler * adapter,
-                                        std::vector<adselectv2::AdSelectCondition> & conditions) -> bool {
+                [localData, &log, task, &pw](AbstractBiddingHandler * adapter,
+                                             std::vector<adselectv2::AdSelectCondition> & conditions) -> bool {
                     int seqId = 0;
                     seqId = localData->seqId;
                     //地域定向接入
                     IpManager & ipManager = IpManager::getInstance();
+                    ScenarioManagerPtr scenarioManager = ScenarioManager::getInstance();
                     bool result = false;
                     int conditionIdx = 0;
                     for (auto & condition : conditions) {
                         condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
                         condition.dHour = adSelectTimeCodeUtc();
+                        condition.scenario = scenarioManager->getScenario(condition.ip.data());
                         MT::common::SelectResult resp;
                         bool bAccepted = false;
-                        if (!adSelectClient->search(seqId, false, condition, resp)) {
+                        bool searchOK = false;
+                        {
+                            adservice::utility::PerformanceWatcher searchPW("adselectClient->search", 20, &pw);
+                            (void)searchPW;
+                            searchOK = adSelectClient->search(seqId, false, condition, resp);
+                        }
+                        if (!searchOK) {
                             condition.mttyPid = resp.adplace.pId;
                             log.adInfo.mid = resp.adplace.mId;
                             bAccepted = false;
                         } else {
+                            adservice::utility::PerformanceWatcher buildResultPW("buildResult", 2, &pw);
+                            (void)buildResultPW;
                             adapter->buildBidResult(condition, resp, conditionIdx);
                             log.adInfo.mid = resp.adplace.mId;
                             bAccepted = true;
                             result = true;
                         }
                         if (adapter->fillLogItem(condition, log, bAccepted)) {
+                            adservice::utility::PerformanceWatcher doLogPW("doLog", 2, &pw);
+                            (void)doLogPW;
                             task->doLog(log);
                         }
                         conditionIdx++;

@@ -275,6 +275,9 @@ void adservice_free(void* ptr);
        }
 
        namespace ip{
+
+           std::string getInterfaceIP(const std::string& iface);
+
            inline int ipStringToInt(const std::string& ipString){
                union{
                    uchar_t c[4];
@@ -312,6 +315,24 @@ void adservice_free(void* ptr);
 
             inline std::string toupper(const std::string& input){
                 return boost::to_upper_copy<std::string>(input);
+            }
+
+#define DECLARE_STR_CONVERTER(a) inline auto sto##a(const std::string& s)->decltype(std::sto##a(std::string())){\
+    return std::sto##a(s);\
+       }
+            DECLARE_STR_CONVERTER(i)
+
+            DECLARE_STR_CONVERTER(l)
+
+            DECLARE_STR_CONVERTER(d)
+
+            template<typename Func>
+            inline auto safeconvert(Func f,const std::string& input) -> decltype(f(std::string())){
+                try{
+                    return f(input);
+                }catch(...){
+                    return 0;
+                }
             }
 
        }

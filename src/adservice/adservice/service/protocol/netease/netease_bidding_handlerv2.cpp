@@ -225,6 +225,7 @@ namespace bidding {
         bidResponse["valid_time"] = 86400000;
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, requestId, "", landingUrl);
+        clickUrlParam.add(URL_EXCHANGE_PRICE, "1500");
         bidResponse["linkUrl"] = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
         cppcms::json::array & resArray = bidResponse["resource_url"].array();
         for (auto & murl : materialUrls) {

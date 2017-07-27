@@ -202,6 +202,8 @@ namespace corelogic {
             clickUrl.add(URL_DEVICE_IMEI, paramMap[URL_DEVICE_IMEI]);
             clickUrl.add(URL_DEVICE_ANDOROIDID, paramMap[URL_DEVICE_ANDOROIDID]);
             clickUrl.add(URL_DEVICE_MAC, paramMap[URL_DEVICE_MAC]);
+            clickUrl.add(URL_EXCHANGE_PRICE, paramMap[URL_EXCHANGE_PRICE]);
+            clickUrl.add(URL_FEE_RATE, paramMap[URL_FEE_RATE]);
             cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
             cppcms::json::array & mtls = mtlsArray.array();
             char landingPageBuffer[1024];
@@ -272,6 +274,15 @@ namespace corelogic {
             clickUrl.add(URL_AREA_ID, address);
             clickUrl.add(URL_SITE_ID, std::to_string(adplace.mId));
             clickUrl.add(URL_ORDER_ID, std::to_string(selectResult.orderId));
+            if (adplace.priceType == PRICETYPE_RRTB_CPC) { // cpc采买的广告位成本放在点击阶段
+                clickUrl.add(URL_ADPLACE_BUY_TYPE, std::to_string(PRICETYPE_RRTB_CPC));
+                clickUrl.add(URL_EXCHANGE_PRICE, std::to_string(adplace.basePrice * 100));
+            } // 否则点击不计算成本
+            if (solution.priceType == PRICETYPE_RCPC
+                || solution.priceType == PRICETYPE_RRTB_CPC) { // cpc结算，费率放到点击
+                clickUrl.add(URL_FEE_RATE_STRS, selectResult.costRateDetails.getDetailStr(1.0));
+                clickUrl.add(URL_FEE_RATE, std::to_string(selectResult.costRateDetails.spend));
+            } // else cpm结算费率放到曝光
             //需求http://redmine.mtty.com/redmine/issues/144
             cppcms::json::value & mtlsArray = mtAdInfo["mtls"];
             cppcms::json::array & mtls = mtlsArray.array();
@@ -330,13 +341,23 @@ namespace corelogic {
             return SOLUTION_DEVICE_OTHER;
         }
 
+        std::pair<double, double> getSSPGeo(ParamMap & paramMap)
+        {
+            using namespace adservice::utility::stringtool;
+            auto iter = paramMap.find(URL_SSP_LONGITUDE);
+            std::string longitude = iter == paramMap.end() ? "0" : iter->second;
+            iter = paramMap.find(URL_SSP_LATITUDE);
+            std::string latitude = iter == paramMap.end() ? "0" : iter->second;
+            return { safeconvert(stod, longitude), safeconvert(stod, latitude) };
+        }
+
         /**
-         * 根据参数填充condition对象
-         * @brief fillQueryConditionForSSP
-         * @param paramMap
-         * @param log
-         * @param condition
-         */
+                 * 根据参数填充condition对象
+                 * @brief fillQueryConditionForSSP
+                 * @param paramMap
+                 * @param log
+                 * @param condition
+                 */
         void fillQueryConditionForSSP(ParamMap & paramMap, protocol::log::LogItem & log,
                                       adselectv2::AdSelectCondition & condition)
         {
@@ -351,6 +372,7 @@ namespace corelogic {
             if (condition.mobileDevice == SOLUTION_DEVICE_OTHER) {
                 condition.mobileDevice = utility::userclient::getMobileTypeFromUA(log.userAgent);
             }
+            condition.geo = getSSPGeo(paramMap);
             condition.pcOS = utility::userclient::getOSTypeFromUA(log.userAgent);
             condition.flowType
                 = condition.mobileDevice != SOLUTION_DEVICE_OTHER ? SOLUTION_FLOWTYPE_MOBILE : SOLUTION_FLOWTYPE_PC;
@@ -592,6 +614,7 @@ namespace corelogic {
         int64_t bgid = -1;
         if (isSSP) { // SSP
             adselectv2::AdSelectCondition condition;
+            condition.isFromSSP = true;
             fillQueryConditionForSSP(paramMap, log, condition);
             MT::common::SelectResult selectResult;
             bool selectOk = adSelectClient->search(seqId, true, condition, selectResult);
@@ -609,7 +632,8 @@ namespace corelogic {
             if (!selectOk || selectResult.solution.advId == ADV_BASE) { //麦田SSP找不到正常客户,将流量转给其他DSP
                 MT::common::SelectResult dspResult;
                 dspResult.adplace = selectResult.adplace;
-                if (askOtherDsp(condition, selectResult.otherDspSolutions, dspResult)) { //其他DSP有应答
+                if (selectResult.otherDspSolutions.size() > 0
+                    && askOtherDsp(condition, selectResult.otherDspSolutions, dspResult)) { //其他DSP有应答
                     selectResult = dspResult;
                 } else if (!selectOk) { //其他DSP无应答而且没有打底投放
                     return;
@@ -633,12 +657,32 @@ namespace corelogic {
             log.adInfo.orderId = selectResult.orderId;
             log.adInfo.bidEcpmPrice = selectResult.bidPrice;
             log.adInfo.bidBasePrice = adplace.basePrice;
-            if (finalSolution.priceType == PRICETYPE_RRTB_CPC || finalSolution.priceType == PRICETYPE_RCPC) {
-                log.adInfo.bidPrice = 0;
-            } else {
-                log.adInfo.bidPrice = selectResult.feePrice; // offerprice
+            //财务模块逻辑接入,根据资费表重新计算SSP资源下对广告主的结算资费
+            const MT::common::UserCostRateDetails & costDetail = selectResult.costRateDetails;
+            double feeRate = 1.0 + costDetail.getFinalFeeRate();
+            if (feeRate < costDetail.spend - 1e-5 || feeRate > costDetail.spend + 1e-5) {
+                LOG_WARN << "fee rate not equial database fee rate,feeRate:" << feeRate
+                         << ",database spend:" << costDetail.spend << ",advId:" << finalSolution.advId
+                         << ",mediaOwnerId:" << adplace.mediaOwnerId;
             }
-            log.adInfo.cost = adplace.costPrice;
+            if (finalSolution.priceType == PRICETYPE_RRTB_CPC
+                || finalSolution.priceType == PRICETYPE_RCPC) { // CPC投放单花费放在点击阶段
+                log.adInfo.bidPrice = 0;
+            } else { // CPM投放单花费放在曝光阶段
+                log.adInfo.bidPrice = selectResult.feePrice;
+            }
+            if (adplace.priceType == PRICETYPE_RRTB_CPM
+                || adplace.priceType == 0) { //广告位采买类型为CPM，成本放在曝光阶段
+                log.adInfo.cost = adplace.basePrice * 100;
+            } else if (adplace.priceType == PRICETYPE_RRTB_CPC) { //广告位采买类型为CPC，成本放在点击阶段
+                log.adInfo.cost = 0;
+            }
+            if (finalSolution.priceType != PRICETYPE_RRTB_CPC
+                && finalSolution.priceType != PRICETYPE_RCPC) { // cpm结算的投放单，费率放到曝光
+                log.adInfo.feeRateDetail = MT::common::costdetailVec(
+                    costDetail.getDetailStr(1.0), log.adInfo.bdiPrice / (1.0 + costDetail.getFinalFeeRate()));
+            } // else cpc结算的投放单，费率放到点击
+
             auto & ipManager = adservice::server::IpManager::getInstance();
             ipManager.getAreaCodeByIp(condition.ip.data(), log.geoInfo.country, log.geoInfo.province, log.geoInfo.city);
             std::string bannerJson = banner.json;

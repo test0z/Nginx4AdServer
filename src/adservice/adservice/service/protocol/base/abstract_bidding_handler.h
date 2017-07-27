@@ -51,6 +51,8 @@ namespace bidding {
         std::vector<std::string> dealIds;
         std::vector<int32_t> contentType;
         protocol::log::DeviceInfo devInfo;
+        double feeRate{ 1.0 };
+        std::string feerRateDetails;
     };
 
     class BidCookieMappingInfo {
@@ -70,6 +72,7 @@ namespace bidding {
     public:
         AbstractBiddingHandler()
             : isBidAccepted(false)
+            , vastTemplateEngine("res/vast/vast.tpl")
         {
         }
 
@@ -191,7 +194,7 @@ namespace bidding {
         void getClickPara(adservice::utility::url::URLHelper & url, const std::string & bid, const std::string & ref,
                           const std::string & landingUrl);
 
-        int extractRealValue(const std::string & input, int adx);
+        std::string extractRealValue(const std::string & input, int adx);
 
         /**
          * search结束后，准备广告返回前调用，用于收集关键信息到adInfo
@@ -203,12 +206,16 @@ namespace bidding {
          */
         void buildFlowExtraInfo(const AdSelectCondition & selectCondition);
 
+        std::string prepareVast(int width, int height, const cppcms::json::value & mtls, const std::string & tvm,
+                                const std::string & cm);
+
     protected:
         //最近一次匹配的结果
         bool isBidAccepted;
         protocol::log::AdInfo adInfo;
         BidCookieMappingInfo cmInfo;
         BiddingFlowExtraInfo adFlowExtraInfo;
+        adservice::utility::templateengine::TemplateEngine vastTemplateEngine;
     };
 }
 }

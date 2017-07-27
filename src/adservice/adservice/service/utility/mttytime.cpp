@@ -137,10 +137,14 @@ namespace utility {
 
     PerformanceWatcher::~PerformanceWatcher()
     {
-        int64_t spent = time::getCurrentTimeStampMs() - beginTimeMs;
-        LOG_DEBUG << name << " time collapses:" << spent << "ms";
-        if (spent >= threshhold) {
-            LOG_WARN << name << " consumes too much time " << spent << "ms";
+        int64_t endTime = time::getCurrentTimeStampMs();
+        if (endTime - beginTimeMs > warningTimeMs) {
+            if (pwParent != nullptr) {
+                messages << name << "time collapses:" << (endTime - beginTimeMs) << "ms";
+                pwParent->appendMessage(messages.str());
+            } else {
+                LOG_WARN << name << " time collapses:" << (endTime - beginTimeMs) << "ms," << messages.str();
+            }
         }
     }
 }

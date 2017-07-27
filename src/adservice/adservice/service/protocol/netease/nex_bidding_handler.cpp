@@ -33,48 +33,63 @@ namespace bidding {
 #define NEX_CONN_3G "3g"
 #define NEX_CONN_4G "4g"
 
-    static void fromNexDevTypeOsType(const std::string & osType,
-                                     const std::string & ua,
-                                     int & flowType,
-                                     int & mobileDev,
-                                     int & pcOs,
-                                     std::string & pcBrowser)
-    {
-        flowType = SOLUTION_FLOWTYPE_MOBILE;
-        if (!strcasecmp(osType.data(), NEX_OS_ANDROID)) {
-            mobileDev = SOLUTION_DEVICE_ANDROID;
-            pcOs = SOLUTION_OS_ANDROID;
-        } else if (!strcasecmp(osType.data(), NEX_OS_iPhone)) {
-            mobileDev = SOLUTION_DEVICE_IPHONE;
-            pcOs = SOLUTION_OS_IOS;
-        } else {
-            flowType = SOLUTION_FLOWTYPE_PC;
-            if (osType.empty()) {
-                pcOs = getOSTypeFromUA(ua);
-            } else {
-                if (!strcasecmp(osType.data(), NEX_OS_WINDOWS)) {
-                    pcOs = SOLUTION_OS_WINDOWS;
-                } else if (!strcasecmp(osType.data(), NEX_OS_MAC)) {
-                    pcOs = SOLUTION_OS_MAC;
-                } else
-                    pcOs = SOLUTION_OS_OTHER;
-            }
-            pcBrowser = getBrowserTypeFromUA(ua);
-        }
-    }
+    namespace {
 
-    static int getNetwork(const std::string & network)
-    {
-        if (!strcasecmp(network.c_str(), NEX_CONN_WIFI)) {
-            return SOLUTION_NETWORK_WIFI;
-        } else if (!strcasecmp(network.c_str(), NEX_CONN_2G)) {
-            return SOLUTION_NETWORK_2G;
-        } else if (!strcasecmp(network.c_str(), NEX_CONN_3G)) {
-            return SOLUTION_NETWORK_3G;
-        } else if (!strcasecmp(network.c_str(), NEX_CONN_4G)) {
-            return SOLUTION_NETWORK_4G;
-        } else {
-            return SOLUTION_NETWORK_ALL;
+        void fromNexDevTypeOsType(const std::string & osType,
+                                  const std::string & ua,
+                                  int & flowType,
+                                  int & mobileDev,
+                                  int & pcOs,
+                                  std::string & pcBrowser)
+        {
+            flowType = SOLUTION_FLOWTYPE_MOBILE;
+            if (!strcasecmp(osType.data(), NEX_OS_ANDROID)) {
+                mobileDev = SOLUTION_DEVICE_ANDROID;
+                pcOs = SOLUTION_OS_ANDROID;
+            } else if (!strcasecmp(osType.data(), NEX_OS_iPhone)) {
+                mobileDev = SOLUTION_DEVICE_IPHONE;
+                pcOs = SOLUTION_OS_IOS;
+            } else {
+                flowType = SOLUTION_FLOWTYPE_PC;
+                if (osType.empty()) {
+                    pcOs = getOSTypeFromUA(ua);
+                } else {
+                    if (!strcasecmp(osType.data(), NEX_OS_WINDOWS)) {
+                        pcOs = SOLUTION_OS_WINDOWS;
+                    } else if (!strcasecmp(osType.data(), NEX_OS_MAC)) {
+                        pcOs = SOLUTION_OS_MAC;
+                    } else
+                        pcOs = SOLUTION_OS_OTHER;
+                }
+                pcBrowser = getBrowserTypeFromUA(ua);
+            }
+        }
+
+        int getNetwork(const std::string & network)
+        {
+            if (!strcasecmp(network.c_str(), NEX_CONN_WIFI)) {
+                return SOLUTION_NETWORK_WIFI;
+            } else if (!strcasecmp(network.c_str(), NEX_CONN_2G)) {
+                return SOLUTION_NETWORK_2G;
+            } else if (!strcasecmp(network.c_str(), NEX_CONN_3G)) {
+                return SOLUTION_NETWORK_3G;
+            } else if (!strcasecmp(network.c_str(), NEX_CONN_4G)) {
+                return SOLUTION_NETWORK_4G;
+            } else {
+                return SOLUTION_NETWORK_ALL;
+            }
+        }
+
+        int getNetworkCarrier(const std::string & carrier)
+        {
+            if (strcasecmp(carrier.c_str(), "cm") == 0)
+                return SOLUTION_NETWORK_PROVIDER_CHINAMOBILE;
+            else if (strcasecmp(carrier.c_str(), "ct") == 0)
+                return SOLUTION_NETWORK_PROVIDER_CHINATELECOM;
+            else if (strcasecmp(carrier.c_str(), "cu") == 0)
+                return SOLUTION_NETWORK_PROVIDER_CHINAUNICOM;
+            else
+                return SOLUTION_NETWORK_PROVIDER_ALL;
         }
     }
 
@@ -138,7 +153,7 @@ namespace bidding {
             }
             queryCondition.pAdplaceInfo = &adplaceInfo;
             if (i == 0) {
-                cppcms::json::value & device = bidRequest["device"];
+                const cppcms::json::value & device = bidRequest.find("device");
                 if (!device.is_undefined()) {
                     std::string ip = device.get("ip", "");
                     queryCondition.ip = ip;
@@ -150,10 +165,12 @@ namespace bidding {
                                          queryCondition.mobileDevice,
                                          queryCondition.pcOS,
                                          queryCondition.pcBrowserStr);
+                    queryCondition.deviceBrand = adservice::utility::userclient::getDeviceBrandFromUA(ua);
                     if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
                         queryCondition.adxid = ADX_NEX_MOBILE;
                         adInfo.adxid = ADX_NEX_MOBILE;
                     }
+                    queryCondition.mobileNetWorkProvider = getNetworkCarrier(device.get("carrier", ""));
                     queryCondition.mobileModel = device.get("model", "");
                     queryCondition.mobileNetwork = getNetwork(device.get("connectiontype", ""));
                     queryCondition.idfa = stringtool::toupper(device.get("idfa", ""));
@@ -168,6 +185,11 @@ namespace bidding {
                                            bidRequest.get("user.id", ""));
                     queryCookieMapping(cmInfo.queryKV, queryCondition);
                 }
+                const cppcms::json::value & user = bidRequest.find("user");
+                if (!user.is_undefined()) {
+                    std::string keywords = user.get("keywords", "");
+                    queryCondition.keywords.push_back(keywords);
+                }
             } else {
                 AdSelectCondition & firstQueryCondition = queryConditions[0];
                 queryCondition.mtUserId = firstQueryCondition.mtUserId;
@@ -181,6 +203,8 @@ namespace bidding {
                 queryCondition.idfa = firstQueryCondition.idfa;
                 queryCondition.mac = firstQueryCondition.mac;
                 queryCondition.imei = firstQueryCondition.imei;
+                queryCondition.deviceBrand = firstQueryCondition.deviceBrand;
+                queryCondition.mobileNetWorkProvider = firstQueryCondition.mobileNetWorkProvider;
             }
             isDeal = false;
             const cppcms::json::value & pmp = adzinfo.find("pmp");
@@ -265,9 +289,9 @@ namespace bidding {
         }
         showUrl.add(URL_IMP_OF, "3");
         showUrl.addMacro(URL_EXCHANGE_PRICE, AD_NEX_PRICE);
-        bidValue["nurl"] = "http://mtty-cdn.mtty.com/1x1.gif";
+        bidValue["nurl"] = "https://mtty-cdn.mtty.com/1x1.gif";
         bidValue["pvm"] = cppcms::json::array();
-        bidValue["pvm"].array().push_back(getShowBaseUrl(isIOS) + "?" + showUrl.cipherParam());
+        bidValue["pvm"].array().push_back(getShowBaseUrl(true) + "?" + showUrl.cipherParam());
         cppcms::json::value bannerFeedbackJson;
         if (!banner.feedback.empty()) {
             parseJson(banner.feedback.c_str(), bannerFeedbackJson);
@@ -278,29 +302,20 @@ namespace bidding {
         bidValue["crid"] = crid;
         std::string landingUrl;
         std::string mainTitle;
+        std::vector<std::string> materialUrls;
+        int style = 0;
+        auto & sizeStyleMap = adplaceStyleMap.getSizeStyleMap();
+        for (auto iter = sizeStyleMap.find(std::make_pair(banner.width, banner.height));
+             iter != sizeStyleMap.end() && (style = iter->second) && false;)
+            ;
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {
             landingUrl = mtlsArray[0].get("p9", "");
-            extValue["linkUrl"] = landingUrl;
-            int style = 0;
-            auto & sizeStyleMap = adplaceStyleMap.getSizeStyleMap();
-            for (auto iter = sizeStyleMap.find(std::make_pair(banner.width, banner.height));
-                 iter != sizeStyleMap.end() && (style = iter->second) && false;)
-                ;
 
-            std::vector<std::string> materialUrls;
             materialUrls.push_back(mtlsArray[0].get("p6", ""));
             if (style == 11) {
                 materialUrls.push_back(mtlsArray[0].get("p7", ""));
                 materialUrls.push_back(mtlsArray[0].get("p8", ""));
             }
-            cppcms::json::array admArray;
-            for (auto & murl : materialUrls) {
-                cppcms::json::value adm;
-                adm["url"] = murl;
-                adm["type"] = 0;
-                admArray.push_back(adm);
-            }
-            extValue["adm"] = admArray;
             if (style == 3) {
                 mainTitle = mtlsArray[0].get("p1", "");
                 std::string bakMainTitle = mtlsArray[0].get("p0", "");
@@ -310,12 +325,45 @@ namespace bidding {
             } else {
                 mainTitle = mtlsArray[0].get("p0", "");
             }
-            extValue["title"] = mainTitle;
-            extValue["style"] = style;
+            std::string iosDownloadUrl = mtlsArray[0].get("p10", "");
+            if (!iosDownloadUrl.empty()) {
+                extValue["iosUrl"] = iosDownloadUrl;
+            }
+            std::string androidDownloadUrl = mtlsArray[0].get("p11", "");
+            if (!androidDownloadUrl.empty()) {
+                extValue["androidUrl"] = androidDownloadUrl;
+            }
+        } else {
+            landingUrl = mtlsArray[0].get("p1", "");
+            materialUrls.push_back(mtlsArray[0].get("p0", ""));
         }
+        //填充ext
+        extValue["linkUrl"] = landingUrl;
+        cppcms::json::array admArray;
+        for (auto & murl : materialUrls) {
+            cppcms::json::value adm;
+            adm["url"] = murl;
+            adm["type"] = 0;
+            admArray.push_back(adm);
+        }
+        extValue["adm"] = admArray;
+        extValue["title"] = mainTitle;
+        extValue["style"] = style;
+        std::string adxIndustryTypeStr = banner.adxIndustryType;
+        std::string adxIndustryType = extractRealValue(adxIndustryTypeStr.data(), ADX_NEX_PC);
+        std::vector<int64_t> industryTypeVec;
+        MT::common::string2vecint(adxIndustryType, industryTypeVec, "-");
+        cppcms::json::value advObj;
+        advObj["id"] = finalSolution.advId;
+
+        advObj["industry"] = std::to_string(industryTypeVec.size() > 0 ? industryTypeVec[0] : 0);
+        advObj["subIndustry"] = std::to_string(industryTypeVec.size() > 1 ? industryTypeVec[1] : 0);
+        extValue["advertiser"] = advObj;
+
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, requestId, "", landingUrl);
-        std::string cm = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
+        clickUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_NEX_PRICE);
+        std::string cm = getClickBaseUrl(true) + "?" + clickUrlParam.cipherParam();
         cppcms::json::array clickm = cppcms::json::array();
         clickm.push_back(cm);
         bidValue["clickm"] = clickm;

@@ -75,7 +75,11 @@ void testGetAndSetCookieMapping()
     MT::User::UserID userId(int16_t(rng::randomInt() & 0x0000FFFF));
     std::string userIdPublic = userId.text();
     CookieMappingManager & cmManager = CookieMappingManager::getInstance();
+<<<<<<< HEAD
     bool isTimeout = false;
+=======
+    bool isTimeout;
+>>>>>>> master
     model::MtUserMapping userMapping = cmManager.getUserMappingByKey("adxuid_1","mynameistom",false,isTimeout);
     if (userMapping.isValid()) {
         printUserMapping(userMapping);
@@ -105,6 +109,10 @@ void testUpdateAsync()
     bool isTimeout = false;
     CookieMappingManager & cmManager = CookieMappingManager::getInstance();
     cmManager.updateMappingDeviceAsync(userIdPublic,model::MtUserMapping::idfaKey(),"1094ADD26D8AD9F21E92F67F9ACC9DA1","");
+<<<<<<< HEAD
+=======
+    bool isTimeout;
+>>>>>>> master
     model::MtUserMapping readUserMapping = cmManager.getUserMappingByKey(model::MtUserMapping::idfaKey(), "1094ADD26D8AD9F21E92F67F9ACC9DA1",false,isTimeout);
     if (readUserMapping.isValid()) {
         printUserMapping(readUserMapping);

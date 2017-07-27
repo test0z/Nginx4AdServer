@@ -20,6 +20,36 @@ namespace utility {
             }
         };
 
+        // todo:实现一个支持动态脚本语言的vm,模板引擎可以在服务端渲染时调用vm执行脚本，最终效果类似php
+        //虚拟机运行时
+        class RunTime;
+
+        //运行时类型
+        enum class RunTimeTypeEnum { BOOLEAN, NUMBER, STRING, FUNCTION };
+
+        //表达式中的符号类型
+        enum class ExpressionSymbolType { CONST_BOOLEAN, CONST_NUMBER, CONST_STRING, FUNCTION, VARIABLE };
+
+        class ExpressionSymbol {
+        public:
+            ExpressionSymbolType getType()
+            {
+                return type;
+            }
+
+        private:
+            ExpressionSymbolType type;
+        };
+
+        class Expression {
+        public:
+            explicit Expression(const std::string & expr);
+
+            std::string eval(const RunTime & vm);
+
+        private:
+        };
+
         class TemplateEngine {
         public:
             TemplateEngine(const std::string & templateFile)

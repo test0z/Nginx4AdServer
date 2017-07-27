@@ -27,43 +27,61 @@ namespace bidding {
         return a > b ? a : b;
     }
 
-    static int getDeviceTypeByOS(const std::string & os)
-    {
-        if (os.find("ios") != std::string::npos) {
-            return SOLUTION_DEVICE_IPHONE;
-        } else if (os.find("android") != std::string::npos) {
-            return SOLUTION_DEVICE_ANDROID;
-        } else {
-            return SOLUTION_DEVICE_OTHER;
-        }
-    }
+    namespace {
 
-    static int getDeviceOs(const std::string & os)
-    {
-        if (os.find("ios") != std::string::npos) {
-            return SOLUTION_OS_IOS;
-        } else if (os.find("android") != std::string::npos) {
-            return SOLUTION_OS_ANDROID;
-        } else {
-            return SOLUTION_OS_OTHER;
+        int getDeviceTypeByOS(const std::string & os)
+        {
+            if (os.find("ios") != std::string::npos) {
+                return SOLUTION_DEVICE_IPHONE;
+            } else if (os.find("android") != std::string::npos) {
+                return SOLUTION_DEVICE_ANDROID;
+            } else {
+                return SOLUTION_DEVICE_OTHER;
+            }
         }
-    }
 
-    static int getNetWork(int network)
-    {
-        switch (network) {
-        case 0:
-            return SOLUTION_NETWORK_ALL;
-        case 1:
-            return SOLUTION_NETWORK_WIFI;
-        case 2:
-            return SOLUTION_NETWORK_2G;
-        case 3:
-            return SOLUTION_NETWORK_3G;
-        case 4:
-            return SOLUTION_NETWORK_4G;
-        default:
-            return SOLUTION_NETWORK_ALL;
+        int getDeviceOs(const std::string & os)
+        {
+            if (os.find("ios") != std::string::npos) {
+                return SOLUTION_OS_IOS;
+            } else if (os.find("android") != std::string::npos) {
+                return SOLUTION_OS_ANDROID;
+            } else {
+                return SOLUTION_OS_OTHER;
+            }
+        }
+
+        int getNetWork(int network)
+        {
+            switch (network) {
+            case 0:
+                return SOLUTION_NETWORK_ALL;
+            case 1:
+                return SOLUTION_NETWORK_WIFI;
+            case 2:
+                return SOLUTION_NETWORK_2G;
+            case 3:
+                return SOLUTION_NETWORK_3G;
+            case 4:
+                return SOLUTION_NETWORK_4G;
+            default:
+                return SOLUTION_NETWORK_ALL;
+            }
+        }
+
+        int getNetworkProvider(int isp)
+        {
+            switch (isp) {
+            case 0:
+                return SOLUTION_NETWORK_PROVIDER_ALL;
+            case 1:
+                return SOLUTION_NETWORK_PROVIDER_CHINAMOBILE;
+            case 2:
+                return SOLUTION_NETWORK_PROVIDER_CHINAUNICOM;
+            case 3:
+                return SOLUTION_NETWORK_PROVIDER_CHINATELECOM;
+            }
+            return SOLUTION_NETWORK_PROVIDER_ALL;
         }
     }
 
@@ -167,6 +185,10 @@ namespace bidding {
             queryCondition.mobileModel = device.model();
             queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
             queryCondition.adxid = ADX_360_MAX_MOBILE;
+            queryCondition.geo = { stringtool::safeconvert(stringtool::stod, device.longitude()),
+                                   stringtool::safeconvert(stringtool::stod, device.latitude()) };
+            queryCondition.deviceBrand = adservice::utility::userclient::getDeviceBrandFromUA(bidRequest.user_agent());
+            queryCondition.mobileNetWorkProvider = getNetworkProvider(device.carrier_id());
             pAdplaceInfo.flowType = queryCondition.flowType;
             if (device.has_network()) {
                 queryCondition.mobileNetwork = getNetWork(device.network());
@@ -226,12 +248,12 @@ namespace bidding {
         const MT::common::Solution & finalSolution = result.solution;
         const MT::common::Banner & banner = result.banner;
         std::string adxAdvIdStr = banner.adxAdvId;
-        int adxAdvId = extractRealValue(adxAdvIdStr.data(), ADX_360_MAX_PC);
+        int adxAdvId = MT::common::stoi_safe(extractRealValue(adxAdvIdStr.data(), ADX_360_MAX_PC));
         if (adxAdvId == 0) {
             adxAdvId = finalSolution.advId;
         }
         std::string adxIndustryTypeStr = banner.adxIndustryType;
-        int adxIndustryType = extractRealValue(adxIndustryTypeStr.data(), ADX_360_MAX_PC);
+        int adxIndustryType = MT::common::stoi_safe(extractRealValue(adxIndustryTypeStr.data(), ADX_360_MAX_PC));
         const BidRequest_AdSlot & adzInfo = bidRequest.adslot(seq);
         int maxCpmPrice = (int)result.bidPrice * 10000;
 
@@ -253,7 +275,13 @@ namespace bidding {
         adResult->set_creative_id(std::to_string(adInfo.bannerId));
         adResult->set_advertiser_id(std::to_string(adxAdvId)); // adx_advid
         if (banner.bannerType == BANNER_TYPE_PRIMITIVE) {      //原生广告
-            // auto & reqNative = adzInfo.native();
+            int32_t templateId = 1;
+            for (int32_t i = 0; i < adzInfo.native().template_id_size(); i++) {
+                templateId = adzInfo.native().template_id(i);
+                if (templateId == 1) {
+                    break;
+                }
+            }
             std::string destUrl = mtlsArray[0].get("p9", "");
             adResult->add_destination_url(destUrl);
             const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
@@ -265,43 +293,66 @@ namespace bidding {
             nativeAd->set_creative_id(std::to_string(adInfo.bannerId));
             nativeAd->set_max_cpm_price(maxCpmPrice);
             nativeAd->add_category(adxIndustryType);
+            nativeAd->set_template_id(templateId);
             auto creative = nativeAd->add_creatives();
-            creative->set_title(mtlsArray[0].get("p0", ""));
-            creative->set_sub_title(mtlsArray[0].get("p1", ""));
-            creative->set_description(mtlsArray[0].get("p5", ""));
-            creative->set_button_name("麦田广告");
+            std::string title = mtlsArray[0].get("p0", "");
+            std::string subTitle = mtlsArray[0].get("p1", "");
+            std::string description = mtlsArray[0].get("p5", "");
+            std::string imageUrl = mtlsArray[0].get("p6", "");
+            std::string logoUrl = mtlsArray[0].get("p15", "");
+            creative->set_title(title);
+            creative->set_sub_title(subTitle);
+            creative->set_description(description);
+            if (templateId == 1) {
+                creative->set_button_name("点击进入");
+            } else {
+                std::string advName = mtlsArray[0].get("p18", "");
+                if (advName.empty()) {
+                    creative->set_button_name("麦田科技");
+                } else {
+                    creative->set_button_name(advName);
+                }
+            }
             auto contentImage = creative->mutable_content_image();
-            contentImage->set_image_url(mtlsArray[0].get("p6", ""));
+            contentImage->set_image_url(imageUrl);
             contentImage->set_image_width(sizePair.first);
             contentImage->set_image_height(sizePair.second);
             auto logoImage = creative->mutable_logo();
-            logoImage->set_image_url(mtlsArray[0].get("p15", ""));
+            logoImage->set_image_url(logoUrl);
             std::string iosDownloadUrl = mtlsArray[0].get("p10", "");
             std::string androidDownloadUrl = mtlsArray[0].get("p11", "");
             std::string downloadUrl = isIOS ? iosDownloadUrl : androidDownloadUrl;
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.bid(), "", downloadUrl.empty() ? destUrl : downloadUrl);
-            std::string linkUrl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
+            clickUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_MAX_PRICE_MACRO);
+            std::string linkUrl = getClickBaseUrl(isNeedHttps) + "?" + clickUrlParam.cipherParam();
             auto linkObj = creative->mutable_link();
             linkObj->set_click_url(std::string(AD_MAX_CLICK_UNENC_MACRO) + url::urlEncode(linkUrl));
             linkObj->set_landing_type(0);
             for (int32_t ind = 0; ind < adzInfo.native().landing_type_size(); ind++) {
-                if (!downloadUrl.empty() && adzInfo.native().landing_type(ind) == 1) { //支持下载类
-                    linkObj->set_landing_type(1);
-                    break;
+                if (adzInfo.native().landing_type(ind) == 1) { //支持下载类
+                    if (!downloadUrl.empty()) {
+                        linkObj->set_landing_type(1);
+                        break;
+                    }
                 } else {
                     linkObj->set_landing_type(adzInfo.native().landing_type(ind));
                 }
+            }
+            if (!downloadUrl.empty()) { //下载类
+                auto appAttr = nativeAd->mutable_app_attr();
+                appAttr->set_app_name(title);
+                // todo 填写app 信息
             }
             url::URLHelper showUrlParam;
             getShowPara(showUrlParam, bidRequest.bid());
             showUrlParam.add(URL_IMP_OF, "3");
             showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_MAX_PRICE_MACRO);
-            if (queryCondition.dealId != "0") {
+            if (!queryCondition.dealId.empty() && finalSolution.dDealId != "0") {
                 nativeAd->set_deal_id(std::stoi(finalSolution.dDealId));
                 showUrlParam.add(URL_DEAL_ID, finalSolution.dDealId);
             }
-            std::string impressionTrack = getShowBaseUrl(isIOS) + "?" + showUrlParam.cipherParam();
+            std::string impressionTrack = getShowBaseUrl(isNeedHttps) + "?" + showUrlParam.cipherParam();
             nativeAd->add_impression_tracks()->assign(impressionTrack);
             // adResult->set_nurl(impressionTrack);
         } else { //非原生广告
@@ -310,7 +361,7 @@ namespace bidding {
             adResult->set_width(banner.width);
             adResult->set_height(banner.height);
             if (queryCondition.flowType == SOLUTION_FLOWTYPE_PC) { // pc
-                adResult->set_html_snippet(juxiaoHtmlSnippet(cookieMappingUrl, isIOS));
+                adResult->set_html_snippet(juxiaoHtmlSnippet(cookieMappingUrl, isNeedHttps));
                 adResult->set_nurl(feedbackUrl);
             } else { //移动wap
                 bannerJson["advid"] = finalSolution.advId;
@@ -329,7 +380,8 @@ namespace bidding {
                 bannerJson["rs"] = true;
                 url::URLHelper clickUrlParam;
                 getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
-                bannerJson["clickurl"] = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
+                clickUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_MAX_PRICE_MACRO);
+                bannerJson["clickurl"] = getClickBaseUrl(isNeedHttps) + "?" + clickUrlParam.cipherParam();
                 std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
                 char admBuffer[4096];
                 snprintf(admBuffer, sizeof(admBuffer), adservice::corelogic::HandleShowQueryTask::showAdxTemplate,
@@ -339,7 +391,7 @@ namespace bidding {
                 getShowPara(showUrlParam, bidRequest.bid());
                 showUrlParam.add(URL_IMP_OF, "3");
                 showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_MAX_PRICE_MACRO);
-                adResult->set_nurl(getShowBaseUrl(isIOS) + "?" + showUrlParam.cipherParam());
+                adResult->set_nurl(getShowBaseUrl(isNeedHttps) + "?" + showUrlParam.cipherParam());
             }
         }
     }

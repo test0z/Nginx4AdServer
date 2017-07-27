@@ -69,6 +69,18 @@ namespace adselectv2 {
         source.insert({ "overflow_hour", (int64_t)(std::stoll(selectCondition.dHour) % 100) });
         source.insert({ "banner_type", (int64_t)selectCondition.bannerType });
         source.insert({ "mtuser", selectCondition.mtUserId });
+        source.insert({ "max_creative_level", (int64_t)selectCondition.requiredCreativeLevel });
+        source.insert({ "gpsgeo", MT::common::TupleType{ selectCondition.geo.first, selectCondition.geo.second } });
+        source.insert({ "d_brand", (int64_t)selectCondition.deviceBrand });
+        source.insert({ "d_scenario", (int64_t)selectCondition.scenario });
+        std::vector<int64_t> browserTypes;
+        MT::common::string2vecint(selectCondition.pcBrowserStr, browserTypes);
+        if (browserTypes.size() > 0) {
+            source.insert({ "d_browser", (int64_t)browserTypes[0] });
+        } else {
+            source.insert({ "d_browser", (int64_t)SOLUTION_BROWSER_OTHER });
+        }
+        source.insert({ "ISP", (int64_t)selectCondition.mobileNetWorkProvider });
         request.fromSSP = isSSP || selectCondition.isFromSSP;
         request.mttyPid = selectCondition.mttyPid;
         request.adxId = selectCondition.adxid;

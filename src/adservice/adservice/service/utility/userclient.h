@@ -13,6 +13,8 @@ namespace utility {
 
         int getOSTypeFromUA(const std::string & userAgent);
 
+        int getDeviceBrandFromUA(const std::string & userAgent);
+
         std::string getBrowserTypeFromUA(const std::string & userAgent);
 
         int getMobileTypeFromUA(const std::string & userAgent);

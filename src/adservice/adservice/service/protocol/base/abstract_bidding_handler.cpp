@@ -7,9 +7,11 @@
 #include "core/core_ip_manager.h"
 #include "logging.h"
 #include "utility/utility.h"
+#include <boost/format.hpp>
 #include <mtty/mtuser.h>
 
 extern GlobalConfig globalConfig;
+extern int64_t uniqueIdSeq;
 
 namespace protocol {
 namespace bidding {
@@ -33,24 +35,33 @@ namespace bidding {
 
     static std::unordered_set<std::string> excludeAndroidIds = { "9774d56d682e549c" };
 
-    static bool filterIDFA(const std::string & idfa)
-    {
-        return excludeIDFAs.find(idfa) != excludeIDFAs.end();
-    }
+    namespace {
 
-    static bool filterIMEI(const std::string & imei)
-    {
-        return excludeIMEIs.find(imei) != excludeIMEIs.end();
-    }
+        bool filterIDFA(const std::string & idfa)
+        {
+            return excludeIDFAs.find(idfa) != excludeIDFAs.end();
+        }
 
-    static bool filterMAC(const std::string & mac)
-    {
-        return excludeMACs.find(mac) != excludeMACs.end();
-    }
+        bool filterIMEI(const std::string & imei)
+        {
+            return excludeIMEIs.find(imei) != excludeIMEIs.end();
+        }
 
-    static bool filterAndroidID(const std::string & androidId)
-    {
-        return excludeAndroidIds.find(androidId) != excludeAndroidIds.end();
+        bool filterMAC(const std::string & mac)
+        {
+            return excludeMACs.find(mac) != excludeMACs.end();
+        }
+
+        bool filterAndroidID(const std::string & androidId)
+        {
+            return excludeAndroidIds.find(androidId) != excludeAndroidIds.end();
+        }
+
+        std::string durationStr(int64_t duration)
+        {
+            int h = duration / 3600, m = (duration % 3600) / 60, s = duration % 60;
+            return boost::str(boost::format("%02d:%02d:%02d") % h % m % s);
+        }
     }
 
     void extractSize(const std::string & size, int & width, int & height)
@@ -128,6 +139,26 @@ namespace bidding {
         }
     }
 
+    std::string AbstractBiddingHandler::prepareVast(int width, int height, const cppcms::json::value & mtls,
+                                                    const std::string & tvm, const std::string & cm)
+    {
+        std::string vastXml;
+        ParamMap pm;
+        int duration
+            = adservice::utility::stringtool::safeconvert(adservice::utility::stringtool::stoi, mtls.get("p17", "15"));
+        pm.insert({ "title", mtls.get("p0", "") });
+        pm.insert({ "impressionUrl", tvm });
+        pm.insert({ "duration", durationStr(duration) });
+        pm.insert({ "clickThrough", cm });
+        pm.insert({ "bitrate", "300" });
+        pm.insert({ "videoWidth", std::to_string(width) });
+        pm.insert({ "videoHeight", std::to_string(height) });
+        pm.insert({ "videoUrl", mtls.get("p16", "") });
+        pm.insert({ "endcard", mtls.get("p6", "") });
+        vastTemplateEngine.bindFast(pm, vastXml);
+        return vastXml;
+    }
+
     bool AbstractBiddingHandler::fillLogItem(const AdSelectCondition & queryCondition, protocol::log::LogItem & logItem,
                                              bool isAccepted)
     {
@@ -177,6 +208,7 @@ namespace bidding {
             logItem.mediaType = adFlowExtraInfo.mediaType;
             logItem.adInfo.bidEcpmPrice = adInfo.bidEcpmPrice;
             logItem.adInfo.imp_id = adInfo.imp_id;
+            //            logItem.adInfo.feeRateDetail = adInfo.feeRateDetail;
         } else {
             logItem.adInfo.pid = std::to_string(queryCondition.mttyPid);
             logItem.adInfo.adxpid = queryCondition.adxpid;
@@ -186,7 +218,7 @@ namespace bidding {
         return fillSpecificLog(queryCondition, logItem, isAccepted);
     }
 
-    int AbstractBiddingHandler::extractRealValue(const std::string & input, int targetAdx)
+    std::string AbstractBiddingHandler::extractRealValue(const std::string & input, int targetAdx)
     {
         const char * pdata = input.data();
         const char *p1 = pdata, *p2 = p1;
@@ -195,10 +227,11 @@ namespace bidding {
                 int adx = atoi(p1);
                 p2++;
                 p1 = p2;
-                while (*p2 != '\0' && *p2 != '|')
+                while (*p2 != '\0' && *p2 != '|') {
                     p2++;
+                }
                 if (adx == targetAdx) {
-                    return atoi(p1);
+                    return std::string(p1, p2);
                 }
                 if (*p2 == '|') {
                     p2++;
@@ -207,7 +240,7 @@ namespace bidding {
             } else
                 p2++;
         }
-        return 0;
+        return "0";
     }
 
     void AbstractBiddingHandler::getShowPara(URLHelper & showUrl, const std::string & bid)
@@ -227,11 +260,14 @@ namespace bidding {
         showUrl.add("od", std::to_string(adInfo.orderId));
         showUrl.add("ep", std::to_string(adInfo.ppid));
         showUrl.add(URL_SITE_ID, std::to_string(adInfo.mid));
+        showUrl.add(URL_CHANNEL, std::to_string(adInfo.cid));
         showUrl.add(URL_FLOWTYPE, std::to_string(adFlowExtraInfo.flowType));
         showUrl.add(URL_DEVICE_IDFA, adFlowExtraInfo.deviceIds[URL_DEVICE_IDFA]);
         showUrl.add(URL_DEVICE_IMEI, adFlowExtraInfo.deviceIds[URL_DEVICE_IMEI]);
         showUrl.add(URL_DEVICE_ANDOROIDID, adFlowExtraInfo.deviceIds[URL_DEVICE_ANDOROIDID]);
         showUrl.add(URL_DEVICE_MAC, adFlowExtraInfo.deviceIds[URL_DEVICE_MAC]);
+        showUrl.add(URL_FEE_RATE, std::to_string(adFlowExtraInfo.feeRate));
+        showUrl.add(URL_FEE_RATE_STRS, adFlowExtraInfo.feerRateDetails);
     }
 
     void AbstractBiddingHandler::getClickPara(URLHelper & clickUrl, const std::string & bid, const std::string & ref,
@@ -260,10 +296,13 @@ namespace bidding {
         clickUrl.add("od", std::to_string(adInfo.orderId));
         clickUrl.add("url", encodedLandingUrl);
         clickUrl.add(URL_SITE_ID, std::to_string(adInfo.mid));
+        clickUrl.add(URL_CHANNEL, std::to_string(adInfo.cid));
         clickUrl.add(URL_DEVICE_IDFA, adFlowExtraInfo.deviceIds[URL_DEVICE_IDFA]);
         clickUrl.add(URL_DEVICE_IMEI, adFlowExtraInfo.deviceIds[URL_DEVICE_IMEI]);
         clickUrl.add(URL_DEVICE_ANDOROIDID, adFlowExtraInfo.deviceIds[URL_DEVICE_ANDOROIDID]);
         clickUrl.add(URL_DEVICE_MAC, adFlowExtraInfo.deviceIds[URL_DEVICE_MAC]);
+        clickUrl.add(URL_FEE_RATE, std::to_string(adFlowExtraInfo.feeRate));
+        clickUrl.add(URL_FEE_RATE_STRS, adFlowExtraInfo.feerRateDetails);
     }
 
     std::string AbstractBiddingHandler::generateHtmlSnippet(const std::string & bid, int width, int height,
@@ -327,6 +366,7 @@ namespace bidding {
         if (!selectCondition.dealId.empty()) {
             adFlowExtraInfo.dealIds.push_back(selectCondition.dealId);
         }
+        adFlowExtraInfo.feeRate = 1.0;
     }
 
     void AbstractBiddingHandler::fillAdInfo(const AdSelectCondition & selectCondition,
@@ -357,8 +397,10 @@ namespace bidding {
         adInfo.bidEcpmPrice = result.bidPrice;
         adInfo.bidBasePrice = selectCondition.basePrice;
         adInfo.areaId = adservice::server::IpManager::getInstance().getAreaCodeStrByIp(selectCondition.ip.data());
-        auto idSeq = CookieMappingManager::IdSeq();
-        adInfo.imp_id = std::to_string(idSeq.time()) + std::to_string(idSeq.id());
+        //        auto idSeq = CookieMappingManager::IdSeq();
+        adInfo.imp_id = std::to_string(adservice::utility::time::getCurrentTimeStampMs())
+                        + (uniqueIdSeq == 0 ? adservice::utility::cypher::randomId(1)
+                                            : std::to_string(int64_t(uniqueIdSeq & 0x7FFF)));
         buildFlowExtraInfo(selectCondition);
         std::string deviceId;
         char buffer[1024];
@@ -368,6 +410,18 @@ namespace bidding {
             adFlowExtraInfo.dealIds.clear();
             adFlowExtraInfo.dealIds.push_back(finalSolution.dDealId);
         }
+        const auto & costDetail = result.costRateDetails;
+        double feeRate = 1.0 + costDetail.getFinalFeeRate();
+        if (feeRate < costDetail.spend - 1e-6 || feeRate > costDetail.spend + 1e-6) {
+            LOG_WARN << "calculated feeRate not equal to database cost rate,feeRate:" << feeRate
+                     << ",database spend:" << costDetail.spend << ",advid:" << adInfo.advId
+                     << ",mediaOwnerId:" << adplace.mediaOwnerId;
+        }
+        if (feeRate <= 1.0) { //取得的costDetail不正常，fallback到默认的资费结算率
+            feeRate = 1.0;
+        }
+        adFlowExtraInfo.feeRate = feeRate;
+        adFlowExtraInfo.feerRateDetails = costDetail.getDetailStr(1.0);
     }
 
     const CookieMappingQueryKeyValue &
@@ -440,8 +494,11 @@ namespace bidding {
     std::string AbstractBiddingHandler::redoCookieMapping(int64_t adxId, const std::string & adxCookieMappingUrl)
     {
         if (cmInfo.needReMapping) {
-            auto idSeq = CookieMappingManager::IdSeq();
-            MT::User::UserID userId(idSeq.id(), idSeq.time());
+            // auto idSeq = CookieMappingManager::IdSeq();
+            // MT::User::UserID userId(idSeq.id(), idSeq.time());
+            MT::User::UserID userId(
+                int16_t((uniqueIdSeq == 0 ? adservice::utility::rng::randomInt() : uniqueIdSeq) & 0X00007FFF),
+                adservice::utility::time::getCurrentTimeStampMs());
             cmInfo.userMapping.userId = userId.text();
             cmInfo.userMapping.cypherUserId = userId.cipher();
             if (cmInfo.queryKV.isAdxCookieKey()) {  // PC cookie
