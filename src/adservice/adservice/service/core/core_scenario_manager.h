@@ -17,7 +17,7 @@ namespace server {
 
     class ScenarioManager {
     public:
-        void init(const char * scenarioFile = "../res/scenario.txt", const char * outFile = "../res/scenario.bin");
+        void init(const char * scenarioFile = "res/scenario.txt", const char * outFile = "res/scenario.bin");
 
         ~ScenarioManager()
         {
