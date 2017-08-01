@@ -289,7 +289,6 @@ namespace bidding {
             bannerJson["rs"] = queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE;
             URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest_.id(), "", landingUrl);
-            clickUrlParam.addMacro(URL_EXCHANGE_PRICE, "%%AUCTION_PRICE%%");
             bannerJson["clickurl"] = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
             std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);
             char admBuffer[4096];

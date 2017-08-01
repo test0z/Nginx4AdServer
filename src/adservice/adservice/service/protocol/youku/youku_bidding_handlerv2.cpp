@@ -390,7 +390,6 @@ namespace bidding {
         }
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, requestId, "", landingUrl);
-        clickUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_YOUKU_PRICE);
         extValue["ldp"] = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
         extValue["pm"] = cppcms::json::array();
         if (!tview.empty()) {

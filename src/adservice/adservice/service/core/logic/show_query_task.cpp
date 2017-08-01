@@ -719,7 +719,9 @@ namespace corelogic {
             } else if (adselectOK) {
                 bgid = adBanner.bgId;
             }
-
+            if (log.adInfo.adxid == ADX_NEX_PC || log.adInfo.adxid == ADX_NEX_MOBILE) {
+                LOG_WARN << "nex show," << log.adInfo.adxId << ",sid:" << log.adInfo.sid << ",pid:" << log.adInfo.pid;
+            }
             requestCounter.increaseShowForDSP();
         }
 

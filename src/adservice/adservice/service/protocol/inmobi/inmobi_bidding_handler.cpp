@@ -342,7 +342,6 @@ namespace bidding {
             std::string landingUrl = mtlsArray[0]["p1"].str();
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, requestId, "", landingUrl);
-            clickUrlParam.addMacro(URL_EXCHANGE_PRICE, INMOBI_PRICE_MACRO);
             std::string clickUrl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
             bidValue["adm"] = prepareVast(banner.width, banner.height, mtlsArray[0], "", clickUrl);
         } else if (banner.bannerType != BANNER_TYPE_PRIMITIVE) { //普通图片创意或HTML创意
@@ -390,7 +389,6 @@ namespace bidding {
             nativeObject["link"] = cppcms::json::value();
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, requestId, "", landingUrl);
-            clickUrlParam.addMacro(URL_EXCHANGE_PRICE, INMOBI_PRICE_MACRO);
             std::string clickUrl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
             nativeObject["link"]["url"] = clickUrl;
             admObject["native"] = nativeObject;

@@ -227,7 +227,6 @@ namespace bidding {
         showUrlParam.add(URL_EXCHANGE_PRICE, "%%WINPRICE%%");
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, bidRequest.bidid(), "", landingUrl);
-        clickUrlParam.addMacro(URL_EXCHANGE_PRICE, "%%WINPRICE%%");
         if (!queryCondition.dealId.empty()) {
             showUrlParam.add(URL_DEAL_ID, adzInfo.campaignid());
             clickUrlParam.add(URL_DEAL_ID, adzInfo.campaignid());
