@@ -186,7 +186,6 @@ namespace bidding {
         std::string landingUrl = mtlsArray[0].get("p1", "");
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, requestId, "", landingUrl);
-        clickUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_2345_PRICE);
         cppcms::json::array clickArray;
         clickArray.push_back(getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam());
         bidValue["click"] = clickArray;

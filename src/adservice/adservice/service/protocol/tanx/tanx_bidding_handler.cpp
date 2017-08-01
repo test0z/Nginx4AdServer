@@ -318,7 +318,6 @@ namespace bidding {
             adResult->add_destination_url(destUrl);
             url::URLHelper clickUrlParam;
             getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
-            clickUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_TX_PRICE_MACRO);
             std::string clickUrl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
             adResult->add_click_through_url(clickUrl);
             std::string iosDownloadUrl = mtlsArray[0].get("p10", "");
@@ -404,7 +403,6 @@ namespace bidding {
                 bannerJson["rs"] = queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE;
                 url::URLHelper clickUrlParam;
                 getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
-                clickUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_TX_PRICE_MACRO);
                 std::string clickUrl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
                 bannerJson["clickurl"] = clickUrl;
                 std::string mtadInfoStr = adservice::utility::json::toJson(bannerJson);

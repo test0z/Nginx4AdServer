@@ -243,12 +243,10 @@ namespace bidding {
         getShowPara(showUrlParam, bidRequest.id());
         showUrlParam.add(URL_IMP_OF, "3");
         showUrlParam.add(URL_IP, queryCondition.ip);
-        showUrlParam.add(URL_EXCHANGE_PRICE, "%%WIN_PRICE%%");
         adResult->set_impression_param(showUrlParam.cipherParam());
         url::URLHelper clickUrlParam;
         getClickPara(clickUrlParam, bidRequest.id(), "", landingUrl);
         clickUrlParam.add(URL_IP, queryCondition.ip);
-        clickUrlParam.addMacro(URL_EXCHANGE_PRICE, "%%WIN_PRICE%%");
         adResult->set_click_param(clickUrlParam.cipherParam());
         redoCookieMapping(queryCondition.adxid, "");
     }
