@@ -126,8 +126,7 @@ namespace corelogic {
                 adplaceBuyType = PRICETYPE_RRTB_CPM;
             }
             bool fixPrice = false;
-            if (isDeal || adx == ADX_NETEASE_MOBILE || adx == ADX_YIDIAN || adx == ADX_2345_PC
-                || adx == ADX_2345_MOBILE) { // deal单子不考虑CPC的情况,固定价格
+            if (isDeal || adx == ADX_NETEASE_MOBILE || adx == ADX_YIDIAN) { // deal单子不考虑CPC的情况,固定价格
                 fixPrice = true;
                 offerPrice = offerPrice == 0 ? decodePrice : offerPrice;
             }

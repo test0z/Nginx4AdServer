@@ -185,7 +185,7 @@ namespace bidding {
         getShowPara(showUrl, requestId);
         showUrl.add(URL_IMP_OF, "3");
         // showUrl.add(URL_EXCHANGE_PRICE, std::to_string(finalSolution.offerPrice));
-        showUrl.addMacro(URL_EXCHANGE_PRICE, queryCondition.basePrice);
+        showUrl.addMacro(URL_EXCHANGE_PRICE, AD_2345_PRICE);
         pvArray.push_back(getShowBaseUrl(isIOS) + "?" + showUrl.cipherParam());
         std::string landingUrl = mtlsArray[0].get("p1", "");
         url::URLHelper clickUrlParam;
