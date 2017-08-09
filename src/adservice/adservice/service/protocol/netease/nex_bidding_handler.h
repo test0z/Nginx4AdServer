@@ -7,7 +7,6 @@
 namespace protocol {
 namespace bidding {
 
-
     class NexBiddingHandler : public AbstractBiddingHandler {
     public:
         NexBiddingHandler()
@@ -49,6 +48,10 @@ namespace bidding {
          * 不接受ADX的流量请求
          */
         void reject(INOUT adservice::utility::HttpResponse & response);
+
+        const std::string & getShowBaseUrl(bool ssl);
+
+        const std::string & getClickBaseUrl(bool ssl);
 
     private:
         cppcms::json::value bidRequest;
