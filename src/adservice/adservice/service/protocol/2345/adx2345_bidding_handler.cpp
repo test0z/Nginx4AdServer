@@ -91,10 +91,10 @@ namespace bidding {
             std::string pid = std::to_string(adzinfo.get<int>("adsenseid"));
 
             AdSelectCondition & queryCondition = queryConditions[i];
-            queryCondition.adxid = ADX_2345;
+            queryCondition.adxid = ADX_2345_PC;
             queryCondition.adxpid = pid;
             queryCondition.basePrice = adzinfo.get("bidfloor", 0);
-            adInfo.adxid = ADX_2345;
+            adInfo.adxid = ADX_2345_PC;
             queryCondition.width = adzinfo.get("width", 0);
             queryCondition.height = adzinfo.get("height", 0);
             PreSetAdplaceInfo & adplaceInfo = adplaceInfos[i];
@@ -115,6 +115,10 @@ namespace bidding {
                     osFlowType(osType, ua, queryCondition.flowType, queryCondition.mobileDevice, queryCondition.pcOS,
                                queryCondition.pcBrowserStr);
                     queryCondition.deviceBrand = adservice::utility::userclient::getDeviceBrandFromUA(ua);
+                    if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
+                        queryCondition.adxid = ADX_2356_MOBILE;
+                        adInfo.adxid = ADX_2345_MOBILE;
+                    }
                 }
             } else {
                 AdSelectCondition & firstQueryCondition = queryConditions[0];
@@ -181,7 +185,7 @@ namespace bidding {
         getShowPara(showUrl, requestId);
         showUrl.add(URL_IMP_OF, "3");
         // showUrl.add(URL_EXCHANGE_PRICE, std::to_string(finalSolution.offerPrice));
-        showUrl.addMacro(URL_EXCHANGE_PRICE, AD_2345_PRICE);
+        showUrl.addMacro(URL_EXCHANGE_PRICE, queryCondition.basePrice);
         pvArray.push_back(getShowBaseUrl(isIOS) + "?" + showUrl.cipherParam());
         std::string landingUrl = mtlsArray[0].get("p1", "");
         url::URLHelper clickUrlParam;

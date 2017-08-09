@@ -91,7 +91,8 @@ namespace corelogic {
             case ADX_360_MAX_PC:
             case ADX_360_MAX_MOBILE:
                 return max360_price_decode(input) / 10000;
-            case ADX_2345:
+            case ADX_2345_PC:
+            case ADX_2345_MOBILE:
             case ADX_SSP_PC:
             case ADX_SSP_MOBILE:
                 return stringtool::safeconvert(stringtool::stoi, input);
@@ -125,7 +126,8 @@ namespace corelogic {
                 adplaceBuyType = PRICETYPE_RRTB_CPM;
             }
             bool fixPrice = false;
-            if (isDeal || adx == ADX_NETEASE_MOBILE || adx == ADX_YIDIAN) { // deal单子不考虑CPC的情况,固定价格
+            if (isDeal || adx == ADX_NETEASE_MOBILE || adx == ADX_YIDIAN || adx == ADX_2345_PC
+                || adx == ADX_2345_MOBILE) { // deal单子不考虑CPC的情况,固定价格
                 fixPrice = true;
                 offerPrice = offerPrice == 0 ? decodePrice : offerPrice;
             }

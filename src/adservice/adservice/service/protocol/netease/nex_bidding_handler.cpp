@@ -93,6 +93,28 @@ namespace bidding {
         }
     }
 
+    const std::string & NexBiddingHandler::getShowBaseUrl(bool ssl)
+    {
+        static const std::string sslShowUrl = "https://bid-163.mtty.com/s";
+        static const std::string nonSSLShowUrl = "http://bid-163.mtty.com/s";
+        if (ssl) {
+            return sslShowUrl;
+        } else {
+            return nonSSLShowUrl;
+        }
+    }
+
+    const std::string & NexBiddingHandler::getClickBaseUrl(bool ssl)
+    {
+        static const std::string sslClickUrl = "https://bid-163.mtty.com/c";
+        static const std::string nonSSLClickUrl = "http://bid-163.mtty.com/c";
+        if (ssl) {
+            return sslClickUrl;
+        } else {
+            return nonSSLClickUrl;
+        }
+    }
+
     bool NexBiddingHandler::parseRequestData(const std::string & data)
     {
         bidResponse.undefined();
