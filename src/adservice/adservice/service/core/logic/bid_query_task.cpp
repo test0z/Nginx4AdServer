@@ -85,7 +85,7 @@ namespace corelogic {
         //一点资讯
         ADD_MODULE_ENTRY(BID_QUERY_PATH_YIDIAN, ADX_YIDIAN);
         // 2345
-        ADD_MODULE_ENTRY(BID_QUERY_PATH_2345, ADX_2345);
+        ADD_MODULE_ENTRY(BID_QUERY_PATH_2345, ADX_2345_PC);
 
         std::sort<int *>(moduleIdx, moduleIdx + moduleCnt, [](const int & a, const int & b) {
             return moduleAdx[a].moduleHash < moduleAdx[b].moduleHash;
@@ -141,7 +141,7 @@ namespace corelogic {
             return new JuxiaoMaxBiddingHandler();
         case ADX_YIDIAN:
             return new YidianBidingHandler();
-        case ADX_2345:
+        case ADX_2345_PC:
             return new Adx2345BiddingHandler();
         default:
             return NULL;
@@ -198,6 +198,7 @@ namespace corelogic {
                     ScenarioManagerPtr scenarioManager = ScenarioManager::getInstance();
                     bool result = false;
                     int conditionIdx = 0;
+                    std::vector<int64_t> bannedSolutions;
                     for (auto & condition : conditions) {
                         condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
                         condition.dHour = adSelectTimeCodeUtc();
@@ -208,6 +209,9 @@ namespace corelogic {
                         {
                             adservice::utility::PerformanceWatcher searchPW("adselectClient->search", 20, &pw);
                             (void)searchPW;
+                            if (bannedSolutions.size() > 0) {
+                                condition.bannedSolutions = bannedSolutions;
+                            }
                             searchOK = adSelectClient->search(seqId, false, condition, resp);
                         }
                         if (!searchOK) {
@@ -219,6 +223,7 @@ namespace corelogic {
                             (void)buildResultPW;
                             adapter->buildBidResult(condition, resp, conditionIdx);
                             log.adInfo.mid = resp.adplace.mId;
+                            bannedSolutions.push_back(log.adInfo.sid);
                             bAccepted = true;
                             result = true;
                         }

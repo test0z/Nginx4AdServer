@@ -33,6 +33,15 @@ namespace adselectv2 {
         return list;
     }
 
+    MT::common::ListType vectorIntToListType(std::vector<int64_t> & ids)
+    {
+        MT::common::ListType list;
+        for (auto & item : ids) {
+            list.push_back(item);
+        }
+        return std::move(list);
+    }
+
     void makeRequest(bool isSSP, AdSelectCondition & selectCondition, MT::common::SelectRequest & request)
     {
 
@@ -81,6 +90,7 @@ namespace adselectv2 {
             source.insert({ "d_browser", (int64_t)SOLUTION_BROWSER_OTHER });
         }
         source.insert({ "isp", (int64_t)selectCondition.mobileNetWorkProvider });
+        source.insert({ "banned_sids", vectorIntToListType(selectCondition.bannedSolutions) });
         request.fromSSP = isSSP || selectCondition.isFromSSP;
         request.mttyPid = selectCondition.mttyPid;
         request.adxId = selectCondition.adxid;
