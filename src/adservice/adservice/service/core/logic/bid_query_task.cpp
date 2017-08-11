@@ -223,7 +223,7 @@ namespace corelogic {
                             (void)buildResultPW;
                             adapter->buildBidResult(condition, resp, conditionIdx);
                             log.adInfo.mid = resp.adplace.mId;
-                            bannedSolutions.push_back(log.adInfo.sid);
+                            bannedSolutions.push_back(resp.solution.sId);
                             bAccepted = true;
                             result = true;
                         }
