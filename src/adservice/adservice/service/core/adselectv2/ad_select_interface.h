@@ -89,6 +89,8 @@ namespace adselectv2 {
         int requiredCreativeLevel{ 99 };
         //提供的mt 用户id，可以用于查找频次信息
         std::string mtUserId;
+        //禁止的投放单ID
+        std::vector<int64_t> bannedSolutions;
         // 设备品牌定向
         int deviceBrand;
         //场景
