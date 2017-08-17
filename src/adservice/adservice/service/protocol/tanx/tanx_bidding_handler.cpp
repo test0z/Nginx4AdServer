@@ -9,6 +9,7 @@
 #include "core/logic/show_query_task.h"
 #include "logging.h"
 #include "utility/utility.h"
+#include <boost/format.hpp>
 
 extern std::string tanxDeviceId(const std::string & src);
 
@@ -34,6 +35,8 @@ namespace bidding {
     }
 
     namespace {
+
+        const std::unordered_set<int64_t> videoViewTypes = { 11, 12, 15, 106, 107 };
 
         int getDeviceType(const std::string & deviceInfo)
         {
@@ -99,6 +102,12 @@ namespace bidding {
             }
             return SOLUTION_NETWORK_PROVIDER_ALL;
         }
+
+        std::string durationStr(int64_t duration)
+        {
+            int h = duration / 3600, m = (duration % 3600) / 60, s = duration % 60;
+            return boost::str(boost::format("%02d:%02d:%02d") % h % m % s);
+        }
     }
 
     std::string TanxBiddingHandler::tanxHtmlSnippet(const std::string & cookieMappingUrl, bool useHttps)
@@ -133,6 +142,34 @@ namespace bidding {
         int len = snprintf(html, sizeof(html), SNIPPET_IFRAME_SUPPORT_CM, width, height,
                            getShowBaseUrl(useHttps).c_str(), "", showUrlParam.cipherParam().c_str(), cookieMappingUrl);
         return std::string(html, html + len);
+    }
+
+    std::string TanxBiddingHandler::prepareVast(int width, int height, const cppcms::json::value & mtls,
+                                                const std::string & tvm, const std::string & cm, bool linear)
+    {
+        std::string vastXml;
+        adservice::utility::url::ParamMap pm;
+        int duration
+            = adservice::utility::stringtool::safeconvert(adservice::utility::stringtool::stoi, mtls.get("p17", "15"));
+        pm.insert({ "title", mtls.get("p0", "") });
+        pm.insert({ "impressionUrl", tvm });
+        pm.insert({ "duration", durationStr(duration) });
+        pm.insert({ "clickThrough", cm });
+        if (linear) {
+            linearVastTemplateEngine.bindFast(pm, vastXml);
+        } else {
+            std::string image = mtls.get("p6", "");
+            std::string creativeType = "image/jpeg";
+            if (image.find(".png") != std::string::npos) {
+                creativeType = "image/png";
+            }
+            pm.insert({ "width", std::to_string(width) });
+            pm.insert({ "height", std::to_string(height) });
+            pm.insert({ "image", image });
+            pm.insert({ "creativeType", creativeType });
+            nonLinearVastTemplateEngine.bindFast(pm, vastXml);
+        }
+        return vastXml;
     }
 
     bool TanxBiddingHandler::parseRequestData(const std::string & data)
@@ -190,6 +227,22 @@ namespace bidding {
             TypeTableManager & typeTableManager = TypeTableManager::getInstance();
             queryCondition.mttyContentType = typeTableManager.getContentType(ADX_TANX, std::to_string(category.id()));
         }
+        bool isNative = false;
+        bool isVideo = false;
+        if (adzInfo.view_type_size() > 0) {
+            for (int i = 0; i < adzInfo.view_type_size(); i++) {
+                int viewType = adzInfo.view_type(i);
+                if (viewType >= 104 && viewType <= 111) {
+                    isNative = true;
+                }
+                if (videoViewTypes.find(viewType) != videoViewTypes.end()) {
+                    isVideo = true;
+                }
+            }
+        }
+        if (isVideo) {
+            queryCondition.bannerType = BANNER_TYPE_VIDEO;
+        }
         if (bidRequest.has_mobile()) {
             const BidRequest_Mobile & mobile = bidRequest.mobile();
             const BidRequest_Mobile_Device & device = mobile.device();
@@ -214,8 +267,7 @@ namespace bidding {
                                    stringtool::safeconvert(stringtool::stod, device.latitude()) };
             queryCondition.deviceBrand = adservice::utility::userclient::getDeviceBrandFromUA(bidRequest.user_agent());
             if (mobile.has_is_app() && mobile.is_app()) { // app
-                if (adzInfo.view_type_size() > 0 && adzInfo.view_type(0) >= 104
-                    && adzInfo.view_type(0) <= 111) { //原生native
+                if (isNative && !isVideo) {               //原生native
                     const AdSizeMap & adSizeMap = AdSizeMap::getInstance();
                     pAdplaceInfo.sizeArray.clear();
                     auto sizePair = adSizeMap.get({ queryCondition.width, queryCondition.height });
@@ -379,7 +431,29 @@ namespace bidding {
             snprintf(feedbackUrl, sizeof(feedbackUrl), "%s?%s", getShowBaseUrl(isIOS).c_str(),
                      showUrlParam.cipherParam().c_str());
             adResult->set_feedback_address(feedbackUrl);
-        } else { //非移动原生广告
+        } else if (banner.bannerType == BANNER_TYPE_VIDEO) { //视频贴片广告
+            std::string destUrl = mtlsArray[0].get("p1", "");
+            adResult->add_destination_url(destUrl);
+            adResult->add_click_through_url(destUrl);
+            url::URLHelper clickUrlParam;
+            getClickPara(clickUrlParam, bidRequest.bid(), "", destUrl);
+            std::string clickUrl = getClickBaseUrl(isIOS) + "?" + clickUrlParam.cipherParam();
+            url::URLHelper showUrlParam;
+            getShowPara(showUrlParam, bidRequest.bid());
+            showUrlParam.add(URL_IMP_OF, "3");
+            showUrlParam.addMacro(URL_EXCHANGE_PRICE, AD_TX_PRICE_MACRO);
+            std::string impressionUrl = getShowBaseUrl(isIOS) + "?" + showUrlParam.cipherParam();
+            bool isLinear = true;
+            for (int i = 0; i < adzInfo.view_type_size(); i++) {
+                int viewType = adzInfo.view_type(i);
+                if (viewType == 12 || viewType == 107) {
+                    isLinear = false;
+                    break;
+                }
+            }
+            adResult->set_video_snippet(
+                prepareVast(banner.width, banner.height, mtlsArray[0], impressionUrl, clickUrl, isLinear));
+        } else { //非移动原生广告,非贴片广告
             std::string destUrl = mtlsArray[0].get("p1", "");
             adResult->add_destination_url(destUrl);
             adResult->add_click_through_url(destUrl);

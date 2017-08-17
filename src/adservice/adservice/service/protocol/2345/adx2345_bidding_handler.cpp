@@ -116,7 +116,7 @@ namespace bidding {
                                queryCondition.pcBrowserStr);
                     queryCondition.deviceBrand = adservice::utility::userclient::getDeviceBrandFromUA(ua);
                     if (queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE) {
-                        queryCondition.adxid = ADX_2356_MOBILE;
+                        queryCondition.adxid = ADX_2345_MOBILE;
                         adInfo.adxid = ADX_2345_MOBILE;
                     }
                 }

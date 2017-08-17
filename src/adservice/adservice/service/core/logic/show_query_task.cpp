@@ -680,7 +680,7 @@ namespace corelogic {
             if (finalSolution.priceType != PRICETYPE_RRTB_CPC
                 && finalSolution.priceType != PRICETYPE_RCPC) { // cpm结算的投放单，费率放到曝光
                 log.adInfo.feeRateDetail = MT::common::costdetailVec(
-                    costDetail.getDetailStr(1.0), log.adInfo.bdiPrice / (1.0 + costDetail.getFinalFeeRate()));
+                    costDetail.getDetailStr(1.0), log.adInfo.bidPrice / (1.0 + costDetail.getFinalFeeRate()));
             } // else cpc结算的投放单，费率放到点击
 
             auto & ipManager = adservice::server::IpManager::getInstance();
@@ -718,9 +718,6 @@ namespace corelogic {
                 respBody = std::string(buffer, buffer + len);
             } else if (adselectOK) {
                 bgid = adBanner.bgId;
-            }
-            if (log.adInfo.adxid == ADX_NEX_PC || log.adInfo.adxid == ADX_NEX_MOBILE) {
-                LOG_WARN << "nex show," << log.adInfo.adxId << ",sid:" << log.adInfo.sid << ",pid:" << log.adInfo.pid;
             }
             requestCounter.increaseShowForDSP();
         }

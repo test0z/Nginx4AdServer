@@ -13,6 +13,14 @@ namespace bidding {
 
     class TanxBiddingHandler : public AbstractBiddingHandler {
     public:
+        TanxBiddingHandler()
+            : AbstractBiddingHandler()
+            , linearVastTemplateEngine("res/vast/vast_linear_tanx.tpl")
+            , nonLinearVastTemplateEngine("res/vast/vast_nonlinear_tanx.tpl")
+
+        {
+        }
+
         /**
          * 从Adx Bid Post请求数据中获取具体的请求信息
          */
@@ -58,10 +66,15 @@ namespace bidding {
 
         std::string tanxHtmlSnippet(const std::string & cookieMappingUrl = "", bool useHttps = false);
 
+        std::string prepareVast(int width, int height, const cppcms::json::value & mtls, const std::string & tvm,
+                                const std::string & cm, bool linear = false);
+
     private:
         protocol::Tanx::BidRequest bidRequest;
         protocol::Tanx::BidResponse bidResponse;
         char feedbackUrl[2048];
+        adservice::utility::templateengine::TemplateEngine linearVastTemplateEngine;
+        adservice::utility::templateengine::TemplateEngine nonLinearVastTemplateEngine;
     };
 }
 }
