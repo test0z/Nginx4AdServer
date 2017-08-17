@@ -173,9 +173,6 @@ namespace corelogic {
     void HandleClickQueryTask::customLogic(ParamMap & paramMap, protocol::log::LogItem & log,
                                            adservice::utility::HttpResponse & resp)
     {
-        if (log.adInfo.adxid == ADX_NEX_PC || log.adInfo.adxid == ADX_NEX_MOBILE) {
-            LOG_WARN << "nex click," << log.adInfo.adxId << ",sid:" << log.adInfo.sid << ",pid:" << log.adInfo.pid;
-        }
         requestCounter.increaseClick();
 
         if (!log.adInfo.landingUrl.empty()) {

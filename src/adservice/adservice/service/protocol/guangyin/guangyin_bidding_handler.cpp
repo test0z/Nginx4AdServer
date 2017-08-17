@@ -166,7 +166,7 @@ namespace bidding {
             queryCondition.imei = device.has_imei() ? adservice::utility::stringtool::toupper(device.imei()) : "";
             queryCondition.androidId
                 = device.has_androidid() ? adservice::utility::stringtool::toupper(device.androidid()) : "";
-            queryCondition.mobileNetworkProvider = getNetworkCarrier(device.carrier());
+            queryCondition.mobileNetWorkProvider = getNetworkCarrier(device.carrier());
             if (bidRequest_.has_app()) {
                 const App & app = bidRequest_.app();
                 if (app.has_id()) {
